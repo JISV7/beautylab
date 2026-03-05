@@ -1,0 +1,398 @@
+{
+  "light": {
+    "colors": {
+      "primary": "#F83A3A",
+      "secondary": "#FAA2B6",
+      "accent": "#D73359",
+      "background": "#fffafb",
+      "surface": "#FFFFFF",
+      "border": "#E5E7EB",
+      "text": "#000000",
+      "textSecondary": "#4b5563"
+    },
+    "typography": {
+      "title": {
+        "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+        "fontSize": "3rem"
+      },
+      "subtitle": {
+        "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+        "fontSize": "1.5rem"
+      },
+      "paragraph": {
+        "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+        "fontSize": "1rem"
+      }
+    },
+    "components": {
+      "hero": {
+        "badge": {
+          "textColor": "#4b5563",
+          "fontSize": "0.875rem"
+        },
+        "title": {
+          "color": "#D73359",
+          "fontSize": "3rem",
+          "fontWeight": "700"
+        },
+        "description": {
+          "color": "#4b5563",
+          "fontSize": "1rem",
+          "lineHeight": "1.6"
+        },
+        "ctaPrimary": {
+          "backgroundColor": "#F83A3A",
+          "color": "#FFFFFF",
+          "fontSize": "1rem",
+          "fontWeight": "600",
+          "paddingX": "1.5rem",
+          "paddingY": "0.75rem",
+          "borderRadius": "0.5rem"
+        },
+        "ctaSecondary": {
+          "backgroundColor": "transparent",
+          "color": "#F83A3A",
+          "borderColor": "#F83A3A",
+          "fontSize": "1rem",
+          "fontWeight": "600",
+          "paddingX": "1.5rem",
+          "paddingY": "0.75rem",
+          "borderRadius": "0.5rem"
+        },
+        "statValue": {
+          "color": "#F83A3A",
+          "fontSize": "2.25rem",
+          "fontWeight": "700"
+        },
+        "statLabel": {
+          "color": "#4b5563",
+          "fontSize": "0.875rem"
+        }
+      },
+      "courseCarousel": {
+        "title": {
+          "color": "#D73359",
+          "fontSize": "2.25rem",
+          "fontWeight": "700"
+        },
+        "cardTitle": {
+          "color": "#000000",
+          "fontSize": "1.25rem",
+          "fontWeight": "600"
+        },
+        "cardDescription": {
+          "color": "#4b5563",
+          "fontSize": "0.875rem"
+        },
+        "cardMeta": {
+          "color": "#4b5563",
+          "fontSize": "0.875rem"
+        },
+        "cardButton": {
+          "backgroundColor": "#F83A3A",
+          "color": "#FFFFFF",
+          "fontSize": "1rem",
+          "fontWeight": "600"
+        }
+      },
+      "dashboard": {
+        "sidebar": {
+          "backgroundColor": "#FFFFFF",
+          "borderColor": "#E5E7EB",
+          "textColor": "#000000",
+          "textSecondary": "#6b7280",
+          "hoverBackground": "#f3f4f6",
+          "activeBackground": "#F83A3A",
+          "activeTextColor": "#FFFFFF"
+        },
+        "header": {
+          "backgroundColor": "#FFFFFF",
+          "borderColor": "#E5E7EB",
+          "textColor": "#000000"
+        },
+        "welcomeHero": {
+          "backgroundColor": "#F83A3A",
+          "textColor": "#FFFFFF",
+          "titleColor": "#FFFFFF",
+          "descriptionColor": "#ffffff",
+          "buttonBackgroundColor": "#FFFFFF",
+          "buttonTextColor": "#F83A3A"
+        },
+        "statCard": {
+          "backgroundColor": "#FFFFFF",
+          "borderColor": "#E5E7EB",
+          "titleColor": "#6b7280",
+          "valueColor": "#F83A3A",
+          "iconBackgroundColor": "#F83A3A",
+          "iconColor": "#FFFFFF"
+        },
+        "courseCard": {
+          "backgroundColor": "#FFFFFF",
+          "borderColor": "#E5E7EB",
+          "titleColor": "#000000",
+          "progressBarBackground": "#e5e7eb",
+          "progressBarFill": "#F83A3A"
+        },
+        "aiWidget": {
+          "backgroundColor": "#FFFFFF",
+          "borderColor": "#E5E7EB",
+          "titleColor": "#D73359",
+          "textColor": "#000000"
+        }
+      }
+    }
+  },
+  "dark": {
+    "colors": {
+      "primary": "#C50707",
+      "secondary": "#5C0519",
+      "accent": "#CC284F",
+      "background": "#050001",
+      "surface": "#121212",
+      "border": "#333333",
+      "text": "#FFFFFF",
+      "textSecondary": "#9ca3af"
+    },
+    "typography": {
+      "title": {
+        "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+        "fontSize": "3rem"
+      },
+      "subtitle": {
+        "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+        "fontSize": "1.5rem"
+      },
+      "paragraph": {
+        "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+        "fontSize": "1rem"
+      }
+    },
+    "components": {
+      "hero": {
+        "badge": {
+          "textColor": "#9ca3af",
+          "fontSize": "0.875rem"
+        },
+        "title": {
+          "color": "#CC284F",
+          "fontSize": "3rem",
+          "fontWeight": "700"
+        },
+        "description": {
+          "color": "#9ca3af",
+          "fontSize": "1rem",
+          "lineHeight": "1.6"
+        },
+        "ctaPrimary": {
+          "backgroundColor": "#C50707",
+          "color": "#FFFFFF",
+          "fontSize": "1rem",
+          "fontWeight": "600",
+          "paddingX": "1.5rem",
+          "paddingY": "0.75rem",
+          "borderRadius": "0.5rem"
+        },
+        "ctaSecondary": {
+          "backgroundColor": "transparent",
+          "color": "#C50707",
+          "borderColor": "#C50707",
+          "fontSize": "1rem",
+          "fontWeight": "600",
+          "paddingX": "1.5rem",
+          "paddingY": "0.75rem",
+          "borderRadius": "0.5rem"
+        },
+        "statValue": {
+          "color": "#C50707",
+          "fontSize": "2.25rem",
+          "fontWeight": "700"
+        },
+        "statLabel": {
+          "color": "#9ca3af",
+          "fontSize": "0.875rem"
+        }
+      },
+      "courseCarousel": {
+        "title": {
+          "color": "#CC284F",
+          "fontSize": "2.25rem",
+          "fontWeight": "700"
+        },
+        "cardTitle": {
+          "color": "#FFFFFF",
+          "fontSize": "1.25rem",
+          "fontWeight": "600"
+        },
+        "cardDescription": {
+          "color": "#9ca3af",
+          "fontSize": "0.875rem"
+        },
+        "cardMeta": {
+          "color": "#9ca3af",
+          "fontSize": "0.875rem"
+        },
+        "cardButton": {
+          "backgroundColor": "#C50707",
+          "color": "#FFFFFF",
+          "fontSize": "1rem",
+          "fontWeight": "600"
+        }
+      },
+      "dashboard": {
+        "sidebar": {
+          "backgroundColor": "#121212",
+          "borderColor": "#333333",
+          "textColor": "#FFFFFF",
+          "textSecondary": "#9ca3af",
+          "hoverBackground": "#1f1f1f",
+          "activeBackground": "#C50707",
+          "activeTextColor": "#FFFFFF"
+        },
+        "header": {
+          "backgroundColor": "#121212",
+          "borderColor": "#333333",
+          "textColor": "#FFFFFF"
+        },
+        "welcomeHero": {
+          "backgroundColor": "#C50707",
+          "textColor": "#FFFFFF",
+          "titleColor": "#FFFFFF",
+          "descriptionColor": "#ffffff",
+          "buttonBackgroundColor": "#FFFFFF",
+          "buttonTextColor": "#C50707"
+        },
+        "statCard": {
+          "backgroundColor": "#1f1f1f",
+          "borderColor": "#333333",
+          "titleColor": "#9ca3af",
+          "valueColor": "#C50707",
+          "iconBackgroundColor": "#C50707",
+          "iconColor": "#FFFFFF"
+        },
+        "courseCard": {
+          "backgroundColor": "#1f1f1f",
+          "borderColor": "#333333",
+          "titleColor": "#FFFFFF",
+          "progressBarBackground": "#333333",
+          "progressBarFill": "#C50707"
+        },
+        "aiWidget": {
+          "backgroundColor": "#1f1f1f",
+          "borderColor": "#333333",
+          "titleColor": "#CC284F",
+          "textColor": "#FFFFFF"
+        }
+      }
+    }
+  },
+  "presets": {
+    "default": {
+      "name": "Default",
+      "light": {
+        "colors": {
+          "primary": "#F83A3A",
+          "secondary": "#FAA2B6",
+          "accent": "#D73359",
+          "background": "#FFFFFF",
+          "surface": "#FFFFFF",
+          "border": "#E5E7EB",
+          "text": "#000000",
+          "textSecondary": "#4b5563"
+        }
+      },
+      "dark": {
+        "colors": {
+          "primary": "#C50707",
+          "secondary": "#5C0519",
+          "accent": "#CC284F",
+          "background": "#000000",
+          "surface": "#121212",
+          "border": "#333333",
+          "text": "#FFFFFF",
+          "textSecondary": "#9ca3af"
+        }
+      }
+    },
+    "christmas": {
+      "name": "Christmas",
+      "light": {
+        "colors": {
+          "primary": "#165B33",
+          "secondary": "#B85C38",
+          "accent": "#8B0000",
+          "background": "#FFFFFF",
+          "surface": "#F8F8F8",
+          "border": "#DDDDDD",
+          "text": "#1A1A1A",
+          "textSecondary": "#555555"
+        }
+      },
+      "dark": {
+        "colors": {
+          "primary": "#1F7A44",
+          "secondary": "#D46A4A",
+          "accent": "#C41E3A",
+          "background": "#0F0F0F",
+          "surface": "#1A1A1A",
+          "border": "#333333",
+          "text": "#FFFFFF",
+          "textSecondary": "#AAAAAA"
+        }
+      }
+    },
+    "ocean": {
+      "name": "Ocean",
+      "light": {
+        "colors": {
+          "primary": "#0077B6",
+          "secondary": "#00B4D8",
+          "accent": "#90E0EF",
+          "background": "#FFFFFF",
+          "surface": "#F0F9FF",
+          "border": "#BAE6FD",
+          "text": "#0C4A6E",
+          "textSecondary": "#64748B"
+        }
+      },
+      "dark": {
+        "colors": {
+          "primary": "#0EA5E9",
+          "secondary": "#38BDF8",
+          "accent": "#7DD3FC",
+          "background": "#0F172A",
+          "surface": "#1E293B",
+          "border": "#334155",
+          "text": "#F1F5F9",
+          "textSecondary": "#94A3B8"
+        }
+      }
+    },
+    "sunset": {
+      "name": "Sunset",
+      "light": {
+        "colors": {
+          "primary": "#F97316",
+          "secondary": "#FB923C",
+          "accent": "#FDBA74",
+          "background": "#FFFFFF",
+          "surface": "#FFFBEB",
+          "border": "#FED7AA",
+          "text": "#1F2937",
+          "textSecondary": "#6B7280"
+        }
+      },
+      "dark": {
+        "colors": {
+          "primary": "#EA580C",
+          "secondary": "#F97316",
+          "accent": "#FB923C",
+          "background": "#1C1917",
+          "surface": "#292524",
+          "border": "#44403C",
+          "text": "#F5F5F4",
+          "textSecondary": "#A8A29E"
+        }
+      }
+    }
+  }
+}

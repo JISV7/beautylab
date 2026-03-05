@@ -1,0 +1,1 @@
+docker exec -it beautylab-backend uv run alembic revision --autogenerate -m "Add new column"

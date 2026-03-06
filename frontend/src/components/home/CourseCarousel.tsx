@@ -91,8 +91,8 @@ export const CourseCarousel: React.FC = () => {
           className="pb-16"
         >
           {courses.map((course) => (
-            <SwiperSlide key={course.id} className="h-auto">
-              <div className="h-full flex flex-col theme-surface border theme-border rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group">
+            <SwiperSlide key={course.id} className="h-full">
+              <div className="h-full flex flex-col theme-surface border theme-border rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group min-h-[500px]">
                 {/* Course Image */}
                 <div className="h-48 w-full overflow-hidden relative">
                   <img

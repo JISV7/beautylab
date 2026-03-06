@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { Mail, Lock, ArrowRight } from 'lucide-react';
+import { Mail, Lock, ArrowRight, Eye, EyeOff } from 'lucide-react';
 
 interface LoginFormProps {
   onSwitchToRegister: () => void;
@@ -16,11 +16,22 @@ export const LoginForm: React.FC<LoginFormProps> = ({
   const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    login(email, password);
-    onSuccess();
+    setError('');
+    setIsLoading(true);
+    try {
+      await login(email, password);
+      onSuccess();
+    } catch (err: any) {
+      setError(err.message || 'Login failed');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -46,6 +57,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
               onChange={(e) => setEmail(e.target.value)}
               className="auth-input w-full pl-10 pr-4"
               placeholder="you@example.com"
+              disabled={isLoading}
             />
           </div>
         </div>
@@ -57,29 +69,50 @@ export const LoginForm: React.FC<LoginFormProps> = ({
           <div className="relative">
             <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 auth-text-secondary" />
             <input
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="auth-input w-full pl-10 pr-4"
+              className="auth-input w-full pl-10 pr-12"
               placeholder="••••••••"
+              disabled={isLoading}
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 auth-text-secondary hover:auth-text-primary transition-colors"
+              disabled={isLoading}
+            >
+              {showPassword ? (
+                <EyeOff className="w-5 h-5" />
+              ) : (
+                <Eye className="w-5 h-5" />
+              )}
+            </button>
           </div>
           <button
             type="button"
             onClick={onSwitchToRecovery}
             className="auth-link text-sm mt-2"
+            disabled={isLoading}
           >
             Forgot password?
           </button>
         </div>
 
+        {error && (
+          <div className="auth-error text-sm rounded-lg p-3 text-red-600 bg-red-50 dark:text-red-400 dark:bg-red-900/30 border border-red-200 dark:border-red-800">
+            {error}
+          </div>
+        )}
+
         <button
           type="submit"
-          className="auth-button-primary w-full"
+          className="auth-button-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={isLoading}
         >
-          Sign In
-          <ArrowRight className="w-4 h-4" />
+          {isLoading ? 'Signing in...' : 'Sign In'}
+          {!isLoading && <ArrowRight className="w-4 h-4" />}
         </button>
       </form>
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { Mail, Lock, User, ArrowRight } from 'lucide-react';
+import { Mail, Lock, User, ArrowRight, Eye, EyeOff } from 'lucide-react';
 
 interface RegisterFormProps {
   onSwitchToLogin: () => void;
@@ -16,9 +16,12 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
@@ -32,8 +35,15 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
       return;
     }
 
-    register(name, email, password);
-    onSuccess();
+    setIsLoading(true);
+    try {
+      await register(name, email, password);
+      onSuccess();
+    } catch (err: any) {
+      setError(err.message || 'Registration failed');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -59,6 +69,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
               onChange={(e) => setName(e.target.value)}
               className="auth-input w-full pl-10 pr-4"
               placeholder="John Doe"
+              disabled={isLoading}
             />
           </div>
         </div>
@@ -76,6 +87,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
               onChange={(e) => setEmail(e.target.value)}
               className="auth-input w-full pl-10 pr-4"
               placeholder="you@example.com"
+              disabled={isLoading}
             />
           </div>
         </div>
@@ -87,13 +99,26 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
           <div className="relative">
             <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 auth-text-secondary" />
             <input
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="auth-input w-full pl-10 pr-4"
+              className="auth-input w-full pl-10 pr-12"
               placeholder="••••••••"
+              disabled={isLoading}
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 auth-text-secondary hover:auth-text-primary transition-colors"
+              disabled={isLoading}
+            >
+              {showPassword ? (
+                <EyeOff className="w-5 h-5" />
+              ) : (
+                <Eye className="w-5 h-5" />
+              )}
+            </button>
           </div>
         </div>
 
@@ -104,28 +129,42 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
           <div className="relative">
             <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 auth-text-secondary" />
             <input
-              type="password"
+              type={showConfirmPassword ? 'text' : 'password'}
               required
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="auth-input w-full pl-10 pr-4"
+              className="auth-input w-full pl-10 pr-12"
               placeholder="••••••••"
+              disabled={isLoading}
             />
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 auth-text-secondary hover:auth-text-primary transition-colors"
+              disabled={isLoading}
+            >
+              {showConfirmPassword ? (
+                <EyeOff className="w-5 h-5" />
+              ) : (
+                <Eye className="w-5 h-5" />
+              )}
+            </button>
           </div>
         </div>
 
         {error && (
-          <div className="auth-error text-sm rounded-lg p-3">
+          <div className="auth-error text-sm rounded-lg p-3 text-red-600 bg-red-50 dark:text-red-400 dark:bg-red-900/30 border border-red-200 dark:border-red-800">
             {error}
           </div>
         )}
 
         <button
           type="submit"
-          className="auth-button-primary w-full"
+          className="auth-button-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={isLoading}
         >
-          Create Account
-          <ArrowRight className="w-4 h-4" />
+          {isLoading ? 'Creating Account...' : 'Create Account'}
+          {!isLoading && <ArrowRight className="w-4 h-4" />}
         </button>
       </form>
 

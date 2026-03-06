@@ -59,11 +59,10 @@ export const TypographyManager: React.FC = () => {
 
         setUploading(true);
         try {
-            // Need token if authorization required, keeping it simple
             await axios.post(`${API_URL}/fonts/upload`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}` // Ensure we pass token if needed
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`
                 }
             });
             fetchFonts();
@@ -82,7 +81,7 @@ export const TypographyManager: React.FC = () => {
         if (!confirm("Are you sure you want to delete this font?")) return;
         try {
             await axios.delete(`${API_URL}/fonts/${id}`, {
-                headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                headers: { 'Authorization': `Bearer ${localStorage.getItem('access_token')}` }
             });
             fetchFonts();
         } catch (error) {

@@ -42,6 +42,44 @@ class ThemeService:
 
         return list(themes), total
 
+    async def get_all_themes(
+        self,
+        page: int = 1,
+        page_size: int = 10,
+        is_active: Optional[bool] = None,
+    ) -> tuple[list[Theme], int]:
+        """Get all themes with pagination (admin only).
+
+        Args:
+            page: Page number
+            page_size: Number of items per page
+            is_active: Filter by active status (None = all, True = active only, False = inactive only)
+        """
+        offset = (page - 1) * page_size
+
+        # Build base query
+        query = select(Theme)
+
+        # Apply active filter if specified
+        if is_active is not None:
+            query = query.where(Theme.is_active == is_active)
+
+        # Get total count
+        count_query = select(func.count()).select_from(Theme)
+        if is_active is not None:
+            count_query = count_query.where(Theme.is_active == is_active)
+
+        total_result = await self.db.execute(count_query)
+        total = total_result.scalar() or 0
+
+        # Get themes
+        result = await self.db.execute(
+            query.order_by(Theme.name).offset(offset).limit(page_size)
+        )
+        themes = result.scalars().all()
+
+        return list(themes), total
+
     async def get_theme_by_id(self, theme_id: UUID) -> Optional[Theme]:
         """Get a theme by ID."""
         result = await self.db.execute(select(Theme).where(Theme.id == theme_id))

@@ -22,6 +22,31 @@ from app.services.theme_service import ThemeService
 router = APIRouter(prefix="/themes", tags=["Themes"])
 
 
+@router.get("/admin", response_model=ThemeListResponse)
+async def list_all_themes(
+    page: int = Query(1, ge=1),
+    page_size: int = Query(10, ge=1, le=100),
+    is_active: Optional[bool] = None,
+    _: User = Depends(RequireAdmin),
+    db: AsyncSession = Depends(get_db),
+) -> ThemeListResponse:
+    """List all themes (admin only).
+
+    Returns paginated list of all themes. Use is_active param to filter by status.
+    """
+    theme_service = ThemeService(db)
+    themes, total = await theme_service.get_all_themes(
+        page=page, page_size=page_size, is_active=is_active
+    )
+
+    return ThemeListResponse(
+        themes=[ThemeResponse.model_validate(theme) for theme in themes],
+        total=total,
+        page=page,
+        page_size=page_size,
+    )
+
+
 @router.get("/", response_model=ThemeListResponse)
 async def list_themes(
     page: int = Query(1, ge=1),
@@ -80,13 +105,12 @@ async def get_theme(
 
 @router.post("/", response_model=ThemeResponse, status_code=status.HTTP_201_CREATED)
 async def create_theme(
-    theme_data: ThemeCreate,
     current_user: CurrentUser,
+    theme_data: ThemeCreate,
+    _: User = Depends(RequireAdmin),
     db: AsyncSession = Depends(get_db),
 ) -> ThemeResponse:
     """Create a new theme (admin only)."""
-    # Check admin role
-    await check_role("admin", "root")(current_user, db)
     theme_service = ThemeService(db)
 
     theme = await theme_service.create_theme(

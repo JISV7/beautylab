@@ -1,107 +1,53 @@
-import React, { useState, useEffect } from 'react';
-import { HexColorPicker } from 'react-colorful';
+import React, { useState } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
-import { Save, Palette, Type, Layout, X, Loader2 } from 'lucide-react';
-import axios from 'axios';
-
-const API_URL = 'http://localhost:8000';
+import { PresetSelector } from './PresetSelector';
+import { ComponentStyleEditor } from './ComponentStyleEditor';
+import { ThemePreview } from './ThemePreview';
+import { Save, Palette, Type, Layout } from 'lucide-react';
 
 interface ThemeEditorProps {
     onSave?: () => void;
 }
 
-interface ColorField {
-    key: string;
-    label: string;
-}
-
-interface TypographyField {
-    key: string;
-    label: string;
-    type: 'text' | 'select';
-    options?: string[];
-}
-
 export const ThemeEditor: React.FC<ThemeEditorProps> = ({ onSave }) => {
-    const { themeData, config, saveCustomTheme, getCustomTheme } = useTheme();
+    const { themeData, config, saveCustomTheme, resetToPreset } = useTheme();
     const [activeTab, setActiveTab] = useState<'colors' | 'typography' | 'components'>('colors');
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-    const [activeColorPicker, setActiveColorPicker] = useState<string | null>(null);
-    const [saving, setSaving] = useState(false);
-    const [savingToLocal, setSavingToLocal] = useState(false);
-
-    // Get custom theme or use default
-    const customTheme = getCustomTheme();
-    const currentModeData = customTheme?.[config.mode] || themeData[config.mode];
-
-    // Base colors state - synced with current theme
+    
+    // Base colors state
     const [colors, setColors] = useState({
-        primary: currentModeData.colors.primary,
-        secondary: currentModeData.colors.secondary,
-        accent: currentModeData.colors.accent,
-        background: currentModeData.colors.background,
-        surface: currentModeData.colors.surface,
-        border: currentModeData.colors.border,
-        text: currentModeData.colors.text,
-        textSecondary: currentModeData.colors.textSecondary,
+        primary: themeData[config.mode].colors.primary,
+        secondary: themeData[config.mode].colors.secondary,
+        accent: themeData[config.mode].colors.accent,
+        background: themeData[config.mode].colors.background,
+        surface: themeData[config.mode].colors.surface,
+        border: themeData[config.mode].colors.border,
+        text: themeData[config.mode].colors.text,
+        textSecondary: themeData[config.mode].colors.textSecondary,
     });
 
     // Typography state
     const [typography, setTypography] = useState({
-        titleFont: currentModeData.typography.title.fontFamily,
-        titleSize: currentModeData.typography.title.fontSize,
-        subtitleFont: currentModeData.typography.subtitle.fontFamily,
-        subtitleSize: currentModeData.typography.subtitle.fontSize,
-        paragraphFont: currentModeData.typography.paragraph.fontFamily,
-        paragraphSize: currentModeData.typography.paragraph.fontSize,
+        titleFont: themeData[config.mode].typography.title.fontFamily,
+        titleSize: themeData[config.mode].typography.title.fontSize,
+        subtitleFont: themeData[config.mode].typography.subtitle.fontFamily,
+        subtitleSize: themeData[config.mode].typography.subtitle.fontSize,
+        paragraphFont: themeData[config.mode].typography.paragraph.fontFamily,
+        paragraphSize: themeData[config.mode].typography.paragraph.fontSize,
     });
 
     // Dashboard component colors
     const [dashboardColors, setDashboardColors] = useState({
-        sidebarBg: currentModeData.components?.dashboard?.sidebar.backgroundColor || '#FFFFFF',
-        sidebarBorder: currentModeData.components?.dashboard?.sidebar.borderColor || '#E5E7EB',
-        sidebarText: currentModeData.components?.dashboard?.sidebar.textColor || '#000000',
-        sidebarActiveBg: currentModeData.components?.dashboard?.sidebar.activeBackground || '#F83A3A',
-        welcomeBg: currentModeData.components?.dashboard?.welcomeHero.backgroundColor || '#F83A3A',
-        statCardBg: currentModeData.components?.dashboard?.statCard.backgroundColor || '#FFFFFF',
-        statValueColor: currentModeData.components?.dashboard?.statCard.valueColor || '#F83A3A',
-        courseCardBg: currentModeData.components?.dashboard?.courseCard.backgroundColor || '#FFFFFF',
-        progressFill: currentModeData.components?.dashboard?.courseCard.progressBarFill || '#F83A3A',
+        sidebarBg: themeData[config.mode].components?.dashboard?.sidebar.backgroundColor || '#FFFFFF',
+        sidebarBorder: themeData[config.mode].components?.dashboard?.sidebar.borderColor || '#E5E7EB',
+        sidebarText: themeData[config.mode].components?.dashboard?.sidebar.textColor || '#000000',
+        sidebarActiveBg: themeData[config.mode].components?.dashboard?.sidebar.activeBackground || '#F83A3A',
+        welcomeBg: themeData[config.mode].components?.dashboard?.welcomeHero.backgroundColor || '#F83A3A',
+        statCardBg: themeData[config.mode].components?.dashboard?.statCard.backgroundColor || '#FFFFFF',
+        statValueColor: themeData[config.mode].components?.dashboard?.statCard.valueColor || '#F83A3A',
+        courseCardBg: themeData[config.mode].components?.dashboard?.courseCard.backgroundColor || '#FFFFFF',
+        progressFill: themeData[config.mode].components?.dashboard?.courseCard.progressBarFill || '#F83A3A',
     });
-
-    // Sync state when theme changes
-    useEffect(() => {
-        const modeData = customTheme?.[config.mode] || themeData[config.mode];
-        setColors({
-            primary: modeData.colors.primary,
-            secondary: modeData.colors.secondary,
-            accent: modeData.colors.accent,
-            background: modeData.colors.background,
-            surface: modeData.colors.surface,
-            border: modeData.colors.border,
-            text: modeData.colors.text,
-            textSecondary: modeData.colors.textSecondary,
-        });
-        setTypography({
-            titleFont: modeData.typography.title.fontFamily,
-            titleSize: modeData.typography.title.fontSize,
-            subtitleFont: modeData.typography.subtitle.fontFamily,
-            subtitleSize: modeData.typography.subtitle.fontSize,
-            paragraphFont: modeData.typography.paragraph.fontFamily,
-            paragraphSize: modeData.typography.paragraph.fontSize,
-        });
-        setDashboardColors({
-            sidebarBg: modeData.components?.dashboard?.sidebar.backgroundColor || '#FFFFFF',
-            sidebarBorder: modeData.components?.dashboard?.sidebar.borderColor || '#E5E7EB',
-            sidebarText: modeData.components?.dashboard?.sidebar.textColor || '#000000',
-            sidebarActiveBg: modeData.components?.dashboard?.sidebar.activeBackground || '#F83A3A',
-            welcomeBg: modeData.components?.dashboard?.welcomeHero.backgroundColor || '#F83A3A',
-            statCardBg: modeData.components?.dashboard?.statCard.backgroundColor || '#FFFFFF',
-            statValueColor: modeData.components?.dashboard?.statCard.valueColor || '#F83A3A',
-            courseCardBg: modeData.components?.dashboard?.courseCard.backgroundColor || '#FFFFFF',
-            progressFill: modeData.components?.dashboard?.courseCard.progressBarFill || '#F83A3A',
-        });
-    }, [customTheme, config.mode, themeData]);
 
     const handleColorChange = (key: string, value: string) => {
         setColors((prev) => ({ ...prev, [key]: value }));
@@ -118,10 +64,8 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({ onSave }) => {
         setHasUnsavedChanges(true);
     };
 
-    // Save to local custom theme (localStorage)
     const handleSaveTheme = () => {
-        setSavingToLocal(true);
-        const customThemeData = {
+        const customTheme = {
             [config.mode]: {
                 colors,
                 typography: {
@@ -188,128 +132,17 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({ onSave }) => {
             },
         };
 
-        saveCustomTheme(customThemeData as any);
+        saveCustomTheme(customTheme as any);
         setHasUnsavedChanges(false);
-        setSavingToLocal(false);
         onSave?.();
     };
 
-    // Save to backend database
-    const handleSaveToBackend = async () => {
-        setSaving(true);
-        try {
-            const themeConfig = {
-                light: {
-                    colors: {
-                        primary: colors.primary,
-                        secondary: colors.secondary,
-                        accent: colors.accent,
-                        background: colors.background,
-                        surface: colors.surface,
-                        border: colors.border,
-                        text: colors.text,
-                        textSecondary: colors.textSecondary,
-                    },
-                    typography: {
-                        title: { fontFamily: typography.titleFont, fontSize: typography.titleSize },
-                        subtitle: { fontFamily: typography.subtitleFont, fontSize: typography.subtitleSize },
-                        paragraph: { fontFamily: typography.paragraphFont, fontSize: typography.paragraphSize },
-                    },
-                },
-                dark: {
-                    colors: {
-                        primary: colors.primary,
-                        secondary: colors.secondary,
-                        accent: colors.accent,
-                        background: colors.background,
-                        surface: colors.surface,
-                        border: colors.border,
-                        text: colors.text,
-                        textSecondary: colors.textSecondary,
-                    },
-                    typography: {
-                        title: { fontFamily: typography.titleFont, fontSize: typography.titleSize },
-                        subtitle: { fontFamily: typography.subtitleFont, fontSize: typography.subtitleSize },
-                        paragraph: { fontFamily: typography.paragraphFont, fontSize: typography.paragraphSize },
-                    },
-                },
-                components: {
-                    dashboard: {
-                        sidebar: {
-                            backgroundColor: dashboardColors.sidebarBg,
-                            borderColor: dashboardColors.sidebarBorder,
-                            textColor: dashboardColors.sidebarText,
-                            textSecondary: themeData[config.mode].colors.textSecondary,
-                            hoverBackground: themeData[config.mode].components?.dashboard?.sidebar.hoverBackground || '#f3f4f6',
-                            activeBackground: dashboardColors.sidebarActiveBg,
-                            activeTextColor: '#FFFFFF',
-                        },
-                        header: {
-                            backgroundColor: themeData[config.mode].components?.dashboard?.header.backgroundColor || '#FFFFFF',
-                            borderColor: dashboardColors.sidebarBorder,
-                            textColor: colors.text,
-                        },
-                        welcomeHero: {
-                            backgroundColor: dashboardColors.welcomeBg,
-                            textColor: '#FFFFFF',
-                            titleColor: '#FFFFFF',
-                            descriptionColor: '#ffffff',
-                            buttonBackgroundColor: '#FFFFFF',
-                            buttonTextColor: dashboardColors.welcomeBg,
-                        },
-                        statCard: {
-                            backgroundColor: dashboardColors.statCardBg,
-                            borderColor: dashboardColors.sidebarBorder,
-                            titleColor: themeData[config.mode].colors.textSecondary,
-                            valueColor: dashboardColors.statValueColor,
-                            iconBackgroundColor: dashboardColors.statValueColor,
-                            iconColor: '#FFFFFF',
-                        },
-                        courseCard: {
-                            backgroundColor: dashboardColors.courseCardBg,
-                            borderColor: dashboardColors.sidebarBorder,
-                            titleColor: colors.text,
-                            progressBarBackground: themeData[config.mode].components?.dashboard?.courseCard.progressBarBackground || '#e5e7eb',
-                            progressBarFill: dashboardColors.progressFill,
-                        },
-                        aiWidget: {
-                            backgroundColor: dashboardColors.courseCardBg,
-                            borderColor: dashboardColors.sidebarBorder,
-                            titleColor: colors.accent,
-                            textColor: colors.text,
-                        },
-                    },
-                },
-            };
-
-            // Create new theme in backend
-            const newTheme = {
-                name: `Custom ${config.mode.charAt(0).toUpperCase() + config.mode.slice(1)} Theme`,
-                description: 'Custom theme created from Theme Editor',
-                type: 'custom' as const,
-                config: themeConfig,
-                is_active: false,
-                is_default: false,
-            };
-
-            await axios.post(`${API_URL}/themes/`, newTheme, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-                },
-            });
-
-            alert('Theme saved to database successfully!');
-            setHasUnsavedChanges(false);
-        } catch (err: any) {
-            console.error('Error saving theme to backend:', err);
-            alert(err.response?.data?.detail || 'Failed to save theme to database');
-        } finally {
-            setSaving(false);
-        }
+    const handleResetToPreset = (presetName: string) => {
+        resetToPreset(presetName);
+        setHasUnsavedChanges(false);
     };
 
-    const colorFields: ColorField[] = [
+    const colorFields = [
         { key: 'primary', label: 'Primary Color' },
         { key: 'secondary', label: 'Secondary Color' },
         { key: 'accent', label: 'Accent Color' },
@@ -318,9 +151,9 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({ onSave }) => {
         { key: 'border', label: 'Border' },
         { key: 'text', label: 'Text Color' },
         { key: 'textSecondary', label: 'Secondary Text' },
-    ];
+    ] as const;
 
-    const dashboardColorFields: ColorField[] = [
+    const dashboardColorFields = [
         { key: 'sidebarBg', label: 'Sidebar Background' },
         { key: 'sidebarBorder', label: 'Sidebar Border' },
         { key: 'sidebarText', label: 'Sidebar Text' },
@@ -332,35 +165,14 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({ onSave }) => {
         { key: 'progressFill', label: 'Progress Bar Fill' },
     ];
 
-    const typographyFields: TypographyField[] = [
-        { key: 'titleFont', label: 'Title Font Family', type: 'text' },
-        { key: 'titleSize', label: 'Title Font Size', type: 'text' },
-        { key: 'subtitleFont', label: 'Subtitle Font Family', type: 'text' },
-        { key: 'subtitleSize', label: 'Subtitle Font Size', type: 'text' },
-        { key: 'paragraphFont', label: 'Paragraph Font', type: 'text' },
-        { key: 'paragraphSize', label: 'Paragraph Size', type: 'text' },
+    const typographyFields = [
+        { key: 'titleFont', label: 'Title Font Family', type: 'text' as const },
+        { key: 'titleSize', label: 'Title Font Size', type: 'text' as const },
+        { key: 'subtitleFont', label: 'Subtitle Font Family', type: 'text' as const },
+        { key: 'subtitleSize', label: 'Subtitle Font Size', type: 'text' as const },
+        { key: 'paragraphFont', label: 'Paragraph Font', type: 'text' as const },
+        { key: 'paragraphSize', label: 'Paragraph Size', type: 'text' as const },
     ];
-
-    const renderColorPicker = (field: ColorField, value: string, onChange: (value: string) => void) => (
-        <div className="flex items-center justify-between py-2">
-            <label className="text-sm theme-text-secondary flex-1">{field.label}</label>
-            <div className="flex items-center gap-2">
-                <span className="text-xs theme-text-secondary font-mono w-20 text-right">{value}</span>
-                <div className="relative">
-                    <div
-                        className="w-12 h-10 rounded border theme-border cursor-pointer"
-                        style={{ backgroundColor: value }}
-                        onClick={() => setActiveColorPicker(activeColorPicker === field.key ? null : field.key)}
-                    />
-                    {activeColorPicker === field.key && (
-                        <div className="absolute z-10 bottom-full right-0 mb-1">
-                            <HexColorPicker color={value} onChange={onChange} />
-                        </div>
-                    )}
-                </div>
-            </div>
-        </div>
-    );
 
     return (
         <div className="flex gap-6">
@@ -372,6 +184,13 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({ onSave }) => {
                         Customize the appearance of your platform. Changes are previewed in real-time.
                     </p>
                 </div>
+
+                {/* Preset Selector */}
+                <PresetSelector
+                    presets={themeData.presets || {}}
+                    currentPreset={config.preset}
+                    onSelectPreset={handleResetToPreset}
+                />
 
                 {/* Tabs */}
                 <div className="flex gap-4 mb-6 border-b theme-border">
@@ -408,9 +227,22 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({ onSave }) => {
                 {activeTab === 'colors' && (
                     <div className="admin-editor-panel mb-6">
                         <h3 className="text-lg font-semibold theme-text-base mb-4">Base Colors</h3>
-                        <div className="space-y-1">
+                        <div className="space-y-3">
                             {colorFields.map((field) => (
-                                <div key={field.key}>{renderColorPicker(field, colors[field.key], (v) => handleColorChange(field.key, v))}</div>
+                                <div key={field.key} className="admin-color-picker-wrapper">
+                                    <label className="text-sm theme-text-secondary flex-1">{field.label}</label>
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-xs theme-text-secondary font-mono w-20">
+                                            {colors[field.key]}
+                                        </span>
+                                        <input
+                                            type="color"
+                                            value={colors[field.key]}
+                                            onChange={(e) => handleColorChange(field.key, e.target.value)}
+                                            className="w-12 h-10 rounded border theme-border cursor-pointer"
+                                        />
+                                    </div>
+                                </div>
                             ))}
                         </div>
                     </div>
@@ -437,38 +269,25 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({ onSave }) => {
 
                 {activeTab === 'components' && (
                     <div>
-                        <div className="admin-editor-panel mb-6">
-                            <h3 className="text-lg font-semibold theme-text-base mb-4">Dashboard Colors</h3>
-                            <div className="space-y-1">
-                                {dashboardColorFields.map((field) => (
-                                    <div key={field.key}>
-                                        {renderColorPicker(field, dashboardColors[field.key], (v) => handleDashboardColorChange(field.key, v))}
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
+                        <ComponentStyleEditor
+                            title="Dashboard Colors"
+                            fields={dashboardColorFields.map((f) => ({ ...f, type: 'color' }))}
+                            values={dashboardColors}
+                            onChange={handleDashboardColorChange}
+                            defaultExpanded
+                        />
                     </div>
                 )}
 
                 {/* Action Buttons */}
-                <div className="flex gap-4 mt-6 flex-wrap">
+                <div className="flex gap-4 mt-6">
                     <button
                         onClick={handleSaveTheme}
-                        disabled={!hasUnsavedChanges || savingToLocal}
+                        disabled={!hasUnsavedChanges}
                         className="theme-primary text-white px-6 py-3 rounded-lg font-medium hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                     >
-                        {savingToLocal && <Loader2 className="w-4 h-4 animate-spin" />}
                         <Save className="w-4 h-4" />
-                        Save to Local
-                    </button>
-                    <button
-                        onClick={handleSaveToBackend}
-                        disabled={saving}
-                        className="bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                    >
-                        {saving && <Loader2 className="w-4 h-4 animate-spin" />}
-                        <Save className="w-4 h-4" />
-                        Save to Database
+                        Save Theme
                     </button>
                     {hasUnsavedChanges && (
                         <p className="text-sm theme-text-secondary flex items-center">
@@ -476,6 +295,11 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({ onSave }) => {
                         </p>
                     )}
                 </div>
+            </div>
+
+            {/* Preview Panel */}
+            <div className="w-96 flex-shrink-0">
+                <ThemePreview />
             </div>
         </div>
     );

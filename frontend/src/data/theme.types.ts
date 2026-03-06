@@ -16,8 +16,14 @@ export interface ThemeTypographyItem {
 }
 
 export interface ThemeTypography {
-  title: ThemeTypographyItem;
-  subtitle: ThemeTypographyItem;
+  h1: ThemeTypographyItem;
+  h2: ThemeTypographyItem;
+  h3: ThemeTypographyItem;
+  h4: ThemeTypographyItem;
+  h5: ThemeTypographyItem;
+  h6: ThemeTypographyItem;
+  title: ThemeTypographyItem; // Kept for backwards compatibility 
+  subtitle: ThemeTypographyItem; // Kept for backwards compatibility
   paragraph: ThemeTypographyItem;
 }
 
@@ -167,6 +173,6 @@ export interface ThemePresets {
 
 export interface ThemeData {
   light: ThemeModeConfig;
-  dark: ThemeModeConfig;
   presets?: ThemePresets;
+  [key: string]: ThemeModeConfig | ThemePresets | undefined;
 }

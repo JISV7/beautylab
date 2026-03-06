@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import themeData from '../data/theme.json';
 import type { ThemeModeConfig, ThemePreset, ThemePresets, ThemeData } from '../data/theme.types';
 
-type ThemeMode = 'light' | 'dark';
+export type ThemeMode = string;
 
 interface ThemeConfig {
     mode: ThemeMode;
@@ -42,7 +42,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             }
         }
 
-        if (savedTheme === 'light' || savedTheme === 'dark') {
+        if (savedTheme) {
             setConfig({ mode: savedTheme, preset: savedPreset || undefined });
         }
     }, []);
@@ -184,19 +184,19 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         if (customTheme) {
             // Use custom theme if available
             const modeData = customTheme[config.mode];
-            const defaultMode = themeData[config.mode];
-            currentTheme = modeData ? { ...defaultMode, ...modeData } : defaultMode;
+            const defaultMode = themeData[config.mode as keyof typeof themeData] || themeData['light'];
+            currentTheme = modeData ? { ...defaultMode, ...modeData } as ThemeModeConfig : defaultMode as ThemeModeConfig;
         } else if (config.preset && themeData.presets) {
             const presets = themeData.presets as ThemePresets;
             const preset: ThemePreset = presets[config.preset];
             // For presets, we only have colors, so we merge with default typography and components
-            const defaultMode = themeData[config.mode];
+            const defaultMode = themeData[config.mode as keyof typeof themeData] || themeData['light'];
             currentTheme = {
-                ...defaultMode,
-                colors: preset[config.mode].colors,
+                ...(defaultMode as ThemeModeConfig),
+                colors: (preset as any)[config.mode]?.colors || preset['light'].colors,
             };
         } else {
-            currentTheme = themeData[config.mode];
+            currentTheme = (themeData[config.mode as keyof typeof themeData] || themeData['light']) as ThemeModeConfig;
         }
 
         const root = document.documentElement;
@@ -212,11 +212,23 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         root.style.setProperty('--theme-text-secondary-value', currentTheme.colors.textSecondary);
 
         // Apply typography fonts
+        root.style.setProperty('--theme-font-h1', currentTheme.typography.h1?.fontFamily || currentTheme.typography.title.fontFamily);
+        root.style.setProperty('--theme-font-h2', currentTheme.typography.h2?.fontFamily || currentTheme.typography.title.fontFamily);
+        root.style.setProperty('--theme-font-h3', currentTheme.typography.h3?.fontFamily || currentTheme.typography.title.fontFamily);
+        root.style.setProperty('--theme-font-h4', currentTheme.typography.h4?.fontFamily || currentTheme.typography.title.fontFamily);
+        root.style.setProperty('--theme-font-h5', currentTheme.typography.h5?.fontFamily || currentTheme.typography.title.fontFamily);
+        root.style.setProperty('--theme-font-h6', currentTheme.typography.h6?.fontFamily || currentTheme.typography.title.fontFamily);
         root.style.setProperty('--theme-font-title', currentTheme.typography.title.fontFamily);
         root.style.setProperty('--theme-font-subtitle', currentTheme.typography.subtitle.fontFamily);
         root.style.setProperty('--theme-font-paragraph', currentTheme.typography.paragraph.fontFamily);
 
         // Apply typography sizes
+        root.style.setProperty('--theme-size-h1', currentTheme.typography.h1?.fontSize || '2.5rem');
+        root.style.setProperty('--theme-size-h2', currentTheme.typography.h2?.fontSize || '2rem');
+        root.style.setProperty('--theme-size-h3', currentTheme.typography.h3?.fontSize || '1.75rem');
+        root.style.setProperty('--theme-size-h4', currentTheme.typography.h4?.fontSize || '1.5rem');
+        root.style.setProperty('--theme-size-h5', currentTheme.typography.h5?.fontSize || '1.25rem');
+        root.style.setProperty('--theme-size-h6', currentTheme.typography.h6?.fontSize || '1rem');
         root.style.setProperty('--theme-size-title', currentTheme.typography.title.fontSize);
         root.style.setProperty('--theme-size-subtitle', currentTheme.typography.subtitle.fontSize);
         root.style.setProperty('--theme-size-paragraph', currentTheme.typography.paragraph.fontSize);

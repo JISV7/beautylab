@@ -11,6 +11,30 @@
       "textSecondary": "#4b5563"
     },
     "typography": {
+      "h1": {
+        "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+        "fontSize": "2.5rem"
+      },
+      "h2": {
+        "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+        "fontSize": "2rem"
+      },
+      "h3": {
+        "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+        "fontSize": "1.75rem"
+      },
+      "h4": {
+        "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+        "fontSize": "1.5rem"
+      },
+      "h5": {
+        "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+        "fontSize": "1.25rem"
+      },
+      "h6": {
+        "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+        "fontSize": "1rem"
+      },
       "title": {
         "fontFamily": "ui-sans-serif, system-ui, sans-serif",
         "fontSize": "3rem"
@@ -29,6 +53,30 @@
         "badge": {
           "textColor": "#4b5563",
           "fontSize": "0.875rem"
+        },
+        "h1": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+          "fontSize": "2.5rem"
+        },
+        "h2": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+          "fontSize": "2rem"
+        },
+        "h3": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+          "fontSize": "1.75rem"
+        },
+        "h4": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+          "fontSize": "1.5rem"
+        },
+        "h5": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+          "fontSize": "1.25rem"
+        },
+        "h6": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+          "fontSize": "1rem"
         },
         "title": {
           "color": "#D73359",
@@ -70,6 +118,30 @@
         }
       },
       "courseCarousel": {
+        "h1": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+          "fontSize": "2.5rem"
+        },
+        "h2": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+          "fontSize": "2rem"
+        },
+        "h3": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+          "fontSize": "1.75rem"
+        },
+        "h4": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+          "fontSize": "1.5rem"
+        },
+        "h5": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+          "fontSize": "1.25rem"
+        },
+        "h6": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+          "fontSize": "1rem"
+        },
         "title": {
           "color": "#D73359",
           "fontSize": "2.25rem",
@@ -154,6 +226,30 @@
       "textSecondary": "#9ca3af"
     },
     "typography": {
+      "h1": {
+        "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+        "fontSize": "2.5rem"
+      },
+      "h2": {
+        "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+        "fontSize": "2rem"
+      },
+      "h3": {
+        "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+        "fontSize": "1.75rem"
+      },
+      "h4": {
+        "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+        "fontSize": "1.5rem"
+      },
+      "h5": {
+        "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+        "fontSize": "1.25rem"
+      },
+      "h6": {
+        "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+        "fontSize": "1rem"
+      },
       "title": {
         "fontFamily": "ui-sans-serif, system-ui, sans-serif",
         "fontSize": "3rem"
@@ -172,6 +268,30 @@
         "badge": {
           "textColor": "#9ca3af",
           "fontSize": "0.875rem"
+        },
+        "h1": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+          "fontSize": "2.5rem"
+        },
+        "h2": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+          "fontSize": "2rem"
+        },
+        "h3": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+          "fontSize": "1.75rem"
+        },
+        "h4": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+          "fontSize": "1.5rem"
+        },
+        "h5": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+          "fontSize": "1.25rem"
+        },
+        "h6": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+          "fontSize": "1rem"
         },
         "title": {
           "color": "#CC284F",
@@ -213,6 +333,30 @@
         }
       },
       "courseCarousel": {
+        "h1": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+          "fontSize": "2.5rem"
+        },
+        "h2": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+          "fontSize": "2rem"
+        },
+        "h3": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+          "fontSize": "1.75rem"
+        },
+        "h4": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+          "fontSize": "1.5rem"
+        },
+        "h5": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+          "fontSize": "1.25rem"
+        },
+        "h6": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+          "fontSize": "1rem"
+        },
         "title": {
           "color": "#CC284F",
           "fontSize": "2.25rem",
@@ -391,6 +535,221 @@
           "border": "#44403C",
           "text": "#F5F5F4",
           "textSecondary": "#A8A29E"
+        }
+      }
+    }
+  },
+  "colorblind": {
+    "colors": {
+      "primary": "#005AB5",
+      "secondary": "#FFC20A",
+      "accent": "#D41159",
+      "background": "#FFFFFF",
+      "surface": "#F3F4F6",
+      "border": "#D1D5DB",
+      "text": "#111827",
+      "textSecondary": "#4B5563"
+    },
+    "typography": {
+      "h1": {
+        "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+        "fontSize": "2.5rem"
+      },
+      "h2": {
+        "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+        "fontSize": "2rem"
+      },
+      "h3": {
+        "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+        "fontSize": "1.75rem"
+      },
+      "h4": {
+        "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+        "fontSize": "1.5rem"
+      },
+      "h5": {
+        "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+        "fontSize": "1.25rem"
+      },
+      "h6": {
+        "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+        "fontSize": "1rem"
+      },
+      "title": {
+        "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+        "fontSize": "3rem"
+      },
+      "subtitle": {
+        "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+        "fontSize": "1.5rem"
+      },
+      "paragraph": {
+        "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+        "fontSize": "1rem"
+      }
+    },
+    "components": {
+      "hero": {
+        "badge": {
+          "textColor": "#4b5563",
+          "fontSize": "0.875rem"
+        },
+        "h1": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+          "fontSize": "2.5rem"
+        },
+        "h2": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+          "fontSize": "2rem"
+        },
+        "h3": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+          "fontSize": "1.75rem"
+        },
+        "h4": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+          "fontSize": "1.5rem"
+        },
+        "h5": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+          "fontSize": "1.25rem"
+        },
+        "h6": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+          "fontSize": "1rem"
+        },
+        "title": {
+          "color": "#D73359",
+          "fontSize": "3rem",
+          "fontWeight": "700"
+        },
+        "description": {
+          "color": "#4b5563",
+          "fontSize": "1rem",
+          "lineHeight": "1.6"
+        },
+        "ctaPrimary": {
+          "backgroundColor": "#F83A3A",
+          "color": "#FFFFFF",
+          "fontSize": "1rem",
+          "fontWeight": "600",
+          "paddingX": "1.5rem",
+          "paddingY": "0.75rem",
+          "borderRadius": "0.5rem"
+        },
+        "ctaSecondary": {
+          "backgroundColor": "transparent",
+          "color": "#F83A3A",
+          "borderColor": "#F83A3A",
+          "fontSize": "1rem",
+          "fontWeight": "600",
+          "paddingX": "1.5rem",
+          "paddingY": "0.75rem",
+          "borderRadius": "0.5rem"
+        },
+        "statValue": {
+          "color": "#F83A3A",
+          "fontSize": "2.25rem",
+          "fontWeight": "700"
+        },
+        "statLabel": {
+          "color": "#4b5563",
+          "fontSize": "0.875rem"
+        }
+      },
+      "courseCarousel": {
+        "h1": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+          "fontSize": "2.5rem"
+        },
+        "h2": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+          "fontSize": "2rem"
+        },
+        "h3": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+          "fontSize": "1.75rem"
+        },
+        "h4": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+          "fontSize": "1.5rem"
+        },
+        "h5": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+          "fontSize": "1.25rem"
+        },
+        "h6": {
+          "fontFamily": "ui-sans-serif, system-ui, sans-serif",
+          "fontSize": "1rem"
+        },
+        "title": {
+          "color": "#D73359",
+          "fontSize": "2.25rem",
+          "fontWeight": "700"
+        },
+        "cardTitle": {
+          "color": "#000000",
+          "fontSize": "1.25rem",
+          "fontWeight": "600"
+        },
+        "cardDescription": {
+          "color": "#4b5563",
+          "fontSize": "0.875rem"
+        },
+        "cardMeta": {
+          "color": "#4b5563",
+          "fontSize": "0.875rem"
+        },
+        "cardButton": {
+          "backgroundColor": "#F83A3A",
+          "color": "#FFFFFF",
+          "fontSize": "1rem",
+          "fontWeight": "600"
+        }
+      },
+      "dashboard": {
+        "sidebar": {
+          "backgroundColor": "#FFFFFF",
+          "borderColor": "#E5E7EB",
+          "textColor": "#000000",
+          "textSecondary": "#6b7280",
+          "hoverBackground": "#f3f4f6",
+          "activeBackground": "#F83A3A",
+          "activeTextColor": "#FFFFFF"
+        },
+        "header": {
+          "backgroundColor": "#FFFFFF",
+          "borderColor": "#E5E7EB",
+          "textColor": "#000000"
+        },
+        "welcomeHero": {
+          "backgroundColor": "#F83A3A",
+          "textColor": "#FFFFFF",
+          "titleColor": "#FFFFFF",
+          "descriptionColor": "#ffffff",
+          "buttonBackgroundColor": "#FFFFFF",
+          "buttonTextColor": "#F83A3A"
+        },
+        "statCard": {
+          "backgroundColor": "#FFFFFF",
+          "borderColor": "#E5E7EB",
+          "titleColor": "#6b7280",
+          "valueColor": "#F83A3A",
+          "iconBackgroundColor": "#F83A3A",
+          "iconColor": "#FFFFFF"
+        },
+        "courseCard": {
+          "backgroundColor": "#FFFFFF",
+          "borderColor": "#E5E7EB",
+          "titleColor": "#000000",
+          "progressBarBackground": "#e5e7eb",
+          "progressBarFill": "#F83A3A"
+        },
+        "aiWidget": {
+          "backgroundColor": "#FFFFFF",
+          "borderColor": "#E5E7EB",
+          "titleColor": "#D73359",
+          "textColor": "#000000"
         }
       }
     }

@@ -12,6 +12,7 @@ export interface ThemeColors {
 export interface ThemeTypographyItem {
   fontFamily: string;
   fontSize: string;
+  color?: string;
 }
 
 export interface ThemeTypography {

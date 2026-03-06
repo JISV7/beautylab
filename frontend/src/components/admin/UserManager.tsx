@@ -28,7 +28,7 @@ export const UserManager: React.FC = () => {
     );
 
     return (
-        <div>
+        <div className="p-6">
             <div className="mb-6">
                 <h1 className="text-2xl font-bold theme-text-base mb-2">User Management</h1>
                 <p className="theme-text-secondary">
@@ -122,11 +122,10 @@ export const UserManager: React.FC = () => {
                                 </td>
                                 <td className="p-4">
                                     <span
-                                        className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${
-                                            user.role === 'admin'
+                                        className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${user.role === 'admin'
                                                 ? 'bg-purple-100 text-purple-700'
                                                 : 'bg-gray-100 text-gray-700'
-                                        }`}
+                                            }`}
                                     >
                                         <Shield className="w-3 h-3" />
                                         {user.role}
@@ -134,11 +133,10 @@ export const UserManager: React.FC = () => {
                                 </td>
                                 <td className="p-4">
                                     <span
-                                        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
-                                            user.status === 'active'
+                                        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${user.status === 'active'
                                                 ? 'bg-green-100 text-green-700'
                                                 : 'bg-gray-100 text-gray-700'
-                                        }`}
+                                            }`}
                                     >
                                         {user.status}
                                     </span>

@@ -8,6 +8,7 @@ from app.models.role_permission import RolePermission
 from app.models.theme import Theme
 from app.models.user import User
 from app.models.user_role import UserRole
+from app.models.font import Font
 
 __all__ = [
     "Base",
@@ -18,4 +19,5 @@ __all__ = [
     "UserRole",
     "Theme",
     "AuditLog",
+    "Font",
 ]

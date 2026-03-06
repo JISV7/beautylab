@@ -7,12 +7,13 @@ import { ContactForm } from '../components/home/ContactForm';
 
 interface HomeProps {
     onNavigateToDashboard?: () => void;
+    onNavigateToAdmin?: () => void;
 }
 
-export function Home({ onNavigateToDashboard }: HomeProps) {
+export function Home({ onNavigateToDashboard, onNavigateToAdmin }: HomeProps) {
     return (
         <div className="min-h-screen flex flex-col font-sans theme-text-base theme-background">
-            <Header onNavigateToDashboard={onNavigateToDashboard} />
+            <Header onNavigateToDashboard={onNavigateToDashboard} onNavigateToAdmin={onNavigateToAdmin} />
             <main className="flex-1">
                 <Hero />
                 <CourseCarousel />

@@ -6,10 +6,11 @@ from typing import AsyncGenerator
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from app.config import get_settings
 from app.database import close_db, init_db
-from app.routers import admin, auth, themes, users
+from app.routers import admin, auth, themes, users, fonts
 
 settings = get_settings()
 
@@ -48,6 +49,10 @@ app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(themes.router)
 app.include_router(admin.router)
+app.include_router(fonts.router)
+
+# Mount static files for fonts
+app.mount("/static/fonts", StaticFiles(directory="uploads/fonts"), name="fonts")
 
 
 @app.get("/", tags=["Health"])

@@ -17,15 +17,15 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
     return (
         <div className="min-h-screen flex theme-background">
             {/* Admin Sidebar */}
-            <AdminSidebar 
-                activeItem={activeSidebarItem} 
+            <AdminSidebar
+                activeItem={activeSidebarItem}
                 onNavigate={onNavigate}
                 onBack={onBack}
             />
-            
+
             {/* Main Content Area */}
             <div className="flex-1 flex flex-col">
-                <main className="flex-1 overflow-y-auto p-6">
+                <main className="flex-1 overflow-y-auto">
                     {children}
                 </main>
             </div>

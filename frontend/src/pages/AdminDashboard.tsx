@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { AdminLayout } from '../components/layout/AdminLayout';
-import { ThemeEditor } from '../components/admin/ThemeEditor';
+import { ThemeManager } from '../components/admin/ThemeManager';
 import { UserManager } from '../components/admin/UserManager';
+import { TypographyManager } from '../components/admin/TypographyManager';
 
-type AdminTab = 'theme' | 'users' | 'settings';
+type AdminTab = 'dashboard' | 'typography' | 'themes' | 'users' | 'content';
 
 export const AdminDashboard: React.FC = () => {
-    const [activeTab, setActiveTab] = useState<AdminTab>('theme');
+    const [activeTab, setActiveTab] = useState<AdminTab>('dashboard');
 
     const handleNavigate = (item: string) => {
         setActiveTab(item as AdminTab);
@@ -17,28 +18,36 @@ export const AdminDashboard: React.FC = () => {
         window.location.href = '/dashboard';
     };
 
-    const handleSave = () => {
-        console.log('Theme saved!');
-        // Could show a toast notification here
-    };
-
     return (
         <AdminLayout
             activeSidebarItem={activeTab}
             onNavigate={handleNavigate}
             onBack={handleBack}
         >
-            {activeTab === 'theme' && (
-                <ThemeEditor onSave={handleSave} />
+            {activeTab === 'dashboard' && (
+                <div>
+                    <h1 className="text-2xl font-bold theme-text-base mb-2">Admin Dashboard</h1>
+                    <p className="theme-text-secondary">
+                        Welcome to the Site Customizer.
+                    </p>
+                </div>
+            )}
+            {activeTab === 'typography' && (
+                <div>
+                    <TypographyManager />
+                </div>
+            )}
+            {activeTab === 'themes' && (
+                <ThemeManager />
             )}
             {activeTab === 'users' && (
                 <UserManager />
             )}
-            {activeTab === 'settings' && (
+            {activeTab === 'content' && (
                 <div>
-                    <h1 className="text-2xl font-bold theme-text-base mb-2">Site Settings</h1>
+                    <h1 className="text-2xl font-bold theme-text-base mb-2">Content Management</h1>
                     <p className="theme-text-secondary">
-                        General site configuration and settings (Coming soon)
+                        Manage your site's content (Coming soon)...
                     </p>
                 </div>
             )}

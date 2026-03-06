@@ -43,7 +43,10 @@ function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <Home onNavigateToDashboard={handleNavigateToDashboard} />
+        <Home
+          onNavigateToDashboard={handleNavigateToDashboard}
+          onNavigateToAdmin={handleNavigateToAdmin}
+        />
       </AuthProvider>
     </ThemeProvider>
   );

@@ -1,0 +1,6 @@
+{
+  "source_directories": ["."],
+  "search_path": [
+    "/home/jasa/beautylab/backend/.venv/lib/python3.13/site-packages"
+  ]
+}

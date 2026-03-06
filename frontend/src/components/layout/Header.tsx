@@ -7,9 +7,10 @@ import { UserMenu } from './UserMenu';
 
 interface HeaderProps {
   onNavigateToDashboard?: () => void;
+  onNavigateToAdmin?: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ onNavigateToDashboard }) => {
+export const Header: React.FC<HeaderProps> = ({ onNavigateToDashboard, onNavigateToAdmin }) => {
   const { config, updateTheme } = useTheme();
   const { isAuthenticated } = useAuth();
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
@@ -78,7 +79,7 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateToDashboard }) => {
 
             {/* Authentication */}
             {isAuthenticated ? (
-              <UserMenu />
+              <UserMenu onNavigateToAdmin={onNavigateToAdmin} />
             ) : (
               <button
                 onClick={() => setLoginDialogOpen(true)}
@@ -93,9 +94,9 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateToDashboard }) => {
       </div>
 
       {/* Login/Register Dialog */}
-      <LoginDialog 
-        open={loginDialogOpen} 
-        onOpenChange={setLoginDialogOpen} 
+      <LoginDialog
+        open={loginDialogOpen}
+        onOpenChange={setLoginDialogOpen}
         onLoginSuccess={handleLoginSuccess}
       />
     </header>

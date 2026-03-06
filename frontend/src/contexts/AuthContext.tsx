@@ -3,18 +3,13 @@ import axios from 'axios';
 
 const API_URL = 'http://localhost:8000';
 
-export interface Role {
-    id: number;
-    name: string;
-}
-
 export interface User {
     id?: string;
     email: string;
     full_name?: string;
     name?: string;
     isAdmin?: boolean;
-    roles?: Role[];
+    roles?: string[];
 }
 
 interface AuthContextType {
@@ -42,7 +37,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 }
             });
             const userData = response.data;
-            const isAdmin = userData.roles?.some((r: Role) => ['admin', 'root'].includes(r.name));
+            const isAdmin = userData.roles?.some((roleName: string) => ['admin', 'root'].includes(roleName));
             setUser({
                 id: userData.id,
                 email: userData.email,

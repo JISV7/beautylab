@@ -5,9 +5,10 @@ import { useTheme } from '../../contexts/ThemeContext';
 
 interface DashboardHeaderProps {
     onNavigate?: (page: string) => void;
+    onNavigateToAdmin?: () => void;
 }
 
-export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNavigate }) => {
+export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNavigate, onNavigateToAdmin }) => {
     const { user, logout } = useAuth();
     const { config, updateTheme } = useTheme();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -29,7 +30,9 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNavigate }) 
     };
 
     const handleAdminPanel = () => {
-        if (onNavigate) {
+        if (onNavigateToAdmin) {
+            onNavigateToAdmin();
+        } else if (onNavigate) {
             onNavigate('admin');
         }
         setIsMenuOpen(false);
@@ -55,11 +58,10 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNavigate }) 
                 <div className="flex items-center gap-1">
                     <button
                         onClick={() => toggleTheme('light')}
-                        className={`p-2 rounded-lg transition-colors ${
-                            config.mode === 'light'
+                        className={`p-2 rounded-lg transition-colors ${config.mode === 'light'
                                 ? 'theme-primary text-white'
                                 : 'theme-text-secondary hover:bg-[var(--theme-border-value)]'
-                        }`}
+                            }`}
                         title="Light Mode"
                     >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -68,11 +70,10 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNavigate }) 
                     </button>
                     <button
                         onClick={() => toggleTheme('dark')}
-                        className={`p-2 rounded-lg transition-colors ${
-                            config.mode === 'dark'
+                        className={`p-2 rounded-lg transition-colors ${config.mode === 'dark'
                                 ? 'theme-primary text-white'
                                 : 'theme-text-secondary hover:bg-[var(--theme-border-value)]'
-                        }`}
+                            }`}
                         title="Dark Mode"
                     >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -90,7 +91,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNavigate }) 
                         <Bell className="w-5 h-5" />
                         <span className="absolute top-1 right-1 w-2 h-2 theme-primary rounded-full" />
                     </button>
-                    
+
                     {isNotificationOpen && (
                         <div className="absolute right-0 mt-2 w-80 theme-surface theme-border border rounded-xl shadow-lg py-2 z-50">
                             <div className="px-4 py-2 border-b theme-border">

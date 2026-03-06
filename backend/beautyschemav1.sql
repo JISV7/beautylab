@@ -50,6 +50,15 @@ CREATE TABLE user_roles (
 
 CREATE INDEX idx_user_roles_user ON user_roles(user_id);
 
+CREATE TABLE fonts (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name VARCHAR(100) NOT NULL,
+    filename VARCHAR(255) NOT NULL UNIQUE,
+    url VARCHAR(255) NOT NULL,
+    created_by UUID REFERENCES users(id) ON DELETE SET NULL,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 CREATE TABLE themes (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR(100) NOT NULL, -- 'Ocean', 'Monochromatic', 'Christmas'

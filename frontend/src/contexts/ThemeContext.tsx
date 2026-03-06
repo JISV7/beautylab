@@ -32,7 +32,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         const savedTheme = localStorage.getItem('themeMode') as ThemeMode;
         const savedPreset = localStorage.getItem('themePreset');
         const savedCustomTheme = localStorage.getItem('customTheme');
-        
+
         if (savedCustomTheme) {
             try {
                 const parsed = JSON.parse(savedCustomTheme);
@@ -41,7 +41,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                 console.error('Failed to parse custom theme from localStorage');
             }
         }
-        
+
         if (savedTheme === 'light' || savedTheme === 'dark') {
             setConfig({ mode: savedTheme, preset: savedPreset || undefined });
         }
@@ -220,6 +220,23 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         root.style.setProperty('--theme-size-title', currentTheme.typography.title.fontSize);
         root.style.setProperty('--theme-size-subtitle', currentTheme.typography.subtitle.fontSize);
         root.style.setProperty('--theme-size-paragraph', currentTheme.typography.paragraph.fontSize);
+
+        // Apply typography custom colors (fallback to text base)
+        if (currentTheme.typography.title.color) {
+            root.style.setProperty('--theme-color-title', currentTheme.typography.title.color);
+        } else {
+            root.style.removeProperty('--theme-color-title');
+        }
+        if (currentTheme.typography.subtitle.color) {
+            root.style.setProperty('--theme-color-subtitle', currentTheme.typography.subtitle.color);
+        } else {
+            root.style.removeProperty('--theme-color-subtitle');
+        }
+        if (currentTheme.typography.paragraph.color) {
+            root.style.setProperty('--theme-color-paragraph', currentTheme.typography.paragraph.color);
+        } else {
+            root.style.removeProperty('--theme-color-paragraph');
+        }
 
         // Apply component-specific styles
         applyComponentStyles(currentTheme);

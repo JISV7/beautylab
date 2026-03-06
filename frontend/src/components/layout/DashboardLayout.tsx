@@ -30,10 +30,10 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                 activeItem={activeItem}
                 onNavigate={handleNavigation}
             />
-            
+
             {/* Main Content Area */}
             <div className="flex-1 flex flex-col">
-                <DashboardHeader onNavigate={onAdminNavigate} />
+                <DashboardHeader onNavigate={onNavigate} onNavigateToAdmin={onAdminNavigate} />
                 <main className="flex-1 overflow-y-auto p-6">
                     {children}
                 </main>

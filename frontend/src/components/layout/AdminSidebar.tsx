@@ -1,10 +1,11 @@
 import React from 'react';
-import { 
-    Palette, 
-    Users, 
-    Settings, 
+import {
+    Palette,
+    Users,
     Sparkles,
-    ArrowLeft
+    ArrowLeft,
+    Type,
+    FileText
 } from 'lucide-react';
 
 interface AdminSidebarProps {
@@ -13,15 +14,17 @@ interface AdminSidebarProps {
     onBack?: () => void;
 }
 
-export const AdminSidebar: React.FC<AdminSidebarProps> = ({ 
-    activeItem = 'theme', 
+export const AdminSidebar: React.FC<AdminSidebarProps> = ({
+    activeItem = 'theme',
     onNavigate,
     onBack,
 }) => {
     const navItems = [
-        { id: 'theme', label: 'Theme Editor', icon: Palette },
-        { id: 'users', label: 'User Management', icon: Users },
-        { id: 'settings', label: 'Site Settings', icon: Settings },
+        { id: 'dashboard', label: 'Dashboard', icon: Sparkles },
+        { id: 'typography', label: 'Typography', icon: Type },
+        { id: 'themes', label: 'Colors', icon: Palette },
+        { id: 'users', label: 'Users', icon: Users },
+        { id: 'content', label: 'Content', icon: FileText },
     ];
 
     const handleClick = (itemId: string) => {
@@ -54,7 +57,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                 {navItems.map((item) => {
                     const Icon = item.icon;
                     const isActive = activeItem === item.id;
-                    
+
                     return (
                         <button
                             key={item.id}

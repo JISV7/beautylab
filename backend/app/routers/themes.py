@@ -1,4 +1,4 @@
-"""Themes router."""
+"""Themes router with validation and activation endpoints."""
 
 from typing import Optional
 from uuid import UUID
@@ -16,8 +16,15 @@ from app.schemas.theme import (
     ThemeListResponse,
     ThemeResponse,
     ThemeUpdate,
+    ThemeValidationRequest,
+    ThemeValidationResponse,
 )
-from app.services.theme_service import ThemeService
+from app.services.theme_service import (
+    ThemeService,
+    ThemeActiveError,
+    ThemeInUseError,
+    ThemeValidationError,
+)
 
 router = APIRouter(prefix="/themes", tags=["Themes"])
 
@@ -39,11 +46,14 @@ async def list_all_themes(
         page=page, page_size=page_size, is_active=is_active
     )
 
+    total_pages = (total + page_size - 1) // page_size
+
     return ThemeListResponse(
         themes=[ThemeResponse.model_validate(theme) for theme in themes],
         total=total,
         page=page,
         page_size=page_size,
+        total_pages=total_pages,
     )
 
 
@@ -60,11 +70,14 @@ async def list_themes(
     theme_service = ThemeService(db)
     themes, total = await theme_service.get_active_themes(page=page, page_size=page_size)
 
+    total_pages = (total + page_size - 1) // page_size
+
     return ThemeListResponse(
         themes=[ThemeResponse.model_validate(theme) for theme in themes],
         total=total,
         page=page,
         page_size=page_size,
+        total_pages=total_pages,
     )
 
 
@@ -113,15 +126,21 @@ async def create_theme(
     """Create a new theme (admin only)."""
     theme_service = ThemeService(db)
 
-    theme = await theme_service.create_theme(
-        name=theme_data.name,
-        description=theme_data.description,
-        config=theme_data.config,
-        theme_type=theme_data.type,
-        is_active=theme_data.is_active,
-        is_default=theme_data.is_default,
-        created_by=current_user.id,
-    )
+    try:
+        theme = await theme_service.create_theme(
+            name=theme_data.name,
+            description=theme_data.description,
+            config=theme_data.config,
+            theme_type=theme_data.type,
+            is_active=theme_data.is_active,
+            is_default=theme_data.is_default,
+            created_by=current_user.id,
+        )
+    except ThemeValidationError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e),
+        )
 
     return ThemeResponse.model_validate(theme)
 
@@ -149,7 +168,13 @@ async def update_theme(
     if theme_data.is_default is not None:
         update_kwargs["is_default"] = theme_data.is_default
 
-    theme = await theme_service.update_theme(theme_id=theme_id, **update_kwargs)
+    try:
+        theme = await theme_service.update_theme(theme_id=theme_id, **update_kwargs)
+    except ThemeValidationError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e),
+        )
 
     if not theme:
         raise HTTPException(
@@ -166,15 +191,75 @@ async def delete_theme(
     _: User = Depends(RequireAdmin),
     db: AsyncSession = Depends(get_db),
 ) -> None:
-    """Delete a theme (admin only)."""
+    """Delete a theme (admin only).
+    
+    Cannot delete if:
+    - Theme is currently active
+    - Theme is set as preferred by any user
+    """
     theme_service = ThemeService(db)
-    success = await theme_service.delete_theme(theme_id)
+    
+    try:
+        success = await theme_service.delete_theme(theme_id)
+    except ThemeActiveError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e),
+        )
+    except ThemeInUseError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e),
+        )
 
     if not success:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Theme not found",
         )
+
+
+@router.post("/activate/{theme_id}", response_model=ThemeResponse)
+async def activate_theme(
+    theme_id: UUID,
+    _: User = Depends(RequireAdmin),
+    db: AsyncSession = Depends(get_db),
+) -> ThemeResponse:
+    """Activate a theme (deactivates all others).
+    
+    Only one theme can be active at a time. This is the theme users will see.
+    """
+    theme_service = ThemeService(db)
+    theme = await theme_service.activate_theme(theme_id)
+
+    if not theme:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Theme not found",
+        )
+
+    return ThemeResponse.model_validate(theme)
+
+
+@router.post("/validate", response_model=ThemeValidationResponse)
+async def validate_theme_config(
+    validation_data: ThemeValidationRequest,
+    _: User = Depends(RequireAdmin),
+) -> ThemeValidationResponse:
+    """Validate a theme configuration structure.
+    
+    Use this endpoint to validate theme config before saving.
+    """
+    theme_service = ThemeService(None)  # type: ignore
+    
+    try:
+        theme_service._validate_theme_config(validation_data.config)
+        return ThemeValidationResponse(valid=True)
+    except ThemeValidationError as e:
+        # Parse errors from exception message
+        error_msg = str(e)
+        errors = [error_msg.replace("Theme config validation failed: ", "")]
+        return ThemeValidationResponse(valid=False, errors=errors)
 
 
 @router.get("/user/preferred", response_model=ThemeResponse)
@@ -207,16 +292,26 @@ async def set_user_preferred_theme(
     current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> ThemeResponse:
-    """Set or clear current user's preferred theme."""
+    """Set or clear current user's preferred theme.
+    
+    Users can only choose from active themes.
+    """
+    theme_service = ThemeService(db)
+    
     if theme_id:
-        # Verify theme exists
-        theme_service = ThemeService(db)
+        # Verify theme exists and is active
         theme = await theme_service.get_theme_by_id(theme_id)
 
         if not theme:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Theme not found",
+            )
+        
+        if not theme.is_active:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Cannot set inactive theme as preferred",
             )
 
     # Update user's preferred theme
@@ -230,7 +325,8 @@ async def set_user_preferred_theme(
     if theme_id:
         return ThemeResponse.model_validate(theme)
     else:
+        # Return 204 when clearing preference
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
+            status_code=status.HTTP_204_NO_CONTENT,
             detail="Preferred theme cleared",
         )

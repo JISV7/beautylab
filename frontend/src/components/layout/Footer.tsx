@@ -47,23 +47,23 @@ export const Footer: React.FC = () => {
     ];
 
     return (
-        <footer className="theme-surface theme-border border-t mt-auto">
+        <footer className="palette-surface palette-border border-t mt-auto">
             {/* Main Footer */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8 lg:gap-12">
                     {/* Brand Column */}
                     <div className="lg:col-span-2">
                         <a href="/" className="flex items-center gap-2 mb-4">
-                            <div className="theme-primary rounded-lg p-2">
+                            <div className="palette-primary rounded-lg p-2">
                                 <Code2 className="w-6 h-6 text-white" />
                             </div>
-                            <span className="theme-h4 font-bold theme-text-base">Codyn</span>
+                            <span className="text-h4-size text-h4-color text-h4-weight font-bold palette-text">Codyn</span>
                         </a>
-                        <p className="theme-paragraph theme-text-secondary mb-6 max-w-xs">
-                            Master the future of technology with cutting-edge courses in web development, 
+                        <p className="text-p-size text-p-color mb-6 max-w-xs">
+                            Master the future of technology with cutting-edge courses in web development,
                             programming, and agentic AI.
                         </p>
-                        
+
                         {/* Contact Info */}
                         <div className="space-y-3 mb-6">
                             {contactInfo.map((item, index) => {
@@ -72,7 +72,7 @@ export const Footer: React.FC = () => {
                                     <a
                                         key={index}
                                         href={item.href}
-                                        className="flex items-center gap-3 theme-text-secondary hover:theme-primary transition-colors"
+                                        className="flex items-center gap-3 text-p-size palette-text-secondary hover:palette-primary transition-colors"
                                     >
                                         <Icon className="w-4 h-4 flex-shrink-0" />
                                         <span className="text-sm">{item.text}</span>
@@ -90,7 +90,7 @@ export const Footer: React.FC = () => {
                                         key={index}
                                         href={social.href}
                                         aria-label={social.label}
-                                        className="w-10 h-10 rounded-lg theme-border border flex items-center justify-center theme-text-secondary hover:theme-primary hover:border-[var(--theme-primary-value)] transition-all"
+                                        className="w-10 h-10 rounded-lg palette-border border flex items-center justify-center text-p-size palette-text-secondary hover:palette-primary hover:border-palette-primary transition-all"
                                     >
                                         <Icon className="w-5 h-5" />
                                     </a>
@@ -101,13 +101,13 @@ export const Footer: React.FC = () => {
 
                     {/* Product Links */}
                     <div>
-                        <h3 className="theme-subtitle theme-text-base font-semibold mb-4">Product</h3>
+                        <h3 className="text-subtitle-size text-subtitle-color text-subtitle-weight font-semibold mb-4">Product</h3>
                         <ul className="space-y-3">
                             {footerLinks.product.map((link, index) => (
                                 <li key={index}>
                                     <a
                                         href={link.href}
-                                        className="footer-link text-sm theme-text-secondary hover:theme-primary transition-colors"
+                                        className="footer-link text-sm palette-text-secondary hover:palette-primary transition-colors"
                                     >
                                         {link.label}
                                     </a>
@@ -118,13 +118,13 @@ export const Footer: React.FC = () => {
 
                     {/* Resources Links */}
                     <div>
-                        <h3 className="theme-subtitle theme-text-base font-semibold mb-4">Resources</h3>
+                        <h3 className="text-subtitle-size text-subtitle-color text-subtitle-weight font-semibold mb-4">Resources</h3>
                         <ul className="space-y-3">
                             {footerLinks.resources.map((link, index) => (
                                 <li key={index}>
                                     <a
                                         href={link.href}
-                                        className="footer-link text-sm theme-text-secondary hover:theme-primary transition-colors"
+                                        className="footer-link text-sm palette-text-secondary hover:palette-primary transition-colors"
                                     >
                                         {link.label}
                                     </a>
@@ -135,13 +135,13 @@ export const Footer: React.FC = () => {
 
                     {/* Company Links */}
                     <div>
-                        <h3 className="theme-subtitle theme-text-base font-semibold mb-4">Company</h3>
+                        <h3 className="text-subtitle-size text-subtitle-color text-subtitle-weight font-semibold mb-4">Company</h3>
                         <ul className="space-y-3">
                             {footerLinks.company.map((link, index) => (
                                 <li key={index}>
                                     <a
                                         href={link.href}
-                                        className="footer-link text-sm theme-text-secondary hover:theme-primary transition-colors"
+                                        className="footer-link text-sm palette-text-secondary hover:palette-primary transition-colors"
                                     >
                                         {link.label}
                                     </a>
@@ -152,13 +152,13 @@ export const Footer: React.FC = () => {
 
                     {/* Legal Links */}
                     <div>
-                        <h3 className="theme-subtitle theme-text-base font-semibold mb-4">Legal</h3>
+                        <h3 className="text-subtitle-size text-subtitle-color text-subtitle-weight font-semibold mb-4">Legal</h3>
                         <ul className="space-y-3">
                             {footerLinks.legal.map((link, index) => (
                                 <li key={index}>
                                     <a
                                         href={link.href}
-                                        className="footer-link text-sm theme-text-secondary hover:theme-primary transition-colors"
+                                        className="footer-link text-sm palette-text-secondary hover:palette-primary transition-colors"
                                     >
                                         {link.label}
                                     </a>
@@ -170,28 +170,28 @@ export const Footer: React.FC = () => {
             </div>
 
             {/* Bottom Bar */}
-            <div className="theme-border border-t">
+            <div className="palette-border border-t">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                     <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                        <p className="text-sm theme-text-secondary text-center md:text-left">
+                        <p className="text-sm palette-text-secondary text-center md:text-left">
                             © {currentYear} Codyn. All rights reserved.
                         </p>
                         <div className="flex items-center gap-6">
                             <a
                                 href="#privacy"
-                                className="text-sm theme-text-secondary hover:theme-primary transition-colors"
+                                className="text-sm palette-text-secondary hover:palette-primary transition-colors"
                             >
                                 Privacy
                             </a>
                             <a
                                 href="#terms"
-                                className="text-sm theme-text-secondary hover:theme-primary transition-colors"
+                                className="text-sm palette-text-secondary hover:palette-primary transition-colors"
                             >
                                 Terms
                             </a>
                             <a
                                 href="#cookies"
-                                className="text-sm theme-text-secondary hover:theme-primary transition-colors"
+                                className="text-sm palette-text-secondary hover:palette-primary transition-colors"
                             >
                                 Cookies
                             </a>

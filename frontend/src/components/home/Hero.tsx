@@ -6,12 +6,12 @@ export const Hero: React.FC = () => {
     <section className="hero-section relative overflow-hidden py-20 lg:py-32">
       {/* Background gradient */}
       <div className="hero-background absolute inset-0 opacity-5"></div>
-      
+
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center">
           {/* Badge */}
-          <div className="hero-badge inline-flex items-center gap-2 px-4 py-2 rounded-full theme-surface theme-border border mb-6">
-            <Sparkles className="w-4 h-4" />
+          <div className="hero-badge inline-flex items-center gap-2 px-4 py-2 rounded-full palette-surface palette-border border mb-6">
+            <Sparkles className="w-4 h-4 palette-text-secondary" />
             <span className="hero-badge-text">Master the Future of Technology</span>
           </div>
 
@@ -22,7 +22,7 @@ export const Hero: React.FC = () => {
 
           {/* Description */}
           <p className="hero-description mb-8 max-w-2xl mx-auto">
-            Transform your career with cutting-edge courses in web development, programming fundamentals, 
+            Transform your career with cutting-edge courses in web development, programming fundamentals,
             and the emerging field of agentic AI. Join thousands of learners building the future.
           </p>
 

@@ -68,11 +68,11 @@ const courses: Course[] = [
 
 export const CourseCarousel: React.FC = () => {
   return (
-    <section id="courses" className="py-16 lg:py-24 theme-background overflow-hidden relative">
+    <section id="courses" className="py-16 lg:py-24 palette-background overflow-hidden relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="course-carousel-title mb-4">Featured Courses</h2>
-          <p className="theme-paragraph theme-text-secondary max-w-2xl mx-auto">
+          <p className="text-p-size text-p-color max-w-2xl mx-auto">
             Explore our most popular courses designed by industry experts
           </p>
         </div>
@@ -92,7 +92,7 @@ export const CourseCarousel: React.FC = () => {
         >
           {courses.map((course) => (
             <SwiperSlide key={course.id} className="h-full">
-              <div className="h-full flex flex-col theme-surface border theme-border rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group min-h-[500px]">
+              <div className="h-full flex flex-col palette-surface palette-border border rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group min-h-[500px]">
                 {/* Course Image */}
                 <div className="h-48 w-full overflow-hidden relative">
                   <img
@@ -100,7 +100,7 @@ export const CourseCarousel: React.FC = () => {
                     alt={course.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-[var(--theme-primary-value)] font-bold px-3 py-1 rounded-full text-sm flex items-center gap-1 shadow-sm">
+                  <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm palette-primary font-bold px-3 py-1 rounded-full text-sm flex items-center gap-1 shadow-sm">
                     <Star className="w-4 h-4 fill-current" />
                     {course.rating}
                   </div>
@@ -117,13 +117,13 @@ export const CourseCarousel: React.FC = () => {
                   </p>
 
                   {/* Course Meta */}
-                  <div className="flex items-center justify-between mb-6 course-card-meta">
+                  <div className="flex items-center justify-between mb-6 text-p-size palette-text-secondary">
                     <div className="flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-[var(--theme-primary-value)]" />
+                      <Clock className="w-4 h-4 palette-primary" />
                       <span className="font-medium">{course.duration}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Users className="w-4 h-4 text-[var(--theme-primary-value)]" />
+                      <Users className="w-4 h-4 palette-primary" />
                       <span className="font-medium">{course.students}</span>
                     </div>
                   </div>
@@ -138,15 +138,15 @@ export const CourseCarousel: React.FC = () => {
           ))}
         </Swiper>
       </div>
-      
+
       {/* Global CSS Overrides for Swiper specific to this component */}
       <style>{`
         .swiper-pagination-bullet {
-          background-color: var(--theme-text-secondary-value);
+          background-color: var(--palette-text-secondary);
           opacity: 0.5;
         }
         .swiper-pagination-bullet-active {
-          background-color: var(--theme-primary-value);
+          background-color: var(--palette-primary);
           opacity: 1;
         }
         /* Create padding for the pagination dots so they don't overlap cards */

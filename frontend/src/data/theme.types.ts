@@ -1,3 +1,99 @@
+/**
+ * Theme types for the new palette-based system.
+ * 
+ * Structure:
+ * - 1 Theme = 3 Palettes (light, dark, accessibility)
+ * - 1 Palette = Colors + Typography
+ */
+
+// ==================== Color Types ====================
+
+export interface PaletteColors {
+  primary: string;
+  secondary: string;
+  accent: string;
+  background: string;
+  surface: string;
+  border: string;
+  text: string;
+  textSecondary: string;
+}
+
+// ==================== Typography Types ====================
+
+export interface TypographyElement {
+  fontId?: string;        // UUID of the font (optional, null = system default)
+  fontName?: string;      // Font display name
+  fontSize: string;       // Font size in rem (e.g., "2.5")
+  fontWeight: number;     // Font weight 100-900
+  color?: string;         // Optional color override
+  lineHeight?: string;    // Optional line height (e.g., "1.2")
+}
+
+export interface TypographyConfig {
+  h1: TypographyElement;
+  h2: TypographyElement;
+  h3: TypographyElement;
+  h4: TypographyElement;
+  h5: TypographyElement;
+  h6: TypographyElement;
+  title: TypographyElement;
+  subtitle: TypographyElement;
+  paragraph: TypographyElement;
+}
+
+// ==================== Palette Types ====================
+
+export interface ThemePalette {
+  colors: PaletteColors;
+  typography: TypographyConfig;
+}
+
+// ==================== Theme Config Types ====================
+
+export interface ThemeConfig {
+  light: ThemePalette;
+  dark: ThemePalette;
+  accessibility: ThemePalette;
+}
+
+// ==================== Theme Types ====================
+
+export interface Theme {
+  id: string;
+  name: string;
+  description?: string;
+  type: 'preset' | 'custom';
+  config: ThemeConfig;
+  isActive: boolean;
+  isDefault: boolean;
+  createdBy?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// ==================== Font Types ====================
+
+export interface Font {
+  id: string;
+  name: string;
+  filename: string;
+  url: string;
+  createdBy?: string;
+  createdAt: string;
+  fontUsage?: FontUsageEntry[];
+  usageCount: number;
+}
+
+export interface FontUsageEntry {
+  themeId: string;
+  themeName: string;
+  palette: 'light' | 'dark' | 'accessibility';
+  element: string;  // h1, h2, ..., p
+}
+
+// ==================== Legacy Types (for backwards compatibility) ====================
+
 export interface ThemeColors {
   primary: string;
   secondary: string;
@@ -22,8 +118,8 @@ export interface ThemeTypography {
   h4: ThemeTypographyItem;
   h5: ThemeTypographyItem;
   h6: ThemeTypographyItem;
-  title: ThemeTypographyItem; // Kept for backwards compatibility
-  subtitle: ThemeTypographyItem; // Kept for backwards compatibility
+  title: ThemeTypographyItem;
+  subtitle: ThemeTypographyItem;
   paragraph: ThemeTypographyItem;
 }
 
@@ -171,7 +267,6 @@ export interface ThemePresets {
   [key: string]: ThemePreset;
 }
 
-// New types for named themes with light/dark/accessibility modes
 export interface ThemeMode {
   colors: ThemeColors;
   typography: ThemeTypography;
@@ -196,4 +291,84 @@ export interface ThemeData {
   presets?: ThemePresets;
   themes?: NamedThemes;
   [key: string]: ThemeModeConfig | ThemePresets | NamedThemes | undefined;
+}
+
+// ==================== Admin Editor Types ====================
+
+export interface ColorPalette {
+  primary: string;
+  secondary: string;
+  accent: string;
+  background: string;
+  surface: string;
+  border: string;
+}
+
+export interface TypographyStyle {
+  fontFamily: string;
+  size: number;
+  color: string;
+}
+
+export interface ThemeEditorProps {
+  theme: NamedTheme;
+  activeMode: 'light' | 'dark' | 'accessibility';
+  onModeChange: (mode: 'light' | 'dark' | 'accessibility') => void;
+  onSave: (colors: ColorPalette, styles: Record<string, TypographyStyle>) => void;
+  onPublish: () => void;
+  onBack: () => void;
+}
+
+export interface ColorEditorProps {
+  colors: ColorPalette;
+  activeMode: 'light' | 'dark' | 'accessibility';
+  styles: Record<string, TypographyStyle>;
+  onColorChange: (key: keyof ColorPalette, value: string) => void;
+}
+
+export interface TypographyEditorProps {
+  styles: Record<string, TypographyStyle>;
+  activeMode: 'light' | 'dark' | 'accessibility';
+  colors: ColorPalette;
+  onStyleChange: (key: string, field: keyof TypographyStyle, value: string | number) => void;
+  onFontUploaded: () => void;
+  onFontDeleted: (fontId: string) => void;
+}
+
+export interface ThemePreviewProps {
+  theme: NamedTheme;
+  onEdit: () => void;
+  onClose: () => void;
+  onPublish: () => void;
+}
+
+export interface ThemeTableRow {
+  key: string;
+  name: string;
+  isActive: boolean;
+  isPublished: boolean;
+}
+
+export interface ThemeTableProps {
+  themes: Record<string, NamedTheme>;
+  activeThemeName: string;
+  publishedThemeName: string | null;
+  currentPage: number;
+  rowsPerPage: number;
+  sortColumn: 'name' | 'isActive' | 'isPublished';
+  sortDirection: 'asc' | 'desc';
+  onEdit: (themeKey: string) => void;
+  onPreview: (themeKey: string) => void;
+  onDelete: (themeKey: string) => void;
+  onPageChange: (page: number) => void;
+  onSort: (column: 'name' | 'isActive' | 'isPublished') => void;
+}
+
+export interface FontManagerProps {
+  installedFonts: Font[];
+  uploading: boolean;
+  fileInputRef: React.RefObject<HTMLInputElement | null>;
+  onFileUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onFontDelete: (font: Font) => void;
+  getFontUsage: (fontName: string) => { theme: string; elements: string[] }[];
 }

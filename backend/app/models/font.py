@@ -1,10 +1,12 @@
+from typing import Any, List
 from sqlalchemy import Column, String, ForeignKey, DateTime
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import UUID, JSONB
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 import uuid
 
 from app.models.base import Base
+
 
 class Font(Base):
     __tablename__ = "fonts"
@@ -15,6 +17,13 @@ class Font(Base):
     url = Column(String(255), nullable=False)
     created_by = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+    font_usage = Column(JSONB, nullable=True, default=list)
 
     # Relationships
     creator = relationship("User", foreign_keys=[created_by])
+
+    def get_usage_count(self) -> int:
+        """Return the number of theme palettes using this font."""
+        if not self.font_usage:
+            return 0
+        return len(self.font_usage)

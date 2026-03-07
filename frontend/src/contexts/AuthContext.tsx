@@ -59,7 +59,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const token = localStorage.getItem('access_token');
         if (token) {
             fetchUser(token);
-            // Additionally, could set up an interceptor or periodic refresh here
+            // Restore dashboard page for authenticated users
+            const savedPage = localStorage.getItem('currentPage');
+            if (!savedPage || savedPage === 'home') {
+                localStorage.setItem('currentPage', 'dashboard');
+            }
         } else {
             setIsLoading(false);
         }
@@ -81,6 +85,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             if (data.refresh_token) {
                 localStorage.setItem('refresh_token', data.refresh_token);
             }
+            // Navigate to dashboard after login
+            localStorage.setItem('currentPage', 'dashboard');
 
             await fetchUser(data.access_token);
         } catch (error: any) {
@@ -116,6 +122,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const logout = () => {
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
+        localStorage.setItem('currentPage', 'home');
         setIsAuthenticated(false);
         setUser(null);
     };

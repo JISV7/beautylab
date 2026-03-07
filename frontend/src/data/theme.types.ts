@@ -15,8 +15,7 @@ export interface PaletteColors {
   background: string;
   surface: string;
   border: string;
-  text: string;
-  textSecondary: string;
+  // Note: text colors are defined in typography config, not here
 }
 
 // ==================== Typography Types ====================
@@ -26,7 +25,7 @@ export interface TypographyElement {
   fontName?: string;      // Font display name
   fontSize: string;       // Font size in rem (e.g., "2.5")
   fontWeight: number;     // Font weight 100-900
-  color?: string;         // Optional color override
+  color: string;          // Text color for this element
   lineHeight?: string;    // Optional line height (e.g., "1.2")
 }
 
@@ -101,8 +100,7 @@ export interface ThemeColors {
   background: string;
   surface: string;
   border: string;
-  text: string;
-  textSecondary: string;
+  // Note: text colors are defined in typography config, not here
 }
 
 export interface ThemeTypographyItem {

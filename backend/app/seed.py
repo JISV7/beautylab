@@ -7,6 +7,7 @@ Run this script to seed the database with initial data:
 import asyncio
 import sys
 from pathlib import Path
+from uuid import UUID
 
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -16,9 +17,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.security import hash_password
 from app.database import AsyncSessionLocal, close_db, init_db
+from app.models.font import Font
 from app.models.permission import Permission
 from app.models.role import Role
 from app.models.role_permission import RolePermission
+from app.models.theme import Theme
 from app.models.user import User
 from app.models.user_role import UserRole
 
@@ -220,6 +223,106 @@ async def seed_admin_user(
     return admin
 
 
+async def seed_default_theme(
+    db: AsyncSession,
+) -> Theme:
+    """Seed default theme with placeholder values.
+    
+    This theme is used as a fallback so the site is never unstyled.
+    All 3 palettes (light, dark, accessibility) have identical values.
+    """
+    print("Seeding default theme...")
+
+    theme_name = "Default Theme"
+    result = await db.execute(select(Theme).where(Theme.name == theme_name))
+    theme = result.scalar_one_or_none()
+
+    if not theme:
+        # Default theme config based on Default/DefaultTheme.md
+        default_config = {
+            "light": {
+                "colors": {
+                    "primary": "#2f27ce",
+                    "secondary": "#dedcff",
+                    "accent": "#433bff",
+                    "background": "#fbfbfe",
+                    "surface": "#eeeef0",
+                    "border": "#dddddd"
+                },
+                "typography": {
+                    "h1": {"font_name": "Roboto", "font_size": "2.5", "font_weight": 400, "color": "#2f27ce"},
+                    "h2": {"font_name": "Roboto", "font_size": "2.0", "font_weight": 400, "color": "#2f27ce"},
+                    "h3": {"font_name": "Roboto", "font_size": "1.75", "font_weight": 400, "color": "#433bff"},
+                    "h4": {"font_name": "Roboto", "font_size": "1.5", "font_weight": 400, "color": "#1a1675"},
+                    "h5": {"font_name": "Roboto", "font_size": "1.25", "font_weight": 400, "color": "#1a1675"},
+                    "h6": {"font_name": "Roboto", "font_size": "1.0", "font_weight": 400, "color": "#1a1675"},
+                    "title": {"font_name": "Roboto", "font_size": "1.5", "font_weight": 700, "color": "#1a1675"},
+                    "subtitle": {"font_name": "Roboto", "font_size": "1.25", "font_weight": 600, "color": "#1a1675"},
+                    "paragraph": {"font_name": "Roboto", "font_size": "1.0", "font_weight": 400, "color": "#1a1a2e"}
+                }
+            },
+            "dark": {
+                "colors": {
+                    "primary": "#2f27ce",
+                    "secondary": "#dedcff",
+                    "accent": "#433bff",
+                    "background": "#fbfbfe",
+                    "surface": "#eeeef0",
+                    "border": "#dddddd"
+                },
+                "typography": {
+                    "h1": {"font_name": "Roboto", "font_size": "2.5", "font_weight": 400, "color": "#2f27ce"},
+                    "h2": {"font_name": "Roboto", "font_size": "2.0", "font_weight": 400, "color": "#2f27ce"},
+                    "h3": {"font_name": "Roboto", "font_size": "1.75", "font_weight": 400, "color": "#433bff"},
+                    "h4": {"font_name": "Roboto", "font_size": "1.5", "font_weight": 400, "color": "#1a1675"},
+                    "h5": {"font_name": "Roboto", "font_size": "1.25", "font_weight": 400, "color": "#1a1675"},
+                    "h6": {"font_name": "Roboto", "font_size": "1.0", "font_weight": 400, "color": "#1a1675"},
+                    "title": {"font_name": "Roboto", "font_size": "1.5", "font_weight": 700, "color": "#1a1675"},
+                    "subtitle": {"font_name": "Roboto", "font_size": "1.25", "font_weight": 600, "color": "#1a1675"},
+                    "paragraph": {"font_name": "Roboto", "font_size": "1.0", "font_weight": 400, "color": "#1a1a2e"}
+                }
+            },
+            "accessibility": {
+                "colors": {
+                    "primary": "#2f27ce",
+                    "secondary": "#dedcff",
+                    "accent": "#433bff",
+                    "background": "#fbfbfe",
+                    "surface": "#eeeef0",
+                    "border": "#dddddd"
+                },
+                "typography": {
+                    "h1": {"font_name": "Roboto", "font_size": "2.5", "font_weight": 400, "color": "#2f27ce"},
+                    "h2": {"font_name": "Roboto", "font_size": "2.0", "font_weight": 400, "color": "#2f27ce"},
+                    "h3": {"font_name": "Roboto", "font_size": "1.75", "font_weight": 400, "color": "#433bff"},
+                    "h4": {"font_name": "Roboto", "font_size": "1.5", "font_weight": 400, "color": "#1a1675"},
+                    "h5": {"font_name": "Roboto", "font_size": "1.25", "font_weight": 400, "color": "#1a1675"},
+                    "h6": {"font_name": "Roboto", "font_size": "1.0", "font_weight": 400, "color": "#1a1675"},
+                    "title": {"font_name": "Roboto", "font_size": "1.5", "font_weight": 700, "color": "#1a1675"},
+                    "subtitle": {"font_name": "Roboto", "font_size": "1.25", "font_weight": 600, "color": "#1a1675"},
+                    "paragraph": {"font_name": "Roboto", "font_size": "1.0", "font_weight": 400, "color": "#1a1a2e"}
+                }
+            }
+        }
+
+        theme = Theme(
+            name=theme_name,
+            description="Default placeholder theme. Customize or create new themes in the admin panel.",
+            type="preset",
+            config=default_config,
+            is_active=True,
+            is_default=True,
+        )
+        db.add(theme)
+        await db.commit()
+        await db.refresh(theme)
+        print(f"  Created default theme: {theme_name}")
+    else:
+        print(f"  Default theme exists: {theme_name}")
+
+    return theme
+
+
 async def seed_database() -> None:
     """Main seeding function."""
     print("=" * 50)
@@ -245,6 +348,9 @@ async def seed_database() -> None:
 
             # Seed admin user
             await seed_admin_user(db, roles)
+
+            # Seed default theme
+            await seed_default_theme(db)
 
             print("=" * 50)
             print("Database seeding completed successfully!")

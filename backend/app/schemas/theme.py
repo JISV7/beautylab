@@ -10,27 +10,27 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 # ==================== Color Schemas ====================
 
 class PaletteColors(BaseModel):
-    """Color palette for a theme mode."""
+    """Color palette for a theme mode.
     
-    primary: str = Field(..., description="Primary color for buttons, links")
-    secondary: str = Field(..., description="Secondary color")
-    accent: str = Field(..., description="Accent color for highlights")
-    background: str = Field(..., description="Main background color")
+    Contains colors for UI elements like buttons, borders, cards, backgrounds.
+    Text colors are defined in typography config instead.
+    """
+    
+    primary: str = Field(..., description="Primary color for buttons, links, accents")
+    secondary: str = Field(..., description="Secondary color for highlights")
+    accent: str = Field(..., description="Accent color for special elements")
+    background: str = Field(..., description="Main page background color")
     surface: str = Field(..., description="Surface color for cards, panels")
-    border: str = Field(..., description="Border color")
-    text: str = Field(..., description="Primary text color")
-    text_secondary: str = Field(..., description="Secondary text color")
+    border: str = Field(..., description="Border and divider color")
 
     model_config = ConfigDict(json_schema_extra={
         "example": {
-            "primary": "#F83A3A",
-            "secondary": "#3B82F6",
-            "accent": "#10B981",
-            "background": "#FFFFFF",
-            "surface": "#F9FAFB",
-            "border": "#E5E7EB",
-            "text": "#111827",
-            "text_secondary": "#6B7280"
+            "primary": "#2f27ce",
+            "secondary": "#dedcff",
+            "accent": "#433bff",
+            "background": "#fbfbfe",
+            "surface": "#eeeef0",
+            "border": "#dddddd"
         }
     })
 
@@ -39,12 +39,12 @@ class PaletteColors(BaseModel):
 
 class TypographyElement(BaseModel):
     """Typography settings for a single element (h1-h6, p, etc.)."""
-    
+
     font_id: Optional[UUID] = Field(None, description="Font UUID (null for system default)")
     font_name: Optional[str] = Field(None, description="Font name for display")
     font_size: str = Field(..., description="Font size in rem units")
     font_weight: int = Field(default=400, ge=100, le=900, description="Font weight 100-900")
-    color: Optional[str] = Field(None, description="Element color (uses palette text if null)")
+    color: str = Field(..., description="Text color for this element")
     line_height: Optional[str] = Field(None, description="Line height (e.g., '1.2')")
 
     model_config = ConfigDict(json_schema_extra={
@@ -53,7 +53,7 @@ class TypographyElement(BaseModel):
             "font_name": "Inter",
             "font_size": "2.5",
             "font_weight": 800,
-            "color": "#111827",
+            "color": "#2f27ce",
             "line_height": "1.2"
         }
     })
@@ -77,32 +77,30 @@ class TypographyConfig(BaseModel):
 
 class ThemePalette(BaseModel):
     """A single theme palette (light, dark, or accessibility)."""
-    
+
     colors: PaletteColors
     typography: TypographyConfig
 
     model_config = ConfigDict(json_schema_extra={
         "example": {
             "colors": {
-                "primary": "#F83A3A",
-                "secondary": "#3B82F6",
-                "accent": "#10B981",
-                "background": "#FFFFFF",
-                "surface": "#F9FAFB",
-                "border": "#E5E7EB",
-                "text": "#111827",
-                "text_secondary": "#6B7280"
+                "primary": "#2f27ce",
+                "secondary": "#dedcff",
+                "accent": "#433bff",
+                "background": "#fbfbfe",
+                "surface": "#eeeef0",
+                "border": "#dddddd"
             },
             "typography": {
-                "h1": {"font_size": "2.5", "font_weight": 800},
-                "h2": {"font_size": "2.0", "font_weight": 700},
-                "h3": {"font_size": "1.75", "font_weight": 600},
-                "h4": {"font_size": "1.5", "font_weight": 600},
-                "h5": {"font_size": "1.25", "font_weight": 600},
-                "h6": {"font_size": "1.0", "font_weight": 600},
-                "title": {"font_size": "1.5", "font_weight": 700},
-                "subtitle": {"font_size": "1.25", "font_weight": 600},
-                "paragraph": {"font_size": "1.0", "font_weight": 400}
+                "h1": {"font_size": "2.5", "font_weight": 400, "color": "#2f27ce"},
+                "h2": {"font_size": "2.0", "font_weight": 400, "color": "#2f27ce"},
+                "h3": {"font_size": "1.75", "font_weight": 400, "color": "#433bff"},
+                "h4": {"font_size": "1.5", "font_weight": 400, "color": "#1a1675"},
+                "h5": {"font_size": "1.25", "font_weight": 400, "color": "#1a1675"},
+                "h6": {"font_size": "1.0", "font_weight": 400, "color": "#1a1675"},
+                "title": {"font_size": "1.5", "font_weight": 700, "color": "#1a1675"},
+                "subtitle": {"font_size": "1.25", "font_weight": 600, "color": "#1a1675"},
+                "paragraph": {"font_size": "1.0", "font_weight": 400, "color": "#1a1a2e"}
             }
         }
     })

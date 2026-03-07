@@ -8,8 +8,6 @@
   --color-palette-surface: var(--palette-surface);
   --color-palette-background: var(--palette-background);
   --color-palette-border: var(--palette-border);
-  --color-palette-text: var(--palette-text);
-  --color-palette-text-secondary: var(--palette-text-secondary);
 }
 
 @layer utilities {

@@ -4,6 +4,84 @@ import type { Theme, ThemePalette, ThemeConfig, Font } from '../data/theme.types
 
 const API_URL = 'http://localhost:8000';
 
+// Default fallback theme - used when no theme is loaded from backend
+// This ensures the site is never unstyled
+const DEFAULT_FALLBACK_THEME: Theme = {
+    id: 'default-fallback',
+    name: 'Default Fallback',
+    description: 'Fallback theme for initial load',
+    type: 'preset',
+    isActive: true,
+    isDefault: true,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    config: {
+        light: {
+            colors: {
+                primary: '#2f27ce',
+                secondary: '#dedcff',
+                accent: '#433bff',
+                background: '#fbfbfe',
+                surface: '#eeeef0',
+                border: '#dddddd'
+            },
+            typography: {
+                h1: { fontName: 'Roboto', fontSize: '2.5', fontWeight: 400, color: '#2f27ce' },
+                h2: { fontName: 'Roboto', fontSize: '2.0', fontWeight: 400, color: '#2f27ce' },
+                h3: { fontName: 'Roboto', fontSize: '1.75', fontWeight: 400, color: '#433bff' },
+                h4: { fontName: 'Roboto', fontSize: '1.5', fontWeight: 400, color: '#1a1675' },
+                h5: { fontName: 'Roboto', fontSize: '1.25', fontWeight: 400, color: '#1a1675' },
+                h6: { fontName: 'Roboto', fontSize: '1.0', fontWeight: 400, color: '#1a1675' },
+                title: { fontName: 'Roboto', fontSize: '1.5', fontWeight: 700, color: '#1a1675' },
+                subtitle: { fontName: 'Roboto', fontSize: '1.25', fontWeight: 600, color: '#1a1675' },
+                paragraph: { fontName: 'Roboto', fontSize: '1.0', fontWeight: 400, color: '#1a1a2e' }
+            }
+        },
+        dark: {
+            colors: {
+                primary: '#2f27ce',
+                secondary: '#dedcff',
+                accent: '#433bff',
+                background: '#fbfbfe',
+                surface: '#eeeef0',
+                border: '#dddddd'
+            },
+            typography: {
+                h1: { fontName: 'Roboto', fontSize: '2.5', fontWeight: 400, color: '#2f27ce' },
+                h2: { fontName: 'Roboto', fontSize: '2.0', fontWeight: 400, color: '#2f27ce' },
+                h3: { fontName: 'Roboto', fontSize: '1.75', fontWeight: 400, color: '#433bff' },
+                h4: { fontName: 'Roboto', fontSize: '1.5', fontWeight: 400, color: '#1a1675' },
+                h5: { fontName: 'Roboto', fontSize: '1.25', fontWeight: 400, color: '#1a1675' },
+                h6: { fontName: 'Roboto', fontSize: '1.0', fontWeight: 400, color: '#1a1675' },
+                title: { fontName: 'Roboto', fontSize: '1.5', fontWeight: 700, color: '#1a1675' },
+                subtitle: { fontName: 'Roboto', fontSize: '1.25', fontWeight: 600, color: '#1a1675' },
+                paragraph: { fontName: 'Roboto', fontSize: '1.0', fontWeight: 400, color: '#1a1a2e' }
+            }
+        },
+        accessibility: {
+            colors: {
+                primary: '#2f27ce',
+                secondary: '#dedcff',
+                accent: '#433bff',
+                background: '#fbfbfe',
+                surface: '#eeeef0',
+                border: '#dddddd'
+            },
+            typography: {
+                h1: { fontName: 'Roboto', fontSize: '2.5', fontWeight: 400, color: '#2f27ce' },
+                h2: { fontName: 'Roboto', fontSize: '2.0', fontWeight: 400, color: '#2f27ce' },
+                h3: { fontName: 'Roboto', fontSize: '1.75', fontWeight: 400, color: '#433bff' },
+                h4: { fontName: 'Roboto', fontSize: '1.5', fontWeight: 400, color: '#1a1675' },
+                h5: { fontName: 'Roboto', fontSize: '1.25', fontWeight: 400, color: '#1a1675' },
+                h6: { fontName: 'Roboto', fontSize: '1.0', fontWeight: 400, color: '#1a1675' },
+                title: { fontName: 'Roboto', fontSize: '1.5', fontWeight: 700, color: '#1a1675' },
+                subtitle: { fontName: 'Roboto', fontSize: '1.25', fontWeight: 600, color: '#1a1675' },
+                paragraph: { fontName: 'Roboto', fontSize: '1.0', fontWeight: 400, color: '#1a1a2e' }
+            }
+        }
+    }
+};
+
 interface ThemeContextType {
     // Current theme state
     activeTheme: Theme | null;
@@ -71,79 +149,77 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const applyPalette = useCallback((palette: ThemePalette, mode: string) => {
         const root = document.documentElement;
 
-        // Apply palette colors
+        // Apply palette colors (UI elements only - no text colors here)
         root.style.setProperty('--palette-primary', palette.colors.primary);
         root.style.setProperty('--palette-secondary', palette.colors.secondary);
         root.style.setProperty('--palette-accent', palette.colors.accent);
         root.style.setProperty('--palette-background', palette.colors.background);
         root.style.setProperty('--palette-surface', palette.colors.surface);
         root.style.setProperty('--palette-border', palette.colors.border);
-        root.style.setProperty('--palette-text', palette.colors.text);
-        root.style.setProperty('--palette-text-secondary', palette.colors.textSecondary);
 
-        // Apply typography tokens
+        // Apply typography tokens with their own colors
         const typography = palette.typography;
-        
+
         // H1
         root.style.setProperty('--text-h1-font', typography.h1.fontName || 'system-ui');
         root.style.setProperty('--text-h1-size', typography.h1.fontSize);
-        root.style.setProperty('--text-h1-color', typography.h1.color || palette.colors.text);
+        root.style.setProperty('--text-h1-color', typography.h1.color);
         root.style.setProperty('--text-h1-weight', String(typography.h1.fontWeight));
         root.style.setProperty('--text-h1-line-height', typography.h1.lineHeight || '1.2');
 
         // H2
         root.style.setProperty('--text-h2-font', typography.h2.fontName || 'system-ui');
         root.style.setProperty('--text-h2-size', typography.h2.fontSize);
-        root.style.setProperty('--text-h2-color', typography.h2.color || palette.colors.text);
+        root.style.setProperty('--text-h2-color', typography.h2.color);
         root.style.setProperty('--text-h2-weight', String(typography.h2.fontWeight));
         root.style.setProperty('--text-h2-line-height', typography.h2.lineHeight || '1.2');
 
         // H3
         root.style.setProperty('--text-h3-font', typography.h3.fontName || 'system-ui');
         root.style.setProperty('--text-h3-size', typography.h3.fontSize);
-        root.style.setProperty('--text-h3-color', typography.h3.color || palette.colors.text);
+        root.style.setProperty('--text-h3-color', typography.h3.color);
         root.style.setProperty('--text-h3-weight', String(typography.h3.fontWeight));
         root.style.setProperty('--text-h3-line-height', typography.h3.lineHeight || '1.3');
 
         // H4
         root.style.setProperty('--text-h4-font', typography.h4.fontName || 'system-ui');
         root.style.setProperty('--text-h4-size', typography.h4.fontSize);
-        root.style.setProperty('--text-h4-color', typography.h4.color || palette.colors.text);
+        root.style.setProperty('--text-h4-color', typography.h4.color);
         root.style.setProperty('--text-h4-weight', String(typography.h4.fontWeight));
         root.style.setProperty('--text-h4-line-height', typography.h4.lineHeight || '1.4');
 
         // H5
         root.style.setProperty('--text-h5-font', typography.h5.fontName || 'system-ui');
         root.style.setProperty('--text-h5-size', typography.h5.fontSize);
-        root.style.setProperty('--text-h5-color', typography.h5.color || palette.colors.text);
+        root.style.setProperty('--text-h5-color', typography.h5.color);
         root.style.setProperty('--text-h5-weight', String(typography.h5.fontWeight));
         root.style.setProperty('--text-h5-line-height', typography.h5.lineHeight || '1.4');
 
         // H6
         root.style.setProperty('--text-h6-font', typography.h6.fontName || 'system-ui');
         root.style.setProperty('--text-h6-size', typography.h6.fontSize);
-        root.style.setProperty('--text-h6-color', typography.h6.color || palette.colors.text);
+        root.style.setProperty('--text-h6-color', typography.h6.color);
         root.style.setProperty('--text-h6-weight', String(typography.h6.fontWeight));
         root.style.setProperty('--text-h6-line-height', typography.h6.lineHeight || '1.5');
 
         // Title
         root.style.setProperty('--text-title-font', typography.title.fontName || 'system-ui');
         root.style.setProperty('--text-title-size', typography.title.fontSize);
-        root.style.setProperty('--text-title-color', typography.title.color || palette.colors.text);
+        root.style.setProperty('--text-title-color', typography.title.color);
         root.style.setProperty('--text-title-weight', String(typography.title.fontWeight));
         root.style.setProperty('--text-title-line-height', typography.title.lineHeight || '1.2');
 
         // Subtitle
         root.style.setProperty('--text-subtitle-font', typography.subtitle.fontName || 'system-ui');
         root.style.setProperty('--text-subtitle-size', typography.subtitle.fontSize);
-        root.style.setProperty('--text-subtitle-color', typography.subtitle.color || palette.colors.text);
+        root.style.setProperty('--text-subtitle-color', typography.subtitle.color);
         root.style.setProperty('--text-subtitle-weight', String(typography.subtitle.fontWeight));
         root.style.setProperty('--text-subtitle-line-height', typography.subtitle.lineHeight || '1.3');
 
         // Paragraph
         root.style.setProperty('--text-p-font', typography.paragraph.fontName || 'system-ui');
         root.style.setProperty('--text-p-size', typography.paragraph.fontSize);
-        root.style.setProperty('--text-p-color', typography.paragraph.color || palette.colors.textSecondary);
+        root.style.setProperty('--text-p-color', typography.paragraph.color);
         root.style.setProperty('--text-p-weight', String(typography.paragraph.fontWeight));
         root.style.setProperty('--text-p-line-height', typography.paragraph.lineHeight || '1.6');
 
@@ -160,7 +236,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
             // Fetch active themes
             const response = await api.get('/themes/');
-            const themes: Theme[] = response.data.themes || response.data;
+            let themes: Theme[] = response.data.themes || response.data;
 
             if (themes.length === 0) {
                 // No active themes, try to get default
@@ -168,9 +244,9 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                     const defaultResponse = await api.get('/themes/default');
                     themes.push(defaultResponse.data);
                 } catch {
-                    // No default theme either
-                    setIsLoading(false);
-                    return;
+                    // No default theme either - use fallback
+                    console.log('No theme found in database, using fallback theme');
+                    themes = [DEFAULT_FALLBACK_THEME];
                 }
             }
 
@@ -180,7 +256,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
             // Check user's preferred mode
             let mode: 'light' | 'dark' | 'accessibility' = 'light';
-            
+
             // Check localStorage first
             const savedMode = localStorage.getItem('paletteMode') as 'light' | 'dark' | 'accessibility' | null;
             if (savedMode && ['light', 'dark', 'accessibility'].includes(savedMode)) {
@@ -200,6 +276,16 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         } catch (err: any) {
             console.error('Failed to load theme:', err);
             setError(err.response?.data?.detail || err.message || 'Failed to load theme');
+            
+            // Use fallback theme on error
+            console.log('Using fallback theme due to error');
+            const theme = DEFAULT_FALLBACK_THEME;
+            const mode: 'light' | 'dark' | 'accessibility' = 'light';
+            setActiveTheme(theme);
+            setCurrentMode(mode);
+            setCurrentPalette(theme.config[mode]);
+            applyPalette(theme.config[mode], mode);
+            setAvailableThemes([theme]);
         } finally {
             setIsLoading(false);
         }

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Home } from './pages/Home';
 import { Dashboard } from './pages/Dashboard';
 import { AdminDashboard } from './pages/AdminDashboard';
@@ -8,7 +8,10 @@ import { AuthProvider } from './contexts/AuthContext';
 type Page = 'home' | 'dashboard' | 'admin';
 
 function App() {
-  const [currentPage, setCurrentPage] = useState<Page>('home');
+  const [currentPage, setCurrentPage] = useState<Page>(() => {
+    const saved = localStorage.getItem('currentPage') as Page;
+    return saved || 'home';
+  });
 
   const handleNavigateToDashboard = () => {
     setCurrentPage('dashboard');
@@ -18,35 +21,24 @@ function App() {
     setCurrentPage('admin');
   };
 
-  // If on dashboard or admin, don't show Home page
-  if (currentPage === 'dashboard') {
-    return (
-      <ThemeProvider>
-        <AuthProvider>
-          <Dashboard onNavigateToAdmin={handleNavigateToAdmin} />
-        </AuthProvider>
-      </ThemeProvider>
-    );
-  }
+  // Persist page state to localStorage
+  useEffect(() => {
+    localStorage.setItem('currentPage', currentPage);
+  }, [currentPage]);
 
-  if (currentPage === 'admin') {
-    return (
-      <ThemeProvider>
-        <AuthProvider>
-          <AdminDashboard />
-        </AuthProvider>
-      </ThemeProvider>
-    );
-  }
-
-  // Home page with login that redirects to dashboard
   return (
     <ThemeProvider>
       <AuthProvider>
-        <Home
-          onNavigateToDashboard={handleNavigateToDashboard}
-          onNavigateToAdmin={handleNavigateToAdmin}
-        />
+        {currentPage === 'dashboard' ? (
+          <Dashboard onNavigateToAdmin={handleNavigateToAdmin} />
+        ) : currentPage === 'admin' ? (
+          <AdminDashboard />
+        ) : (
+          <Home
+            onNavigateToDashboard={handleNavigateToDashboard}
+            onNavigateToAdmin={handleNavigateToAdmin}
+          />
+        )}
       </AuthProvider>
     </ThemeProvider>
   );

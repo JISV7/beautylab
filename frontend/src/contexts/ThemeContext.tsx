@@ -138,11 +138,11 @@ api.interceptors.request.use((config) => {
 });
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [activeTheme, setActiveTheme] = useState<Theme | null>(null);
-    const [currentPalette, setCurrentPalette] = useState<ThemePalette | null>(null);
+    const [activeTheme, setActiveTheme] = useState<Theme | null>(DEFAULT_FALLBACK_THEME);
+    const [currentPalette, setCurrentPalette] = useState<ThemePalette | null>(DEFAULT_FALLBACK_THEME.config.light);
     const [currentMode, setCurrentMode] = useState<'light' | 'dark' | 'accessibility'>('light');
     const [availableThemes, setAvailableThemes] = useState<Theme[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     // Apply CSS variables from palette
@@ -227,6 +227,11 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         document.documentElement.classList.remove('light', 'dark', 'accessibility');
         document.documentElement.classList.add(mode);
     }, []);
+
+    // Apply fallback theme immediately on mount
+    useEffect(() => {
+        applyPalette(DEFAULT_FALLBACK_THEME.config.light, 'light');
+    }, [applyPalette]);
 
     // Load active theme from backend
     const loadActiveTheme = useCallback(async () => {

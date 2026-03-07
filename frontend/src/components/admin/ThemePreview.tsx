@@ -1,105 +1,145 @@
 import React from 'react';
-import { Monitor, Smartphone } from 'lucide-react';
+import { Eye, Edit, X } from 'lucide-react';
+import type { ThemePreviewProps } from './types';
 
-interface ThemePreviewProps {
-    previewMode?: 'desktop' | 'mobile';
+interface PaletteCardProps {
+    mode: 'light' | 'dark' | 'accessibility';
+    theme: any;
+    onEdit: () => void;
 }
 
-export const ThemePreview: React.FC<ThemePreviewProps> = ({
-    previewMode = 'desktop',
-}) => {
-    const [mode, setMode] = React.useState<'desktop' | 'mobile'>(previewMode);
+const PaletteCard: React.FC<PaletteCardProps> = ({ mode, theme, onEdit }) => {
+    const modeData = theme[mode];
 
     return (
-        <div className="admin-editor-panel sticky top-6">
-            <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold theme-text-base">Live Preview</h3>
-                <div className="flex gap-2">
-                    <button
-                        onClick={() => setMode('desktop')}
-                        className={`p-2 rounded-lg transition-colors ${
-                            mode === 'desktop'
-                                ? 'theme-primary text-white'
-                                : 'theme-text-secondary hover:bg-[var(--theme-border-value)]'
-                        }`}
-                        title="Desktop View"
-                    >
-                        <Monitor className="w-4 h-4" />
-                    </button>
-                    <button
-                        onClick={() => setMode('mobile')}
-                        className={`p-2 rounded-lg transition-colors ${
-                            mode === 'mobile'
-                                ? 'theme-primary text-white'
-                                : 'theme-text-secondary hover:bg-[var(--theme-border-value)]'
-                        }`}
-                        title="Mobile View"
-                    >
-                        <Smartphone className="w-4 h-4" />
-                    </button>
-                </div>
-            </div>
-
-            {/* Preview Frame */}
-            <div className="admin-preview-frame">
-                <div
-                    className={`
-                        theme-background transition-all duration-300
-                        ${mode === 'desktop' ? 'w-full' : 'w-[375px] mx-auto'}
-                    `}
+        <div className="theme-surface rounded-xl border theme-border overflow-hidden shadow-sm">
+            <div className="p-4 border-b theme-border flex items-center justify-between">
+                <h3 className="font-bold theme-text-base capitalize">{mode} Mode</h3>
+                <button
+                    onClick={onEdit}
+                    className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
                 >
-                    {/* Preview Header */}
-                    <div className="theme-surface border-b theme-border p-4">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                                <div className="w-8 h-8 rounded-lg theme-primary" />
-                                <span className="font-bold theme-text-base">Codyn</span>
-                            </div>
-                            <div className="flex gap-2">
-                                <div className="w-8 h-8 rounded-full theme-primary/20" />
-                                <div className="w-8 h-8 rounded-full theme-primary" />
-                            </div>
-                        </div>
+                    Edit
+                </button>
+            </div>
+            <div className="p-6 space-y-4" style={{ backgroundColor: modeData.colors.background }}>
+                {/* Color swatches */}
+                <div className="grid grid-cols-3 gap-2">
+                    <div
+                        className="rounded-lg p-2 text-xs text-center font-mono"
+                        style={{ backgroundColor: modeData.colors.primary, color: '#fff' }}
+                    >
+                        Primary
                     </div>
-
-                    {/* Preview Hero */}
-                    <div className="p-6">
-                        <div className="theme-primary rounded-xl p-6 mb-4">
-                            <p className="text-white/80 text-sm mb-2">Welcome back</p>
-                            <h2 className="text-white text-xl font-bold mb-4">Continue Learning</h2>
-                            <button className="theme-surface theme-primary text-sm font-semibold px-4 py-2 rounded-lg">
-                                Continue
-                            </button>
-                        </div>
-
-                        {/* Preview Stats */}
-                        <div className="grid grid-cols-2 gap-3 mb-4">
-                            <div className="theme-surface theme-border rounded-lg p-3">
-                                <p className="text-xs theme-text-secondary">Streak</p>
-                                <p className="text-lg font-bold theme-primary">7 days</p>
-                            </div>
-                            <div className="theme-surface theme-border rounded-lg p-3">
-                                <p className="text-xs theme-text-secondary">XP</p>
-                                <p className="text-lg font-bold theme-primary">2,450</p>
-                            </div>
-                        </div>
-
-                        {/* Preview Course Card */}
-                        <div className="theme-surface theme-border rounded-lg p-4">
-                            <div className="theme-border rounded-full h-2 mb-2">
-                                <div className="theme-primary h-2 rounded-full" style={{ width: '45%' }} />
-                            </div>
-                            <p className="text-xs theme-text-secondary">Web Development - 45%</p>
-                        </div>
+                    <div
+                        className="rounded-lg p-2 text-xs text-center font-mono"
+                        style={{ backgroundColor: modeData.colors.secondary, color: '#fff' }}
+                    >
+                        Secondary
+                    </div>
+                    <div
+                        className="rounded-lg p-2 text-xs text-center font-mono"
+                        style={{ backgroundColor: modeData.colors.accent, color: '#fff' }}
+                    >
+                        Accent
                     </div>
                 </div>
-            </div>
 
-            {/* Preview Info */}
-            <div className="mt-4 p-3 theme-surface theme-border rounded-lg">
-                <p className="text-xs theme-text-secondary">
-                    <strong>Tip:</strong> Changes are applied in real-time. Click "Save Theme" to persist your changes.
-                </p>
+                {/* Typography sample */}
+                <div className="space-y-2">
+                    <h4
+                        className="font-bold theme-text-base"
+                        style={{
+                            fontFamily: modeData.typography.h1.fontFamily,
+                            fontSize: modeData.typography.h1.fontSize,
+                            color: modeData.typography.h1.color
+                        }}
+                    >
+                        Heading Sample
+                    </h4>
+                    <p
+                        className="theme-text-secondary"
+                        style={{
+                            fontFamily: modeData.typography.paragraph.fontFamily,
+                            fontSize: modeData.typography.paragraph.fontSize,
+                            color: modeData.typography.paragraph.color
+                        }}
+                    >
+                        Paragraph text sample showing the typography settings.
+                    </p>
+                </div>
+
+                {/* Button sample */}
+                <button
+                    className="px-4 py-2 rounded-lg font-semibold"
+                    style={{ backgroundColor: modeData.colors.primary, color: '#FFFFFF' }}
+                >
+                    Button
+                </button>
+            </div>
+        </div>
+    );
+};
+
+export const ThemePreview: React.FC<ThemePreviewProps> = ({
+    theme,
+    onEdit,
+    onClose,
+    onPublish,
+}) => {
+    return (
+        <div className="flex-1 flex flex-col h-full overflow-hidden theme-background">
+            <header className="h-16 theme-surface border-b theme-border px-8 flex items-center justify-between shrink-0 sticky top-0 z-10">
+                <h2 className="text-xl font-bold theme-text-base">Preview: {theme.name}</h2>
+                <div className="flex gap-3">
+                    <button
+                        onClick={onClose}
+                        className="px-4 py-2 text-sm font-medium theme-text-secondary rounded-lg border theme-border hover:bg-black/5 dark:hover:bg-white/5 transition-colors flex items-center gap-2"
+                    >
+                        <X className="w-4 h-4" />
+                        Close
+                    </button>
+                    <button
+                        onClick={onEdit}
+                        className="px-4 py-2 text-sm font-medium text-white theme-primary rounded-lg shadow-sm hover:opacity-90 transition-opacity flex items-center gap-2"
+                    >
+                        <Edit className="w-4 h-4" />
+                        Edit Theme
+                    </button>
+                </div>
+            </header>
+
+            <div className="flex-1 overflow-y-auto p-8">
+                <div className="max-w-7xl mx-auto">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <PaletteCard
+                            mode="light"
+                            theme={theme}
+                            onEdit={() => onEdit()}
+                        />
+                        <PaletteCard
+                            mode="dark"
+                            theme={theme}
+                            onEdit={() => onEdit()}
+                        />
+                        <PaletteCard
+                            mode="accessibility"
+                            theme={theme}
+                            onEdit={() => onEdit()}
+                        />
+                    </div>
+
+                    {/* Publish button */}
+                    <div className="mt-8 flex justify-center">
+                        <button
+                            onClick={onPublish}
+                            className="px-8 py-4 text-lg font-bold text-white bg-green-600 hover:bg-green-700 rounded-xl shadow-lg transition-colors flex items-center gap-3"
+                        >
+                            <Eye className="w-6 h-6" />
+                            Publish This Theme to Site
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     );

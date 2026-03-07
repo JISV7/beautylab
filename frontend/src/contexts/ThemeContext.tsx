@@ -10,6 +10,7 @@ interface ThemeConfig {
     customTheme?: Partial<ThemeData>;
     activeThemeName?: string;
     activeMode?: 'light' | 'dark' | 'accessibility';
+    publishedThemeName?: string;
 }
 
 interface ThemeContextType {
@@ -23,6 +24,8 @@ interface ThemeContextType {
     themeData: typeof themeData;
     getActiveTheme: () => NamedTheme | null;
     setActiveTheme: (themeName: string) => void;
+    applyTheme: (themeName: string) => void;
+    getPublishedThemeName: () => string | null;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -38,6 +41,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         const savedCustomTheme = localStorage.getItem('customTheme');
         const savedActiveThemeName = localStorage.getItem('activeThemeName');
         const savedActiveMode = localStorage.getItem('activeMode') as 'light' | 'dark' | 'accessibility';
+        const savedPublishedTheme = localStorage.getItem('publishedTheme');
 
         if (savedCustomTheme) {
             try {
@@ -49,11 +53,12 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         }
 
         if (savedTheme) {
-            setConfig({ 
-                mode: savedTheme, 
+            setConfig({
+                mode: savedTheme,
                 preset: savedPreset || undefined,
                 activeThemeName: savedActiveThemeName || undefined,
-                activeMode: savedActiveMode || undefined
+                activeMode: savedActiveMode || undefined,
+                publishedThemeName: savedPublishedTheme || undefined
             });
         }
     }, []);
@@ -189,18 +194,44 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         document.documentElement.classList.add(config.mode);
         localStorage.setItem('themeMode', config.mode);
 
-        // Get current theme data (either from custom, preset, or default mode)
+        // Get current theme data - use published theme if available, otherwise use active theme
         let currentTheme: ThemeModeConfig;
 
         if (customTheme) {
-            // Use custom theme if available
-            const modeData = customTheme[config.mode];
-            const defaultMode = themeData[config.mode as keyof typeof themeData] || themeData['light'];
-            currentTheme = modeData ? { ...defaultMode, ...modeData } as ThemeModeConfig : defaultMode as ThemeModeConfig;
+            // First check if there's a published theme
+            const publishedThemeName = config.publishedThemeName || (customTheme as any).publishedThemeName;
+            let themeToUse: any = null;
+
+            if (publishedThemeName && customTheme.themes) {
+                const publishedTheme = (customTheme.themes as any)[publishedThemeName];
+                if (publishedTheme) {
+                    themeToUse = publishedTheme[config.mode as 'light' | 'dark' | 'accessibility'];
+                }
+            }
+
+            // If no published theme or mode data, try active theme
+            if (!themeToUse) {
+                const activeThemeName = config.activeThemeName || (customTheme as any).activeThemeName;
+                if (activeThemeName && customTheme.themes) {
+                    const activeTheme = (customTheme.themes as any)[activeThemeName];
+                    if (activeTheme) {
+                        themeToUse = activeTheme[config.mode as 'light' | 'dark' | 'accessibility'];
+                    }
+                }
+            }
+
+            // Fall back to default themes
+            if (!themeToUse) {
+                const modeData = customTheme[config.mode];
+                const defaultMode = themeData[config.mode as keyof typeof themeData] || themeData['light'];
+                currentTheme = modeData ? { ...defaultMode, ...modeData } as ThemeModeConfig : defaultMode as ThemeModeConfig;
+            } else {
+                const defaultMode = themeData[config.mode as keyof typeof themeData] || themeData['light'];
+                currentTheme = { ...defaultMode, ...themeToUse } as ThemeModeConfig;
+            }
         } else if (config.preset && themeData.presets) {
             const presets = themeData.presets as ThemePresets;
             const preset: ThemePreset = presets[config.preset];
-            // For presets, we only have colors, so we merge with default typography and components
             const defaultMode = themeData[config.mode as keyof typeof themeData] || themeData['light'];
             currentTheme = {
                 ...(defaultMode as ThemeModeConfig),
@@ -320,6 +351,15 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         updateTheme({ activeThemeName: themeName });
     };
 
+    const applyTheme = (themeName: string) => {
+        updateTheme({ publishedThemeName: themeName });
+        localStorage.setItem('publishedTheme', themeName);
+    };
+
+    const getPublishedThemeName = (): string | null => {
+        return config.publishedThemeName || null;
+    };
+
     const resetToPreset = (presetName: string) => {
         loadPreset(presetName);
     };
@@ -337,7 +377,9 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             availablePresets, 
             themeData,
             getActiveTheme,
-            setActiveTheme
+            setActiveTheme,
+            applyTheme,
+            getPublishedThemeName
         }}>
             {children}
         </ThemeContext.Provider>

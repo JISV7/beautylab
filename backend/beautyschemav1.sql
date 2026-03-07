@@ -64,7 +64,7 @@ CREATE TABLE themes (
     name VARCHAR(100) NOT NULL, -- 'Ocean', 'Monochromatic', 'Christmas'
     description TEXT,
     type VARCHAR(20) DEFAULT 'custom', -- 'preset', 'custom'
-    config JSONB NOT NULL, -- Contains { light: {}, dark: {}, components: {} }
+    config JSONB NOT NULL,
     is_active BOOLEAN DEFAULT FALSE, -- Visible to public users
     is_default BOOLEAN DEFAULT FALSE, -- Default load for new users
     created_by UUID REFERENCES users(id),

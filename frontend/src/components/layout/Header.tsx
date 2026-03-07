@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Code2, Moon, Sun, LogIn } from 'lucide-react';
+import { Code2, Moon, Sun, LogIn, Eye } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { LoginDialog } from './LoginDialog';
@@ -15,7 +15,7 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateToDashboard, onNavigat
   const { isAuthenticated } = useAuth();
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
 
-  const toggleTheme = (mode: 'light' | 'dark') => {
+  const toggleTheme = (mode: 'light' | 'dark' | 'accessibility') => {
     updateTheme({ mode });
   };
 
@@ -74,6 +74,16 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateToDashboard, onNavigat
                 title="Dark Mode"
               >
                 <Moon className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => toggleTheme('accessibility')}
+                className={`p-2 rounded-lg transition-colors ${config.mode === 'accessibility'
+                  ? 'theme-primary text-white'
+                  : 'bg-transparent text-[var(--theme-text-secondary)] hover:bg-[var(--theme-border)]'
+                  }`}
+                title="Accessibility Mode"
+              >
+                <Eye className="w-4 h-4" />
               </button>
             </div>
 

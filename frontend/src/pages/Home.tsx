@@ -4,6 +4,7 @@ import { Footer } from '../components/layout/Footer';
 import { Hero } from '../components/home/Hero';
 import { CourseCarousel } from '../components/home/CourseCarousel';
 import { Services } from '../components/home/Services';
+import { About } from '../components/home/About';
 import { ContactForm } from '../components/home/ContactForm';
 import { useTheme } from '../contexts/ThemeContext';
 
@@ -22,6 +23,7 @@ export function Home({ onNavigateToDashboard, onNavigateToAdmin }: HomeProps) {
                 <Hero />
                 <CourseCarousel />
                 <Services />
+                <About />
                 <ContactForm />
             </main>
             <Footer />

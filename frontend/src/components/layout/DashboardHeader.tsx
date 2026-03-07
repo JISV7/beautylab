@@ -56,8 +56,8 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNavigate, on
                     <button
                         onClick={() => setPaletteMode('light')}
                         className={`p-2 rounded-lg transition-colors ${currentMode === 'light'
-                                ? 'text-[var(--theme-primary-value)] bg-[var(--theme-primary-value)]/10'
-                                : 'theme-text-secondary hover:bg-[var(--theme-border-value)]'
+                                ? 'palette-primary text-white'
+                                : 'bg-transparent palette-text-secondary hover:palette-border'
                             }`}
                         title="Light Mode"
                     >
@@ -66,8 +66,8 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNavigate, on
                     <button
                         onClick={() => setPaletteMode('dark')}
                         className={`p-2 rounded-lg transition-colors ${currentMode === 'dark'
-                                ? 'text-[var(--theme-primary-value)] bg-[var(--theme-primary-value)]/10'
-                                : 'theme-text-secondary hover:bg-[var(--theme-border-value)]'
+                                ? 'palette-primary text-white'
+                                : 'bg-transparent palette-text-secondary hover:palette-border'
                             }`}
                         title="Dark Mode"
                     >
@@ -76,8 +76,8 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNavigate, on
                     <button
                         onClick={() => setPaletteMode('accessibility')}
                         className={`p-2 rounded-lg transition-colors ${currentMode === 'accessibility'
-                                ? 'text-[var(--theme-primary-value)] bg-[var(--theme-primary-value)]/10'
-                                : 'theme-text-secondary hover:bg-[var(--theme-border-value)]'
+                                ? 'palette-primary text-white'
+                                : 'bg-transparent palette-text-secondary hover:palette-border'
                             }`}
                         title="Accessibility Mode"
                     >

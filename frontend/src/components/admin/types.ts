@@ -1,12 +1,4 @@
-import type { Theme, Font as FontType } from '../../data/theme.types';
-
-export interface Font {
-    id: string;
-    name: string;
-    filename: string;
-    url: string;
-    created_at: string;
-}
+import type { Theme, Font } from '../../data/theme.types';
 
 export interface TypographyStyle {
     fontFamily: string;
@@ -50,7 +42,7 @@ export interface ColorEditorProps {
 
 export interface TypographyEditorProps {
     styles: Record<string, TypographyStyle>;
-    activeMode: 'light' | 'dark' | 'accessibility';
+    _activeMode?: 'light' | 'dark' | 'accessibility';
     colors: ColorPalette;
     onStyleChange: (key: string, field: keyof TypographyStyle, value: string | number) => void;
     onFontUploaded: () => void;
@@ -66,8 +58,8 @@ export interface ThemePreviewProps {
 
 export interface ThemeTableProps {
     themes: Theme[];
-    activeThemeId: string | null;
-    publishedThemeId: string | null;
+    _activeThemeId?: string | null;
+    _publishedThemeId?: string | null;
     currentPage: number;
     rowsPerPage: number;
     sortColumn: 'name' | 'isActive' | 'isDefault';
@@ -81,10 +73,10 @@ export interface ThemeTableProps {
 }
 
 export interface FontManagerProps {
-    installedFonts: FontType[];
+    installedFonts: Font[];
     uploading: boolean;
     fileInputRef: React.RefObject<HTMLInputElement | null>;
     onFileUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    onFontDelete: (font: FontType) => void;
+    onFontDelete: (font: Font) => void;
     getFontUsage: (fontName: string) => { theme: string; elements: string[] }[];
 }

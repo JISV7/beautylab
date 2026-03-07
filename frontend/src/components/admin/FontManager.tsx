@@ -1,6 +1,7 @@
 import React from 'react';
 import { UploadCloud, Trash2, Loader2 } from 'lucide-react';
-import type { FontManagerProps, Font } from './types';
+import type { FontManagerProps } from './types';
+import type { Font } from '../../data/theme.types';
 
 export const FontManager: React.FC<FontManagerProps> = ({
     installedFonts,

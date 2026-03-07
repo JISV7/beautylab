@@ -2,10 +2,26 @@ import React from 'react';
 import { ChevronDown, Check, Eye, Edit, Trash2, Copy } from 'lucide-react';
 import type { ThemeTableProps, ThemeTableRow } from './types';
 
+interface SortIconProps {
+    column: 'name' | 'isActive' | 'isDefault';
+    sortColumn: 'name' | 'isActive' | 'isDefault';
+    sortDirection: 'asc' | 'desc';
+}
+
+const SortIcon: React.FC<SortIconProps> = ({ column, sortColumn, sortDirection }) => {
+    if (sortColumn !== column) return null;
+    return (
+        <ChevronDown
+            className={`w-4 h-4 transition-transform ${sortDirection === 'asc' ? 'rotate-180' : ''}`}
+            aria-hidden="true"
+        />
+    );
+};
+
 export const ThemeTable: React.FC<ThemeTableProps> = ({
     themes,
-    activeThemeId,
-    publishedThemeId,
+    _activeThemeId,
+    _publishedThemeId,
     currentPage,
     rowsPerPage,
     sortColumn,
@@ -17,6 +33,9 @@ export const ThemeTable: React.FC<ThemeTableProps> = ({
     onPageChange,
     onSort,
 }) => {
+    // Note: _activeThemeId and _publishedThemeId are reserved for future use
+    void _activeThemeId;
+    void _publishedThemeId;
     // Get table data
     const getTableData = (): ThemeTableRow[] => {
         return themes.map((theme) => ({
@@ -56,13 +75,6 @@ export const ThemeTable: React.FC<ThemeTableProps> = ({
 
     const { data: tableData, totalPages } = getSortedAndPaginatedData();
 
-    const renderSortIcon = (column: 'name' | 'isActive' | 'isDefault') => {
-        if (sortColumn !== column) return null;
-        return (
-            <ChevronDown className={`w-4 h-4 transition-transform ${sortDirection === 'asc' ? 'rotate-180' : ''}`} />
-        );
-    };
-
     return (
         <div className="theme-surface rounded-xl border theme-border overflow-hidden shadow-sm">
             <table className="w-full">
@@ -71,43 +83,49 @@ export const ThemeTable: React.FC<ThemeTableProps> = ({
                         <th
                             className="px-6 py-4 text-left text-sm font-bold theme-text-secondary cursor-pointer hover:opacity-70"
                             onClick={() => onSort('name')}
+                            role="columnheader"
+                            aria-sort={sortColumn === 'name' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
                         >
                             <div className="flex items-center gap-2">
                                 NAME
-                                {renderSortIcon('name')}
+                                <SortIcon column="name" sortColumn={sortColumn} sortDirection={sortDirection} />
                             </div>
                         </th>
                         <th
                             className="px-6 py-4 text-left text-sm font-bold theme-text-secondary cursor-pointer hover:opacity-70"
                             onClick={() => onSort('isActive')}
+                            role="columnheader"
+                            aria-sort={sortColumn === 'isActive' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
                         >
                             <div className="flex items-center gap-2">
                                 ACTIVE
-                                {renderSortIcon('isActive')}
+                                <SortIcon column="isActive" sortColumn={sortColumn} sortDirection={sortDirection} />
                             </div>
                         </th>
                         <th
                             className="px-6 py-4 text-left text-sm font-bold theme-text-secondary cursor-pointer hover:opacity-70"
                             onClick={() => onSort('isDefault')}
+                            role="columnheader"
+                            aria-sort={sortColumn === 'isDefault' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
                         >
                             <div className="flex items-center gap-2">
                                 DEFAULT
-                                {renderSortIcon('isDefault')}
+                                <SortIcon column="isDefault" sortColumn={sortColumn} sortDirection={sortDirection} />
                             </div>
                         </th>
-                        <th className="px-6 py-4 text-left text-sm font-bold theme-text-secondary">
+                        <th className="px-6 py-4 text-left text-sm font-bold theme-text-secondary" role="columnheader">
                             TYPE
                         </th>
-                        <th className="px-6 py-4 text-right text-sm font-bold theme-text-secondary">
+                        <th className="px-6 py-4 text-right text-sm font-bold theme-text-secondary" role="columnheader">
                             ACTIONS
                         </th>
                     </tr>
                 </thead>
                 <tbody>
-                    {tableData.map((row, index) => (
+                    {tableData.map((row, idx) => (
                         <tr
                             key={row.id}
-                            className={`border-b theme-border hover:bg-black/5 dark:hover:bg-white/5 transition-colors ${index % 2 === 0 ? 'bg-transparent' : 'bg-black/[0.02] dark:bg-white/[0.02]'}`}
+                            className={`border-b theme-border hover:bg-black/5 dark:hover:bg-white/5 transition-colors ${idx % 2 === 0 ? 'bg-transparent' : 'bg-black/[0.02] dark:bg-white/[0.02]'}`}
                         >
                             <td className="px-6 py-4">
                                 <span className="font-semibold theme-text-base">{row.name}</span>

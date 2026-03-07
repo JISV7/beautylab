@@ -6,44 +6,44 @@ export const Footer: React.FC = () => {
 
     const footerLinks = {
         product: [
-            { label: 'Courses', href: '#courses' },
-            { label: 'Learning Paths', href: '#paths' },
-            { label: 'AI Lab', href: '#ai-lab' },
-            { label: 'Pricing', href: '#pricing' },
+            { id: 'courses', label: 'Courses', href: '#courses' },
+            { id: 'paths', label: 'Learning Paths', href: '#paths' },
+            { id: 'ai-lab', label: 'AI Lab', href: '#ai-lab' },
+            { id: 'pricing', label: 'Pricing', href: '#pricing' },
         ],
         resources: [
-            { label: 'Documentation', href: '#docs' },
-            { label: 'Help Center', href: '#help' },
-            { label: 'Community', href: '#community' },
-            { label: 'Blog', href: '#blog' },
+            { id: 'docs', label: 'Documentation', href: '#docs' },
+            { id: 'help', label: 'Help Center', href: '#help' },
+            { id: 'community', label: 'Community', href: '#community' },
+            { id: 'blog', label: 'Blog', href: '#blog' },
         ],
         company: [
-            { label: 'About Us', href: '#about' },
-            { label: 'Careers', href: '#careers' },
-            { label: 'Contact', href: '#contact' },
-            { label: 'Partners', href: '#partners' },
+            { id: 'about-us', label: 'About Us', href: '#about' },
+            { id: 'careers', label: 'Careers', href: '#careers' },
+            { id: 'contact', label: 'Contact', href: '#contact' },
+            { id: 'partners', label: 'Partners', href: '#partners' },
         ],
         legal: [
-            { label: 'Privacy Policy', href: '#privacy' },
-            { label: 'Terms of Service', href: '#terms' },
-            { label: 'Cookie Policy', href: '#cookies' },
-            { label: 'GDPR', href: '#gdpr' },
+            { id: 'privacy', label: 'Privacy Policy', href: '#privacy' },
+            { id: 'terms', label: 'Terms of Service', href: '#terms' },
+            { id: 'cookies', label: 'Cookie Policy', href: '#cookies' },
+            { id: 'gdpr', label: 'GDPR', href: '#gdpr' },
         ],
     };
 
     const socialLinks = [
-        { icon: Github, href: '#', label: 'GitHub' },
-        { icon: Twitter, href: '#', label: 'Twitter' },
-        { icon: Linkedin, href: '#', label: 'LinkedIn' },
-        { icon: Facebook, href: '#', label: 'Facebook' },
-        { icon: Instagram, href: '#', label: 'Instagram' },
-        { icon: Youtube, href: '#', label: 'YouTube' },
+        { id: 'github', icon: Github, href: '#', label: 'GitHub' },
+        { id: 'twitter', icon: Twitter, href: '#', label: 'Twitter' },
+        { id: 'linkedin', icon: Linkedin, href: '#', label: 'LinkedIn' },
+        { id: 'facebook', icon: Facebook, href: '#', label: 'Facebook' },
+        { id: 'instagram', icon: Instagram, href: '#', label: 'Instagram' },
+        { id: 'youtube', icon: Youtube, href: '#', label: 'YouTube' },
     ];
 
     const contactInfo = [
-        { icon: Mail, text: 'hello@codyn.com', href: 'mailto:hello@codyn.com' },
-        { icon: Phone, text: '+1 (555) 123-4567', href: 'tel:+15551234567' },
-        { icon: MapPin, text: 'San Francisco, CA', href: '#' },
+        { id: 'email', icon: Mail, text: 'hello@codyn.com', href: 'mailto:hello@codyn.com' },
+        { id: 'phone', icon: Phone, text: '+1 (555) 123-4567', href: 'tel:+15551234567' },
+        { id: 'location', icon: MapPin, text: 'San Francisco, CA', href: '#' },
     ];
 
     return (
@@ -66,11 +66,11 @@ export const Footer: React.FC = () => {
 
                         {/* Contact Info */}
                         <div className="space-y-3 mb-6">
-                            {contactInfo.map((item, index) => {
+                            {contactInfo.map((item) => {
                                 const Icon = item.icon;
                                 return (
                                     <a
-                                        key={index}
+                                        key={item.id}
                                         href={item.href}
                                         className="flex items-center gap-3 text-p-size palette-text-secondary hover:palette-primary transition-colors"
                                     >
@@ -83,11 +83,11 @@ export const Footer: React.FC = () => {
 
                         {/* Social Links */}
                         <div className="flex items-center gap-3">
-                            {socialLinks.map((social, index) => {
+                            {socialLinks.map((social) => {
                                 const Icon = social.icon;
                                 return (
                                     <a
-                                        key={index}
+                                        key={social.id}
                                         href={social.href}
                                         aria-label={social.label}
                                         className="w-10 h-10 rounded-lg palette-border border flex items-center justify-center text-p-size palette-text-secondary hover:palette-primary hover:border-palette-primary transition-all"
@@ -103,8 +103,8 @@ export const Footer: React.FC = () => {
                     <div>
                         <h3 className="text-subtitle-size text-subtitle-color text-subtitle-weight font-semibold mb-4">Product</h3>
                         <ul className="space-y-3">
-                            {footerLinks.product.map((link, index) => (
-                                <li key={index}>
+                            {footerLinks.product.map((link) => (
+                                <li key={link.id}>
                                     <a
                                         href={link.href}
                                         className="footer-link text-sm palette-text-secondary hover:palette-primary transition-colors"
@@ -120,8 +120,8 @@ export const Footer: React.FC = () => {
                     <div>
                         <h3 className="text-subtitle-size text-subtitle-color text-subtitle-weight font-semibold mb-4">Resources</h3>
                         <ul className="space-y-3">
-                            {footerLinks.resources.map((link, index) => (
-                                <li key={index}>
+                            {footerLinks.resources.map((link) => (
+                                <li key={link.id}>
                                     <a
                                         href={link.href}
                                         className="footer-link text-sm palette-text-secondary hover:palette-primary transition-colors"
@@ -137,8 +137,8 @@ export const Footer: React.FC = () => {
                     <div>
                         <h3 className="text-subtitle-size text-subtitle-color text-subtitle-weight font-semibold mb-4">Company</h3>
                         <ul className="space-y-3">
-                            {footerLinks.company.map((link, index) => (
-                                <li key={index}>
+                            {footerLinks.company.map((link) => (
+                                <li key={link.id}>
                                     <a
                                         href={link.href}
                                         className="footer-link text-sm palette-text-secondary hover:palette-primary transition-colors"
@@ -154,8 +154,8 @@ export const Footer: React.FC = () => {
                     <div>
                         <h3 className="text-subtitle-size text-subtitle-color text-subtitle-weight font-semibold mb-4">Legal</h3>
                         <ul className="space-y-3">
-                            {footerLinks.legal.map((link, index) => (
-                                <li key={index}>
+                            {footerLinks.legal.map((link) => (
+                                <li key={link.id}>
                                     <a
                                         href={link.href}
                                         className="footer-link text-sm palette-text-secondary hover:palette-primary transition-colors"

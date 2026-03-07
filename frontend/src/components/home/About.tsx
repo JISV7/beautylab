@@ -3,21 +3,25 @@ import { Target, Users, Lightbulb, Trophy } from 'lucide-react';
 
 const aboutFeatures = [
   {
+    id: 'mission',
     icon: Target,
     title: 'Our Mission',
     description: 'To empower learners worldwide with cutting-edge technology skills, making quality education accessible and engaging for everyone.',
   },
   {
+    id: 'community',
     icon: Users,
     title: 'Our Community',
     description: 'Join thousands of students from around the globe. Learn together, grow together, and build your professional network.',
   },
   {
+    id: 'approach',
     icon: Lightbulb,
     title: 'Our Approach',
     description: 'Hands-on, project-based learning with real-world applications. We focus on practical skills that employers value.',
   },
   {
+    id: 'success',
     icon: Trophy,
     title: 'Our Success',
     description: 'Graduates from Codyn have gone on to work at top tech companies and launch successful startups of their own.',
@@ -36,11 +40,11 @@ export const About: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {aboutFeatures.map((feature, index) => {
+          {aboutFeatures.map((feature) => {
             const Icon = feature.icon;
             return (
               <div
-                key={index}
+                key={feature.id}
                 className="text-center p-6 rounded-xl palette-border border hover:shadow-md transition-shadow duration-300"
               >
                 <div className="w-12 h-12 rounded-lg palette-primary flex items-center justify-center mb-4 mx-auto">

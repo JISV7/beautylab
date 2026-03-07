@@ -50,9 +50,9 @@ export const AgenticAIWidget: React.FC<AgenticAIWidgetProps> = ({ onPromptSubmit
     };
 
     const quickPrompts = [
-        { icon: Zap, text: 'Explain React Hooks', prompt: 'Can you explain React Hooks in simple terms?' },
-        { icon: Bot, text: 'Study Tips', prompt: 'What are some effective study techniques for programming?' },
-        { icon: Lightbulb, text: 'Project Ideas', prompt: 'Suggest a beginner project to practice JavaScript' },
+        { id: 'explain', icon: Zap, text: 'Explain React Hooks', prompt: 'Can you explain React Hooks in simple terms?' },
+        { id: 'study-tips', icon: Bot, text: 'Study Tips', prompt: 'What are some effective study techniques for programming?' },
+        { id: 'project-ideas', icon: Lightbulb, text: 'Project Ideas', prompt: 'Suggest a beginner project to practice JavaScript' },
     ];
 
     return (
@@ -107,11 +107,11 @@ export const AgenticAIWidget: React.FC<AgenticAIWidgetProps> = ({ onPromptSubmit
 
             {/* Quick Prompts */}
             <div className="flex flex-wrap gap-2 mb-4">
-                {quickPrompts.map((item, index) => {
+                {quickPrompts.map((item) => {
                     const Icon = item.icon;
                     return (
                         <button
-                            key={index}
+                            key={item.id}
                             onClick={() => setPrompt(item.prompt)}
                             className="flex items-center gap-2 px-3 py-2 theme-surface theme-border border rounded-lg text-sm theme-text-secondary hover:theme-primary hover:text-white transition-colors"
                         >

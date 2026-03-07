@@ -3,31 +3,37 @@ import { Code2, Globe, Bot, Zap, BookOpen, Award } from 'lucide-react';
 
 const services = [
   {
+    id: 'programming-fundamentals',
     icon: Code2,
     title: 'Programming Fundamentals',
     description: 'Learn the core concepts of programming with Python, JavaScript, and more. Build a solid foundation for your coding journey.',
   },
   {
+    id: 'web-development',
     icon: Globe,
     title: 'Web Development',
     description: 'Master modern web technologies including React, Next.js, and responsive design. Create beautiful, performant websites.',
   },
   {
+    id: 'agentic-ai',
     icon: Bot,
     title: 'Agentic AI',
     description: 'Explore the cutting edge of AI with LLMs, autonomous agents, and intelligent systems that can reason and act.',
   },
   {
+    id: 'performance-optimization',
     icon: Zap,
     title: 'Performance Optimization',
     description: 'Learn techniques to build lightning-fast applications with optimal user experience and resource efficiency.',
   },
   {
+    id: 'hands-on-projects',
     icon: BookOpen,
     title: 'Hands-on Projects',
     description: 'Apply your knowledge with real-world projects. Build your portfolio while learning industry best practices.',
   },
   {
+    id: 'certification-programs',
     icon: Award,
     title: 'Certification Programs',
     description: 'Earn recognized certificates upon completion. Showcase your skills to employers and advance your career.',
@@ -46,9 +52,9 @@ export const Services: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {services.map((service, index) => (
+          {services.map((service) => (
             <div
-              key={index}
+              key={service.id}
               className="palette-surface palette-border border rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group p-6"
             >
               <div className="w-12 h-12 rounded-lg palette-primary flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">

@@ -1,7 +1,8 @@
 import React, { useRef } from 'react';
 import { Type, ChevronDown, ChevronUp, Palette } from 'lucide-react';
 import axios from 'axios';
-import type { TypographyEditorProps, Font, TypographyStyle } from './types';
+import type { TypographyEditorProps, TypographyStyle } from './types';
+import type { Font } from '../../data/theme.types';
 import { FontManager } from './FontManager';
 
 const API_URL = 'http://localhost:8000';
@@ -114,12 +115,14 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
 
 export const TypographyEditor: React.FC<TypographyEditorProps> = ({
     styles,
-    activeMode,
+    _activeMode,
     colors,
     onStyleChange,
     onFontUploaded,
     onFontDeleted,
 }) => {
+    // Note: _activeMode is reserved for future use
+    void _activeMode;
     const [expandedBlocks, setExpandedBlocks] = React.useState<Record<string, boolean>>({
         h1: true,
         h2: false,

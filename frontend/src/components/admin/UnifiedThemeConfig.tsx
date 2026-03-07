@@ -1,22 +1,10 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
-import type { Theme, ThemeConfig, ThemePalette, TypographyConfig, TypographyElement } from '../../data/theme.types';
+import type { Theme, ThemeConfig, ThemePalette, TypographyElement } from '../../data/theme.types';
 import type { ColorPalette, TypographyStyle } from './types';
 import { ThemeTable } from './ThemeTable';
 import { ThemeEditor } from './ThemeEditor';
 import { ThemePreview } from './ThemePreview';
-
-const API_URL = 'http://localhost:8000';
-
-// Helper to convert API ThemeConfig to ColorPalette
-const configToColorPalette = (palette: ThemePalette): ColorPalette => ({
-    primary: palette.colors.primary,
-    secondary: palette.colors.secondary,
-    accent: palette.colors.accent,
-    background: palette.colors.background,
-    surface: palette.colors.surface,
-    border: palette.colors.border,
-});
 
 // Helper to convert ColorPalette + TypographyStyle to ThemePalette
 const toThemePalette = (colors: ColorPalette, styles: Record<string, TypographyStyle>): ThemePalette => ({
@@ -35,7 +23,7 @@ const toThemePalette = (colors: ColorPalette, styles: Record<string, TypographyS
 });
 
 export const UnifiedThemeConfig: React.FC = () => {
-    const { availableThemes, fetchAllThemes, activateTheme, createTheme, updateTheme, deleteTheme } = useTheme();
+    const { fetchAllThemes, activateTheme, createTheme, updateTheme, deleteTheme } = useTheme();
 
     // View mode: 'list' | 'edit' | 'preview'
     const [viewMode, setViewMode] = useState<'list' | 'edit' | 'preview'>('list');
@@ -95,8 +83,8 @@ export const UnifiedThemeConfig: React.FC = () => {
                 description: '',
                 type: 'custom' as const,
                 config: baseTheme ? JSON.parse(JSON.stringify(baseTheme.config)) : createDefaultConfig(),
-                is_active: false,
-                is_default: false,
+                isActive: false,
+                isDefault: false,
             };
 
             const created = await createTheme(newThemeData);
@@ -122,8 +110,8 @@ export const UnifiedThemeConfig: React.FC = () => {
                 description: sourceTheme.description,
                 type: 'custom' as const,
                 config: JSON.parse(JSON.stringify(sourceTheme.config)),
-                is_active: false,
-                is_default: false,
+                isActive: false,
+                isDefault: false,
             };
 
             const created = await createTheme(newThemeData);
@@ -232,8 +220,8 @@ export const UnifiedThemeConfig: React.FC = () => {
                 <div className="flex-1 overflow-y-auto p-6">
                     <ThemeTable
                         themes={themes}
-                        activeThemeId={activeThemeId}
-                        publishedThemeId={publishedThemeId}
+                        _activeThemeId={activeThemeId}
+                        _publishedThemeId={publishedThemeId}
                         currentPage={currentPage}
                         rowsPerPage={rowsPerPage}
                         sortColumn={sortColumn}

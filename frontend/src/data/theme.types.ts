@@ -22,7 +22,7 @@ export interface ThemeTypography {
   h4: ThemeTypographyItem;
   h5: ThemeTypographyItem;
   h6: ThemeTypographyItem;
-  title: ThemeTypographyItem; // Kept for backwards compatibility 
+  title: ThemeTypographyItem; // Kept for backwards compatibility
   subtitle: ThemeTypographyItem; // Kept for backwards compatibility
   paragraph: ThemeTypographyItem;
 }
@@ -171,8 +171,29 @@ export interface ThemePresets {
   [key: string]: ThemePreset;
 }
 
+// New types for named themes with light/dark/accessibility modes
+export interface ThemeMode {
+  colors: ThemeColors;
+  typography: ThemeTypography;
+  components?: ComponentStyles;
+}
+
+export interface NamedTheme {
+  name: string;
+  light: ThemeMode;
+  dark: ThemeMode;
+  accessibility: ThemeMode;
+}
+
+export interface NamedThemes {
+  [key: string]: NamedTheme;
+}
+
 export interface ThemeData {
   light: ThemeModeConfig;
+  dark: ThemeModeConfig;
+  accessibility?: ThemeModeConfig;
   presets?: ThemePresets;
-  [key: string]: ThemeModeConfig | ThemePresets | undefined;
+  themes?: NamedThemes;
+  [key: string]: ThemeModeConfig | ThemePresets | NamedThemes | undefined;
 }

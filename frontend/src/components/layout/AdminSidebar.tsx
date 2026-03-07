@@ -4,7 +4,6 @@ import {
     Users,
     Sparkles,
     ArrowLeft,
-    Type,
     FileText
 } from 'lucide-react';
 
@@ -21,8 +20,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
 }) => {
     const navItems = [
         { id: 'dashboard', label: 'Dashboard', icon: Sparkles },
-        { id: 'typography', label: 'Typography', icon: Type },
-        { id: 'themes', label: 'Colors', icon: Palette },
+        { id: 'themes', label: 'Theme Config', icon: Palette },
         { id: 'users', label: 'Users', icon: Users },
         { id: 'content', label: 'Content', icon: FileText },
     ];

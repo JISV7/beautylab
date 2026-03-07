@@ -753,5 +753,157 @@
         }
       }
     }
+  },
+  "themes": {
+    "default": {
+      "name": "Default",
+      "light": {
+        "colors": {
+          "primary": "#F83A3A",
+          "secondary": "#FAA2B6",
+          "accent": "#D73359",
+          "background": "#fffafb",
+          "surface": "#FFFFFF",
+          "border": "#E5E7EB",
+          "text": "#000000",
+          "textSecondary": "#4b5563"
+        },
+        "typography": {
+          "h1": { "fontFamily": "ui-sans-serif, system-ui, sans-serif", "fontSize": "2.5rem", "color": "#000000" },
+          "h2": { "fontFamily": "ui-sans-serif, system-ui, sans-serif", "fontSize": "2rem", "color": "#000000" },
+          "h3": { "fontFamily": "ui-sans-serif, system-ui, sans-serif", "fontSize": "1.75rem", "color": "#000000" },
+          "h4": { "fontFamily": "ui-sans-serif, system-ui, sans-serif", "fontSize": "1.5rem", "color": "#000000" },
+          "h5": { "fontFamily": "ui-sans-serif, system-ui, sans-serif", "fontSize": "1.25rem", "color": "#000000" },
+          "h6": { "fontFamily": "ui-sans-serif, system-ui, sans-serif", "fontSize": "1rem", "color": "#000000" },
+          "title": { "fontFamily": "ui-sans-serif, system-ui, sans-serif", "fontSize": "3rem", "color": "#D73359" },
+          "subtitle": { "fontFamily": "ui-sans-serif, system-ui, sans-serif", "fontSize": "1.5rem", "color": "#000000" },
+          "paragraph": { "fontFamily": "ui-sans-serif, system-ui, sans-serif", "fontSize": "1rem", "color": "#4b5563" }
+        },
+        "components": {
+          "hero": {
+            "badge": { "textColor": "#4b5563", "fontSize": "0.875rem" },
+            "title": { "color": "#D73359", "fontSize": "3rem", "fontWeight": "700" },
+            "description": { "color": "#4b5563", "fontSize": "1rem", "lineHeight": "1.6" },
+            "ctaPrimary": { "backgroundColor": "#F83A3A", "color": "#FFFFFF", "fontSize": "1rem", "fontWeight": "600", "paddingX": "1.5rem", "paddingY": "0.75rem", "borderRadius": "0.5rem" },
+            "ctaSecondary": { "backgroundColor": "transparent", "color": "#F83A3A", "borderColor": "#F83A3A", "fontSize": "1rem", "fontWeight": "600", "paddingX": "1.5rem", "paddingY": "0.75rem", "borderRadius": "0.5rem" },
+            "statValue": { "color": "#F83A3A", "fontSize": "2.25rem", "fontWeight": "700" },
+            "statLabel": { "color": "#4b5563", "fontSize": "0.875rem" }
+          },
+          "courseCarousel": {
+            "title": { "color": "#D73359", "fontSize": "2.25rem", "fontWeight": "700" },
+            "cardTitle": { "color": "#000000", "fontSize": "1.25rem", "fontWeight": "600" },
+            "cardDescription": { "color": "#4b5563", "fontSize": "0.875rem" },
+            "cardMeta": { "color": "#4b5563", "fontSize": "0.875rem" },
+            "cardButton": { "backgroundColor": "#F83A3A", "color": "#FFFFFF", "fontSize": "1rem", "fontWeight": "600" }
+          },
+          "dashboard": {
+            "sidebar": { "backgroundColor": "#FFFFFF", "borderColor": "#E5E7EB", "textColor": "#000000", "textSecondary": "#6b7280", "hoverBackground": "#f3f4f6", "activeBackground": "#F83A3A", "activeTextColor": "#FFFFFF" },
+            "header": { "backgroundColor": "#FFFFFF", "borderColor": "#E5E7EB", "textColor": "#000000" },
+            "welcomeHero": { "backgroundColor": "#F83A3A", "textColor": "#FFFFFF", "titleColor": "#FFFFFF", "descriptionColor": "#ffffff", "buttonBackgroundColor": "#FFFFFF", "buttonTextColor": "#F83A3A" },
+            "statCard": { "backgroundColor": "#FFFFFF", "borderColor": "#E5E7EB", "titleColor": "#6b7280", "valueColor": "#F83A3A", "iconBackgroundColor": "#F83A3A", "iconColor": "#FFFFFF" },
+            "courseCard": { "backgroundColor": "#FFFFFF", "borderColor": "#E5E7EB", "titleColor": "#000000", "progressBarBackground": "#e5e7eb", "progressBarFill": "#F83A3A" },
+            "aiWidget": { "backgroundColor": "#FFFFFF", "borderColor": "#E5E7EB", "titleColor": "#D73359", "textColor": "#000000" }
+          }
+        }
+      },
+      "dark": {
+        "colors": {
+          "primary": "#C50707",
+          "secondary": "#5C0519",
+          "accent": "#CC284F",
+          "background": "#050001",
+          "surface": "#121212",
+          "border": "#333333",
+          "text": "#FFFFFF",
+          "textSecondary": "#9ca3af"
+        },
+        "typography": {
+          "h1": { "fontFamily": "ui-sans-serif, system-ui, sans-serif", "fontSize": "2.5rem", "color": "#FFFFFF" },
+          "h2": { "fontFamily": "ui-sans-serif, system-ui, sans-serif", "fontSize": "2rem", "color": "#FFFFFF" },
+          "h3": { "fontFamily": "ui-sans-serif, system-ui, sans-serif", "fontSize": "1.75rem", "color": "#FFFFFF" },
+          "h4": { "fontFamily": "ui-sans-serif, system-ui, sans-serif", "fontSize": "1.5rem", "color": "#FFFFFF" },
+          "h5": { "fontFamily": "ui-sans-serif, system-ui, sans-serif", "fontSize": "1.25rem", "color": "#FFFFFF" },
+          "h6": { "fontFamily": "ui-sans-serif, system-ui, sans-serif", "fontSize": "1rem", "color": "#FFFFFF" },
+          "title": { "fontFamily": "ui-sans-serif, system-ui, sans-serif", "fontSize": "3rem", "color": "#CC284F" },
+          "subtitle": { "fontFamily": "ui-sans-serif, system-ui, sans-serif", "fontSize": "1.5rem", "color": "#FFFFFF" },
+          "paragraph": { "fontFamily": "ui-sans-serif, system-ui, sans-serif", "fontSize": "1rem", "color": "#9ca3af" }
+        },
+        "components": {
+          "hero": {
+            "badge": { "textColor": "#9ca3af", "fontSize": "0.875rem" },
+            "title": { "color": "#CC284F", "fontSize": "3rem", "fontWeight": "700" },
+            "description": { "color": "#9ca3af", "fontSize": "1rem", "lineHeight": "1.6" },
+            "ctaPrimary": { "backgroundColor": "#C50707", "color": "#FFFFFF", "fontSize": "1rem", "fontWeight": "600", "paddingX": "1.5rem", "paddingY": "0.75rem", "borderRadius": "0.5rem" },
+            "ctaSecondary": { "backgroundColor": "transparent", "color": "#C50707", "borderColor": "#C50707", "fontSize": "1rem", "fontWeight": "600", "paddingX": "1.5rem", "paddingY": "0.75rem", "borderRadius": "0.5rem" },
+            "statValue": { "color": "#C50707", "fontSize": "2.25rem", "fontWeight": "700" },
+            "statLabel": { "color": "#9ca3af", "fontSize": "0.875rem" }
+          },
+          "courseCarousel": {
+            "title": { "color": "#CC284F", "fontSize": "2.25rem", "fontWeight": "700" },
+            "cardTitle": { "color": "#FFFFFF", "fontSize": "1.25rem", "fontWeight": "600" },
+            "cardDescription": { "color": "#9ca3af", "fontSize": "0.875rem" },
+            "cardMeta": { "color": "#9ca3af", "fontSize": "0.875rem" },
+            "cardButton": { "backgroundColor": "#C50707", "color": "#FFFFFF", "fontSize": "1rem", "fontWeight": "600" }
+          },
+          "dashboard": {
+            "sidebar": { "backgroundColor": "#121212", "borderColor": "#333333", "textColor": "#FFFFFF", "textSecondary": "#9ca3af", "hoverBackground": "#1f1f1f", "activeBackground": "#C50707", "activeTextColor": "#FFFFFF" },
+            "header": { "backgroundColor": "#121212", "borderColor": "#333333", "textColor": "#FFFFFF" },
+            "welcomeHero": { "backgroundColor": "#C50707", "textColor": "#FFFFFF", "titleColor": "#FFFFFF", "descriptionColor": "#ffffff", "buttonBackgroundColor": "#FFFFFF", "buttonTextColor": "#C50707" },
+            "statCard": { "backgroundColor": "#1f1f1f", "borderColor": "#333333", "titleColor": "#9ca3af", "valueColor": "#C50707", "iconBackgroundColor": "#C50707", "iconColor": "#FFFFFF" },
+            "courseCard": { "backgroundColor": "#1f1f1f", "borderColor": "#333333", "titleColor": "#FFFFFF", "progressBarBackground": "#333333", "progressBarFill": "#C50707" },
+            "aiWidget": { "backgroundColor": "#1f1f1f", "borderColor": "#333333", "titleColor": "#CC284F", "textColor": "#FFFFFF" }
+          }
+        }
+      },
+      "accessibility": {
+        "colors": {
+          "primary": "#005AB5",
+          "secondary": "#FFC20A",
+          "accent": "#D41159",
+          "background": "#FFFFFF",
+          "surface": "#F3F4F6",
+          "border": "#D1D5DB",
+          "text": "#111827",
+          "textSecondary": "#4B5563"
+        },
+        "typography": {
+          "h1": { "fontFamily": "ui-sans-serif, system-ui, sans-serif", "fontSize": "2.5rem", "color": "#111827" },
+          "h2": { "fontFamily": "ui-sans-serif, system-ui, sans-serif", "fontSize": "2rem", "color": "#111827" },
+          "h3": { "fontFamily": "ui-sans-serif, system-ui, sans-serif", "fontSize": "1.75rem", "color": "#111827" },
+          "h4": { "fontFamily": "ui-sans-serif, system-ui, sans-serif", "fontSize": "1.5rem", "color": "#111827" },
+          "h5": { "fontFamily": "ui-sans-serif, system-ui, sans-serif", "fontSize": "1.25rem", "color": "#111827" },
+          "h6": { "fontFamily": "ui-sans-serif, system-ui, sans-serif", "fontSize": "1rem", "color": "#111827" },
+          "title": { "fontFamily": "ui-sans-serif, system-ui, sans-serif", "fontSize": "3rem", "color": "#D41159" },
+          "subtitle": { "fontFamily": "ui-sans-serif, system-ui, sans-serif", "fontSize": "1.5rem", "color": "#111827" },
+          "paragraph": { "fontFamily": "ui-sans-serif, system-ui, sans-serif", "fontSize": "1rem", "color": "#4B5563" }
+        },
+        "components": {
+          "hero": {
+            "badge": { "textColor": "#4B5563", "fontSize": "0.875rem" },
+            "title": { "color": "#D41159", "fontSize": "3rem", "fontWeight": "700" },
+            "description": { "color": "#4B5563", "fontSize": "1rem", "lineHeight": "1.6" },
+            "ctaPrimary": { "backgroundColor": "#005AB5", "color": "#FFFFFF", "fontSize": "1rem", "fontWeight": "600", "paddingX": "1.5rem", "paddingY": "0.75rem", "borderRadius": "0.5rem" },
+            "ctaSecondary": { "backgroundColor": "transparent", "color": "#005AB5", "borderColor": "#005AB5", "fontSize": "1rem", "fontWeight": "600", "paddingX": "1.5rem", "paddingY": "0.75rem", "borderRadius": "0.5rem" },
+            "statValue": { "color": "#005AB5", "fontSize": "2.25rem", "fontWeight": "700" },
+            "statLabel": { "color": "#4B5563", "fontSize": "0.875rem" }
+          },
+          "courseCarousel": {
+            "title": { "color": "#D41159", "fontSize": "2.25rem", "fontWeight": "700" },
+            "cardTitle": { "color": "#111827", "fontSize": "1.25rem", "fontWeight": "600" },
+            "cardDescription": { "color": "#4B5563", "fontSize": "0.875rem" },
+            "cardMeta": { "color": "#4B5563", "fontSize": "0.875rem" },
+            "cardButton": { "backgroundColor": "#005AB5", "color": "#FFFFFF", "fontSize": "1rem", "fontWeight": "600" }
+          },
+          "dashboard": {
+            "sidebar": { "backgroundColor": "#FFFFFF", "borderColor": "#D1D5DB", "textColor": "#111827", "textSecondary": "#4B5563", "hoverBackground": "#f3f4f6", "activeBackground": "#005AB5", "activeTextColor": "#FFFFFF" },
+            "header": { "backgroundColor": "#FFFFFF", "borderColor": "#D1D5DB", "textColor": "#111827" },
+            "welcomeHero": { "backgroundColor": "#005AB5", "textColor": "#FFFFFF", "titleColor": "#FFFFFF", "descriptionColor": "#ffffff", "buttonBackgroundColor": "#FFFFFF", "buttonTextColor": "#005AB5" },
+            "statCard": { "backgroundColor": "#FFFFFF", "borderColor": "#D1D5DB", "titleColor": "#4B5563", "valueColor": "#005AB5", "iconBackgroundColor": "#005AB5", "iconColor": "#FFFFFF" },
+            "courseCard": { "backgroundColor": "#FFFFFF", "borderColor": "#D1D5DB", "titleColor": "#111827", "progressBarBackground": "#e5e7eb", "progressBarFill": "#005AB5" },
+            "aiWidget": { "backgroundColor": "#FFFFFF", "borderColor": "#D1D5DB", "titleColor": "#D41159", "textColor": "#111827" }
+          }
+        }
+      }
+    }
   }
 }

@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { AdminLayout } from '../components/layout/AdminLayout';
-import { ThemeManager } from '../components/admin/ThemeManager';
+import { UnifiedThemeConfig } from '../components/admin/UnifiedThemeConfig';
 import { UserManager } from '../components/admin/UserManager';
-import { TypographyManager } from '../components/admin/TypographyManager';
 
-type AdminTab = 'dashboard' | 'typography' | 'themes' | 'users' | 'content';
+type AdminTab = 'dashboard' | 'themes' | 'users' | 'content';
 
 export const AdminDashboard: React.FC = () => {
     const [activeTab, setActiveTab] = useState<AdminTab>('dashboard');
@@ -32,13 +31,10 @@ export const AdminDashboard: React.FC = () => {
                     </p>
                 </div>
             )}
-            {activeTab === 'typography' && (
-                <div>
-                    <TypographyManager />
-                </div>
-            )}
             {activeTab === 'themes' && (
-                <ThemeManager />
+                <div>
+                    <UnifiedThemeConfig />
+                </div>
             )}
             {activeTab === 'users' && (
                 <UserManager />

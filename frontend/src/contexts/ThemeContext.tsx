@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import themeData from '../data/theme.json';
-import type { ThemeModeConfig, ThemePreset, ThemePresets, ThemeData } from '../data/theme.types';
+import type { ThemeModeConfig, ThemePreset, ThemePresets, ThemeData, NamedTheme } from '../data/theme.types';
 
 export type ThemeMode = string;
 
@@ -8,6 +8,8 @@ interface ThemeConfig {
     mode: ThemeMode;
     preset?: string;
     customTheme?: Partial<ThemeData>;
+    activeThemeName?: string;
+    activeMode?: 'light' | 'dark' | 'accessibility';
 }
 
 interface ThemeContextType {
@@ -19,6 +21,8 @@ interface ThemeContextType {
     resetToPreset: (presetName: string) => void;
     availablePresets: string[];
     themeData: typeof themeData;
+    getActiveTheme: () => NamedTheme | null;
+    setActiveTheme: (themeName: string) => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -32,6 +36,8 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         const savedTheme = localStorage.getItem('themeMode') as ThemeMode;
         const savedPreset = localStorage.getItem('themePreset');
         const savedCustomTheme = localStorage.getItem('customTheme');
+        const savedActiveThemeName = localStorage.getItem('activeThemeName');
+        const savedActiveMode = localStorage.getItem('activeMode') as 'light' | 'dark' | 'accessibility';
 
         if (savedCustomTheme) {
             try {
@@ -43,7 +49,12 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         }
 
         if (savedTheme) {
-            setConfig({ mode: savedTheme, preset: savedPreset || undefined });
+            setConfig({ 
+                mode: savedTheme, 
+                preset: savedPreset || undefined,
+                activeThemeName: savedActiveThemeName || undefined,
+                activeMode: savedActiveMode || undefined
+            });
         }
     }, []);
 
@@ -262,6 +273,12 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         if (newConfig.preset !== undefined) {
             localStorage.setItem('themePreset', newConfig.preset || '');
         }
+        if (newConfig.activeThemeName) {
+            localStorage.setItem('activeThemeName', newConfig.activeThemeName);
+        }
+        if (newConfig.activeMode) {
+            localStorage.setItem('activeMode', newConfig.activeMode);
+        }
     };
 
     const loadPreset = (presetName: string) => {
@@ -279,10 +296,28 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         setCustomTheme(newCustomTheme);
         localStorage.setItem('customTheme', JSON.stringify(newCustomTheme));
         updateTheme({ preset: undefined });
+
+        // Also save active theme name and mode if present
+        if ((newCustomTheme as any).activeThemeName) {
+            localStorage.setItem('activeThemeName', (newCustomTheme as any).activeThemeName);
+        }
+        if ((newCustomTheme as any).activeMode) {
+            localStorage.setItem('activeMode', (newCustomTheme as any).activeMode);
+        }
     };
 
     const getCustomTheme = () => {
         return customTheme;
+    };
+
+    const getActiveTheme = (): NamedTheme | null => {
+        if (!customTheme?.themes) return null;
+        const themeName = config.activeThemeName || (customTheme as any).activeThemeName || Object.keys(customTheme.themes)[0];
+        return (customTheme.themes as any)[themeName] || null;
+    };
+
+    const setActiveTheme = (themeName: string) => {
+        updateTheme({ activeThemeName: themeName });
     };
 
     const resetToPreset = (presetName: string) => {
@@ -292,7 +327,18 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const availablePresets = themeData.presets ? Object.keys(themeData.presets as ThemePresets) : [];
 
     return (
-        <ThemeContext.Provider value={{ config, updateTheme, loadPreset, saveCustomTheme, getCustomTheme, resetToPreset, availablePresets, themeData }}>
+        <ThemeContext.Provider value={{ 
+            config, 
+            updateTheme, 
+            loadPreset, 
+            saveCustomTheme, 
+            getCustomTheme, 
+            resetToPreset, 
+            availablePresets, 
+            themeData,
+            getActiveTheme,
+            setActiveTheme
+        }}>
             {children}
         </ThemeContext.Provider>
     );

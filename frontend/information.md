@@ -36,8 +36,8 @@ The system must be capable of supporting and presenting the following configurat
 *   **Typography Hierarchy:** Define and apply specific and consistent sizes for headings, subheadings, paragraphs, and labels.
 *   **Dark Mode:** The design must include the ability to switch between light and dark themes.
 *   **Color Palettes to Present:** Three (3) design variants must be configured and displayed, each with its respective dark mode:
-1.  **Monochromatic:**.
-2.  **Triad:**.
-3.  **Analog**.
+1.  **Light:**.
+2.  **Dark:**.
+3.  **Accessibility**.
 
 This are the minimun requirements to present the evaluation.

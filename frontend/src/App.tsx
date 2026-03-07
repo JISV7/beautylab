@@ -41,7 +41,7 @@ function App() {
         {currentPage === 'dashboard' ? (
           <Dashboard onNavigateToAdmin={handleNavigateToAdmin} onLogout={handleLogout} />
         ) : currentPage === 'admin' ? (
-          <AdminDashboard />
+          <AdminDashboard onNavigateToDashboard={handleNavigateToDashboard} />
         ) : (
           <Home
             onNavigateToDashboard={handleNavigateToDashboard}

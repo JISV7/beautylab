@@ -5,7 +5,11 @@ import { UserManager } from '../components/admin/UserManager';
 
 type AdminTab = 'dashboard' | 'themes' | 'users' | 'content';
 
-export const AdminDashboard: React.FC = () => {
+interface AdminDashboardProps {
+    onNavigateToDashboard?: () => void;
+}
+
+export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToDashboard }) => {
     const [activeTab, setActiveTab] = useState<AdminTab>('dashboard');
 
     const handleNavigate = (item: string) => {
@@ -14,7 +18,7 @@ export const AdminDashboard: React.FC = () => {
 
     const handleBack = () => {
         // Navigate back to dashboard
-        window.location.href = '/dashboard';
+        onNavigateToDashboard?.();
     };
 
     return (

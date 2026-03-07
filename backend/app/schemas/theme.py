@@ -4,18 +4,19 @@ from datetime import datetime
 from typing import Any, Dict, List, Literal, Optional
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, AliasGenerator, AliasPath
+from pydantic.alias_generators import to_camel
 
 
 # ==================== Color Schemas ====================
 
 class PaletteColors(BaseModel):
     """Color palette for a theme mode.
-    
+
     Contains colors for UI elements like buttons, borders, cards, backgrounds.
     Text colors are defined in typography config instead.
     """
-    
+
     primary: str = Field(..., description="Primary color for buttons, links, accents")
     secondary: str = Field(..., description="Secondary color for highlights")
     accent: str = Field(..., description="Accent color for special elements")
@@ -23,16 +24,20 @@ class PaletteColors(BaseModel):
     surface: str = Field(..., description="Surface color for cards, panels")
     border: str = Field(..., description="Border and divider color")
 
-    model_config = ConfigDict(json_schema_extra={
-        "example": {
-            "primary": "#2f27ce",
-            "secondary": "#dedcff",
-            "accent": "#433bff",
-            "background": "#fbfbfe",
-            "surface": "#eeeef0",
-            "border": "#dddddd"
-        }
-    })
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "primary": "#2f27ce",
+                "secondary": "#dedcff",
+                "accent": "#433bff",
+                "background": "#fbfbfe",
+                "surface": "#eeeef0",
+                "border": "#dddddd"
+            }
+        },
+        alias_generator=AliasGenerator(validation_alias=to_camel),
+        populate_by_name=True,
+    )
 
 
 # ==================== Typography Schemas ====================
@@ -40,23 +45,26 @@ class PaletteColors(BaseModel):
 class TypographyElement(BaseModel):
     """Typography settings for a single element (h1-h6, p, etc.)."""
 
-    font_id: Optional[UUID] = Field(None, description="Font UUID (null for system default)")
-    font_name: Optional[str] = Field(None, description="Font name for display")
-    font_size: str = Field(..., description="Font size in rem units")
-    font_weight: int = Field(default=400, ge=100, le=900, description="Font weight 100-900")
+    font_id: Optional[UUID] = Field(None, description="Font UUID (null for system default)", alias="fontId")
+    font_name: Optional[str] = Field(None, description="Font name for display", alias="fontName")
+    font_size: str = Field(..., description="Font size in rem units", alias="fontSize")
+    font_weight: int = Field(default=400, ge=100, le=900, description="Font weight 100-900", alias="fontWeight")
     color: str = Field(..., description="Text color for this element")
-    line_height: Optional[str] = Field(None, description="Line height (e.g., '1.2')")
+    line_height: Optional[str] = Field(None, description="Line height (e.g., '1.2')", alias="lineHeight")
 
-    model_config = ConfigDict(json_schema_extra={
-        "example": {
-            "font_id": "550e8400-e29b-41d4-a716-446655440000",
-            "font_name": "Inter",
-            "font_size": "2.5",
-            "font_weight": 800,
-            "color": "#2f27ce",
-            "line_height": "1.2"
-        }
-    })
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "font_id": "550e8400-e29b-41d4-a716-446655440000",
+                "font_name": "Inter",
+                "font_size": "2.5",
+                "font_weight": 800,
+                "color": "#2f27ce",
+                "line_height": "1.2"
+            }
+        },
+        populate_by_name=True,
+    )
 
 
 class TypographyConfig(BaseModel):

@@ -1,191 +1,210 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
-import type { NamedTheme } from '../../data/theme.types';
+import type { Theme, ThemeConfig, ThemePalette, TypographyConfig, TypographyElement } from '../../data/theme.types';
 import type { ColorPalette, TypographyStyle } from './types';
-import { ThemeList } from './ThemeList';
+import { ThemeTable } from './ThemeTable';
 import { ThemeEditor } from './ThemeEditor';
 import { ThemePreview } from './ThemePreview';
 
 const API_URL = 'http://localhost:8000';
 
+// Helper to convert API ThemeConfig to ColorPalette
+const configToColorPalette = (palette: ThemePalette): ColorPalette => ({
+    primary: palette.colors.primary,
+    secondary: palette.colors.secondary,
+    accent: palette.colors.accent,
+    background: palette.colors.background,
+    surface: palette.colors.surface,
+    border: palette.colors.border,
+});
+
+// Helper to convert ColorPalette + TypographyStyle to ThemePalette
+const toThemePalette = (colors: ColorPalette, styles: Record<string, TypographyStyle>): ThemePalette => ({
+    colors,
+    typography: {
+        h1: { fontName: styles.h1.fontFamily, fontSize: String(styles.h1.size), fontWeight: 400, color: styles.h1.color },
+        h2: { fontName: styles.h2.fontFamily, fontSize: String(styles.h2.size), fontWeight: 400, color: styles.h2.color },
+        h3: { fontName: styles.h3.fontFamily, fontSize: String(styles.h3.size), fontWeight: 400, color: styles.h3.color },
+        h4: { fontName: styles.h4.fontFamily, fontSize: String(styles.h4.size), fontWeight: 400, color: styles.h4.color },
+        h5: { fontName: styles.h5.fontFamily, fontSize: String(styles.h5.size), fontWeight: 400, color: styles.h5.color },
+        h6: { fontName: styles.h6.fontFamily, fontSize: String(styles.h6.size), fontWeight: 400, color: styles.h6.color },
+        title: { fontName: styles.h1.fontFamily, fontSize: String(styles.h1.size), fontWeight: 700, color: styles.h1.color },
+        subtitle: { fontName: styles.h2.fontFamily, fontSize: String(styles.h2.size), fontWeight: 600, color: styles.h2.color },
+        paragraph: { fontName: styles.p.fontFamily, fontSize: String(styles.p.size), fontWeight: 400, color: styles.p.color },
+    }
+});
+
 export const UnifiedThemeConfig: React.FC = () => {
-    const { themeData, getCustomTheme, saveCustomTheme, updateTheme, applyTheme, getPublishedThemeName } = useTheme();
+    const { availableThemes, fetchAllThemes, activateTheme, createTheme, updateTheme, deleteTheme } = useTheme();
 
     // View mode: 'list' | 'edit' | 'preview'
     const [viewMode, setViewMode] = useState<'list' | 'edit' | 'preview'>('list');
 
     // Theme management state
-    const [themes, setThemes] = useState<Record<string, NamedTheme>>({});
-    const [activeThemeName, setActiveThemeName] = useState<string>('default');
+    const [themes, setThemes] = useState<Theme[]>([]);
+    const [activeThemeId, setActiveThemeId] = useState<string | null>(null);
     const [activeMode, setActiveMode] = useState<'light' | 'dark' | 'accessibility'>('light');
-    const [publishedThemeName, setPublishedThemeName] = useState<string | null>(null);
+    const [publishedThemeId, setPublishedThemeId] = useState<string | null>(null);
 
     // DataTables state
     const [currentPage, setCurrentPage] = useState(0);
-    const [sortColumn, setSortColumn] = useState<'name' | 'isActive' | 'isPublished'>('name');
+    const [sortColumn, setSortColumn] = useState<'name' | 'isActive' | 'isDefault'>('name');
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
     const rowsPerPage = 10;
 
-    // Initialize themes from themeData
+    // Load themes from API
     useEffect(() => {
-        const customTheme = getCustomTheme();
-        const loadedThemes: Record<string, NamedTheme> = {};
-
-        if (customTheme?.themes) {
-            Object.assign(loadedThemes, customTheme.themes);
-        }
-
-        if (Object.keys(loadedThemes).length === 0) {
-            const accessibilityData = (themeData as any).accessibility;
-            const defaultTheme: NamedTheme = {
-                name: 'default',
-                light: {
-                    colors: { ...themeData.light.colors },
-                    typography: { ...themeData.light.typography },
-                    components: themeData.light.components
-                },
-                dark: {
-                    colors: { ...themeData.dark.colors },
-                    typography: { ...themeData.dark.typography },
-                    components: themeData.dark.components
-                },
-                accessibility: {
-                    colors: accessibilityData ? { ...accessibilityData.colors } : { ...themeData.light.colors },
-                    typography: accessibilityData ? { ...accessibilityData.typography } : { ...themeData.light.typography },
-                    components: accessibilityData?.components
-                }
-            };
-            loadedThemes['default'] = defaultTheme;
-        }
-
-        setThemes(loadedThemes);
-
-        if ((customTheme as any)?.activeThemeName) {
-            setActiveThemeName((customTheme as any).activeThemeName);
-        } else {
-            setActiveThemeName(Object.keys(loadedThemes)[0] || 'default');
-        }
-
-        const pubTheme = getPublishedThemeName();
-        if (pubTheme) {
-            setPublishedThemeName(pubTheme);
-        }
-    }, []);
-
-    // Theme CRUD operations
-    const handleCreateTheme = () => {
-        const name = prompt("Enter a name for the new theme (e.g., 'brand2025'):");
-        if (!name) return;
-
-        const key = name.toLowerCase().replace(/[^a-z0-9-]/g, '');
-        if (themes[key]) {
-            alert("Theme already exists!");
-            return;
-        }
-
-        const baseTheme = themes[activeThemeName];
-        const newTheme: NamedTheme = {
-            name: name,
-            light: JSON.parse(JSON.stringify(baseTheme.light)),
-            dark: JSON.parse(JSON.stringify(baseTheme.dark)),
-            accessibility: JSON.parse(JSON.stringify(baseTheme.accessibility))
-        };
-
-        setThemes(prev => ({ ...prev, [key]: newTheme }));
-        setActiveThemeName(key);
-        setViewMode('edit');
-    };
-
-    const handleDeleteTheme = (themeKey: string) => {
-        const theme = themes[themeKey];
-        if (!theme) return;
-
-        if (publishedThemeName === themeKey) {
-            alert(`Cannot delete "${theme.name}" because it is currently published (active on the site). Please publish a different theme first.`);
-            return;
-        }
-
-        if (!window.confirm(`Are you sure you want to delete the theme "${theme.name}"?`)) return;
-
-        const newThemes = { ...themes };
-        delete newThemes[themeKey];
-        setThemes(newThemes);
-
-        if (activeThemeName === themeKey) {
-            setActiveThemeName(Object.keys(newThemes)[0]);
-        }
-    };
-
-    const handlePublishTheme = () => {
-        const theme = themes[activeThemeName];
-        if (!theme) return;
-
-        if (!window.confirm(`Publish "${theme.name}" to the public site?\n\nThis will make this theme (with its light, dark, and accessibility palettes) available to all users.`)) {
-            return;
-        }
-
-        applyTheme(activeThemeName);
-        setPublishedThemeName(activeThemeName);
-
-        const currentCustom = getCustomTheme() || {};
-        saveCustomTheme({
-            ...currentCustom,
-            themes,
-            publishedThemeName: activeThemeName as any
-        });
-
-        alert(`Theme "${theme.name}" has been published! Users will now see this theme.`);
-    };
-
-    const handleSaveTheme = (colors: ColorPalette, styles: Record<string, TypographyStyle>) => {
-        const theme = themes[activeThemeName];
-        if (!theme) return;
-
-        const updatedTheme: NamedTheme = {
-            ...theme,
-            [activeMode]: {
-                ...theme[activeMode],
-                colors: {
-                    ...theme[activeMode].colors,
-                    ...colors,
-                    text: styles.h1.color,
-                    textSecondary: styles.p.color
-                },
-                typography: {
-                    ...theme[activeMode].typography,
-                    h1: { fontFamily: styles.h1.fontFamily, fontSize: `${styles.h1.size}rem`, color: styles.h1.color },
-                    h2: { fontFamily: styles.h2.fontFamily, fontSize: `${styles.h2.size}rem`, color: styles.h2.color },
-                    h3: { fontFamily: styles.h3.fontFamily, fontSize: `${styles.h3.size}rem`, color: styles.h3.color },
-                    h4: { fontFamily: styles.h4.fontFamily, fontSize: `${styles.h4.size}rem`, color: styles.h4.color },
-                    h5: { fontFamily: styles.h5.fontFamily, fontSize: `${styles.h5.size}rem`, color: styles.h5.color },
-                    h6: { fontFamily: styles.h6.fontFamily, fontSize: `${styles.h6.size}rem`, color: styles.h6.color },
-                    title: { fontFamily: styles.h1.fontFamily, fontSize: `${styles.h1.size}rem`, color: styles.h1.color },
-                    subtitle: { fontFamily: styles.h2.fontFamily, fontSize: `${styles.h2.size}rem`, color: styles.h2.color },
-                    paragraph: { fontFamily: styles.p.fontFamily, fontSize: `${styles.p.size}rem`, color: styles.p.color }
-                }
+        const loadThemes = async () => {
+            const loadedThemes = await fetchAllThemes();
+            setThemes(loadedThemes);
+            
+            // Find active and default themes
+            const active = loadedThemes.find(t => t.isActive);
+            const defaultTheme = loadedThemes.find(t => t.isDefault);
+            
+            if (active) {
+                setActiveThemeId(active.id);
+            } else if (defaultTheme) {
+                setActiveThemeId(defaultTheme.id);
+            } else if (loadedThemes.length > 0) {
+                setActiveThemeId(loadedThemes[0].id);
+            }
+            
+            // Published theme is the active one
+            if (active) {
+                setPublishedThemeId(active.id);
             }
         };
+        
+        loadThemes();
+    }, [fetchAllThemes]);
 
-        const currentCustom = getCustomTheme() || {};
-        saveCustomTheme({
-            ...currentCustom,
-            themes: { ...themes, [activeThemeName]: updatedTheme },
-            activeThemeName: activeThemeName as any,
-            activeMode: activeMode as any
-        });
+    // Get active theme object
+    const activeTheme = themes.find(t => t.id === activeThemeId) || null;
 
-        updateTheme({ mode: activeMode });
+    // Theme CRUD operations
+    const handleCreateTheme = async () => {
+        const name = prompt("Enter a name for the new theme:");
+        if (!name) return;
 
-        alert(`Theme "${theme.name}" saved successfully!`);
+        try {
+            // Create a new theme based on the default fallback structure
+            const baseTheme = activeTheme || themes[0];
+            const newThemeData: Partial<Theme> = {
+                name,
+                description: '',
+                type: 'custom' as const,
+                config: baseTheme ? JSON.parse(JSON.stringify(baseTheme.config)) : createDefaultConfig(),
+                is_active: false,
+                is_default: false,
+            };
+
+            const created = await createTheme(newThemeData);
+            setThemes(prev => [...prev, created]);
+            setActiveThemeId(created.id);
+            setViewMode('edit');
+        } catch (error) {
+            console.error('Failed to create theme:', error);
+            alert('Failed to create theme');
+        }
     };
 
-    const handleDiscardTheme = () => {
-        // Will be handled by the ThemeEditor component re-syncing
+    const handleDuplicateTheme = async (themeId: string) => {
+        const sourceTheme = themes.find(t => t.id === themeId);
+        if (!sourceTheme) return;
+
+        const newName = prompt("Enter a name for the duplicated theme:", `${sourceTheme.name} Copy`);
+        if (!newName) return;
+
+        try {
+            const newThemeData: Partial<Theme> = {
+                name: newName,
+                description: sourceTheme.description,
+                type: 'custom' as const,
+                config: JSON.parse(JSON.stringify(sourceTheme.config)),
+                is_active: false,
+                is_default: false,
+            };
+
+            const created = await createTheme(newThemeData);
+            setThemes(prev => [...prev, created]);
+            setActiveThemeId(created.id);
+            setViewMode('edit');
+        } catch (error) {
+            console.error('Failed to duplicate theme:', error);
+            alert('Failed to duplicate theme');
+        }
     };
 
-    // Table handlers
-    const handleSort = (column: 'name' | 'isActive' | 'isPublished') => {
+    const handleDeleteTheme = async (themeId: string) => {
+        const theme = themes.find(t => t.id === themeId);
+        if (!theme) return;
+
+        if (theme.isDefault) {
+            alert(`Cannot delete "${theme.name}" because it is the default theme.`);
+            return;
+        }
+
+        if (!window.confirm(`Are you sure you want to delete "${theme.name}"?`)) return;
+
+        try {
+            await deleteTheme(themeId);
+            setThemes(prev => prev.filter(t => t.id !== themeId));
+            if (activeThemeId === themeId) {
+                setActiveThemeId(null);
+            }
+            if (publishedThemeId === themeId) {
+                setPublishedThemeId(null);
+            }
+            setViewMode('list');
+        } catch (error) {
+            console.error('Failed to delete theme:', error);
+            alert('Failed to delete theme');
+        }
+    };
+
+    const handlePublishTheme = async () => {
+        if (!activeTheme) return;
+
+        if (!window.confirm(`Activate "${activeTheme.name}"? This will make it the active theme for all users.`)) {
+            return;
+        }
+
+        try {
+            await activateTheme(activeTheme.id);
+            // Update local state
+            setThemes(prev => prev.map(t => ({
+                ...t,
+                isActive: t.id === activeTheme.id
+            })));
+            setPublishedThemeId(activeTheme.id);
+            alert(`Theme "${activeTheme.name}" has been activated!`);
+        } catch (error) {
+            console.error('Failed to activate theme:', error);
+            alert('Failed to activate theme');
+        }
+    };
+
+    const handleSaveTheme = async (colors: ColorPalette, styles: Record<string, TypographyStyle>) => {
+        if (!activeTheme) return;
+
+        const newPalette = toThemePalette(colors, styles);
+        const newConfig: ThemeConfig = {
+            ...activeTheme.config,
+            [activeMode]: newPalette
+        };
+
+        try {
+            const updated = await updateTheme(activeTheme.id, { config: newConfig });
+            setThemes(prev => prev.map(t => t.id === updated.id ? updated : t));
+            alert(`Theme "${activeTheme.name}" saved successfully!`);
+        } catch (error) {
+            console.error('Failed to save theme:', error);
+            alert('Failed to save theme');
+        }
+    };
+
+    const handleSort = (column: 'name' | 'isActive' | 'isDefault') => {
         if (sortColumn === column) {
             setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
         } else {
@@ -197,59 +216,113 @@ export const UnifiedThemeConfig: React.FC = () => {
     // Render based on view mode
     if (viewMode === 'list') {
         return (
-            <ThemeList
-                themes={themes}
-                activeThemeName={activeThemeName}
-                publishedThemeName={publishedThemeName}
-                currentPage={currentPage}
-                rowsPerPage={rowsPerPage}
-                sortColumn={sortColumn}
-                sortDirection={sortDirection}
-                onCreateTheme={handleCreateTheme}
-                onEdit={(key) => {
-                    setActiveThemeName(key);
-                    setViewMode('edit');
-                }}
-                onPreview={(key) => {
-                    setActiveThemeName(key);
-                    setViewMode('preview');
-                }}
-                onDelete={handleDeleteTheme}
-                onPageChange={setCurrentPage}
-                onSort={handleSort}
-            />
+            <div className="flex-1 flex flex-col h-full overflow-hidden">
+                <div className="p-6 border-b theme-border flex items-center justify-between">
+                    <div>
+                        <h1 className="text-2xl font-bold theme-text-base mb-1">Theme Management</h1>
+                        <p className="theme-text-secondary">Create, edit, and publish themes for your site.</p>
+                    </div>
+                    <button
+                        onClick={handleCreateTheme}
+                        className="px-4 py-2 text-sm font-medium text-white theme-primary rounded-lg shadow-sm hover:opacity-90 transition-opacity"
+                    >
+                        + Create Theme
+                    </button>
+                </div>
+                <div className="flex-1 overflow-y-auto p-6">
+                    <ThemeTable
+                        themes={themes}
+                        activeThemeId={activeThemeId}
+                        publishedThemeId={publishedThemeId}
+                        currentPage={currentPage}
+                        rowsPerPage={rowsPerPage}
+                        sortColumn={sortColumn}
+                        sortDirection={sortDirection}
+                        onEdit={(id) => {
+                            setActiveThemeId(id);
+                            setViewMode('edit');
+                        }}
+                        onPreview={(id) => {
+                            setActiveThemeId(id);
+                            setViewMode('preview');
+                        }}
+                        onDelete={handleDeleteTheme}
+                        onDuplicate={handleDuplicateTheme}
+                        onPageChange={setCurrentPage}
+                        onSort={handleSort}
+                    />
+                </div>
+            </div>
         );
     }
 
-    if (viewMode === 'preview') {
-        const theme = themes[activeThemeName];
-        if (!theme) return null;
-
+    if (viewMode === 'preview' && activeTheme) {
         return (
             <ThemePreview
-                theme={theme}
-                themeKey={activeThemeName}
+                theme={activeTheme}
                 onEdit={() => setViewMode('edit')}
-                onClose={() => setViewMode('list')}
+                onClose={() => {
+                    setViewMode('list');
+                    setActiveThemeId(null);
+                }}
                 onPublish={handlePublishTheme}
             />
         );
     }
 
-    // Edit mode
-    const theme = themes[activeThemeName];
-    if (!theme) return null;
+    if (viewMode === 'edit' && activeTheme) {
+        return (
+            <ThemeEditor
+                theme={activeTheme}
+                activeMode={activeMode}
+                onModeChange={setActiveMode}
+                onSave={handleSaveTheme}
+                onPublish={handlePublishTheme}
+                onBack={() => {
+                    setViewMode('list');
+                    setActiveThemeId(null);
+                }}
+            />
+        );
+    }
 
-    return (
-        <ThemeEditor
-            theme={theme}
-            themeKey={activeThemeName}
-            activeMode={activeMode}
-            onModeChange={setActiveMode}
-            onSave={(colors, styles) => handleSaveTheme(colors, styles)}
-            onDiscard={handleDiscardTheme}
-            onPublish={handlePublishTheme}
-            onBack={() => setViewMode('list')}
-        />
-    );
+    return null;
 };
+
+// Helper to create default theme config
+function createDefaultConfig(): ThemeConfig {
+    const defaultElement: TypographyElement = {
+        fontName: 'system-ui',
+        fontSize: '1.0',
+        fontWeight: 400,
+        color: '#000000'
+    };
+
+    const defaultPalette: ThemePalette = {
+        colors: {
+            primary: '#2f27ce',
+            secondary: '#dedcff',
+            accent: '#433bff',
+            background: '#fbfbfe',
+            surface: '#eeeef0',
+            border: '#dddddd'
+        },
+        typography: {
+            h1: { ...defaultElement, fontSize: '2.5', fontWeight: 800 },
+            h2: { ...defaultElement, fontSize: '2.0', fontWeight: 700 },
+            h3: { ...defaultElement, fontSize: '1.75', fontWeight: 600 },
+            h4: { ...defaultElement, fontSize: '1.5', fontWeight: 600 },
+            h5: { ...defaultElement, fontSize: '1.25', fontWeight: 600 },
+            h6: { ...defaultElement, fontSize: '1.0', fontWeight: 600 },
+            title: { ...defaultElement, fontSize: '1.5', fontWeight: 700 },
+            subtitle: { ...defaultElement, fontSize: '1.25', fontWeight: 600 },
+            paragraph: { ...defaultElement, fontSize: '1.0', fontWeight: 400 }
+        }
+    };
+
+    return {
+        light: JSON.parse(JSON.stringify(defaultPalette)),
+        dark: JSON.parse(JSON.stringify(defaultPalette)),
+        accessibility: JSON.parse(JSON.stringify(defaultPalette))
+    };
+}

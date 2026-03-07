@@ -1,4 +1,4 @@
-import type { NamedTheme } from '../../data/theme.types';
+import type { Theme, Font as FontType } from '../../data/theme.types';
 
 export interface Font {
     id: string;
@@ -15,10 +15,12 @@ export interface TypographyStyle {
 }
 
 export interface ThemeTableRow {
-    key: string;
+    id: string;
     name: string;
+    type: 'preset' | 'custom';
     isActive: boolean;
-    isPublished: boolean;
+    isDefault: boolean;
+    createdAt: string;
 }
 
 export interface ColorPalette {
@@ -31,7 +33,7 @@ export interface ColorPalette {
 }
 
 export interface ThemeEditorProps {
-    theme: NamedTheme;
+    theme: Theme;
     activeMode: 'light' | 'dark' | 'accessibility';
     onModeChange: (mode: 'light' | 'dark' | 'accessibility') => void;
     onSave: (colors: ColorPalette, styles: Record<string, TypographyStyle>) => void;
@@ -56,32 +58,33 @@ export interface TypographyEditorProps {
 }
 
 export interface ThemePreviewProps {
-    theme: NamedTheme;
+    theme: Theme;
     onEdit: () => void;
     onClose: () => void;
     onPublish: () => void;
 }
 
 export interface ThemeTableProps {
-    themes: Record<string, NamedTheme>;
-    activeThemeName: string;
-    publishedThemeName: string | null;
+    themes: Theme[];
+    activeThemeId: string | null;
+    publishedThemeId: string | null;
     currentPage: number;
     rowsPerPage: number;
-    sortColumn: 'name' | 'isActive' | 'isPublished';
+    sortColumn: 'name' | 'isActive' | 'isDefault';
     sortDirection: 'asc' | 'desc';
-    onEdit: (themeKey: string) => void;
-    onPreview: (themeKey: string) => void;
-    onDelete: (themeKey: string) => void;
+    onEdit: (themeId: string) => void;
+    onPreview: (themeId: string) => void;
+    onDelete: (themeId: string) => void;
+    onDuplicate: (themeId: string) => void;
     onPageChange: (page: number) => void;
-    onSort: (column: 'name' | 'isActive' | 'isPublished') => void;
+    onSort: (column: 'name' | 'isActive' | 'isDefault') => void;
 }
 
 export interface FontManagerProps {
-    installedFonts: Font[];
+    installedFonts: FontType[];
     uploading: boolean;
     fileInputRef: React.RefObject<HTMLInputElement | null>;
     onFileUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    onFontDelete: (font: Font) => void;
+    onFontDelete: (font: FontType) => void;
     getFontUsage: (fontName: string) => { theme: string; elements: string[] }[];
 }

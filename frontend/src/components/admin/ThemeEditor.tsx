@@ -16,56 +16,56 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
 
     // Color state
     const [colors, setColors] = React.useState<ColorPalette>({
-        primary: theme[activeMode].colors.primary,
-        secondary: theme[activeMode].colors.secondary,
-        accent: theme[activeMode].colors.accent,
-        background: theme[activeMode].colors.background,
-        surface: theme[activeMode].colors.surface,
-        border: theme[activeMode].colors.border,
+        primary: theme.config[activeMode].colors.primary,
+        secondary: theme.config[activeMode].colors.secondary,
+        accent: theme.config[activeMode].colors.accent,
+        background: theme.config[activeMode].colors.background,
+        surface: theme.config[activeMode].colors.surface,
+        border: theme.config[activeMode].colors.border,
     });
 
     // Typography state
     const [styles, setStyles] = React.useState<Record<string, TypographyStyle>>({
         h1: {
-            fontFamily: theme[activeMode].typography.h1?.fontFamily || theme[activeMode].typography.title?.fontFamily || 'Manrope',
-            size: parseFloat(theme[activeMode].typography.h1?.fontSize || '2.5'),
-            color: theme[activeMode].typography.h1?.color || theme[activeMode].typography.title?.color || theme[activeMode].colors.text
+            fontFamily: theme.config[activeMode].typography.h1?.fontName || 'Manrope',
+            size: parseFloat(theme.config[activeMode].typography.h1?.fontSize || '2.5'),
+            color: theme.config[activeMode].typography.h1?.color || '#000000'
         },
         h2: {
-            fontFamily: theme[activeMode].typography.h2?.fontFamily || theme[activeMode].typography.title?.fontFamily || 'Manrope',
-            size: parseFloat(theme[activeMode].typography.h2?.fontSize || '2.0'),
-            color: theme[activeMode].typography.h2?.color || theme[activeMode].typography.title?.color || theme[activeMode].colors.text
+            fontFamily: theme.config[activeMode].typography.h2?.fontName || 'Manrope',
+            size: parseFloat(theme.config[activeMode].typography.h2?.fontSize || '2.0'),
+            color: theme.config[activeMode].typography.h2?.color || '#000000'
         },
         h3: {
-            fontFamily: theme[activeMode].typography.h3?.fontFamily || theme[activeMode].typography.title?.fontFamily || 'Manrope',
-            size: parseFloat(theme[activeMode].typography.h3?.fontSize || '1.75'),
-            color: theme[activeMode].typography.h3?.color || theme[activeMode].typography.title?.color || theme[activeMode].colors.text
+            fontFamily: theme.config[activeMode].typography.h3?.fontName || 'Manrope',
+            size: parseFloat(theme.config[activeMode].typography.h3?.fontSize || '1.75'),
+            color: theme.config[activeMode].typography.h3?.color || '#000000'
         },
         h4: {
-            fontFamily: theme[activeMode].typography.h4?.fontFamily || theme[activeMode].typography.title?.fontFamily || 'Manrope',
-            size: parseFloat(theme[activeMode].typography.h4?.fontSize || '1.5'),
-            color: theme[activeMode].typography.h4?.color || theme[activeMode].typography.title?.color || theme[activeMode].colors.text
+            fontFamily: theme.config[activeMode].typography.h4?.fontName || 'Manrope',
+            size: parseFloat(theme.config[activeMode].typography.h4?.fontSize || '1.5'),
+            color: theme.config[activeMode].typography.h4?.color || '#000000'
         },
         h5: {
-            fontFamily: theme[activeMode].typography.h5?.fontFamily || theme[activeMode].typography.title?.fontFamily || 'Manrope',
-            size: parseFloat(theme[activeMode].typography.h5?.fontSize || '1.25'),
-            color: theme[activeMode].typography.h5?.color || theme[activeMode].typography.title?.color || theme[activeMode].colors.text
+            fontFamily: theme.config[activeMode].typography.h5?.fontName || 'Manrope',
+            size: parseFloat(theme.config[activeMode].typography.h5?.fontSize || '1.25'),
+            color: theme.config[activeMode].typography.h5?.color || '#000000'
         },
         h6: {
-            fontFamily: theme[activeMode].typography.h6?.fontFamily || theme[activeMode].typography.title?.fontFamily || 'Manrope',
-            size: parseFloat(theme[activeMode].typography.h6?.fontSize || '1.0'),
-            color: theme[activeMode].typography.h6?.color || theme[activeMode].typography.title?.color || theme[activeMode].colors.text
+            fontFamily: theme.config[activeMode].typography.h6?.fontName || 'Manrope',
+            size: parseFloat(theme.config[activeMode].typography.h6?.fontSize || '1.0'),
+            color: theme.config[activeMode].typography.h6?.color || '#000000'
         },
         p: {
-            fontFamily: theme[activeMode].typography.paragraph?.fontFamily || 'Manrope',
-            size: parseFloat(theme[activeMode].typography.paragraph?.fontSize || '1.0'),
-            color: theme[activeMode].typography.paragraph?.color || theme[activeMode].colors.textSecondary
+            fontFamily: theme.config[activeMode].typography.paragraph?.fontName || 'Manrope',
+            size: parseFloat(theme.config[activeMode].typography.paragraph?.fontSize || '1.0'),
+            color: theme.config[activeMode].typography.paragraph?.color || '#000000'
         }
     });
 
     // Sync when mode changes
     React.useEffect(() => {
-        const modeData = theme[activeMode];
+        const modeData = theme.config[activeMode];
         setColors({
             primary: modeData.colors.primary,
             secondary: modeData.colors.secondary,
@@ -77,39 +77,39 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
 
         setStyles({
             h1: {
-                fontFamily: modeData.typography.h1?.fontFamily || modeData.typography.title?.fontFamily || 'Manrope',
+                fontFamily: modeData.typography.h1?.fontName || 'Manrope',
                 size: parseFloat(modeData.typography.h1?.fontSize || '2.5'),
-                color: modeData.typography.h1?.color || modeData.typography.title?.color || modeData.colors.text
+                color: modeData.typography.h1?.color || '#000000'
             },
             h2: {
-                fontFamily: modeData.typography.h2?.fontFamily || modeData.typography.title?.fontFamily || 'Manrope',
+                fontFamily: modeData.typography.h2?.fontName || 'Manrope',
                 size: parseFloat(modeData.typography.h2?.fontSize || '2.0'),
-                color: modeData.typography.h2?.color || modeData.typography.title?.color || modeData.colors.text
+                color: modeData.typography.h2?.color || '#000000'
             },
             h3: {
-                fontFamily: modeData.typography.h3?.fontFamily || modeData.typography.title?.fontFamily || 'Manrope',
+                fontFamily: modeData.typography.h3?.fontName || 'Manrope',
                 size: parseFloat(modeData.typography.h3?.fontSize || '1.75'),
-                color: modeData.typography.h3?.color || modeData.typography.title?.color || modeData.colors.text
+                color: modeData.typography.h3?.color || '#000000'
             },
             h4: {
-                fontFamily: modeData.typography.h4?.fontFamily || modeData.typography.title?.fontFamily || 'Manrope',
+                fontFamily: modeData.typography.h4?.fontName || 'Manrope',
                 size: parseFloat(modeData.typography.h4?.fontSize || '1.5'),
-                color: modeData.typography.h4?.color || modeData.typography.title?.color || modeData.colors.text
+                color: modeData.typography.h4?.color || '#000000'
             },
             h5: {
-                fontFamily: modeData.typography.h5?.fontFamily || modeData.typography.title?.fontFamily || 'Manrope',
+                fontFamily: modeData.typography.h5?.fontName || 'Manrope',
                 size: parseFloat(modeData.typography.h5?.fontSize || '1.25'),
-                color: modeData.typography.h5?.color || modeData.typography.title?.color || modeData.colors.text
+                color: modeData.typography.h5?.color || '#000000'
             },
             h6: {
-                fontFamily: modeData.typography.h6?.fontFamily || modeData.typography.title?.fontFamily || 'Manrope',
+                fontFamily: modeData.typography.h6?.fontName || 'Manrope',
                 size: parseFloat(modeData.typography.h6?.fontSize || '1.0'),
-                color: modeData.typography.h6?.color || modeData.typography.title?.color || modeData.colors.text
+                color: modeData.typography.h6?.color || '#000000'
             },
             p: {
-                fontFamily: modeData.typography.paragraph?.fontFamily || 'Manrope',
+                fontFamily: modeData.typography.paragraph?.fontName || 'Manrope',
                 size: parseFloat(modeData.typography.paragraph?.fontSize || '1.0'),
-                color: modeData.typography.paragraph?.color || modeData.colors.textSecondary
+                color: modeData.typography.paragraph?.color || '#000000'
             }
         });
     }, [activeMode, theme]);
@@ -130,7 +130,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
     };
 
     const handleDiscard = () => {
-        const modeData = theme[activeMode];
+        const modeData = theme.config[activeMode];
         setColors({
             primary: modeData.colors.primary,
             secondary: modeData.colors.secondary,
@@ -142,39 +142,39 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
 
         setStyles({
             h1: {
-                fontFamily: modeData.typography.h1?.fontFamily || modeData.typography.title?.fontFamily || 'Manrope',
+                fontFamily: modeData.typography.h1?.fontName || 'Manrope',
                 size: parseFloat(modeData.typography.h1?.fontSize || '2.5'),
-                color: modeData.typography.h1?.color || modeData.typography.title?.color || modeData.colors.text
+                color: modeData.typography.h1?.color || '#000000'
             },
             h2: {
-                fontFamily: modeData.typography.h2?.fontFamily || modeData.typography.title?.fontFamily || 'Manrope',
+                fontFamily: modeData.typography.h2?.fontName || 'Manrope',
                 size: parseFloat(modeData.typography.h2?.fontSize || '2.0'),
-                color: modeData.typography.h2?.color || modeData.typography.title?.color || modeData.colors.text
+                color: modeData.typography.h2?.color || '#000000'
             },
             h3: {
-                fontFamily: modeData.typography.h3?.fontFamily || modeData.typography.title?.fontFamily || 'Manrope',
+                fontFamily: modeData.typography.h3?.fontName || 'Manrope',
                 size: parseFloat(modeData.typography.h3?.fontSize || '1.75'),
-                color: modeData.typography.h3?.color || modeData.typography.title?.color || modeData.colors.text
+                color: modeData.typography.h3?.color || '#000000'
             },
             h4: {
-                fontFamily: modeData.typography.h4?.fontFamily || modeData.typography.title?.fontFamily || 'Manrope',
+                fontFamily: modeData.typography.h4?.fontName || 'Manrope',
                 size: parseFloat(modeData.typography.h4?.fontSize || '1.5'),
-                color: modeData.typography.h4?.color || modeData.typography.title?.color || modeData.colors.text
+                color: modeData.typography.h4?.color || '#000000'
             },
             h5: {
-                fontFamily: modeData.typography.h5?.fontFamily || modeData.typography.title?.fontFamily || 'Manrope',
+                fontFamily: modeData.typography.h5?.fontName || 'Manrope',
                 size: parseFloat(modeData.typography.h5?.fontSize || '1.25'),
-                color: modeData.typography.h5?.color || modeData.typography.title?.color || modeData.colors.text
+                color: modeData.typography.h5?.color || '#000000'
             },
             h6: {
-                fontFamily: modeData.typography.h6?.fontFamily || modeData.typography.title?.fontFamily || 'Manrope',
+                fontFamily: modeData.typography.h6?.fontName || 'Manrope',
                 size: parseFloat(modeData.typography.h6?.fontSize || '1.0'),
-                color: modeData.typography.h6?.color || modeData.typography.title?.color || modeData.colors.text
+                color: modeData.typography.h6?.color || '#000000'
             },
             p: {
-                fontFamily: modeData.typography.paragraph?.fontFamily || 'Manrope',
+                fontFamily: modeData.typography.paragraph?.fontName || 'Manrope',
                 size: parseFloat(modeData.typography.paragraph?.fontSize || '1.0'),
-                color: modeData.typography.paragraph?.color || modeData.colors.textSecondary
+                color: modeData.typography.paragraph?.color || '#000000'
             }
         });
     };

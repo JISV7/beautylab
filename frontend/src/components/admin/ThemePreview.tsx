@@ -4,12 +4,12 @@ import type { ThemePreviewProps } from './types';
 
 interface PaletteCardProps {
     mode: 'light' | 'dark' | 'accessibility';
-    theme: any;
+    theme: ThemePreviewProps['theme'];
     onEdit: () => void;
 }
 
 const PaletteCard: React.FC<PaletteCardProps> = ({ mode, theme, onEdit }) => {
-    const modeData = theme[mode];
+    const modeData = theme.config[mode];
 
     return (
         <div className="theme-surface rounded-xl border theme-border overflow-hidden shadow-sm">
@@ -50,8 +50,8 @@ const PaletteCard: React.FC<PaletteCardProps> = ({ mode, theme, onEdit }) => {
                     <h4
                         className="font-bold theme-text-base"
                         style={{
-                            fontFamily: modeData.typography.h1.fontFamily,
-                            fontSize: modeData.typography.h1.fontSize,
+                            fontFamily: modeData.typography.h1.fontName || 'system-ui',
+                            fontSize: `${modeData.typography.h1.fontSize}rem`,
                             color: modeData.typography.h1.color
                         }}
                     >
@@ -60,8 +60,8 @@ const PaletteCard: React.FC<PaletteCardProps> = ({ mode, theme, onEdit }) => {
                     <p
                         className="theme-text-secondary"
                         style={{
-                            fontFamily: modeData.typography.paragraph.fontFamily,
-                            fontSize: modeData.typography.paragraph.fontSize,
+                            fontFamily: modeData.typography.paragraph.fontName || 'system-ui',
+                            fontSize: `${modeData.typography.paragraph.fontSize}rem`,
                             color: modeData.typography.paragraph.color
                         }}
                     >

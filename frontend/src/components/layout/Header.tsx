@@ -89,9 +89,9 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateToDashboard, onNavigat
             ) : (
               <button
                 onClick={() => setLoginDialogOpen(true)}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--palette-primary)] text-white hover:bg-[var(--palette-accent)] transition-colors"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--palette-primary)] decorator-color hover:bg-[var(--palette-accent)] transition-colors"
               >
-                <LogIn className="w-4 h-4" />
+                <LogIn className="w-4 h-4 decorator-color" />
                 <span className="hidden sm:inline text-p-size">Sign In</span>
               </button>
             )}

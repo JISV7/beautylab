@@ -5,7 +5,9 @@ Run this script to seed the database with initial data:
 """
 
 import asyncio
+import shutil
 import sys
+import uuid
 from pathlib import Path
 from uuid import UUID
 
@@ -223,13 +225,85 @@ async def seed_admin_user(
     return admin
 
 
+async def seed_fonts(db: AsyncSession, root_user: User) -> Font:
+    """Seed default fonts.
+    
+    Copies the Roboto font from the Default directory and creates
+    a Font database entry owned by the root user.
+    
+    Args:
+        db: Database session
+        root_user: Root user who will own the font
+        
+    Returns:
+        The created Font object
+    """
+    print("Seeding fonts...")
+    
+    # Check if Roboto font already exists
+    result = await db.execute(select(Font).where(Font.name == "Roboto"))
+    existing_font = result.scalar_one_or_none()
+    
+    if existing_font:
+        print(f"  Font exists: Roboto")
+        return existing_font
+    
+    # Source font file from within backend directory
+    # Font is stored in app/fonts/ to be available in Docker container
+    backend_root = Path(__file__).parent
+    source_path = backend_root / "fonts" / "Roboto-VariableFont_wdth,wght.ttf"
+    
+    if not source_path.exists():
+        print(f"  Warning: Font file not found at {source_path}")
+        print(f"  Skipping font seeding")
+        # Return a mock font-like object so seeding can continue
+        class MockFont:
+            id = None
+            name = "Roboto"
+        return MockFont()
+    
+    # Setup upload directory
+    upload_dir = Path("uploads/fonts")
+    upload_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Generate unique filename
+    unique_filename = f"{uuid.uuid4()}.ttf"
+    dest_path = upload_dir / unique_filename
+    
+    # Copy font file
+    shutil.copy2(source_path, dest_path)
+    print(f"  Copied font file to {dest_path}")
+    
+    # Create database entry
+    db_font = Font(
+        name="Roboto",
+        filename=unique_filename,
+        url=f"/static/fonts/{unique_filename}",
+        created_by=root_user.id,
+    )
+    
+    db.add(db_font)
+    await db.commit()
+    await db.refresh(db_font)
+    print(f"  Created font: Roboto (owned by {root_user.email})")
+    
+    return db_font
+
+
 async def seed_default_theme(
     db: AsyncSession,
+    default_font: Font | None = None,
+    created_by: UUID | None = None,
 ) -> Theme:
     """Seed default theme with placeholder values.
-    
+
     This theme is used as a fallback so the site is never unstyled.
     All 3 palettes (light, dark, accessibility) have identical values.
+
+    Args:
+        db: Database session
+        default_font: Optional Font object to use for typography elements
+        created_by: UUID of the user creating the theme
     """
     print("Seeding default theme...")
 
@@ -238,6 +312,22 @@ async def seed_default_theme(
     theme = result.scalar_one_or_none()
 
     if not theme:
+        # Build typography config with font_id if font is available
+        font_id_str = str(default_font.id) if default_font and default_font.id else None
+        font_name = default_font.name if default_font else "Roboto"
+
+        # Helper to create typography element with optional font_id
+        def make_typography_element(font_size: str, font_weight: int, color: str) -> dict:
+            elem = {
+                "font_name": font_name,
+                "font_size": font_size,
+                "font_weight": font_weight,
+                "color": color,
+            }
+            if font_id_str:
+                elem["font_id"] = font_id_str
+            return elem
+
         # Default theme config based on Default/DefaultTheme.md
         default_config = {
             "light": {
@@ -250,15 +340,15 @@ async def seed_default_theme(
                     "border": "#dddddd"
                 },
                 "typography": {
-                    "h1": {"font_name": "Roboto", "font_size": "2.5", "font_weight": 400, "color": "#2f27ce"},
-                    "h2": {"font_name": "Roboto", "font_size": "2.0", "font_weight": 400, "color": "#2f27ce"},
-                    "h3": {"font_name": "Roboto", "font_size": "1.75", "font_weight": 400, "color": "#433bff"},
-                    "h4": {"font_name": "Roboto", "font_size": "1.5", "font_weight": 400, "color": "#1a1675"},
-                    "h5": {"font_name": "Roboto", "font_size": "1.25", "font_weight": 400, "color": "#1a1675"},
-                    "h6": {"font_name": "Roboto", "font_size": "1.0", "font_weight": 400, "color": "#1a1675"},
-                    "title": {"font_name": "Roboto", "font_size": "1.5", "font_weight": 700, "color": "#1a1675"},
-                    "subtitle": {"font_name": "Roboto", "font_size": "1.25", "font_weight": 600, "color": "#1a1675"},
-                    "paragraph": {"font_name": "Roboto", "font_size": "1.0", "font_weight": 400, "color": "#1a1a2e"}
+                    "h1": make_typography_element("2.5", 400, "#2f27ce"),
+                    "h2": make_typography_element("2.0", 400, "#2f27ce"),
+                    "h3": make_typography_element("1.75", 400, "#433bff"),
+                    "h4": make_typography_element("1.5", 400, "#1a1675"),
+                    "h5": make_typography_element("1.25", 400, "#1a1675"),
+                    "h6": make_typography_element("1.0", 400, "#1a1675"),
+                    "title": make_typography_element("1.5", 700, "#1a1675"),
+                    "subtitle": make_typography_element("1.25", 600, "#1a1675"),
+                    "paragraph": make_typography_element("1.0", 400, "#1a1a2e")
                 }
             },
             "dark": {
@@ -271,15 +361,15 @@ async def seed_default_theme(
                     "border": "#dddddd"
                 },
                 "typography": {
-                    "h1": {"font_name": "Roboto", "font_size": "2.5", "font_weight": 400, "color": "#2f27ce"},
-                    "h2": {"font_name": "Roboto", "font_size": "2.0", "font_weight": 400, "color": "#2f27ce"},
-                    "h3": {"font_name": "Roboto", "font_size": "1.75", "font_weight": 400, "color": "#433bff"},
-                    "h4": {"font_name": "Roboto", "font_size": "1.5", "font_weight": 400, "color": "#1a1675"},
-                    "h5": {"font_name": "Roboto", "font_size": "1.25", "font_weight": 400, "color": "#1a1675"},
-                    "h6": {"font_name": "Roboto", "font_size": "1.0", "font_weight": 400, "color": "#1a1675"},
-                    "title": {"font_name": "Roboto", "font_size": "1.5", "font_weight": 700, "color": "#1a1675"},
-                    "subtitle": {"font_name": "Roboto", "font_size": "1.25", "font_weight": 600, "color": "#1a1675"},
-                    "paragraph": {"font_name": "Roboto", "font_size": "1.0", "font_weight": 400, "color": "#1a1a2e"}
+                    "h1": make_typography_element("2.5", 400, "#2f27ce"),
+                    "h2": make_typography_element("2.0", 400, "#2f27ce"),
+                    "h3": make_typography_element("1.75", 400, "#433bff"),
+                    "h4": make_typography_element("1.5", 400, "#1a1675"),
+                    "h5": make_typography_element("1.25", 400, "#1a1675"),
+                    "h6": make_typography_element("1.0", 400, "#1a1675"),
+                    "title": make_typography_element("1.5", 700, "#1a1675"),
+                    "subtitle": make_typography_element("1.25", 600, "#1a1675"),
+                    "paragraph": make_typography_element("1.0", 400, "#1a1a2e")
                 }
             },
             "accessibility": {
@@ -292,15 +382,15 @@ async def seed_default_theme(
                     "border": "#dddddd"
                 },
                 "typography": {
-                    "h1": {"font_name": "Roboto", "font_size": "2.5", "font_weight": 400, "color": "#2f27ce"},
-                    "h2": {"font_name": "Roboto", "font_size": "2.0", "font_weight": 400, "color": "#2f27ce"},
-                    "h3": {"font_name": "Roboto", "font_size": "1.75", "font_weight": 400, "color": "#433bff"},
-                    "h4": {"font_name": "Roboto", "font_size": "1.5", "font_weight": 400, "color": "#1a1675"},
-                    "h5": {"font_name": "Roboto", "font_size": "1.25", "font_weight": 400, "color": "#1a1675"},
-                    "h6": {"font_name": "Roboto", "font_size": "1.0", "font_weight": 400, "color": "#1a1675"},
-                    "title": {"font_name": "Roboto", "font_size": "1.5", "font_weight": 700, "color": "#1a1675"},
-                    "subtitle": {"font_name": "Roboto", "font_size": "1.25", "font_weight": 600, "color": "#1a1675"},
-                    "paragraph": {"font_name": "Roboto", "font_size": "1.0", "font_weight": 400, "color": "#1a1a2e"}
+                    "h1": make_typography_element("2.5", 400, "#2f27ce"),
+                    "h2": make_typography_element("2.0", 400, "#2f27ce"),
+                    "h3": make_typography_element("1.75", 400, "#433bff"),
+                    "h4": make_typography_element("1.5", 400, "#1a1675"),
+                    "h5": make_typography_element("1.25", 400, "#1a1675"),
+                    "h6": make_typography_element("1.0", 400, "#1a1675"),
+                    "title": make_typography_element("1.5", 700, "#1a1675"),
+                    "subtitle": make_typography_element("1.25", 600, "#1a1675"),
+                    "paragraph": make_typography_element("1.0", 400, "#1a1a2e")
                 }
             }
         }
@@ -312,10 +402,29 @@ async def seed_default_theme(
             config=default_config,
             is_active=True,
             is_default=True,
+            created_by=created_by,
         )
         db.add(theme)
         await db.commit()
         await db.refresh(theme)
+
+        # Update font usage tracking
+        if default_font and default_font.id:
+            theme_id_str = str(theme.id)
+            # Build new usage list and reassign (SQLAlchemy doesn't detect in-place mutations of JSONB)
+            new_usages = []
+            for palette in ["light", "dark", "accessibility"]:
+                for element in ["h1", "h2", "h3", "h4", "h5", "h6", "title", "subtitle", "paragraph"]:
+                    new_usages.append({
+                        "theme_id": theme_id_str,
+                        "theme_name": theme.name,
+                        "palette": palette,
+                        "element": element
+                    })
+            default_font.font_usage = new_usages
+            await db.commit()
+            print(f"  Updated font usage tracking for Roboto ({len(new_usages)} entries)")
+        
         print(f"  Created default theme: {theme_name}")
     else:
         print(f"  Default theme exists: {theme_name}")
@@ -344,13 +453,16 @@ async def seed_database() -> None:
             await seed_role_permissions(db, roles, permissions)
 
             # Seed root user
-            await seed_root_user(db, roles)
+            root_user = await seed_root_user(db, roles)
 
             # Seed admin user
             await seed_admin_user(db, roles)
 
-            # Seed default theme
-            await seed_default_theme(db)
+            # Seed fonts (owned by root user)
+            default_font = await seed_fonts(db, root_user)
+
+            # Seed default theme (with font reference and creator)
+            await seed_default_theme(db, default_font, root_user.id)
 
             print("=" * 50)
             print("Database seeding completed successfully!")

@@ -72,7 +72,7 @@ export const CourseCarousel: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="course-carousel-title mb-4">Featured Courses</h2>
-          <p className="text-p-size text-p-color max-w-2xl mx-auto">
+          <p className="text-p-font text-p-size text-p-color max-w-2xl mx-auto">
             Explore our most popular courses designed by industry experts
           </p>
         </div>

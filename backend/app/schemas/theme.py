@@ -63,6 +63,7 @@ class TypographyElement(BaseModel):
                 "line_height": "1.2"
             }
         },
+        alias_generator=AliasGenerator(serialization_alias=to_camel),
         populate_by_name=True,
     )
 

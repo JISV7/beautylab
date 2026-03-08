@@ -45,8 +45,8 @@ export const Services: React.FC = () => {
     <section id="services" className="py-16 lg:py-24 palette-surface">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-subtitle-size text-subtitle-color text-subtitle-weight mb-4">What We Offer</h2>
-          <p className="text-p-size text-p-color max-w-2xl mx-auto">
+          <h2 className="text-subtitle-font text-subtitle-size text-subtitle-color text-subtitle-weight mb-4">What We Offer</h2>
+          <p className="text-p-font text-p-size text-p-color max-w-2xl mx-auto">
             Comprehensive learning paths designed to take you from beginner to professional
           </p>
         </div>
@@ -60,8 +60,8 @@ export const Services: React.FC = () => {
               <div className="w-12 h-12 rounded-lg palette-primary flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
                 <service.icon className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-subtitle-size text-subtitle-color text-subtitle-weight mb-3">{service.title}</h3>
-              <p className="text-p-size text-p-color">
+              <h3 className="text-subtitle-font text-subtitle-size text-subtitle-color text-subtitle-weight mb-3">{service.title}</h3>
+              <p className="text-p-font text-p-size text-p-color">
                 {service.description}
               </p>
             </div>

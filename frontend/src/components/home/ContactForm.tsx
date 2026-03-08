@@ -38,7 +38,7 @@ export const ContactForm: React.FC = () => {
             <div className="space-y-6">
               <div className="flex items-start gap-4">
                 <div className="w-10 h-10 rounded-lg palette-primary flex items-center justify-center flex-shrink-0">
-                  <Mail className="w-5 h-5 text-white" style={{ color: 'var(--decorator-color)' }} />
+                  <Mail className="w-5 h-5 text-white decorator-color" />
                 </div>
                 <div>
                   <h4 className="text-h4-font text-h4-size text-h4-color text-h4-weight mb-1">Email Us</h4>
@@ -48,7 +48,7 @@ export const ContactForm: React.FC = () => {
 
               <div className="flex items-start gap-4">
                 <div className="w-10 h-10 rounded-lg palette-secondary flex items-center justify-center flex-shrink-0">
-                  <MessageSquare className="w-5 h-5 text-white" style={{ color: 'var(--decorator-color)' }} />
+                  <MessageSquare className="w-5 h-5 text-white decorator-color" />
                 </div>
                 <div>
                   <h4 className="text-h4-font text-h4-size text-h4-color text-h4-weight mb-1">Live Chat</h4>
@@ -64,7 +64,7 @@ export const ContactForm: React.FC = () => {
               <div>
                 <label htmlFor="name" className="text-p-font text-p-size text-p-color font-medium block mb-2">
                   <div className="flex items-center gap-2">
-                    <User className="w-4 h-4" style={{ color: 'var(--decorator-color)' }} />
+                    <User className="w-4 h-4 decorator-color" />
                     Your Name
                   </div>
                 </label>
@@ -83,7 +83,7 @@ export const ContactForm: React.FC = () => {
               <div>
                 <label htmlFor="email" className="text-p-font text-p-size text-p-color font-medium block mb-2">
                   <div className="flex items-center gap-2">
-                    <Mail className="w-4 h-4" style={{ color: 'var(--decorator-color)' }} />
+                    <Mail className="w-4 h-4 decorator-color" />
                     Email Address
                   </div>
                 </label>
@@ -137,7 +137,7 @@ export const ContactForm: React.FC = () => {
 
               <button type="submit" className="theme-button theme-button-primary w-full">
                 <span>Send Message</span>
-                <Send className="w-4 h-4" style={{ color: 'var(--decorator-color)' }} />
+                <Send className="w-4 h-4 decorator-color" />
               </button>
             </form>
           </div>

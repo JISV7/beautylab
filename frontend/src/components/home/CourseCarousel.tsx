@@ -101,7 +101,7 @@ export const CourseCarousel: React.FC = () => {
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                   <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm palette-primary font-bold px-3 py-1 rounded-full text-sm flex items-center gap-1 shadow-sm">
-                    <Star className="w-4 h-4 fill-current" style={{ color: 'var(--decorator-color)' }} />
+                    <Star className="w-4 h-4 fill-current decorator-color" />
                     {course.rating}
                   </div>
                 </div>
@@ -119,11 +119,11 @@ export const CourseCarousel: React.FC = () => {
                   {/* Course Meta */}
                   <div className="flex items-center justify-between mb-6 text-p-size">
                     <div className="flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-p-color" style={{ color: 'var(--decorator-color)' }} />
+                      <Clock className="w-4 h-4 text-p-color" />
                       <span className="font-medium text-p-color">{course.duration}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Users className="w-4 h-4 text-p-color" style={{ color: 'var(--decorator-color)' }} />
+                      <Users className="w-4 h-4 text-p-color" />
                       <span className="font-medium text-p-color">{course.students}</span>
                     </div>
                   </div>

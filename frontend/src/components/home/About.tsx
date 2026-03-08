@@ -48,7 +48,7 @@ export const About: React.FC = () => {
                 className="palette-surface palette-border border rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group p-6 text-center"
               >
                 <div className="w-12 h-12 rounded-lg palette-primary flex items-center justify-center mb-4 mx-auto group-hover:scale-110 transition-transform duration-300">
-                  <Icon className="w-6 h-6 text-white" style={{ color: 'var(--decorator-color)' }} />
+                  <Icon className="w-6 h-6 decorator-color" />
                 </div>
                 <h3 className="text-subtitle-font text-subtitle-size text-subtitle-color text-subtitle-weight mb-3">{feature.title}</h3>
                 <p className="text-p-font text-p-size text-p-color">

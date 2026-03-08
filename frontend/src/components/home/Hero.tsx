@@ -11,7 +11,7 @@ export const Hero: React.FC = () => {
         <div className="text-center">
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full palette-surface palette-border border mb-6">
-            <Sparkles className="w-4 h-4 palette-text-secondary" style={{ color: 'var(--decorator-color)' }} />
+            <Sparkles className="w-4 h-4 text-p-color" />
             <span className="text-p-font text-p-size text-p-color">Master the Future of Technology</span>
           </div>
 

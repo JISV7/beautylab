@@ -529,7 +529,7 @@
   .auth-input {
     font-family: var(--text-p-font);
     font-size: var(--text-p-size);
-    color: var(--palette-text);
+    color: var(--text-p-color);
     background-color: var(--palette-surface);
     border: 1px solid var(--palette-border);
     border-radius: 0.5rem;

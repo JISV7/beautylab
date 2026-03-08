@@ -93,7 +93,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
           <button
             type="button"
             onClick={onSwitchToRecovery}
-            className="text-p-color text-sm mt-2"
+            className="text-palette-primary text-sm mt-2"
             disabled={isLoading}
           >
             Forgot password?

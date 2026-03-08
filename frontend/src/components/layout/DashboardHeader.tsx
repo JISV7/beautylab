@@ -36,24 +36,24 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNavigate, on
     };
 
     return (
-        <header className="dashboard-header z-40 px-6 py-4 flex items-center justify-between">
+        <header className="dashboard-header z-40 px-6 py-4 flex items-center justify-between gap-4">
             {/* Left Side: Logo + Search */}
-            <div className="flex items-center gap-6 flex-1 max-w-3xl">
+            <div className="flex items-center gap-4 sm:gap-6 flex-1 min-w-0">
                 {/* Logo */}
-                <a href="/" className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-[var(--palette-primary)] flex items-center justify-center">
+                <a href="/" className="flex items-center gap-2 flex-shrink-0">
+                    <div className="rounded-lg p-2 logo-brand-bg">
                         <Code2 className="w-5 h-5 text-white" />
                     </div>
-                    <span className="text-h4-font text-h4-size text-h4-color text-h4-weight font-bold">Codyn</span>
+                    <span className="text-h4-font text-h4-size text-h4-color text-h4-weight font-bold hidden sm:inline">Codyn</span>
                 </a>
 
                 {/* Search Bar */}
-                <div className="flex-1 max-w-xl">
+                <div className="flex-1 min-w-0 max-w-xs sm:max-w-xl">
                     <div className="relative">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-p-color" />
                         <input
                             type="text"
-                            placeholder="Search courses, lessons, or topics..."
+                            placeholder="Search..."
                             className="w-full pl-10 pr-4 py-2 rounded-lg palette-surface palette-border border text-p-color placeholder-[var(--palette-text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
                         />
                     </div>
@@ -67,32 +67,32 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNavigate, on
                     <button
                         onClick={() => setPaletteMode('light')}
                         className={`p-2 rounded-lg transition-colors ${currentMode === 'light'
-                                ? 'palette-primary text-white'
-                                : 'bg-transparent palette-text-secondary hover:palette-border'
+                                ? 'palette-primary'
+                                : 'bg-transparent'
                             }`}
                         title="Light Mode"
                     >
-                        <Sun className="w-5 h-5" />
+                        <Sun className="w-5 h-5 text-p-color" />
                     </button>
                     <button
                         onClick={() => setPaletteMode('dark')}
                         className={`p-2 rounded-lg transition-colors ${currentMode === 'dark'
-                                ? 'palette-primary text-white'
-                                : 'bg-transparent palette-text-secondary hover:palette-border'
+                                ? 'palette-primary'
+                                : 'bg-transparent'
                             }`}
                         title="Dark Mode"
                     >
-                        <Moon className="w-5 h-5" />
+                        <Moon className="w-5 h-5 text-p-color" />
                     </button>
                     <button
                         onClick={() => setPaletteMode('accessibility')}
                         className={`p-2 rounded-lg transition-colors ${currentMode === 'accessibility'
-                                ? 'palette-primary text-white'
-                                : 'bg-transparent palette-text-secondary hover:palette-border'
+                                ? 'palette-primary'
+                                : 'bg-transparent'
                             }`}
                         title="Accessibility Mode"
                     >
-                        <Eye className="w-5 h-5" />
+                        <Eye className="w-5 h-5 text-p-color" />
                     </button>
                 </div>
 
@@ -100,9 +100,9 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNavigate, on
                 <div className="relative">
                     <button
                         onClick={() => setIsNotificationOpen(!isNotificationOpen)}
-                        className="relative p-2 rounded-lg palette-text-secondary hover:palette-border transition-colors"
+                        className="relative p-2 rounded-lg bg-transparent transition-colors"
                     >
-                        <Bell className="w-5 h-5" />
+                        <Bell className="w-5 h-5 text-p-color" />
                         <span className="absolute top-1 right-1 w-2 h-2 palette-primary rounded-full" />
                     </button>
 

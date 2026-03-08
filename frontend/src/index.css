@@ -55,6 +55,11 @@
     color: var(--palette-primary);
   }
 
+  /* Logo brand color - hardcoded red */
+  .logo-brand-bg {
+    background-color: #F83A3A;
+  }
+
   /* ==================== Decorator (Icons & Decorative Elements) ==================== */
   .decorator-color {
     color: var(--decorator-color, #ffffff);

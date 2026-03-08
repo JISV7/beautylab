@@ -61,7 +61,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
             Full Name
           </label>
           <div className="relative">
-            <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 auth-text-secondary" />
+            <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 auth-text-secondary" style={{ color: 'var(--decorator-color)' }} />
             <input
               type="text"
               required
@@ -79,7 +79,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
             Email Address
           </label>
           <div className="relative">
-            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 auth-text-secondary" />
+            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 auth-text-secondary" style={{ color: 'var(--decorator-color)' }} />
             <input
               type="email"
               required
@@ -97,7 +97,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
             Password
           </label>
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 auth-text-secondary" />
+            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 auth-text-secondary" style={{ color: 'var(--decorator-color)' }} />
             <input
               type={showPassword ? 'text' : 'password'}
               required
@@ -114,9 +114,9 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
               disabled={isLoading}
             >
               {showPassword ? (
-                <EyeOff className="w-5 h-5" />
+                <EyeOff className="w-5 h-5" style={{ color: 'var(--decorator-color)' }} />
               ) : (
-                <Eye className="w-5 h-5" />
+                <Eye className="w-5 h-5" style={{ color: 'var(--decorator-color)' }} />
               )}
             </button>
           </div>
@@ -127,7 +127,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
             Confirm Password
           </label>
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 auth-text-secondary" />
+            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 auth-text-secondary" style={{ color: 'var(--decorator-color)' }} />
             <input
               type={showConfirmPassword ? 'text' : 'password'}
               required
@@ -144,9 +144,9 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
               disabled={isLoading}
             >
               {showConfirmPassword ? (
-                <EyeOff className="w-5 h-5" />
+                <EyeOff className="w-5 h-5" style={{ color: 'var(--decorator-color)' }} />
               ) : (
-                <Eye className="w-5 h-5" />
+                <Eye className="w-5 h-5" style={{ color: 'var(--decorator-color)' }} />
               )}
             </button>
           </div>
@@ -164,7 +164,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
           disabled={isLoading}
         >
           {isLoading ? 'Creating Account...' : 'Create Account'}
-          {!isLoading && <ArrowRight className="w-4 h-4" />}
+          {!isLoading && <ArrowRight className="w-4 h-4" style={{ color: 'var(--decorator-color)' }} />}
         </button>
       </form>
 

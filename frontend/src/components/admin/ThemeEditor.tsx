@@ -188,7 +188,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                         onClick={onBack}
                         className="p-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
                     >
-                        <X className="w-5 h-5 theme-text-secondary" />
+                        <X className="w-5 h-5 theme-text-secondary" style={{ color: 'var(--decorator-color)' }} />
                     </button>
                     <h2 className="text-xl font-bold theme-text-base">
                         Edit: {theme.name}
@@ -205,14 +205,14 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                         onClick={onPublish}
                         className="px-4 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-lg shadow-sm transition-colors flex items-center gap-2"
                     >
-                        <Eye className="w-4 h-4" />
+                        <Eye className="w-4 h-4" style={{ color: 'var(--decorator-color)' }} />
                         Publish Theme
                     </button>
                     <button
                         onClick={handleSave}
                         className="px-4 py-2 text-sm font-medium text-white theme-primary rounded-lg shadow-sm hover:opacity-90 transition-opacity flex items-center gap-2"
                     >
-                        <Save className="w-4 h-4" />
+                        <Save className="w-4 h-4" style={{ color: 'var(--decorator-color)' }} />
                         Save Changes
                     </button>
                 </div>
@@ -247,7 +247,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                                     : 'theme-text-secondary hover:text-slate-900 dark:hover:text-white'
                             }`}
                         >
-                            <Palette className="w-4 h-4" />
+                            <Palette className="w-4 h-4" style={{ color: 'var(--decorator-color)' }} />
                             Colors
                         </button>
                         <button
@@ -258,7 +258,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                                     : 'theme-text-secondary hover:text-slate-900 dark:hover:text-white'
                             }`}
                         >
-                            <Type className="w-4 h-4" />
+                            <Type className="w-4 h-4" style={{ color: 'var(--decorator-color)' }} />
                             Typography
                         </button>
                     </div>

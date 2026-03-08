@@ -64,7 +64,7 @@ export const CoursesInProgress: React.FC<CoursesInProgressProps> = ({
                 <h2 className="text-2xl font-bold theme-text-base">In Progress</h2>
                 <button className="text-sm theme-primary font-medium hover:opacity-80 flex items-center gap-1">
                     View All
-                    <ChevronRight className="w-4 h-4" />
+                    <ChevronRight className="w-4 h-4" style={{ color: 'var(--decorator-color)' }} />
                 </button>
             </div>
 
@@ -84,7 +84,7 @@ export const CoursesInProgress: React.FC<CoursesInProgressProps> = ({
                                 />
                             ) : (
                                 <div className="w-full h-full theme-primary/20 flex items-center justify-center">
-                                    <Play className="w-12 h-12 theme-primary opacity-50" />
+                                    <Play className="w-12 h-12 theme-primary opacity-50" style={{ color: 'var(--decorator-color)' }} />
                                 </div>
                             )}
                             <div className="absolute top-3 right-3 theme-surface px-2 py-1 rounded text-xs font-medium theme-text-base">
@@ -99,7 +99,7 @@ export const CoursesInProgress: React.FC<CoursesInProgressProps> = ({
                             </h3>
 
                             <div className="flex items-center gap-2 mb-3 theme-text-secondary">
-                                <Clock className="w-4 h-4" />
+                                <Clock className="w-4 h-4" style={{ color: 'var(--decorator-color)' }} />
                                 <span className="text-sm">Next: {course.nextLesson}</span>
                             </div>
 
@@ -121,7 +121,7 @@ export const CoursesInProgress: React.FC<CoursesInProgressProps> = ({
                                 onClick={() => onContinue?.(course.id)}
                                 className="w-full theme-primary text-white py-2 rounded-lg font-medium hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
                             >
-                                <Play className="w-4 h-4" />
+                                <Play className="w-4 h-4" style={{ color: 'var(--decorator-color)' }} />
                                 Continue
                             </button>
                         </div>

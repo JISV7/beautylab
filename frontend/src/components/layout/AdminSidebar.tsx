@@ -31,7 +31,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
             <div className="p-6 border-b dashboard-sidebar-border">
                 <div className="flex items-center gap-2 mb-4">
                     <div className="w-8 h-8 rounded-lg bg-[var(--palette-primary)] flex items-center justify-center">
-                        <Code2 className="w-5 h-5 text-white" />
+                        <Code2 className="w-5 h-5 text-white" style={{ color: 'var(--decorator-color)' }} />
                     </div>
                     <span className="theme-h4 font-bold">Codyn Admin</span>
                 </div>
@@ -39,7 +39,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                     onClick={onBack}
                     className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-p-font text-p-size text-p-color hover:bg-[var(--theme-border-value)] transition-colors"
                 >
-                    <ArrowLeft className="w-4 h-4" />
+                    <ArrowLeft className="w-4 h-4" style={{ color: 'var(--decorator-color)' }} />
                     Back to Dashboard
                 </button>
             </div>
@@ -61,7 +61,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                                 ${isActive ? 'dashboard-sidebar-link-active' : ''}
                             `}
                         >
-                            <Icon className="w-5 h-5" />
+                            <Icon className="w-5 h-5" style={{ color: 'var(--decorator-color)' }} />
                             {item.label}
                         </button>
                     );

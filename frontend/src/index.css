@@ -45,6 +45,26 @@
     color: var(--palette-text-secondary);
   }
 
+  /* ==================== Decorator (Icons & Decorative Elements) ==================== */
+  .decorator-color {
+    color: var(--decorator-color, #ffffff);
+  }
+
+  .decorator-size-sm {
+    width: calc(0.75rem * var(--decorator-size, 1));
+    height: calc(0.75rem * var(--decorator-size, 1));
+  }
+
+  .decorator-size-base {
+    width: calc(1rem * var(--decorator-size, 1));
+    height: calc(1rem * var(--decorator-size, 1));
+  }
+
+  .decorator-size-lg {
+    width: calc(1.25rem * var(--decorator-size, 1));
+    height: calc(1.25rem * var(--decorator-size, 1));
+  }
+
   /* ==================== Typography Token Utilities ==================== */
   
   /* H1 Typography */

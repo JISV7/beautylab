@@ -24,7 +24,7 @@ export const PasswordRecoveryForm: React.FC<PasswordRecoveryFormProps> = ({
       <div className="space-y-5">
         <div className="text-center">
           <div className="auth-success-icon w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Mail className="w-8 h-8" />
+            <Mail className="w-8 h-8" style={{ color: 'var(--decorator-color)' }} />
           </div>
           <h2 className="auth-title mb-2">Check Your Email</h2>
           <p className="auth-description text-sm">
@@ -37,7 +37,7 @@ export const PasswordRecoveryForm: React.FC<PasswordRecoveryFormProps> = ({
           onClick={onSwitchToLogin}
           className="auth-button-secondary w-full"
         >
-          <ArrowLeft className="w-4 h-4" />
+          <ArrowLeft className="w-4 h-4" style={{ color: 'var(--decorator-color)' }} />
           Back to Sign In
         </button>
       </div>
@@ -59,7 +59,7 @@ export const PasswordRecoveryForm: React.FC<PasswordRecoveryFormProps> = ({
             Email Address
           </label>
           <div className="relative">
-            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 auth-text-secondary" />
+            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 auth-text-secondary" style={{ color: 'var(--decorator-color)' }} />
             <input
               type="email"
               required
@@ -76,7 +76,7 @@ export const PasswordRecoveryForm: React.FC<PasswordRecoveryFormProps> = ({
           className="auth-button-primary w-full"
         >
           Send Reset Link
-          <Send className="w-4 h-4" />
+          <Send className="w-4 h-4" style={{ color: 'var(--decorator-color)' }} />
         </button>
       </form>
 
@@ -84,7 +84,7 @@ export const PasswordRecoveryForm: React.FC<PasswordRecoveryFormProps> = ({
         onClick={onSwitchToLogin}
         className="auth-button-secondary w-full"
       >
-        <ArrowLeft className="w-4 h-4" />
+        <ArrowLeft className="w-4 h-4" style={{ color: 'var(--decorator-color)' }} />
         Back to Sign In
       </button>
     </div>

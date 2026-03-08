@@ -11,7 +11,7 @@ export const Hero: React.FC = () => {
         <div className="text-center">
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full palette-surface palette-border border mb-6">
-            <Sparkles className="w-4 h-4 palette-text-secondary" />
+            <Sparkles className="w-4 h-4 palette-text-secondary" style={{ color: 'var(--decorator-color)' }} />
             <span className="text-p-font text-p-size text-p-color">Master the Future of Technology</span>
           </div>
 
@@ -30,7 +30,7 @@ export const Hero: React.FC = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <button className="theme-button theme-button-primary">
               Get Started Free
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-4 h-4" style={{ color: 'var(--decorator-color)' }} />
             </button>
             <button className="hero-cta-secondary">
               Browse Courses

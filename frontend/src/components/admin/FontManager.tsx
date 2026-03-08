@@ -30,7 +30,7 @@ export const FontManager: React.FC<FontManagerProps> = ({
         <div className="rounded-xl border theme-border shadow-sm overflow-hidden" style={{ backgroundColor: '#fffafb' }}>
             <div className="p-6 border-b theme-border">
                 <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-                    <UploadCloud className="w-5 h-5 text-blue-500" />
+                    <UploadCloud className="w-5 h-5 text-blue-500" style={{ color: 'var(--decorator-color)' }} />
                     Upload Fonts
                 </h3>
             </div>
@@ -77,7 +77,7 @@ export const FontManager: React.FC<FontManagerProps> = ({
                                     onClick={() => handleDeleteFont(font)}
                                     className="text-slate-400 hover:text-red-500 transition-colors"
                                 >
-                                    <Trash2 className="w-4 h-4" />
+                                    <Trash2 className="w-4 h-4" style={{ color: 'var(--decorator-color)' }} />
                                 </button>
                             </li>
                         ))}

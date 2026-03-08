@@ -55,7 +55,7 @@ export const WelcomeHero: React.FC<WelcomeHeroProps> = ({
                         <div className="flex items-start justify-between gap-4">
                             <div className="flex-1">
                                 <div className="flex items-center gap-2 mb-2">
-                                    <Play className="w-4 h-4 theme-primary" />
+                                    <Play className="w-4 h-4 theme-primary" style={{ color: 'var(--decorator-color)' }} />
                                     <span className="text-xs font-medium theme-text-secondary">
                                         CONTINUE WHERE YOU LEFT OFF
                                     </span>
@@ -81,7 +81,7 @@ export const WelcomeHero: React.FC<WelcomeHeroProps> = ({
                                 className="dashboard-welcome-button px-6 py-3 rounded-lg font-semibold flex items-center gap-2 whitespace-nowrap hover:opacity-90 transition-opacity"
                             >
                                 Continue
-                                <ArrowRight className="w-4 h-4" />
+                                <ArrowRight className="w-4 h-4" style={{ color: 'var(--decorator-color)' }} />
                             </button>
                         </div>
                     </div>
@@ -92,7 +92,7 @@ export const WelcomeHero: React.FC<WelcomeHeroProps> = ({
                         </p>
                         <button className="dashboard-welcome-button px-6 py-3 rounded-lg font-semibold flex items-center gap-2 hover:opacity-90 transition-opacity">
                             Explore Courses
-                            <ArrowRight className="w-4 h-4" />
+                            <ArrowRight className="w-4 h-4" style={{ color: 'var(--decorator-color)' }} />
                         </button>
                     </div>
                 )}

@@ -60,7 +60,7 @@ export const AgenticAIWidget: React.FC<AgenticAIWidgetProps> = ({ onPromptSubmit
             {/* Header */}
             <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 rounded-xl theme-primary flex items-center justify-center">
-                    <Sparkles className="w-5 h-5 text-white" />
+                    <Sparkles className="w-5 h-5 text-white" style={{ color: 'var(--decorator-color)' }} />
                 </div>
                 <div>
                     <h2 className="dashboard-ai-widget-title text-xl font-bold">
@@ -115,7 +115,7 @@ export const AgenticAIWidget: React.FC<AgenticAIWidgetProps> = ({ onPromptSubmit
                             onClick={() => setPrompt(item.prompt)}
                             className="flex items-center gap-2 px-3 py-2 theme-surface theme-border border rounded-lg text-sm theme-text-secondary hover:theme-primary hover:text-white transition-colors"
                         >
-                            <Icon className="w-4 h-4" />
+                            <Icon className="w-4 h-4" style={{ color: 'var(--decorator-color)' }} />
                             {item.text}
                         </button>
                     );
@@ -136,7 +136,7 @@ export const AgenticAIWidget: React.FC<AgenticAIWidgetProps> = ({ onPromptSubmit
                     disabled={!prompt.trim() || isTyping}
                     className="theme-primary text-white px-6 py-3 rounded-xl font-medium hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                 >
-                    <Send className="w-4 h-4" />
+                    <Send className="w-4 h-4" style={{ color: 'var(--decorator-color)' }} />
                     Send
                 </button>
             </form>

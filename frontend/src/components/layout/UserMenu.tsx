@@ -51,7 +51,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({ onNavigateToAdmin }) => {
                 aria-label="User menu"
             >
                 <div className="w-8 h-8 rounded-full theme-primary flex items-center justify-center text-white">
-                    <User className="w-4 h-4" />
+                    <User className="w-4 h-4" style={{ color: 'var(--decorator-color)' }} />
                 </div>
             </button>
 
@@ -73,7 +73,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({ onNavigateToAdmin }) => {
                             role="menuitem"
                             onKeyDown={(e) => handleMenuItemKeyDown(e)}
                         >
-                            <Settings className="w-4 h-4" />
+                            <Settings className="w-4 h-4" style={{ color: 'var(--decorator-color)' }} />
                             Settings
                         </button>
                         {user?.isAdmin && (
@@ -83,7 +83,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({ onNavigateToAdmin }) => {
                                 role="menuitem"
                                 onKeyDown={(e) => handleMenuItemKeyDown(e, handleAdminPanel)}
                             >
-                                <Shield className="w-4 h-4" />
+                                <Shield className="w-4 h-4" style={{ color: 'var(--decorator-color)' }} />
                                 Admin Panel
                             </button>
                         )}
@@ -99,7 +99,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({ onNavigateToAdmin }) => {
                                 setIsOpen(false);
                             })}
                         >
-                            <LogOut className="w-4 h-4" />
+                            <LogOut className="w-4 h-4" style={{ color: 'var(--decorator-color)' }} />
                             Sign Out
                         </button>
                     </div>

@@ -33,7 +33,8 @@ const DEFAULT_FALLBACK_THEME: Theme = {
                 h6: { fontName: 'Roboto', fontSize: '1.0', fontWeight: 400, color: '#1a1675' },
                 title: { fontName: 'Roboto', fontSize: '1.5', fontWeight: 700, color: '#1a1675' },
                 subtitle: { fontName: 'Roboto', fontSize: '1.25', fontWeight: 600, color: '#1a1675' },
-                paragraph: { fontName: 'Roboto', fontSize: '1.0', fontWeight: 400, color: '#1a1a2e' }
+                paragraph: { fontName: 'Roboto', fontSize: '1.0', fontWeight: 400, color: '#1a1a2e' },
+                decorator: { fontName: 'Roboto', fontSize: '1.0', fontWeight: 500, color: '#ffffff' }
             }
         },
         dark: {
@@ -54,7 +55,8 @@ const DEFAULT_FALLBACK_THEME: Theme = {
                 h6: { fontName: 'Roboto', fontSize: '1.0', fontWeight: 400, color: '#1a1675' },
                 title: { fontName: 'Roboto', fontSize: '1.5', fontWeight: 700, color: '#1a1675' },
                 subtitle: { fontName: 'Roboto', fontSize: '1.25', fontWeight: 600, color: '#1a1675' },
-                paragraph: { fontName: 'Roboto', fontSize: '1.0', fontWeight: 400, color: '#1a1a2e' }
+                paragraph: { fontName: 'Roboto', fontSize: '1.0', fontWeight: 400, color: '#1a1a2e' },
+                decorator: { fontName: 'Roboto', fontSize: '1.0', fontWeight: 500, color: '#ffffff' }
             }
         },
         accessibility: {
@@ -75,7 +77,8 @@ const DEFAULT_FALLBACK_THEME: Theme = {
                 h6: { fontName: 'Roboto', fontSize: '1.0', fontWeight: 400, color: '#1a1675' },
                 title: { fontName: 'Roboto', fontSize: '1.5', fontWeight: 700, color: '#1a1675' },
                 subtitle: { fontName: 'Roboto', fontSize: '1.25', fontWeight: 600, color: '#1a1675' },
-                paragraph: { fontName: 'Roboto', fontSize: '1.0', fontWeight: 400, color: '#1a1a2e' }
+                paragraph: { fontName: 'Roboto', fontSize: '1.0', fontWeight: 400, color: '#1a1a2e' },
+                decorator: { fontName: 'Roboto', fontSize: '1.0', fontWeight: 500, color: '#ffffff' }
             }
         }
     }
@@ -290,6 +293,10 @@ const applyPalette = (palette: ThemePalette, mode: string): void => {
     root.style.setProperty('--text-p-color', typography.paragraph.color);
     root.style.setProperty('--text-p-weight', String(typography.paragraph.fontWeight));
     root.style.setProperty('--text-p-line-height', typography.paragraph.lineHeight || '1.6');
+
+    // Decorator (icons and decorative elements)
+    root.style.setProperty('--decorator-color', typography.decorator.color);
+    root.style.setProperty('--decorator-size', typography.decorator.fontSize);
 
     document.documentElement.classList.remove('light', 'dark', 'accessibility');
     document.documentElement.classList.add(mode);

@@ -55,7 +55,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
     return (
         <div className="text-center py-16">
             <div className="w-20 h-20 mx-auto mb-6 rounded-full theme-primary/10 flex items-center justify-center">
-                <Icon className="w-10 h-10 theme-primary" />
+                <Icon className="w-10 h-10 theme-primary" style={{ color: 'var(--decorator-color)' }} />
             </div>
             <h3 className="text-xl font-bold theme-text-base mb-2">
                 {config.title}
@@ -69,7 +69,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
                     className="theme-primary text-white px-6 py-3 rounded-lg font-medium hover:opacity-90 transition-opacity inline-flex items-center gap-2"
                 >
                     {config.actionLabel}
-                    <ArrowRight className="w-4 h-4" />
+                    <ArrowRight className="w-4 h-4" style={{ color: 'var(--decorator-color)' }} />
                 </button>
             )}
         </div>

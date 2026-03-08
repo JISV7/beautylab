@@ -117,14 +117,14 @@ export const CourseCarousel: React.FC = () => {
                   </p>
 
                   {/* Course Meta */}
-                  <div className="flex items-center justify-between mb-6 text-p-size palette-text-secondary">
+                  <div className="flex items-center justify-between mb-6 text-p-size">
                     <div className="flex items-center gap-2">
-                      <Clock className="w-4 h-4 palette-primary" />
-                      <span className="font-medium">{course.duration}</span>
+                      <Clock className="w-4 h-4 text-p-color" />
+                      <span className="font-medium text-p-color">{course.duration}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Users className="w-4 h-4 palette-primary" />
-                      <span className="font-medium">{course.students}</span>
+                      <Users className="w-4 h-4 text-p-color" />
+                      <span className="font-medium text-p-color">{course.students}</span>
                     </div>
                   </div>
 

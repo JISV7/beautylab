@@ -74,7 +74,7 @@ export const Footer: React.FC = () => {
                                         href={item.href}
                                         className="flex items-center gap-3 text-p-font text-p-size palette-text-secondary hover:palette-primary transition-colors"
                                     >
-                                        <Icon className="w-4 h-4 flex-shrink-0" />
+                                        <Icon className="w-4 h-4 text-p-color flex-shrink-0" />
                                         <span className="text-sm text-p-color">{item.text}</span>
                                     </a>
                                 );
@@ -92,7 +92,7 @@ export const Footer: React.FC = () => {
                                         aria-label={social.label}
                                         className="w-10 h-10 rounded-lg palette-border border flex items-center justify-center text-p-size palette-text-secondary hover:palette-primary hover:border-palette-primary transition-all"
                                     >
-                                        <Icon className="w-5 h-5" />
+                                        <Icon className="w-5 h-5 text-p-color" />
                                     </a>
                                 );
                             })}

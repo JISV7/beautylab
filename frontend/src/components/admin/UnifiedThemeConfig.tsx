@@ -212,7 +212,7 @@ export const UnifiedThemeConfig: React.FC = () => {
                     </div>
                     <button
                         onClick={handleCreateTheme}
-                        className="px-4 py-2 text-p-font text-p-size text-p-color theme-primary rounded-lg shadow-sm hover:opacity-90 transition-opacity"
+                        className="theme-button theme-button-primary"
                     >
                         + Create Theme
                     </button>

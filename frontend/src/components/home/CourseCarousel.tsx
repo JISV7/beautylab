@@ -129,7 +129,7 @@ export const CourseCarousel: React.FC = () => {
                   </div>
 
                   {/* CTA */}
-                  <button className="course-card-button w-full py-3 px-4 rounded-lg flex items-center justify-center gap-2">
+                  <button className="theme-button theme-button-primary w-full">
                     Enroll Now
                   </button>
                 </div>
@@ -142,8 +142,8 @@ export const CourseCarousel: React.FC = () => {
       {/* Global CSS Overrides for Swiper specific to this component */}
       <style>{`
         .swiper-pagination-bullet {
-          background-color: var(--palette-text-secondary);
-          opacity: 0.5;
+          background-color: var(--palette-secondary);
+          opacity: 1;
         }
         .swiper-pagination-bullet-active {
           background-color: var(--palette-primary);

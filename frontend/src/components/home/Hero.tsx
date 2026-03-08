@@ -10,9 +10,9 @@ export const Hero: React.FC = () => {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center">
           {/* Badge */}
-          <div className="hero-badge inline-flex items-center gap-2 px-4 py-2 rounded-full palette-surface palette-border border mb-6">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full palette-surface palette-border border mb-6">
             <Sparkles className="w-4 h-4 palette-text-secondary" />
-            <span className="hero-badge-text">Master the Future of Technology</span>
+            <span className="text-p-font text-p-size text-p-color">Master the Future of Technology</span>
           </div>
 
           {/* Heading */}
@@ -28,7 +28,7 @@ export const Hero: React.FC = () => {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <button className="hero-cta-primary inline-flex items-center gap-2">
+            <button className="theme-button theme-button-primary">
               Get Started Free
               <ArrowRight className="w-4 h-4" />
             </button>
@@ -38,18 +38,18 @@ export const Hero: React.FC = () => {
           </div>
 
           {/* Stats */}
-          <div className="hero-stats grid grid-cols-3 gap-8 mt-16 max-w-3xl mx-auto">
-            <div className="hero-stat">
+          <div className="grid grid-cols-3 gap-8 mt-16 max-w-3xl mx-auto">
+            <div>
               <div className="hero-stat-value">50K+</div>
-              <div className="hero-stat-label">Active Learners</div>
+              <div className="text-p-font text-p-size text-p-color">Active Learners</div>
             </div>
-            <div className="hero-stat">
+            <div>
               <div className="hero-stat-value">200+</div>
-              <div className="hero-stat-label">Expert Courses</div>
+              <div className="text-p-font text-p-size text-p-color">Expert Courses</div>
             </div>
-            <div className="hero-stat">
+            <div>
               <div className="hero-stat-value">95%</div>
-              <div className="hero-stat-label">Success Rate</div>
+              <div className="text-p-font text-p-size text-p-color">Success Rate</div>
             </div>
           </div>
         </div>

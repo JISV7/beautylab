@@ -102,7 +102,7 @@ export const CourseCarousel: React.FC = () => {
                   />
                   <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm palette-primary font-bold px-3 py-1 rounded-full text-sm flex items-center gap-1 shadow-sm">
                     <Star className="w-4 h-4 fill-current decorator-color" />
-                    {course.rating}
+                    <span className="decorator-color">{course.rating}</span>
                   </div>
                 </div>
 

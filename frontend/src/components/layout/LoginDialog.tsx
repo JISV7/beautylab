@@ -36,7 +36,7 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({ open, onOpenChange, on
           onClick={handleClose}
           className="absolute right-4 top-4 auth-text-secondary hover:auth-text-base transition-colors z-10"
         >
-          <X className="w-5 h-5" style={{ color: 'var(--decorator-color)' }} />
+          <X className="w-5 h-5 text-p-color" />
         </button>
 
         {/* Form switcher tabs */}

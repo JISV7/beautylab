@@ -453,7 +453,7 @@
 
   .theme-button-primary {
     background-color: var(--palette-primary);
-    color: #FFFFFF;
+    color: var(--decorator-color);
   }
 
   .theme-button-primary:hover {
@@ -542,7 +542,7 @@
     font-weight: 600;
     padding: 0.625rem 1.25rem;
     background-color: var(--palette-primary);
-    color: #FFFFFF;
+    color: var(--decorator-color);
     border: none;
     border-radius: 0.5rem;
     cursor: pointer;

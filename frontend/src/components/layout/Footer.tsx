@@ -54,7 +54,7 @@ export const Footer: React.FC = () => {
                     {/* Brand Column */}
                     <div className="lg:col-span-2">
                         <a href="/" className="flex items-center gap-2 mb-4">
-                            <div className="palette-primary rounded-lg p-2">
+                            <div className="rounded-lg p-2" style={{ backgroundColor: '#F83A3A' }}>
                                 <Code2 className="w-6 h-6 text-white" />
                             </div>
                             <span className="text-h4-font text-h4-size text-h4-color text-h4-weight font-bold palette-text">Codyn</span>

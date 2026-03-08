@@ -26,16 +26,19 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
     };
 
     return (
-        <div className="min-h-screen flex theme-background">
-            {/* Sidebar */}
-            <Sidebar
-                activeItem={activeItem}
-                onNavigate={handleNavigation}
-            />
+        <div className="min-h-screen flex flex-col theme-background">
+            {/* Header - Full Width Top */}
+            <DashboardHeader onNavigate={onNavigate} onNavigateToAdmin={onAdminNavigate} onLogout={onLogout} />
 
-            {/* Main Content Area */}
-            <div className="flex-1 flex flex-col">
-                <DashboardHeader onNavigate={onNavigate} onNavigateToAdmin={onAdminNavigate} onLogout={onLogout} />
+            {/* Bottom Row: Sidebar + Main Content */}
+            <div className="flex flex-1">
+                {/* Sidebar - Left Side */}
+                <Sidebar
+                    activeItem={activeItem}
+                    onNavigate={handleNavigation}
+                />
+
+                {/* Main Content Area */}
                 <main className="flex-1 overflow-y-auto p-6">
                     {children}
                 </main>

@@ -36,7 +36,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNavigate, on
     };
 
     return (
-        <header className="dashboard-header sticky top-0 z-40 px-6 py-4 flex items-center justify-between">
+        <header className="dashboard-header z-40 px-6 py-4 flex items-center justify-between">
             {/* Left Side: Logo + Search */}
             <div className="flex items-center gap-6 flex-1 max-w-3xl">
                 {/* Logo */}

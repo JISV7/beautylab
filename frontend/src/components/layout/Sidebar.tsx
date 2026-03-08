@@ -32,7 +32,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     };
 
     return (
-        <aside className="dashboard-sidebar w-64 min-h-screen flex flex-col">
+        <aside className="dashboard-sidebar w-64 flex flex-col">
             {/* Navigation */}
             <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
                 {navItems.map((item) => {

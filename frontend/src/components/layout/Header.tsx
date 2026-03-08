@@ -33,16 +33,16 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateToDashboard, onNavigat
 
           {/* Navigation */}
           <nav className="hidden md:flex items-center gap-6">
-            <a href="#courses" className="text-p-size palette-text-secondary hover:palette-primary transition-colors">
+            <a href="#courses" className="text-p-font text-p-size text-p-color hover:palette-primary transition-colors">
               Courses
             </a>
-            <a href="#services" className="text-p-size palette-text-secondary hover:palette-primary transition-colors">
+            <a href="#services" className="text-p-font text-p-size text-p-color hover:palette-primary transition-colors">
               Services
             </a>
-            <a href="#about" className="text-p-size palette-text-secondary hover:palette-primary transition-colors">
+            <a href="#about" className="text-p-font text-p-size text-p-color hover:palette-primary transition-colors">
               About
             </a>
-            <a href="#contact" className="text-p-size palette-text-secondary hover:palette-primary transition-colors">
+            <a href="#contact" className="text-p-font text-p-size text-p-color hover:palette-primary transition-colors">
               Contact
             </a>
           </nav>
@@ -89,7 +89,7 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateToDashboard, onNavigat
             ) : (
               <button
                 onClick={() => setLoginDialogOpen(true)}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg palette-primary text-white hover:opacity-90 transition-opacity"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--palette-primary)] text-white hover:bg-[var(--palette-accent)] transition-colors"
               >
                 <LogIn className="w-4 h-4" />
                 <span className="hidden sm:inline text-p-size">Sign In</span>

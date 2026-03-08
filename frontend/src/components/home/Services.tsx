@@ -42,7 +42,7 @@ const services = [
 
 export const Services: React.FC = () => {
   return (
-    <section id="services" className="py-16 lg:py-24 palette-surface">
+    <section id="services" className="py-16 lg:py-24 palette-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-subtitle-font text-subtitle-size text-subtitle-color text-subtitle-weight mb-4">What We Offer</h2>

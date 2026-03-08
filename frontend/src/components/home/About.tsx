@@ -30,7 +30,7 @@ const aboutFeatures = [
 
 export const About: React.FC = () => {
   return (
-    <section id="about" className="py-16 lg:py-24 palette-surface">
+    <section id="about" className="py-16 lg:py-24 palette-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-subtitle-font text-subtitle-size text-subtitle-color text-subtitle-weight mb-4">About Codyn</h2>
@@ -45,9 +45,9 @@ export const About: React.FC = () => {
             return (
               <div
                 key={feature.id}
-                className="text-center p-6 rounded-xl palette-border border hover:shadow-md transition-shadow duration-300"
+                className="palette-surface palette-border border rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group p-6 text-center"
               >
-                <div className="w-12 h-12 rounded-lg palette-primary flex items-center justify-center mb-4 mx-auto">
+                <div className="w-12 h-12 rounded-lg palette-primary flex items-center justify-center mb-4 mx-auto group-hover:scale-110 transition-transform duration-300">
                   <Icon className="w-6 h-6 text-white" />
                 </div>
                 <h3 className="text-subtitle-font text-subtitle-size text-subtitle-color text-subtitle-weight mb-3">{feature.title}</h3>

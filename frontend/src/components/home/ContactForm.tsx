@@ -109,13 +109,13 @@ export const ContactForm: React.FC = () => {
                   value={formData.subject}
                   onChange={handleChange}
                   required
-                  className="theme-input w-full"
+                  className="theme-input w-full text-p-color"
                 >
-                  <option value="">Select a subject</option>
-                  <option value="courses">Course Inquiry</option>
-                  <option value="technical">Technical Support</option>
-                  <option value="partnership">Partnership</option>
-                  <option value="other">Other</option>
+                  <option value="" className="text-p-color">Select a subject</option>
+                  <option value="courses" className="text-p-color">Course Inquiry</option>
+                  <option value="technical" className="text-p-color">Technical Support</option>
+                  <option value="partnership" className="text-p-color">Partnership</option>
+                  <option value="other" className="text-p-color">Other</option>
                 </select>
               </div>
 

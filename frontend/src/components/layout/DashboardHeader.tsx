@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Search, Bell, User, LogOut, Settings, Shield, Sun, Moon, Eye } from 'lucide-react';
+import { Search, Bell, User, LogOut, Settings, Shield, Sun, Moon, Eye, Sparkles } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
 
@@ -37,15 +37,26 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNavigate, on
 
     return (
         <header className="dashboard-header sticky top-0 z-40 px-6 py-4 flex items-center justify-between">
-            {/* Search Bar */}
-            <div className="flex-1 max-w-xl">
-                <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 palette-text-secondary" />
-                    <input
-                        type="text"
-                        placeholder="Search courses, lessons, or topics..."
-                        className="w-full pl-10 pr-4 py-2 rounded-lg palette-surface palette-border border text-p-color placeholder-[var(--palette-text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
-                    />
+            {/* Left Side: Logo + Search */}
+            <div className="flex items-center gap-6 flex-1 max-w-3xl">
+                {/* Logo */}
+                <a href="/" className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-lg bg-[var(--palette-primary)] flex items-center justify-center">
+                        <Sparkles className="w-5 h-5 text-white" />
+                    </div>
+                    <span className="text-h4-font text-h4-size text-h4-color text-h4-weight font-bold">Codyn</span>
+                </a>
+
+                {/* Search Bar */}
+                <div className="flex-1 max-w-xl">
+                    <div className="relative">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-p-color" />
+                        <input
+                            type="text"
+                            placeholder="Search courses, lessons, or topics..."
+                            className="w-full pl-10 pr-4 py-2 rounded-lg palette-surface palette-border border text-p-color placeholder-[var(--palette-text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
+                        />
+                    </div>
                 </div>
             </div>
 
@@ -134,16 +145,16 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNavigate, on
                                 <p className="text-sm font-medium text-p-color">
                                     {user?.name || 'User Account'}
                                 </p>
-                                <p className="text-xs palette-text-secondary">{user?.email}</p>
+                                <p className="text-xs text-p-color">{user?.email}</p>
                             </div>
-                            <button className="w-full text-left px-4 py-2 text-sm palette-text-secondary hover:bg-black/5 dark:hover:bg-white/5 flex items-center gap-2">
+                            <button className="w-full text-left px-4 py-2 text-sm text-p-color hover:bg-black/5 dark:hover:bg-white/5 flex items-center gap-2">
                                 <Settings className="w-4 h-4" />
                                 Settings
                             </button>
                             {user?.isAdmin && (
                                 <button
                                     onClick={handleAdminPanel}
-                                    className="w-full text-left px-4 py-2 text-sm palette-text-secondary hover:bg-black/5 dark:hover:bg-white/5 flex items-center gap-2"
+                                    className="w-full text-left px-4 py-2 text-sm text-p-color hover:bg-black/5 dark:hover:bg-white/5 flex items-center gap-2"
                                 >
                                     <Shield className="w-4 h-4" />
                                     Admin Panel
@@ -155,7 +166,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNavigate, on
                                     setIsMenuOpen(false);
                                     onLogout?.();
                                 }}
-                                className="w-full text-left px-4 py-2 text-sm palette-text-secondary hover:bg-red-50 hover:text-red-500 flex items-center gap-2 transition-colors"
+                                className="w-full text-left px-4 py-2 text-sm text-p-color hover:bg-red-50 hover:text-red-500 flex items-center gap-2 transition-colors"
                             >
                                 <LogOut className="w-4 h-4" />
                                 Sign Out

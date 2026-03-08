@@ -1,8 +1,8 @@
 import React from 'react';
-import { 
-    BookOpen, 
-    Compass, 
-    Users, 
+import {
+    BookOpen,
+    Compass,
+    Users,
     Home,
     Sparkles
 } from 'lucide-react';
@@ -33,16 +33,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
     return (
         <aside className="dashboard-sidebar w-64 min-h-screen flex flex-col">
-            {/* Logo */}
-            <div className="p-6 border-b dashboard-sidebar-border">
-                <a href="/" className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg theme-primary flex items-center justify-center">
-                        <Sparkles className="w-5 h-5 text-white" />
-                    </div>
-                    <span className="theme-h4 font-bold">Codyn</span>
-                </a>
-            </div>
-
             {/* Navigation */}
             <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
                 {navItems.map((item) => {

@@ -594,13 +594,13 @@
   }
 
   .dashboard-sidebar-link {
-    color: var(--dashboard-sidebar-text, var(--palette-text-secondary));
+    color: var(--text-p-color);
     transition: all 0.2s;
   }
 
   .dashboard-sidebar-link:hover {
     background-color: var(--dashboard-sidebar-hover-bg, var(--palette-border));
-    color: var(--dashboard-sidebar-text, var(--palette-text));
+    color: var(--text-p-color);
   }
 
   .dashboard-sidebar-link-active {

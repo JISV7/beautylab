@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-    Palette,
-    Users,
-    Sparkles,
-    ArrowLeft,
-    FileText
-} from 'lucide-react';
+import { Palette, Users, Sparkles, ArrowLeft, FileText, Code2 } from 'lucide-react';
 
 interface AdminSidebarProps {
     activeItem?: string;
@@ -36,14 +30,14 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
             {/* Logo */}
             <div className="p-6 border-b dashboard-sidebar-border">
                 <div className="flex items-center gap-2 mb-4">
-                    <div className="w-8 h-8 rounded-lg theme-primary flex items-center justify-center">
-                        <Sparkles className="w-5 h-5 text-white" />
+                    <div className="w-8 h-8 rounded-lg bg-[var(--palette-primary)] flex items-center justify-center">
+                        <Code2 className="w-5 h-5 text-white" />
                     </div>
                     <span className="theme-h4 font-bold">Codyn Admin</span>
                 </div>
                 <button
                     onClick={onBack}
-                    className="w-full flex items-center gap-2 px-3 py-2 rounded-lg theme-text-secondary hover:bg-[var(--theme-border-value)] transition-colors text-sm"
+                    className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-p-font text-p-size text-p-color hover:bg-[var(--theme-border-value)] transition-colors"
                 >
                     <ArrowLeft className="w-4 h-4" />
                     Back to Dashboard

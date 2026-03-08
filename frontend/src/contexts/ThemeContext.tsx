@@ -210,6 +210,20 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
+// Handle 401 errors - logout and redirect to home
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response?.status === 401) {
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+            localStorage.setItem('currentPage', 'home');
+            window.location.href = '/';
+        }
+        return Promise.reject(error);
+    }
+);
+
 // Apply CSS variables from palette
 const applyPalette = (palette: ThemePalette, mode: string): void => {
     const root = document.documentElement;

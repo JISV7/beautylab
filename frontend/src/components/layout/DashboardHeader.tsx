@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Search, Bell, User, LogOut, Settings, Shield, Sun, Moon, Eye, Sparkles } from 'lucide-react';
+import { Search, Bell, User, LogOut, Settings, Shield, Sun, Moon, Eye , Code2} from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
 
@@ -42,7 +42,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNavigate, on
                 {/* Logo */}
                 <a href="/" className="flex items-center gap-2">
                     <div className="w-8 h-8 rounded-lg bg-[var(--palette-primary)] flex items-center justify-center">
-                        <Sparkles className="w-5 h-5 text-white" />
+                        <Code2 className="w-5 h-5 text-white" />
                     </div>
                     <span className="text-h4-font text-h4-size text-h4-color text-h4-weight font-bold">Codyn</span>
                 </a>

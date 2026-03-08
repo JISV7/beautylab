@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-    BookOpen,
-    Compass,
-    Users,
-    Home,
-    Sparkles
-} from 'lucide-react';
+import { BookOpen, Compass, Users, Home, Sparkles } from 'lucide-react';
 
 interface SidebarProps {
     activeItem?: string;

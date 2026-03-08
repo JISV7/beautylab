@@ -38,7 +38,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 {navItems.map((item) => {
                     const Icon = item.icon;
                     const isActive = activeItem === item.id;
-                    
+
                     return (
                         <button
                             key={item.id}
@@ -56,20 +56,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     );
                 })}
             </nav>
-
-            {/* User Progress Summary */}
-            <div className="p-4 border-t dashboard-sidebar-border">
-                <div className="theme-card p-4 rounded-lg">
-                    <p className="text-xs font-medium theme-text-secondary mb-2">Weekly Progress</p>
-                    <div className="w-full bg-[var(--theme-border-value)] rounded-full h-2 mb-2">
-                        <div 
-                            className="theme-primary h-2 rounded-full transition-all" 
-                            style={{ width: '65%' }}
-                        />
-                    </div>
-                    <p className="text-xs theme-text-secondary">65% complete</p>
-                </div>
-            </div>
         </aside>
     );
 };

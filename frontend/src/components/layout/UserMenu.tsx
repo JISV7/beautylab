@@ -69,7 +69,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({ onNavigateToAdmin }) => {
                     </div>
                     <div className="py-1" role="none">
                         <button
-                            className="w-full text-left px-4 py-2 text-sm theme-text-secondary hover:bg-[var(--theme-border)] hover:text-[var(--theme-text-base)] flex items-center gap-2"
+                            className="w-full text-left px-4 py-2 text-sm theme-text-secondary hover:bg-[var(--theme-border)] hover:[color:var(--palette-primary)] flex items-center gap-2 transition-colors"
                             role="menuitem"
                             onKeyDown={(e) => handleMenuItemKeyDown(e)}
                         >
@@ -79,7 +79,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({ onNavigateToAdmin }) => {
                         {user?.isAdmin && (
                             <button
                                 onClick={handleAdminPanel}
-                                className="w-full text-left px-4 py-2 text-sm theme-text-secondary hover:bg-[var(--theme-border)] hover:text-[var(--theme-text-base)] flex items-center gap-2"
+                                className="w-full text-left px-4 py-2 text-sm theme-text-secondary hover:bg-[var(--theme-border)] hover:[color:var(--palette-primary)] flex items-center gap-2 transition-colors"
                                 role="menuitem"
                                 onKeyDown={(e) => handleMenuItemKeyDown(e, handleAdminPanel)}
                             >
@@ -92,7 +92,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({ onNavigateToAdmin }) => {
                                 logout();
                                 setIsOpen(false);
                             }}
-                            className="w-full text-left px-4 py-2 text-sm theme-text-secondary hover:bg-[var(--theme-border)] hover:text-red-500 flex items-center gap-2 transition-colors"
+                            className="w-full text-left px-4 py-2 text-sm theme-text-secondary hover:bg-[var(--theme-border)] hover:[color:var(--palette-primary)] flex items-center gap-2 transition-colors"
                             role="menuitem"
                             onKeyDown={(e) => handleMenuItemKeyDown(e, () => {
                                 logout();

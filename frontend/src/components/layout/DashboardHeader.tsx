@@ -112,13 +112,13 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNavigate, on
                                 <h3 className="font-medium text-p-color">Notifications</h3>
                             </div>
                             <div className="max-h-64 overflow-y-auto">
-                                <div className="px-4 py-3 hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer">
-                                    <p className="text-sm text-p-color">New lesson available in React Course</p>
-                                    <p className="text-xs palette-text-secondary mt-1">2 hours ago</p>
+                                <div className="group px-4 py-3 text-p-font text-p-size text-p-color hover:bg-[var(--palette-secondary)] hover:text-white cursor-pointer transition-colors">
+                                    <p className="text-p-font text-p-size">New lesson available in React Course</p>
+                                    <p className="text-xs palette-text-secondary mt-1 group-hover:[color:var(--palette-primary)]">2 hours ago</p>
                                 </div>
-                                <div className="px-4 py-3 hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer">
-                                    <p className="text-sm text-p-color">You earned 100 XP!</p>
-                                    <p className="text-xs palette-text-secondary mt-1">5 hours ago</p>
+                                <div className="group px-4 py-3 text-p-font text-p-size text-p-color hover:bg-[var(--palette-secondary)] hover:text-white cursor-pointer transition-colors">
+                                    <p className="text-p-font text-p-size">You earned 100 XP!</p>
+                                    <p className="text-xs palette-text-secondary mt-1 group-hover:[color:var(--palette-primary)]">5 hours ago</p>
                                 </div>
                             </div>
                         </div>
@@ -134,7 +134,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNavigate, on
                         <div className="w-8 h-8 rounded-full bg-[var(--palette-primary)]/10 flex items-center justify-center">
                             <User className="w-4 h-4 text-[var(--palette-primary)]" />
                         </div>
-                        <span className="text-sm font-medium text-p-color hidden md:inline">
+                        <span className="text-p-font text-p-size text-p-color hidden md:inline">
                             {user?.name || user?.email?.split('@')[0] || 'User'}
                         </span>
                     </button>
@@ -142,19 +142,19 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNavigate, on
                     {isMenuOpen && (
                         <div className="absolute right-0 mt-2 w-48 palette-surface palette-border border rounded-xl shadow-lg py-1 z-50">
                             <div className="px-4 py-2 border-b palette-border">
-                                <p className="text-sm font-medium text-p-color">
+                                <p className="text-p-font text-p-size text-p-color">
                                     {user?.name || 'User Account'}
                                 </p>
-                                <p className="text-xs text-p-color">{user?.email}</p>
+                                <p className="text-p-font text-p-size text-p-color">{user?.email}</p>
                             </div>
-                            <button className="w-full text-left px-4 py-2 text-sm text-p-color hover:bg-black/5 dark:hover:bg-white/5 flex items-center gap-2">
+                            <button className="w-full text-left px-4 py-2 text-p-font text-p-size text-p-color hover:bg-[var(--palette-primary)] hover:text-white flex items-center gap-2 transition-colors">
                                 <Settings className="w-4 h-4" />
                                 Settings
                             </button>
                             {user?.isAdmin && (
                                 <button
                                     onClick={handleAdminPanel}
-                                    className="w-full text-left px-4 py-2 text-sm text-p-color hover:bg-black/5 dark:hover:bg-white/5 flex items-center gap-2"
+                                    className="w-full text-left px-4 py-2 text-p-font text-p-size text-p-color hover:bg-[var(--palette-primary)] hover:text-white flex items-center gap-2 transition-colors"
                                 >
                                     <Shield className="w-4 h-4" />
                                     Admin Panel
@@ -166,7 +166,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNavigate, on
                                     setIsMenuOpen(false);
                                     onLogout?.();
                                 }}
-                                className="w-full text-left px-4 py-2 text-sm text-p-color hover:bg-red-50 hover:text-red-500 flex items-center gap-2 transition-colors"
+                                className="w-full text-left px-4 py-2 text-p-font text-p-size text-p-color hover:bg-[var(--palette-primary)] hover:text-white flex items-center gap-2 transition-colors"
                             >
                                 <LogOut className="w-4 h-4" />
                                 Sign Out

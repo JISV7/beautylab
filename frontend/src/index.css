@@ -482,17 +482,18 @@
   }
 
   .auth-tab {
-    color: var(--palette-text-secondary);
+    color: var(--text-p-color);
     transition: color 0.2s, border-color 0.2s;
   }
 
   .auth-tab:hover {
-    color: var(--palette-text);
+    color: var(--text-p-color);
+    opacity: 0.8;
   }
 
   .auth-tab-active {
-    color: var(--palette-primary);
-    border-bottom-color: var(--palette-primary);
+    color: var(--decorator-color);
+    border-bottom-color: var(--decorator-color);
   }
 
   .auth-title {
@@ -533,7 +534,8 @@
   }
 
   .auth-input::placeholder {
-    color: var(--palette-text-secondary);
+    color: var(--text-p-color);
+    opacity: 0.6;
   }
 
   .auth-button-primary {

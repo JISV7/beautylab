@@ -26,10 +26,10 @@ export const PasswordRecoveryForm: React.FC<PasswordRecoveryFormProps> = ({
           <div className="auth-success-icon w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
             <Mail className="w-8 h-8 text-p-color" />
           </div>
-          <h2 className="auth-title mb-2">Check Your Email</h2>
-          <p className="auth-description text-sm">
+          <h2 className="text-p-color mb-2">Check Your Email</h2>
+          <p className="text-p-color text-sm">
             We&apos;ve sent password reset instructions to <br />
-            <span className="auth-title text-sm">{email}</span>
+            <span className="text-p-color text-sm">{email}</span>
           </p>
         </div>
 
@@ -47,15 +47,15 @@ export const PasswordRecoveryForm: React.FC<PasswordRecoveryFormProps> = ({
   return (
     <div className="space-y-5">
       <div className="text-center">
-        <h2 className="auth-title mb-2">Forgot Password?</h2>
-        <p className="auth-description text-sm">
+        <h2 className="text-p-color mb-2">Forgot Password?</h2>
+        <p className="text-p-color text-sm">
           No worries! Enter your email and we&apos;ll send you reset instructions.
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="auth-label block mb-1.5">
+          <label className="text-p-color block mb-1.5">
             Email Address
           </label>
           <div className="relative">

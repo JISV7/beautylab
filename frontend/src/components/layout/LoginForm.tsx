@@ -37,15 +37,15 @@ export const LoginForm: React.FC<LoginFormProps> = ({
   return (
     <div className="space-y-5">
       <div className="text-center">
-        <h2 className="auth-title mb-2">Welcome Back</h2>
-        <p className="auth-description">
+        <h2 className="text-p-color mb-2">Welcome Back</h2>
+        <p className="text-p-color">
           Sign in to your account to continue
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="auth-label block mb-1.5">
+          <label className="text-p-color block mb-1.5">
             Email Address
           </label>
           <div className="relative">
@@ -63,7 +63,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
         </div>
 
         <div>
-          <label className="auth-label block mb-1.5">
+          <label className="text-p-color block mb-1.5">
             Password
           </label>
           <div className="relative">
@@ -93,7 +93,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
           <button
             type="button"
             onClick={onSwitchToRecovery}
-            className="auth-link text-sm mt-2"
+            className="text-p-color text-sm mt-2"
             disabled={isLoading}
           >
             Forgot password?
@@ -117,11 +117,11 @@ export const LoginForm: React.FC<LoginFormProps> = ({
       </form>
 
       <div className="text-center">
-        <p className="auth-description text-sm">
+        <p className="text-p-color text-sm">
           Don&apos;t have an account?{' '}
           <button
             onClick={onSwitchToRegister}
-            className="auth-link"
+            className="text-p-color"
           >
             Sign up
           </button>

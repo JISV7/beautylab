@@ -49,15 +49,15 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
   return (
     <div className="space-y-4">
       <div className="text-center">
-        <h2 className="auth-title mb-1.5">Create Account</h2>
-        <p className="auth-description text-sm">
+        <h2 className="text-p-color mb-1.5">Create Account</h2>
+        <p className="text-p-color text-sm">
           Join us and start your learning journey
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-3.5">
         <div>
-          <label className="auth-label block mb-1.5">
+          <label className="text-p-color block mb-1.5">
             Full Name
           </label>
           <div className="relative">
@@ -75,7 +75,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         </div>
 
         <div>
-          <label className="auth-label block mb-1.5">
+          <label className="text-p-color block mb-1.5">
             Email Address
           </label>
           <div className="relative">
@@ -93,7 +93,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         </div>
 
         <div>
-          <label className="auth-label block mb-1.5">
+          <label className="text-p-color block mb-1.5">
             Password
           </label>
           <div className="relative">
@@ -123,7 +123,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         </div>
 
         <div>
-          <label className="auth-label block mb-1.5">
+          <label className="text-p-color block mb-1.5">
             Confirm Password
           </label>
           <div className="relative">
@@ -169,11 +169,11 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
       </form>
 
       <div className="text-center">
-        <p className="auth-description text-sm">
+        <p className="text-p-color text-sm">
           Already have an account?{' '}
           <button
             onClick={onSwitchToLogin}
-            className="auth-link"
+            className="text-p-color"
           >
             Sign in
           </button>

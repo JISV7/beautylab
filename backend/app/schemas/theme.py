@@ -70,7 +70,7 @@ class TypographyElement(BaseModel):
 
 class TypographyConfig(BaseModel):
     """Complete typography configuration for a palette."""
-    
+
     h1: TypographyElement = Field(..., description="Heading 1 typography")
     h2: TypographyElement = Field(..., description="Heading 2 typography")
     h3: TypographyElement = Field(..., description="Heading 3 typography")
@@ -80,6 +80,7 @@ class TypographyConfig(BaseModel):
     title: TypographyElement = Field(..., description="Title typography (legacy)")
     subtitle: TypographyElement = Field(..., description="Subtitle typography")
     paragraph: TypographyElement = Field(..., description="Paragraph typography")
+    decorator: TypographyElement = Field(..., description="Decorator typography for icons and decorative elements")
 
 
 # ==================== Palette Schema ====================
@@ -109,7 +110,8 @@ class ThemePalette(BaseModel):
                 "h6": {"font_size": "1.0", "font_weight": 400, "color": "#1a1675"},
                 "title": {"font_size": "1.5", "font_weight": 700, "color": "#1a1675"},
                 "subtitle": {"font_size": "1.25", "font_weight": 600, "color": "#1a1675"},
-                "paragraph": {"font_size": "1.0", "font_weight": 400, "color": "#1a1a2e"}
+                "paragraph": {"font_size": "1.0", "font_weight": 400, "color": "#1a1a2e"},
+                "decorator": {"font_size": "1.0", "font_weight": 500, "color": "#ffffff"}
             }
         }
     })

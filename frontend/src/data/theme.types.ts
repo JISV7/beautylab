@@ -39,6 +39,7 @@ export interface TypographyConfig {
   title: TypographyElement;
   subtitle: TypographyElement;
   paragraph: TypographyElement;
+  decorator: TypographyElement;
 }
 
 // ==================== Palette Types ====================
@@ -119,6 +120,7 @@ export interface ThemeTypography {
   title: ThemeTypographyItem;
   subtitle: ThemeTypographyItem;
   paragraph: ThemeTypographyItem;
+  decorator: ThemeTypographyItem;
 }
 
 export interface HeroComponentStyles {

@@ -348,7 +348,8 @@ async def seed_default_theme(
                     "h6": make_typography_element("1.0", 400, "#1a1675"),
                     "title": make_typography_element("1.5", 700, "#1a1675"),
                     "subtitle": make_typography_element("1.25", 600, "#1a1675"),
-                    "paragraph": make_typography_element("1.0", 400, "#1a1a2e")
+                    "paragraph": make_typography_element("1.0", 400, "#1a1a2e"),
+                    "decorator": make_typography_element("1.0", 500, "#ffffff")
                 }
             },
             "dark": {
@@ -369,7 +370,8 @@ async def seed_default_theme(
                     "h6": make_typography_element("1.0", 400, "#1a1675"),
                     "title": make_typography_element("1.5", 700, "#1a1675"),
                     "subtitle": make_typography_element("1.25", 600, "#1a1675"),
-                    "paragraph": make_typography_element("1.0", 400, "#1a1a2e")
+                    "paragraph": make_typography_element("1.0", 400, "#1a1a2e"),
+                    "decorator": make_typography_element("1.0", 500, "#ffffff")
                 }
             },
             "accessibility": {
@@ -390,7 +392,8 @@ async def seed_default_theme(
                     "h6": make_typography_element("1.0", 400, "#1a1675"),
                     "title": make_typography_element("1.5", 700, "#1a1675"),
                     "subtitle": make_typography_element("1.25", 600, "#1a1675"),
-                    "paragraph": make_typography_element("1.0", 400, "#1a1a2e")
+                    "paragraph": make_typography_element("1.0", 400, "#1a1a2e"),
+                    "decorator": make_typography_element("1.0", 500, "#ffffff")
                 }
             }
         }
@@ -414,7 +417,7 @@ async def seed_default_theme(
             # Build new usage list and reassign (SQLAlchemy doesn't detect in-place mutations of JSONB)
             new_usages = []
             for palette in ["light", "dark", "accessibility"]:
-                for element in ["h1", "h2", "h3", "h4", "h5", "h6", "title", "subtitle", "paragraph"]:
+                for element in ["h1", "h2", "h3", "h4", "h5", "h6", "title", "subtitle", "paragraph", "decorator"]:
                     new_usages.append({
                         "theme_id": theme_id_str,
                         "theme_name": theme.name,

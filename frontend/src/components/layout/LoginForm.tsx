@@ -121,7 +121,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
           Don&apos;t have an account?{' '}
           <button
             onClick={onSwitchToRegister}
-            className="text-p-color"
+            className="text-palette-primary"
           >
             Sign up
           </button>

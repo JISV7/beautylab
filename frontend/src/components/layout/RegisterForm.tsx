@@ -173,7 +173,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
           Already have an account?{' '}
           <button
             onClick={onSwitchToLogin}
-            className="text-p-color"
+            className="text-palette-primary"
           >
             Sign in
           </button>

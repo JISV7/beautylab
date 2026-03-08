@@ -45,6 +45,16 @@
     color: var(--palette-text-secondary);
   }
 
+  /* Secondary palette color for text */
+  .text-palette-secondary {
+    color: var(--palette-secondary);
+  }
+
+  /* Primary palette color for text */
+  .text-palette-primary {
+    color: var(--palette-primary);
+  }
+
   /* ==================== Decorator (Icons & Decorative Elements) ==================== */
   .decorator-color {
     color: var(--decorator-color, #ffffff);
@@ -492,8 +502,8 @@
   }
 
   .auth-tab-active {
-    color: var(--decorator-color);
-    border-bottom-color: var(--decorator-color);
+    color: var(--palette-primary);
+    border-bottom-color: var(--palette-primary);
   }
 
   .auth-title {

@@ -413,7 +413,7 @@
   }
 
   .theme-input::placeholder {
-    color: var(--palette-text-secondary);
+    color: var(--palette-text);
   }
 
   .theme-button {

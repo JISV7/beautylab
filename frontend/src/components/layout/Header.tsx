@@ -54,32 +54,32 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateToDashboard, onNavigat
               <button
                 onClick={() => setPaletteMode('light')}
                 className={`p-2 rounded-lg transition-colors ${currentMode === 'light'
-                  ? 'palette-primary text-white'
-                  : 'bg-transparent palette-text-secondary hover:palette-border'
+                  ? 'palette-primary'
+                  : 'bg-transparent'
                   }`}
                 title="Light Mode"
               >
-                <Sun className="w-4 h-4" />
+                <Sun className="w-4 h-4 text-p-color" />
               </button>
               <button
                 onClick={() => setPaletteMode('dark')}
                 className={`p-2 rounded-lg transition-colors ${currentMode === 'dark'
-                  ? 'palette-primary text-white'
-                  : 'bg-transparent palette-text-secondary hover:palette-border'
+                  ? 'palette-primary'
+                  : 'bg-transparent'
                   }`}
                 title="Dark Mode"
               >
-                <Moon className="w-4 h-4" />
+                <Moon className="w-4 h-4 text-p-color" />
               </button>
               <button
                 onClick={() => setPaletteMode('accessibility')}
                 className={`p-2 rounded-lg transition-colors ${currentMode === 'accessibility'
-                  ? 'palette-primary text-white'
-                  : 'bg-transparent palette-text-secondary hover:palette-border'
+                  ? 'palette-primary'
+                  : 'bg-transparent'
                   }`}
                 title="Accessibility Mode"
               >
-                <Eye className="w-4 h-4" />
+                <Eye className="w-4 h-4 text-p-color" />
               </button>
             </div>
 

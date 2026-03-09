@@ -241,62 +241,62 @@ const applyPalette = (palette: ThemePalette, mode: string): void => {
     const typography = palette.typography;
 
     root.style.setProperty('--text-h1-font', typography.h1.fontName || 'system-ui');
-    root.style.setProperty('--text-h1-size', typography.h1.fontSize);
+    root.style.setProperty('--text-h1-size', `${typography.h1.fontSize}rem`);
     root.style.setProperty('--text-h1-color', typography.h1.color);
     root.style.setProperty('--text-h1-weight', String(typography.h1.fontWeight));
     root.style.setProperty('--text-h1-line-height', typography.h1.lineHeight || '1.2');
 
     root.style.setProperty('--text-h2-font', typography.h2.fontName || 'system-ui');
-    root.style.setProperty('--text-h2-size', typography.h2.fontSize);
+    root.style.setProperty('--text-h2-size', `${typography.h2.fontSize}rem`);
     root.style.setProperty('--text-h2-color', typography.h2.color);
     root.style.setProperty('--text-h2-weight', String(typography.h2.fontWeight));
     root.style.setProperty('--text-h2-line-height', typography.h2.lineHeight || '1.2');
 
     root.style.setProperty('--text-h3-font', typography.h3.fontName || 'system-ui');
-    root.style.setProperty('--text-h3-size', typography.h3.fontSize);
+    root.style.setProperty('--text-h3-size', `${typography.h3.fontSize}rem`);
     root.style.setProperty('--text-h3-color', typography.h3.color);
     root.style.setProperty('--text-h3-weight', String(typography.h3.fontWeight));
     root.style.setProperty('--text-h3-line-height', typography.h3.lineHeight || '1.3');
 
     root.style.setProperty('--text-h4-font', typography.h4.fontName || 'system-ui');
-    root.style.setProperty('--text-h4-size', typography.h4.fontSize);
+    root.style.setProperty('--text-h4-size', `${typography.h4.fontSize}rem`);
     root.style.setProperty('--text-h4-color', typography.h4.color);
     root.style.setProperty('--text-h4-weight', String(typography.h4.fontWeight));
     root.style.setProperty('--text-h4-line-height', typography.h4.lineHeight || '1.4');
 
     root.style.setProperty('--text-h5-font', typography.h5.fontName || 'system-ui');
-    root.style.setProperty('--text-h5-size', typography.h5.fontSize);
+    root.style.setProperty('--text-h5-size', `${typography.h5.fontSize}rem`);
     root.style.setProperty('--text-h5-color', typography.h5.color);
     root.style.setProperty('--text-h5-weight', String(typography.h5.fontWeight));
     root.style.setProperty('--text-h5-line-height', typography.h5.lineHeight || '1.4');
 
     root.style.setProperty('--text-h6-font', typography.h6.fontName || 'system-ui');
-    root.style.setProperty('--text-h6-size', typography.h6.fontSize);
+    root.style.setProperty('--text-h6-size', `${typography.h6.fontSize}rem`);
     root.style.setProperty('--text-h6-color', typography.h6.color);
     root.style.setProperty('--text-h6-weight', String(typography.h6.fontWeight));
     root.style.setProperty('--text-h6-line-height', typography.h6.lineHeight || '1.5');
 
     root.style.setProperty('--text-title-font', typography.title.fontName || 'system-ui');
-    root.style.setProperty('--text-title-size', typography.title.fontSize);
+    root.style.setProperty('--text-title-size', `${typography.title.fontSize}rem`);
     root.style.setProperty('--text-title-color', typography.title.color);
     root.style.setProperty('--text-title-weight', String(typography.title.fontWeight));
     root.style.setProperty('--text-title-line-height', typography.title.lineHeight || '1.2');
 
     root.style.setProperty('--text-subtitle-font', typography.subtitle.fontName || 'system-ui');
-    root.style.setProperty('--text-subtitle-size', typography.subtitle.fontSize);
+    root.style.setProperty('--text-subtitle-size', `${typography.subtitle.fontSize}rem`);
     root.style.setProperty('--text-subtitle-color', typography.subtitle.color);
     root.style.setProperty('--text-subtitle-weight', String(typography.subtitle.fontWeight));
     root.style.setProperty('--text-subtitle-line-height', typography.subtitle.lineHeight || '1.3');
 
     root.style.setProperty('--text-p-font', typography.paragraph.fontName || 'system-ui');
-    root.style.setProperty('--text-p-size', typography.paragraph.fontSize);
+    root.style.setProperty('--text-p-size', `${typography.paragraph.fontSize}rem`);
     root.style.setProperty('--text-p-color', typography.paragraph.color);
     root.style.setProperty('--text-p-weight', String(typography.paragraph.fontWeight));
     root.style.setProperty('--text-p-line-height', typography.paragraph.lineHeight || '1.6');
 
     // Decorator (icons and decorative elements)
     root.style.setProperty('--decorator-color', typography.decorator.color);
-    root.style.setProperty('--decorator-size', typography.decorator.fontSize);
+    root.style.setProperty('--decorator-size', `${typography.decorator.fontSize}rem`);
 
     document.documentElement.classList.remove('light', 'dark', 'accessibility');
     document.documentElement.classList.add(mode);

@@ -19,6 +19,7 @@ const toThemePalette = (colors: ColorPalette, styles: Record<string, TypographyS
         title: { fontName: styles.h1.fontFamily, fontSize: String(styles.h1.size), fontWeight: 700, color: styles.h1.color },
         subtitle: { fontName: styles.h2.fontFamily, fontSize: String(styles.h2.size), fontWeight: 600, color: styles.h2.color },
         paragraph: { fontName: styles.p.fontFamily, fontSize: String(styles.p.size), fontWeight: 400, color: styles.p.color },
+        decorator: { fontName: styles.p.fontFamily, fontSize: String(styles.p.size), fontWeight: 500, color: '#ffffff' },
     }
 });
 
@@ -304,7 +305,8 @@ function createDefaultConfig(): ThemeConfig {
             h6: { ...defaultElement, fontSize: '1.0', fontWeight: 600 },
             title: { ...defaultElement, fontSize: '1.5', fontWeight: 700 },
             subtitle: { ...defaultElement, fontSize: '1.25', fontWeight: 600 },
-            paragraph: { ...defaultElement, fontSize: '1.0', fontWeight: 400 }
+            paragraph: { ...defaultElement, fontSize: '1.0', fontWeight: 400 },
+            decorator: { ...defaultElement, fontSize: '1.0', fontWeight: 500 }
         }
     };
 

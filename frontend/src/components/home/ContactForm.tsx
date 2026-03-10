@@ -64,7 +64,7 @@ export const ContactForm: React.FC = () => {
               <div>
                 <label htmlFor="name" className="text-p-font text-p-size text-p-color font-medium block mb-2">
                   <div className="flex items-center gap-2">
-                    <User className="w-4 h-4 tex-p-color" />
+                    <User className="w-4 h-4 text-p-color" />
                     Your Name
                   </div>
                 </label>
@@ -83,7 +83,7 @@ export const ContactForm: React.FC = () => {
               <div>
                 <label htmlFor="email" className="text-p-font text-p-size text-p-color font-medium block mb-2">
                   <div className="flex items-center gap-2">
-                    <Mail className="w-4 h-4 tex-p-color" />
+                    <Mail className="w-4 h-4 text-p-color" />
                     Email Address
                   </div>
                 </label>

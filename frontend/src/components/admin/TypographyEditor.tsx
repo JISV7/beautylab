@@ -11,7 +11,7 @@ interface StyleBlockProps {
     label: string;
     shortLabel: string;
     expanded: boolean;
-    style: { fontFamily: string; size: number; color: string };
+    style: { fontFamily: string; size: number; color: string; fontWeight?: number; lineHeight?: string };
     fonts: Font[];
     onToggle: () => void;
     onStyleChange: (field: keyof TypographyStyle, value: string | number) => void;
@@ -78,6 +78,42 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
                             style={{ backgroundColor: '#fffafb' }}
                         />
                         <span className="absolute right-4 text-sm text-slate-500 font-medium">rem</span>
+                    </div>
+                </label>
+
+                {/* Font Weight */}
+                <label className="flex flex-col gap-2">
+                    <span className="text-sm font-semibold text-slate-700">Font Weight</span>
+                    <div className="relative flex items-center">
+                        <input
+                            className="w-full rounded-lg border-slate-200 text-slate-900 py-2.5 pl-4 pr-12 focus:border-blue-500 focus:ring-blue-500"
+                            type="number"
+                            min="100"
+                            max="900"
+                            step="100"
+                            value={style.fontWeight || 400}
+                            onChange={(e) => onStyleChange('fontWeight', parseInt(e.target.value) || 400)}
+                            style={{ backgroundColor: '#fffafb' }}
+                        />
+                        <span className="absolute right-4 text-sm text-slate-500 font-medium">wght</span>
+                    </div>
+                </label>
+
+                {/* Line Height */}
+                <label className="flex flex-col gap-2">
+                    <span className="text-sm font-semibold text-slate-700">Line Height</span>
+                    <div className="relative flex items-center">
+                        <input
+                            className="w-full rounded-lg border-slate-200 text-slate-900 py-2.5 pl-4 pr-12 focus:border-blue-500 focus:ring-blue-500"
+                            type="number"
+                            min="0.5"
+                            max="3.0"
+                            step="0.1"
+                            value={style.lineHeight || '1.5'}
+                            onChange={(e) => onStyleChange('lineHeight', e.target.value)}
+                            style={{ backgroundColor: '#fffafb' }}
+                        />
+                        <span className="absolute right-4 text-sm text-slate-500 font-medium">lh</span>
                     </div>
                 </label>
 
@@ -299,8 +335,8 @@ export const TypographyEditor: React.FC<TypographyEditorProps> = ({
                             fontFamily: styles.h1.fontFamily,
                             fontSize: `${styles.h1.size}rem`,
                             color: styles.h1.color,
-                            fontWeight: 800,
-                            lineHeight: 1.2
+                            fontWeight: styles.h1.fontWeight || 400,
+                            lineHeight: styles.h1.lineHeight || 1.2
                         }}>
                             Example Heading (H1)
                         </div>
@@ -309,8 +345,8 @@ export const TypographyEditor: React.FC<TypographyEditorProps> = ({
                             fontFamily: styles.h2.fontFamily,
                             fontSize: `${styles.h2.size}rem`,
                             color: styles.h2.color,
-                            fontWeight: 700,
-                            lineHeight: 1.2
+                            fontWeight: styles.h2.fontWeight || 400,
+                            lineHeight: styles.h2.lineHeight || 1.2
                         }}>
                             Example Subheading (H2)
                         </div>
@@ -319,8 +355,8 @@ export const TypographyEditor: React.FC<TypographyEditorProps> = ({
                             fontFamily: styles.h3.fontFamily,
                             fontSize: `${styles.h3.size}rem`,
                             color: styles.h3.color,
-                            fontWeight: 600,
-                            lineHeight: 1.3
+                            fontWeight: styles.h3.fontWeight || 400,
+                            lineHeight: styles.h3.lineHeight || 1.3
                         }}>
                             Section Header (H3)
                         </div>
@@ -329,8 +365,8 @@ export const TypographyEditor: React.FC<TypographyEditorProps> = ({
                             fontFamily: styles.h4.fontFamily,
                             fontSize: `${styles.h4.size}rem`,
                             color: styles.h4.color,
-                            fontWeight: 600,
-                            lineHeight: 1.4
+                            fontWeight: styles.h4.fontWeight || 400,
+                            lineHeight: styles.h4.lineHeight || 1.4
                         }}>
                             Minor Header (H4)
                         </div>
@@ -339,8 +375,8 @@ export const TypographyEditor: React.FC<TypographyEditorProps> = ({
                             fontFamily: styles.h5.fontFamily,
                             fontSize: `${styles.h5.size}rem`,
                             color: styles.h5.color,
-                            fontWeight: 600,
-                            lineHeight: 1.4
+                            fontWeight: styles.h5.fontWeight || 400,
+                            lineHeight: styles.h5.lineHeight || 1.4
                         }}>
                             Card Title (H5)
                         </div>
@@ -349,8 +385,8 @@ export const TypographyEditor: React.FC<TypographyEditorProps> = ({
                             fontFamily: styles.h6.fontFamily,
                             fontSize: `${styles.h6.size}rem`,
                             color: styles.h6.color,
-                            fontWeight: 600,
-                            lineHeight: 1.5
+                            fontWeight: styles.h6.fontWeight || 400,
+                            lineHeight: styles.h6.lineHeight || 1.5
                         }}>
                             Highlight Tag (H6)
                         </div>
@@ -359,7 +395,8 @@ export const TypographyEditor: React.FC<TypographyEditorProps> = ({
                             fontFamily: styles.p.fontFamily,
                             fontSize: `${styles.p.size}rem`,
                             color: styles.p.color,
-                            lineHeight: 1.6,
+                            fontWeight: styles.p.fontWeight || 400,
+                            lineHeight: styles.p.lineHeight || 1.6,
                             marginTop: '1rem'
                         }}>
                             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.

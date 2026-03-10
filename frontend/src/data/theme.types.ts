@@ -15,6 +15,7 @@ export interface PaletteColors {
   background: string;
   surface: string;
   border: string;
+  decorator?: string;
   // Note: text colors are defined in typography config, not here
 }
 

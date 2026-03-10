@@ -85,6 +85,11 @@ export const ColorEditor: React.FC<ColorEditorProps> = ({
                     value={colors.border}
                     onChange={(v) => onColorChange('border', v)}
                 />
+                <ColorInput
+                    label="Decorator Color (Icons, Decorative Elements)"
+                    value={colors.decorator || '#ffffff'}
+                    onChange={(v) => onColorChange('decorator', v)}
+                />
             </div>
 
             {/* Live Preview Box */}

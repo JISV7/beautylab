@@ -7,19 +7,84 @@ import { ThemeEditor } from './ThemeEditor';
 import { ThemePreview } from './ThemePreview';
 
 // Helper to convert ColorPalette + TypographyStyle to ThemePalette
-const toThemePalette = (colors: ColorPalette, styles: Record<string, TypographyStyle>): ThemePalette => ({
+// Preserves existing fontWeight, lineHeight, and fontId from the current palette
+const toThemePalette = (
+    colors: ColorPalette,
+    styles: Record<string, TypographyStyle>,
+    currentPalette: ThemePalette
+): ThemePalette => ({
     colors,
     typography: {
-        h1: { fontName: styles.h1.fontFamily, fontSize: String(styles.h1.size), fontWeight: 400, color: styles.h1.color },
-        h2: { fontName: styles.h2.fontFamily, fontSize: String(styles.h2.size), fontWeight: 400, color: styles.h2.color },
-        h3: { fontName: styles.h3.fontFamily, fontSize: String(styles.h3.size), fontWeight: 400, color: styles.h3.color },
-        h4: { fontName: styles.h4.fontFamily, fontSize: String(styles.h4.size), fontWeight: 400, color: styles.h4.color },
-        h5: { fontName: styles.h5.fontFamily, fontSize: String(styles.h5.size), fontWeight: 400, color: styles.h5.color },
-        h6: { fontName: styles.h6.fontFamily, fontSize: String(styles.h6.size), fontWeight: 400, color: styles.h6.color },
-        title: { fontName: styles.h1.fontFamily, fontSize: String(styles.h1.size), fontWeight: 700, color: styles.h1.color },
-        subtitle: { fontName: styles.h2.fontFamily, fontSize: String(styles.h2.size), fontWeight: 600, color: styles.h2.color },
-        paragraph: { fontName: styles.p.fontFamily, fontSize: String(styles.p.size), fontWeight: 400, color: styles.p.color },
-        decorator: { fontName: styles.p.fontFamily, fontSize: String(styles.p.size), fontWeight: 500, color: '#ffffff' },
+        h1: {
+            fontName: styles.h1.fontFamily,
+            fontSize: String(styles.h1.size),
+            fontWeight: styles.h1.fontWeight ?? currentPalette.typography.h1?.fontWeight ?? 400,
+            lineHeight: styles.h1.lineHeight ?? currentPalette.typography.h1?.lineHeight,
+            color: styles.h1.color
+        },
+        h2: {
+            fontName: styles.h2.fontFamily,
+            fontSize: String(styles.h2.size),
+            fontWeight: styles.h2.fontWeight ?? currentPalette.typography.h2?.fontWeight ?? 400,
+            lineHeight: styles.h2.lineHeight ?? currentPalette.typography.h2?.lineHeight,
+            color: styles.h2.color
+        },
+        h3: {
+            fontName: styles.h3.fontFamily,
+            fontSize: String(styles.h3.size),
+            fontWeight: styles.h3.fontWeight ?? currentPalette.typography.h3?.fontWeight ?? 400,
+            lineHeight: styles.h3.lineHeight ?? currentPalette.typography.h3?.lineHeight,
+            color: styles.h3.color
+        },
+        h4: {
+            fontName: styles.h4.fontFamily,
+            fontSize: String(styles.h4.size),
+            fontWeight: styles.h4.fontWeight ?? currentPalette.typography.h4?.fontWeight ?? 400,
+            lineHeight: styles.h4.lineHeight ?? currentPalette.typography.h4?.lineHeight,
+            color: styles.h4.color
+        },
+        h5: {
+            fontName: styles.h5.fontFamily,
+            fontSize: String(styles.h5.size),
+            fontWeight: styles.h5.fontWeight ?? currentPalette.typography.h5?.fontWeight ?? 400,
+            lineHeight: styles.h5.lineHeight ?? currentPalette.typography.h5?.lineHeight,
+            color: styles.h5.color
+        },
+        h6: {
+            fontName: styles.h6.fontFamily,
+            fontSize: String(styles.h6.size),
+            fontWeight: styles.h6.fontWeight ?? currentPalette.typography.h6?.fontWeight ?? 400,
+            lineHeight: styles.h6.lineHeight ?? currentPalette.typography.h6?.lineHeight,
+            color: styles.h6.color
+        },
+        title: {
+            fontName: styles.h1.fontFamily,
+            fontSize: String(styles.h1.size),
+            fontWeight: styles.h1.fontWeight ?? currentPalette.typography.title?.fontWeight ?? 700,
+            lineHeight: styles.h1.lineHeight ?? currentPalette.typography.title?.lineHeight,
+            color: styles.h1.color
+        },
+        subtitle: {
+            fontName: styles.h2.fontFamily,
+            fontSize: String(styles.h2.size),
+            fontWeight: styles.h2.fontWeight ?? currentPalette.typography.subtitle?.fontWeight ?? 600,
+            lineHeight: styles.h2.lineHeight ?? currentPalette.typography.subtitle?.lineHeight,
+            color: styles.h2.color
+        },
+        paragraph: {
+            fontName: styles.p.fontFamily,
+            fontSize: String(styles.p.size),
+            fontWeight: styles.p.fontWeight ?? currentPalette.typography.paragraph?.fontWeight ?? 400,
+            lineHeight: styles.p.lineHeight ?? currentPalette.typography.paragraph?.lineHeight,
+            color: styles.p.color
+        },
+        decorator: {
+            fontName: styles.p.fontFamily,
+            fontSize: String(styles.p.size),
+            fontWeight: styles.p.fontWeight ?? currentPalette.typography.decorator?.fontWeight ?? 500,
+            lineHeight: styles.p.lineHeight ?? currentPalette.typography.decorator?.lineHeight,
+            color: colors.decorator ?? currentPalette.typography.decorator?.color ?? '#ffffff'
+        },
     }
 });
 
@@ -168,7 +233,8 @@ export const UnifiedThemeConfig: React.FC = () => {
     const handleSaveTheme = async (colors: ColorPalette, styles: Record<string, TypographyStyle>) => {
         if (!activeTheme) return;
 
-        const newPalette = toThemePalette(colors, styles);
+        const currentPalette = activeTheme.config[activeMode];
+        const newPalette = toThemePalette(colors, styles, currentPalette);
         const newConfig: ThemeConfig = {
             ...activeTheme.config,
             [activeMode]: newPalette

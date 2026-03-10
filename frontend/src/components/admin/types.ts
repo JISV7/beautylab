@@ -1,9 +1,11 @@
-import type { Theme, Font } from '../../data/theme.types';
+import type { Theme, Font, ThemePalette } from '../../data/theme.types';
 
 export interface TypographyStyle {
     fontFamily: string;
     size: number;
     color: string;
+    fontWeight?: number;
+    lineHeight?: string;
 }
 
 export interface ThemeTableRow {
@@ -22,13 +24,14 @@ export interface ColorPalette {
     background: string;
     surface: string;
     border: string;
+    decorator?: string;
 }
 
 export interface ThemeEditorProps {
     theme: Theme;
     activeMode: 'light' | 'dark' | 'accessibility';
     onModeChange: (mode: 'light' | 'dark' | 'accessibility') => void;
-    onSave: (colors: ColorPalette, styles: Record<string, TypographyStyle>) => void;
+    onSave: (colors: ColorPalette, styles: Record<string, TypographyStyle>, currentPalette: ThemePalette) => void;
     onPublish: () => void;
     onBack: () => void;
 }

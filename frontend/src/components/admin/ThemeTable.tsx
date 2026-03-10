@@ -20,8 +20,6 @@ const SortIcon: React.FC<SortIconProps> = ({ column, sortColumn, sortDirection }
 
 export const ThemeTable: React.FC<ThemeTableProps> = ({
     themes,
-    _activeThemeId,
-    _publishedThemeId,
     currentPage,
     rowsPerPage,
     sortColumn,
@@ -33,9 +31,6 @@ export const ThemeTable: React.FC<ThemeTableProps> = ({
     onPageChange,
     onSort,
 }) => {
-    // Note: _activeThemeId and _publishedThemeId are reserved for future use
-    void _activeThemeId;
-    void _publishedThemeId;
     // Get table data
     const getTableData = (): ThemeTableRow[] => {
         return themes.map((theme) => ({

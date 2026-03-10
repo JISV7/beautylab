@@ -1,0 +1,248 @@
+{
+  "dark": {
+    "colors": {
+      "accent": "#D73359",
+      "border": "#dddddd",
+      "primary": "#F83A3A",
+      "surface": "#eeeef0",
+      "secondary": "#FAA2B6",
+      "background": "#FFFFFF"
+    },
+    "typography": {
+      "h1": {
+        "color": "#2f27ce",
+        "font_id": "ed821171-1502-4b55-9170-6415d1edb56f",
+        "font_name": "Roboto",
+        "font_size": "2.5",
+        "font_weight": 400
+      },
+      "h2": {
+        "color": "#2f27ce",
+        "font_id": "ed821171-1502-4b55-9170-6415d1edb56f",
+        "font_name": "Roboto",
+        "font_size": "2.0",
+        "font_weight": 400
+      },
+      "h3": {
+        "color": "#433bff",
+        "font_id": "ed821171-1502-4b55-9170-6415d1edb56f",
+        "font_name": "Roboto",
+        "font_size": "1.75",
+        "font_weight": 400
+      },
+      "h4": {
+        "color": "#1a1675",
+        "font_id": "ed821171-1502-4b55-9170-6415d1edb56f",
+        "font_name": "Roboto",
+        "font_size": "1.5",
+        "font_weight": 400
+      },
+      "h5": {
+        "color": "#1a1675",
+        "font_id": "ed821171-1502-4b55-9170-6415d1edb56f",
+        "font_name": "Roboto",
+        "font_size": "1.25",
+        "font_weight": 400
+      },
+      "h6": {
+        "color": "#1a1675",
+        "font_id": "ed821171-1502-4b55-9170-6415d1edb56f",
+        "font_name": "Roboto",
+        "font_size": "1.0",
+        "font_weight": 400
+      },
+      "title": {
+        "color": "#1a1675",
+        "font_id": "ed821171-1502-4b55-9170-6415d1edb56f",
+        "font_name": "Roboto",
+        "font_size": "1.5",
+        "font_weight": 700
+      },
+      "subtitle": {
+        "color": "#1a1675",
+        "font_id": "ed821171-1502-4b55-9170-6415d1edb56f",
+        "font_name": "Roboto",
+        "font_size": "1.25",
+        "font_weight": 600
+      },
+      "decorator": {
+        "color": "#ffffff",
+        "font_id": "ed821171-1502-4b55-9170-6415d1edb56f",
+        "font_name": "Roboto",
+        "font_size": "1.0",
+        "font_weight": 500
+      },
+      "paragraph": {
+        "color": "5DFC00",
+        "font_id": "ed821171-1502-4b55-9170-6415d1edb56f",
+        "font_name": "Roboto",
+        "font_size": "1.0",
+        "font_weight": 400
+      }
+    }
+  },
+  "light": {
+    "colors": {
+      "accent": "#CC284F",
+      "border": "#2D2D2D",
+      "primary": "#C50707",
+      "surface": "#121212",
+      "secondary": "#5C0519",
+      "background": "#000000"
+    },
+    "typography": {
+      "h1": {
+        "color": "#F5F5F5",
+        "font_id": "ed821171-1502-4b55-9170-6415d1edb56f",
+        "font_name": "Roboto",
+        "font_size": "2.5",
+        "font_weight": 400
+      },
+      "h2": {
+        "color": "#F5F5F5",
+        "font_id": "ed821171-1502-4b55-9170-6415d1edb56f",
+        "font_name": "Roboto",
+        "font_size": "2.0",
+        "font_weight": 400
+      },
+      "h3": {
+        "color": "#E0E0E0",
+        "font_id": "ed821171-1502-4b55-9170-6415d1edb56f",
+        "font_name": "Roboto",
+        "font_size": "1.75",
+        "font_weight": 400
+      },
+      "h4": {
+        "color": "#B0B0B0",
+        "font_id": "ed821171-1502-4b55-9170-6415d1edb56f",
+        "font_name": "Roboto",
+        "font_size": "1.5",
+        "font_weight": 400
+      },
+      "h5": {
+        "color": "#B0B0B0",
+        "font_id": "ed821171-1502-4b55-9170-6415d1edb56f",
+        "font_name": "Roboto",
+        "font_size": "1.25",
+        "font_weight": 400
+      },
+      "h6": {
+        "color": "#B0B0B0",
+        "font_id": "ed821171-1502-4b55-9170-6415d1edb56f",
+        "font_name": "Roboto",
+        "font_size": "1.0",
+        "font_weight": 400
+      },
+      "title": {
+        "color": "#FFFFFF",
+        "font_id": "ed821171-1502-4b55-9170-6415d1edb56f",
+        "font_name": "Roboto",
+        "font_size": "1.5",
+        "font_weight": 700
+      },
+      "subtitle": {
+        "color": "#B0B0B0",
+        "font_id": "ed821171-1502-4b55-9170-6415d1edb56f",
+        "font_name": "Roboto",
+        "font_size": "1.25",
+        "font_weight": 600
+      },
+      "decorator": {
+        "color": "#FFFFFF",
+        "font_id": "ed821171-1502-4b55-9170-6415d1edb56f",
+        "font_name": "Roboto",
+        "font_size": "1.0",
+        "font_weight": 500
+      },
+      "paragraph": {
+        "color": "#D1D1D1",
+        "font_id": "ed821171-1502-4b55-9170-6415d1edb56f",
+        "font_name": "Roboto",
+        "font_size": "1.0",
+        "font_weight": 400
+      }
+    }
+  },
+  "accessibility": {
+    "colors": {
+      "accent": "#a3de00",
+      "border": "#a3de00",
+      "primary": "#a3de00",
+      "surface": "#a3de00",
+      "secondary": "#a3de00",
+      "background": "#a3de00"
+    },
+    "typography": {
+      "h1": {
+        "color": "#a3de00",
+        "font_id": "ed821171-1502-4b55-9170-6415d1edb56f",
+        "font_name": "Roboto",
+        "font_size": "2.5",
+        "font_weight": 400
+      },
+      "h2": {
+        "color": "#a3de00",
+        "font_id": "ed821171-1502-4b55-9170-6415d1edb56f",
+        "font_name": "Roboto",
+        "font_size": "2.0",
+        "font_weight": 400
+      },
+      "h3": {
+        "color": "#a3de00",
+        "font_id": "ed821171-1502-4b55-9170-6415d1edb56f",
+        "font_name": "Roboto",
+        "font_size": "1.75",
+        "font_weight": 400
+      },
+      "h4": {
+        "color": "#a3de00",
+        "font_id": "ed821171-1502-4b55-9170-6415d1edb56f",
+        "font_name": "Roboto",
+        "font_size": "1.5",
+        "font_weight": 400
+      },
+      "h5": {
+        "color": "#a3de00",
+        "font_id": "ed821171-1502-4b55-9170-6415d1edb56f",
+        "font_name": "Roboto",
+        "font_size": "1.25",
+        "font_weight": 400
+      },
+      "h6": {
+        "color": "#a3de00",
+        "font_id": "ed821171-1502-4b55-9170-6415d1edb56f",
+        "font_name": "Roboto",
+        "font_size": "1.0",
+        "font_weight": 400
+      },
+      "title": {
+        "color": "#a3de00",
+        "font_id": "ed821171-1502-4b55-9170-6415d1edb56f",
+        "font_name": "Roboto",
+        "font_size": "1.5",
+        "font_weight": 700
+      },
+      "subtitle": {
+        "color": "#a3de00",
+        "font_id": "ed821171-1502-4b55-9170-6415d1edb56f",
+        "font_name": "Roboto",
+        "font_size": "1.25",
+        "font_weight": 600
+      },
+      "decorator": {
+        "color": "#a3de00",
+        "font_id": "ed821171-1502-4b55-9170-6415d1edb56f",
+        "font_name": "Roboto",
+        "font_size": "1.0",
+        "font_weight": 500
+      },
+      "paragraph": {
+        "color": "#a3de00",
+        "font_id": "ed821171-1502-4b55-9170-6415d1edb56f",
+        "font_name": "Roboto",
+        "font_size": "1.0",
+        "font_weight": 400
+      }
+    }
+  }
+}

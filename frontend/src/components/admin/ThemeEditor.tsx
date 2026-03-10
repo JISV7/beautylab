@@ -274,7 +274,6 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                     ) : (
                         <TypographyEditor
                             styles={styles}
-                            _activeMode={activeMode}
                             colors={colors}
                             onStyleChange={handleStyleChange}
                             onFontUploaded={() => {}}

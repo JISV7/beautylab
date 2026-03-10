@@ -42,7 +42,6 @@ export interface ColorEditorProps {
 
 export interface TypographyEditorProps {
     styles: Record<string, TypographyStyle>;
-    _activeMode?: 'light' | 'dark' | 'accessibility';
     colors: ColorPalette;
     onStyleChange: (key: string, field: keyof TypographyStyle, value: string | number) => void;
     onFontUploaded: () => void;
@@ -58,8 +57,6 @@ export interface ThemePreviewProps {
 
 export interface ThemeTableProps {
     themes: Theme[];
-    _activeThemeId?: string | null;
-    _publishedThemeId?: string | null;
     currentPage: number;
     rowsPerPage: number;
     sortColumn: 'name' | 'isActive' | 'isDefault';

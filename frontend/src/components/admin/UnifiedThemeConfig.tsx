@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
-import type { Theme, ThemeConfig, ThemePalette, TypographyElement } from '../../data/theme.types';
+import type { Theme, ThemeConfig, ThemePalette } from '../../data/theme.types';
 import type { ColorPalette, TypographyStyle } from './types';
 import { ThemeTable } from './ThemeTable';
 import { ThemeEditor } from './ThemeEditor';
@@ -33,7 +33,6 @@ export const UnifiedThemeConfig: React.FC = () => {
     const [themes, setThemes] = useState<Theme[]>([]);
     const [activeThemeId, setActiveThemeId] = useState<string | null>(null);
     const [activeMode, setActiveMode] = useState<'light' | 'dark' | 'accessibility'>('light');
-    const [publishedThemeId, setPublishedThemeId] = useState<string | null>(null);
 
     // DataTables state
     const [currentPage, setCurrentPage] = useState(0);
@@ -46,25 +45,16 @@ export const UnifiedThemeConfig: React.FC = () => {
         const loadThemes = async () => {
             const loadedThemes = await fetchAllThemes();
             setThemes(loadedThemes);
-            
-            // Find active and default themes
+
+            // Find active theme
             const active = loadedThemes.find(t => t.isActive);
-            const defaultTheme = loadedThemes.find(t => t.isDefault);
-            
             if (active) {
                 setActiveThemeId(active.id);
-            } else if (defaultTheme) {
-                setActiveThemeId(defaultTheme.id);
             } else if (loadedThemes.length > 0) {
                 setActiveThemeId(loadedThemes[0].id);
             }
-            
-            // Published theme is the active one
-            if (active) {
-                setPublishedThemeId(active.id);
-            }
         };
-        
+
         loadThemes();
     }, [fetchAllThemes]);
 
@@ -77,13 +67,18 @@ export const UnifiedThemeConfig: React.FC = () => {
         if (!name) return;
 
         try {
-            // Create a new theme based on the default fallback structure
-            const baseTheme = activeTheme || themes[0];
+            // Create a new theme based on the first available theme as template
+            const baseTheme = themes[0];
+            if (!baseTheme) {
+                alert('No themes available to use as template');
+                return;
+            }
+
             const newThemeData: Partial<Theme> = {
                 name,
                 description: '',
                 type: 'custom' as const,
-                config: baseTheme ? JSON.parse(JSON.stringify(baseTheme.config)) : createDefaultConfig(),
+                config: JSON.parse(JSON.stringify(baseTheme.config)),
                 isActive: false,
                 isDefault: false,
             };
@@ -142,9 +137,6 @@ export const UnifiedThemeConfig: React.FC = () => {
             if (activeThemeId === themeId) {
                 setActiveThemeId(null);
             }
-            if (publishedThemeId === themeId) {
-                setPublishedThemeId(null);
-            }
             setViewMode('list');
         } catch (error) {
             console.error('Failed to delete theme:', error);
@@ -166,7 +158,6 @@ export const UnifiedThemeConfig: React.FC = () => {
                 ...t,
                 isActive: t.id === activeTheme.id
             })));
-            setPublishedThemeId(activeTheme.id);
             alert(`Theme "${activeTheme.name}" has been activated!`);
         } catch (error) {
             console.error('Failed to activate theme:', error);
@@ -221,8 +212,6 @@ export const UnifiedThemeConfig: React.FC = () => {
                 <div className="flex-1 overflow-y-auto p-6">
                     <ThemeTable
                         themes={themes}
-                        _activeThemeId={activeThemeId}
-                        _publishedThemeId={publishedThemeId}
                         currentPage={currentPage}
                         rowsPerPage={rowsPerPage}
                         sortColumn={sortColumn}
@@ -277,42 +266,3 @@ export const UnifiedThemeConfig: React.FC = () => {
 
     return null;
 };
-
-// Helper to create default theme config
-function createDefaultConfig(): ThemeConfig {
-    const defaultElement: TypographyElement = {
-        fontName: 'system-ui',
-        fontSize: '1.0',
-        fontWeight: 400,
-        color: '#000000'
-    };
-
-    const defaultPalette: ThemePalette = {
-        colors: {
-            primary: '#2f27ce',
-            secondary: '#dedcff',
-            accent: '#433bff',
-            background: '#fbfbfe',
-            surface: '#eeeef0',
-            border: '#dddddd'
-        },
-        typography: {
-            h1: { ...defaultElement, fontSize: '2.5', fontWeight: 800 },
-            h2: { ...defaultElement, fontSize: '2.0', fontWeight: 700 },
-            h3: { ...defaultElement, fontSize: '1.75', fontWeight: 600 },
-            h4: { ...defaultElement, fontSize: '1.5', fontWeight: 600 },
-            h5: { ...defaultElement, fontSize: '1.25', fontWeight: 600 },
-            h6: { ...defaultElement, fontSize: '1.0', fontWeight: 600 },
-            title: { ...defaultElement, fontSize: '1.5', fontWeight: 700 },
-            subtitle: { ...defaultElement, fontSize: '1.25', fontWeight: 600 },
-            paragraph: { ...defaultElement, fontSize: '1.0', fontWeight: 400 },
-            decorator: { ...defaultElement, fontSize: '1.0', fontWeight: 500 }
-        }
-    };
-
-    return {
-        light: JSON.parse(JSON.stringify(defaultPalette)),
-        dark: JSON.parse(JSON.stringify(defaultPalette)),
-        accessibility: JSON.parse(JSON.stringify(defaultPalette))
-    };
-}

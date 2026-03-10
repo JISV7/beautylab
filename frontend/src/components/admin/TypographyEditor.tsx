@@ -115,14 +115,11 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
 
 export const TypographyEditor: React.FC<TypographyEditorProps> = ({
     styles,
-    _activeMode,
     colors,
     onStyleChange,
     onFontUploaded,
     onFontDeleted,
 }) => {
-    // Note: _activeMode is reserved for future use
-    void _activeMode;
     const [expandedBlocks, setExpandedBlocks] = React.useState<Record<string, boolean>>({
         h1: true,
         h2: false,

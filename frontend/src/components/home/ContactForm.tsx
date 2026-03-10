@@ -29,7 +29,7 @@ export const ContactForm: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           {/* Left Column - Info */}
           <div>
-            <h2 className="text-subtitle-font text-subtitle-size text-subtitle-color text-subtitle-weight mb-4">Get in Touch</h2>
+            <h2 className="text-h2-font text-h2-size text-h2-color text-h2-weight mb-4">Get in Touch</h2>
             <p className="text-p-font text-p-size text-p-color mb-8">
               Have questions about our courses? Want to learn more about Codyn?
               We're here to help you on your learning journey.

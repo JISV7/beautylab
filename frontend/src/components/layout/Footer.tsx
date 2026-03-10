@@ -57,7 +57,7 @@ export const Footer: React.FC = () => {
                             <div className="rounded-lg p-2" style={{ backgroundColor: '#F83A3A' }}>
                                 <Code2 className="w-6 h-6 text-white" />
                             </div>
-                            <span className="text-h4-font text-h4-size text-h4-color text-h4-weight font-bold palette-text">Codyn</span>
+                            <span className="text-h4-font text-h4-size text-h4-color text-h4-weight font-bold">Codyn</span>
                         </a>
                         <p className="text-p-font text-p-size text-p-color mb-6 max-w-xs">
                             Master the future of technology with cutting-edge courses in web development,
@@ -90,7 +90,7 @@ export const Footer: React.FC = () => {
                                         key={social.id}
                                         href={social.href}
                                         aria-label={social.label}
-                                        className="w-10 h-10 rounded-lg palette-border border flex items-center justify-center text-p-size palette-text-secondary hover:palette-primary hover:border-palette-primary transition-all"
+                                        className="w-10 h-10 rounded-lg palette-border border flex items-center justify-center text-p-size decorator-color hover:palette-primary hover:border-palette-primary transition-all"
                                     >
                                         <Icon className="w-5 h-5 text-p-color" />
                                     </a>
@@ -101,7 +101,7 @@ export const Footer: React.FC = () => {
 
                     {/* Product Links */}
                     <div>
-                        <h3 className="text-p-font text-subtitle-size text-subtitle-color text-subtitle-weight font-semibold mb-4">Product</h3>
+                        <h3 className="text-h3-font text-h3-size text-h3-color text-h3-weight font-semibold mb-4">Product</h3>
                         <ul className="space-y-3">
                             {footerLinks.product.map((link) => (
                                 <li key={link.id}>
@@ -118,7 +118,7 @@ export const Footer: React.FC = () => {
 
                     {/* Resources Links */}
                     <div>
-                        <h3 className="text-p-font text-subtitle-size text-subtitle-color text-subtitle-weight font-semibold mb-4">Resources</h3>
+                        <h3 className="text-h3-size text-h3-color text-h3-weight font-semibold mb-4">Resources</h3>
                         <ul className="space-y-3">
                             {footerLinks.resources.map((link) => (
                                 <li key={link.id}>
@@ -135,7 +135,7 @@ export const Footer: React.FC = () => {
 
                     {/* Company Links */}
                     <div>
-                        <h3 className="text-p-font text-subtitle-size text-subtitle-color text-subtitle-weight font-semibold mb-4">Company</h3>
+                        <h3 className="text-h3-font text-h3-size text-h3-color text-h3-weight font-semibold mb-4">Company</h3>
                         <ul className="space-y-3">
                             {footerLinks.company.map((link) => (
                                 <li key={link.id}>
@@ -152,7 +152,7 @@ export const Footer: React.FC = () => {
 
                     {/* Legal Links */}
                     <div>
-                        <h3 className="text-p-font text-subtitle-size text-subtitle-color text-subtitle-weight font-semibold mb-4">Legal</h3>
+                        <h3 className="text-p-font text-h3-size text-h3-color text-h3-weight font-semibold mb-4">Legal</h3>
                         <ul className="space-y-3">
                             {footerLinks.legal.map((link) => (
                                 <li key={link.id}>

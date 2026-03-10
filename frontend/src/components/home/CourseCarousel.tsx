@@ -71,7 +71,7 @@ export const CourseCarousel: React.FC = () => {
     <section id="courses" className="py-16 lg:py-24 palette-background overflow-hidden relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="course-carousel-title mb-4">Featured Courses</h2>
+          <h2 className="text-h2-font text-h2-size text-h2-color mb-4">Featured Courses</h2>
           <p className="text-p-font text-p-size text-p-color max-w-2xl mx-auto">
             Explore our most popular courses designed by industry experts
           </p>
@@ -108,7 +108,7 @@ export const CourseCarousel: React.FC = () => {
 
                 <div className="p-6 flex flex-col flex-grow">
                   {/* Course Content */}
-                  <h3 className="course-card-title mb-3 line-clamp-2 min-h-[3.2rem]">
+                  <h3 className="text-h3-font text-h3-size text-h3-color mb-3 line-clamp-2 min-h-[3.2rem]">
                     {course.title}
                   </h3>
 
@@ -120,11 +120,11 @@ export const CourseCarousel: React.FC = () => {
                   <div className="flex items-center justify-between mb-6 text-p-size">
                     <div className="flex items-center gap-2">
                       <Clock className="w-4 h-4 text-p-color" />
-                      <span className="font-medium text-p-color">{course.duration}</span>
+                      <span className="text-h5-font text-h5-size text-h5-color">{course.duration}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Users className="w-4 h-4 text-p-color" />
-                      <span className="font-medium text-p-color">{course.students}</span>
+                      <span className="text-h5-font text-h5-size text-h5-color">{course.students}</span>
                     </div>
                   </div>
 
@@ -149,7 +149,6 @@ export const CourseCarousel: React.FC = () => {
           background-color: var(--palette-primary);
           opacity: 1;
         }
-        /* Create padding for the pagination dots so they don't overlap cards */
         .swiper {
           padding-bottom: 3rem !important;
           padding-left: 0.5rem;

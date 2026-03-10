@@ -28,7 +28,7 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateToDashboard, onNavigat
             <div className="rounded-lg p-2 logo-brand-bg">
               <Code2 className="w-6 h-6 text-white" />
             </div>
-            <span className="text-h4-size text-h4-color text-h4-weight font-bold palette-text">Codyn</span>
+            <span className="text-h4-font text-h4-size text-h4-color text-h4-weight font-bold">Codyn</span>
           </a>
 
           {/* Navigation */}

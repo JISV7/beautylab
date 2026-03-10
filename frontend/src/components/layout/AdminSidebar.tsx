@@ -28,18 +28,18 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
     return (
         <aside className="dashboard-sidebar w-64 min-h-screen flex flex-col">
             {/* Logo */}
-            <div className="p-6 border-b dashboard-sidebar-border">
+            <div className="p-6 border-b border-[var(--palette-border)]">
                 <div className="flex items-center gap-2 mb-4">
                     <div className="w-8 h-8 rounded-lg bg-[var(--palette-primary)] flex items-center justify-center">
-                        <Code2 className="w-5 h-5 text-white" style={{ color: 'var(--decorator-color)' }} />
+                        <Code2 className="w-5 h-5 text-white" />
                     </div>
-                    <span className="theme-h4 font-bold">Codyn Admin</span>
+                    <span className="text-[var(--text-h4-size)] text-[var(--text-h4-color)] text-[var(--text-h4-weight)] font-bold">Codyn Admin</span>
                 </div>
                 <button
                     onClick={onBack}
-                    className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-p-font text-p-size text-p-color hover:bg-[var(--theme-border-value)] transition-colors"
+                    className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-[var(--text-p-size)] text-[var(--text-p-color)] hover:bg-[var(--palette-border)] transition-colors"
                 >
-                    <ArrowLeft className="w-4 h-4" style={{ color: 'var(--decorator-color)' }} />
+                    <ArrowLeft className="w-4 h-4 text-[var(--text-p-color)]" />
                     Back to Dashboard
                 </button>
             </div>
@@ -55,13 +55,15 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                             key={item.id}
                             onClick={() => handleClick(item.id)}
                             className={`
-                                dashboard-sidebar-link
                                 w-full flex items-center gap-3 px-4 py-3 rounded-lg
                                 text-sm font-medium transition-all
-                                ${isActive ? 'dashboard-sidebar-link-active' : ''}
+                                ${isActive 
+                                    ? 'bg-[var(--palette-primary)] text-[var(--text-p-color)]' 
+                                    : 'text-[var(--text-p-color)] hover:bg-[var(--palette-border)]'
+                                }
                             `}
                         >
-                            <Icon className="w-5 h-5" style={{ color: 'var(--decorator-color)' }} />
+                            <Icon className="w-5 h-5 text-[var(--text-p-color)]" />
                             {item.label}
                         </button>
                     );
@@ -69,10 +71,10 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
             </nav>
 
             {/* Admin Badge */}
-            <div className="p-4 border-t dashboard-sidebar-border">
-                <div className="theme-card p-4 rounded-lg">
-                    <p className="text-xs font-medium theme-text-secondary mb-2">Admin Mode</p>
-                    <p className="text-xs theme-text-base">
+            <div className="p-4 border-t border-[var(--palette-border)]">
+                <div className="bg-[var(--palette-surface)] border border-[var(--palette-border)] p-4 rounded-lg">
+                    <p className="text-xs font-medium text-[var(--text-p-color)] opacity-70 mb-2">Admin Mode</p>
+                    <p className="text-xs text-[var(--text-p-color)]">
                         You have full access to customize the site appearance.
                     </p>
                 </div>

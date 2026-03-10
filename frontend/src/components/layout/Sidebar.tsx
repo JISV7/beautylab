@@ -38,13 +38,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
                             key={item.id}
                             onClick={() => handleClick(item.id)}
                             className={`
-                                dashboard-sidebar-link
                                 w-full flex items-center gap-3 px-4 py-3 rounded-lg
                                 text-sm font-medium transition-all
-                                ${isActive ? 'dashboard-sidebar-link-active' : ''}
+                                ${isActive 
+                                    ? 'bg-[var(--palette-primary)] text-[var(--text-p-color)]' 
+                                    : 'text-[var(--text-p-color)] hover:bg-[var(--palette-border)]'
+                                }
                             `}
                         >
-                            <Icon className="w-5 h-5" />
+                            <Icon className="w-5 h-5 text-[var(--text-p-color)]" />
                             {item.label}
                         </button>
                     );

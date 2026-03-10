@@ -127,10 +127,13 @@ async def create_theme(
     theme_service = ThemeService(db)
 
     try:
+        # Convert Pydantic ThemeConfig to plain dict for SQLAlchemy
+        config_dict = theme_data.config.model_dump(mode='json')
+        
         theme = await theme_service.create_theme(
             name=theme_data.name,
             description=theme_data.description,
-            config=theme_data.config,
+            config=config_dict,
             theme_type=theme_data.type,
             is_active=theme_data.is_active,
             is_default=theme_data.is_default,
@@ -162,7 +165,8 @@ async def update_theme(
     if theme_data.description is not None:
         update_kwargs["description"] = theme_data.description
     if theme_data.config is not None:
-        update_kwargs["config"] = theme_data.config
+        # Convert Pydantic ThemeConfig to plain dict for SQLAlchemy
+        update_kwargs["config"] = theme_data.config.model_dump(mode='json')
     if theme_data.is_active is not None:
         update_kwargs["is_active"] = theme_data.is_active
     if theme_data.is_default is not None:

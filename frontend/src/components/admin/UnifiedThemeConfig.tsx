@@ -1,10 +1,53 @@
 import React, { useState, useEffect } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
-import type { Theme, ThemeConfig, ThemePalette } from '../../data/theme.types';
+import type { Theme, ThemeConfig, ThemePalette, TypographyElement } from '../../data/theme.types';
 import type { ColorPalette, TypographyStyle } from './types';
 import { ThemeTable } from './ThemeTable';
 import { ThemeEditor } from './ThemeEditor';
 import { ThemePreview } from './ThemePreview';
+import { CreateThemeModal } from './CreateThemeModal';
+import { MessageModal } from './MessageModal';
+
+// Helper to create a complete default theme config with all required fields
+function createDefaultThemeConfig(): ThemeConfig {
+    const defaultTypography: TypographyElement = {
+        fontName: 'Roboto',
+        fontSize: '1.0',
+        fontWeight: 400,
+        color: '#1a1a2e',
+        lineHeight: '1.6'
+    };
+
+    const defaultPalette: ThemePalette = {
+        colors: {
+            primary: '#2f27ce',
+            secondary: '#dedcff',
+            accent: '#433bff',
+            background: '#fbfbfe',
+            surface: '#eeeef0',
+            border: '#dddddd',
+            decorator: '#ffffff'
+        },
+        typography: {
+            h1: { ...defaultTypography, fontSize: '2.5', fontWeight: 400, color: '#2f27ce' },
+            h2: { ...defaultTypography, fontSize: '2.0', fontWeight: 400, color: '#2f27ce' },
+            h3: { ...defaultTypography, fontSize: '1.75', fontWeight: 400, color: '#433bff' },
+            h4: { ...defaultTypography, fontSize: '1.5', fontWeight: 400, color: '#1a1675' },
+            h5: { ...defaultTypography, fontSize: '1.25', fontWeight: 400, color: '#1a1675' },
+            h6: { ...defaultTypography, fontSize: '1.0', fontWeight: 400, color: '#1a1675' },
+            title: { ...defaultTypography, fontSize: '1.5', fontWeight: 700, color: '#1a1675' },
+            subtitle: { ...defaultTypography, fontSize: '1.25', fontWeight: 600, color: '#1a1675' },
+            paragraph: { ...defaultTypography, fontSize: '1.0', fontWeight: 400, color: '#1a1a2e' },
+            decorator: { ...defaultTypography, fontSize: '1.0', fontWeight: 500, color: '#ffffff' }
+        }
+    };
+
+    return {
+        light: JSON.parse(JSON.stringify(defaultPalette)),
+        dark: JSON.parse(JSON.stringify(defaultPalette)),
+        accessibility: JSON.parse(JSON.stringify(defaultPalette))
+    };
+}
 
 // Helper to convert ColorPalette + TypographyStyle to ThemePalette
 // Preserves existing fontWeight, lineHeight, and fontId from the current palette
@@ -99,6 +142,14 @@ export const UnifiedThemeConfig: React.FC = () => {
     const [activeThemeId, setActiveThemeId] = useState<string | null>(null);
     const [activeMode, setActiveMode] = useState<'light' | 'dark' | 'accessibility'>('light');
 
+    // Modal state
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const [messageModal, setMessageModal] = useState<{
+        isOpen: boolean;
+        type: 'success' | 'error';
+        message: string;
+    }>({ isOpen: false, type: 'success', message: '' });
+
     // DataTables state
     const [currentPage, setCurrentPage] = useState(0);
     const [sortColumn, setSortColumn] = useState<'name' | 'isActive' | 'isDefault'>('name');
@@ -127,23 +178,14 @@ export const UnifiedThemeConfig: React.FC = () => {
     const activeTheme = themes.find(t => t.id === activeThemeId) || null;
 
     // Theme CRUD operations
-    const handleCreateTheme = async () => {
-        const name = prompt("Enter a name for the new theme:");
-        if (!name) return;
-
+    const handleCreateTheme = async (name: string, description: string) => {
         try {
-            // Create a new theme based on the first available theme as template
-            const baseTheme = themes[0];
-            if (!baseTheme) {
-                alert('No themes available to use as template');
-                return;
-            }
-
+            // Create a new theme with a complete default config
             const newThemeData: Partial<Theme> = {
                 name,
-                description: '',
+                description,
                 type: 'custom' as const,
-                config: JSON.parse(JSON.stringify(baseTheme.config)),
+                config: createDefaultThemeConfig(),
                 isActive: false,
                 isDefault: false,
             };
@@ -152,10 +194,24 @@ export const UnifiedThemeConfig: React.FC = () => {
             setThemes(prev => [...prev, created]);
             setActiveThemeId(created.id);
             setViewMode('edit');
-        } catch (error) {
+            setIsCreateModalOpen(false);
+            setMessageModal({
+                isOpen: true,
+                type: 'success',
+                message: `Theme "${name}" created successfully!`
+            });
+        } catch (error: any) {
             console.error('Failed to create theme:', error);
-            alert('Failed to create theme');
+            setMessageModal({
+                isOpen: true,
+                type: 'error',
+                message: error.response?.data?.detail || 'Failed to create theme. Please check the backend logs.'
+            });
         }
+    };
+
+    const handleShowCreateModal = () => {
+        setIsCreateModalOpen(true);
     };
 
     const handleDuplicateTheme = async (themeId: string) => {
@@ -179,9 +235,18 @@ export const UnifiedThemeConfig: React.FC = () => {
             setThemes(prev => [...prev, created]);
             setActiveThemeId(created.id);
             setViewMode('edit');
-        } catch (error) {
+            setMessageModal({
+                isOpen: true,
+                type: 'success',
+                message: `Theme "${newName}" duplicated successfully!`
+            });
+        } catch (error: any) {
             console.error('Failed to duplicate theme:', error);
-            alert('Failed to duplicate theme');
+            setMessageModal({
+                isOpen: true,
+                type: 'error',
+                message: error.response?.data?.detail || 'Failed to duplicate theme.'
+            });
         }
     };
 
@@ -190,7 +255,11 @@ export const UnifiedThemeConfig: React.FC = () => {
         if (!theme) return;
 
         if (theme.isDefault) {
-            alert(`Cannot delete "${theme.name}" because it is the default theme.`);
+            setMessageModal({
+                isOpen: true,
+                type: 'error',
+                message: `Cannot delete "${theme.name}" because it is the default theme.`
+            });
             return;
         }
 
@@ -203,9 +272,18 @@ export const UnifiedThemeConfig: React.FC = () => {
                 setActiveThemeId(null);
             }
             setViewMode('list');
-        } catch (error) {
+            setMessageModal({
+                isOpen: true,
+                type: 'success',
+                message: `Theme "${theme.name}" deleted successfully!`
+            });
+        } catch (error: any) {
             console.error('Failed to delete theme:', error);
-            alert('Failed to delete theme');
+            setMessageModal({
+                isOpen: true,
+                type: 'error',
+                message: error.response?.data?.detail || 'Failed to delete theme.'
+            });
         }
     };
 
@@ -223,10 +301,18 @@ export const UnifiedThemeConfig: React.FC = () => {
                 ...t,
                 isActive: t.id === activeTheme.id
             })));
-            alert(`Theme "${activeTheme.name}" has been activated!`);
-        } catch (error) {
+            setMessageModal({
+                isOpen: true,
+                type: 'success',
+                message: `Theme "${activeTheme.name}" has been activated!`
+            });
+        } catch (error: any) {
             console.error('Failed to activate theme:', error);
-            alert('Failed to activate theme');
+            setMessageModal({
+                isOpen: true,
+                type: 'error',
+                message: error.response?.data?.detail || 'Failed to activate theme.'
+            });
         }
     };
 
@@ -243,10 +329,18 @@ export const UnifiedThemeConfig: React.FC = () => {
         try {
             const updated = await updateTheme(activeTheme.id, { config: newConfig });
             setThemes(prev => prev.map(t => t.id === updated.id ? updated : t));
-            alert(`Theme "${activeTheme.name}" saved successfully!`);
-        } catch (error) {
+            setMessageModal({
+                isOpen: true,
+                type: 'success',
+                message: `Theme "${activeTheme.name}" saved successfully!`
+            });
+        } catch (error: any) {
             console.error('Failed to save theme:', error);
-            alert('Failed to save theme');
+            setMessageModal({
+                isOpen: true,
+                type: 'error',
+                message: error.response?.data?.detail || 'Failed to save theme.'
+            });
         }
     };
 
@@ -262,71 +356,102 @@ export const UnifiedThemeConfig: React.FC = () => {
     // Render based on view mode
     if (viewMode === 'list') {
         return (
-            <div className="flex-1 flex flex-col h-full overflow-hidden">
-                <div className="p-6 border-b palette-border flex items-center justify-between flex-wrap gap-4">
-                    <div>
-                        <h1 className="text-h1-size font-bold mb-1">Theme Management</h1>
-                        <p className="text-p-font text-p-size text-p-color">Create, edit, and publish themes for your site.</p>
+            <>
+                <div className="flex-1 flex flex-col h-full overflow-hidden">
+                    <div className="p-6 border-b palette-border flex items-center justify-between flex-wrap gap-4">
+                        <div>
+                            <h1 className="text-h1-size font-bold mb-1">Theme Management</h1>
+                            <p className="text-p-font text-p-size text-p-color">Create, edit, and publish themes for your site.</p>
+                        </div>
+                        <button
+                            onClick={handleShowCreateModal}
+                            className="theme-button theme-button-primary"
+                        >
+                            + Create Theme
+                        </button>
                     </div>
-                    <button
-                        onClick={handleCreateTheme}
-                        className="theme-button theme-button-primary"
-                    >
-                        + Create Theme
-                    </button>
+                    <div className="flex-1 overflow-y-auto p-6">
+                        <ThemeTable
+                            themes={themes}
+                            currentPage={currentPage}
+                            rowsPerPage={rowsPerPage}
+                            sortColumn={sortColumn}
+                            sortDirection={sortDirection}
+                            onEdit={(id) => {
+                                setActiveThemeId(id);
+                                setViewMode('edit');
+                            }}
+                            onPreview={(id) => {
+                                setActiveThemeId(id);
+                                setViewMode('preview');
+                            }}
+                            onDelete={handleDeleteTheme}
+                            onDuplicate={handleDuplicateTheme}
+                            onPageChange={setCurrentPage}
+                            onSort={handleSort}
+                        />
+                    </div>
                 </div>
-                <div className="flex-1 overflow-y-auto p-6">
-                    <ThemeTable
-                        themes={themes}
-                        currentPage={currentPage}
-                        rowsPerPage={rowsPerPage}
-                        sortColumn={sortColumn}
-                        sortDirection={sortDirection}
-                        onEdit={(id) => {
-                            setActiveThemeId(id);
-                            setViewMode('edit');
-                        }}
-                        onPreview={(id) => {
-                            setActiveThemeId(id);
-                            setViewMode('preview');
-                        }}
-                        onDelete={handleDeleteTheme}
-                        onDuplicate={handleDuplicateTheme}
-                        onPageChange={setCurrentPage}
-                        onSort={handleSort}
-                    />
-                </div>
-            </div>
+
+                {/* Modals */}
+                <CreateThemeModal
+                    isOpen={isCreateModalOpen}
+                    onClose={() => setIsCreateModalOpen(false)}
+                    onSubmit={handleCreateTheme}
+                />
+                <MessageModal
+                    isOpen={messageModal.isOpen}
+                    onClose={() => setMessageModal({ ...messageModal, isOpen: false })}
+                    type={messageModal.type}
+                    message={messageModal.message}
+                />
+            </>
         );
     }
 
     if (viewMode === 'preview' && activeTheme) {
         return (
-            <ThemePreview
-                theme={activeTheme}
-                onEdit={() => setViewMode('edit')}
-                onClose={() => {
-                    setViewMode('list');
-                    setActiveThemeId(null);
-                }}
-                onPublish={handlePublishTheme}
-            />
+            <>
+                <ThemePreview
+                    theme={activeTheme}
+                    onEdit={() => setViewMode('edit')}
+                    onClose={() => {
+                        setViewMode('list');
+                        setActiveThemeId(null);
+                    }}
+                    onPublish={handlePublishTheme}
+                />
+                <MessageModal
+                    isOpen={messageModal.isOpen}
+                    onClose={() => setMessageModal({ ...messageModal, isOpen: false })}
+                    type={messageModal.type}
+                    message={messageModal.message}
+                />
+            </>
         );
     }
 
     if (viewMode === 'edit' && activeTheme) {
         return (
-            <ThemeEditor
-                theme={activeTheme}
-                activeMode={activeMode}
-                onModeChange={setActiveMode}
-                onSave={handleSaveTheme}
-                onPublish={handlePublishTheme}
-                onBack={() => {
-                    setViewMode('list');
-                    setActiveThemeId(null);
-                }}
-            />
+            <>
+                <ThemeEditor
+                    theme={activeTheme}
+                    activeMode={activeMode}
+                    onModeChange={setActiveMode}
+                    onSave={handleSaveTheme}
+                    onPublish={handlePublishTheme}
+                    onBack={() => {
+                        setViewMode('list');
+                        setActiveThemeId(null);
+                    }}
+                />
+                <MessageModal
+                    isOpen={messageModal.isOpen}
+                    onClose={() => setMessageModal({ ...messageModal, isOpen: false })}
+                    type={messageModal.type}
+                    message={messageModal.message}
+                />
+            </>
         );
     }
 

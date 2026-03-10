@@ -252,7 +252,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                         className="px-4 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-lg shadow-sm transition-colors flex items-center gap-2"
                     >
                         <Eye className="w-4 h-4" />
-                        Publish Theme
+                        Set Theme to Site
                     </button>
                     <button
                         onClick={handleSave}

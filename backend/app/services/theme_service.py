@@ -39,8 +39,7 @@ class ThemeValidationError(ThemeServiceError):
 class ThemeService:
     """Service for theme operations with validation."""
 
-    REQUIRED_TYPOGRAPHY_ELEMENTS = ["h1", "h2", "h3", "h4", "h5", "h6", "title", "subtitle", "paragraph"]
-    REQUIRED_PALETTE_MODES = ["light", "dark", "accessibility"]
+    # Note: Validation constants removed - now using Pydantic schema validation
 
     def __init__(self, db: AsyncSession):
         self.db = db
@@ -354,49 +353,26 @@ class ThemeService:
     # ==================== Validation Helpers ====================
 
     def _validate_theme_config(self, config: Dict[str, Any]) -> None:
-        """Validate theme configuration structure.
+        """Validate theme configuration using Pydantic schema.
+        
+        This leverages Pydantic's built-in validation instead of manual checks.
+        Pydantic handles alias conversion (camelCase ↔ snake_case) automatically.
         
         Raises:
             ThemeValidationError: If config is invalid
         """
-        errors = []
-        warnings = []
-
-        # Check for required palette modes
-        for mode in self.REQUIRED_PALETTE_MODES:
-            if mode not in config:
-                errors.append(f"Missing required palette mode: '{mode}'")
-            elif not isinstance(config[mode], dict):
-                errors.append(f"Palette '{mode}' must be an object")
-            else:
-                palette = config[mode]
-
-                # Validate colors
-                if "colors" not in palette:
-                    errors.append(f"Palette '{mode}' missing 'colors'")
-                else:
-                    colors = palette["colors"]
-                    required_colors = ["primary", "secondary", "accent", "background", 
-                                      "surface", "border", "text", "text_secondary"]
-                    for color in required_colors:
-                        if color not in colors:
-                            errors.append(f"Palette '{mode}' missing color: '{color}'")
-
-                # Validate typography
-                if "typography" not in palette:
-                    errors.append(f"Palette '{mode}' missing 'typography'")
-                else:
-                    typography = palette["typography"]
-                    for element in self.REQUIRED_TYPOGRAPHY_ELEMENTS:
-                        if element not in typography:
-                            errors.append(f"Palette '{mode}' missing typography element: '{element}'")
-                        else:
-                            elem = typography[element]
-                            if "font_size" not in elem:
-                                errors.append(f"Typography '{element}' in '{mode}' missing 'font_size'")
-
-        if errors:
-            raise ThemeValidationError(f"Theme config validation failed: {'; '.join(errors)}")
+        try:
+            # Import here to avoid circular imports
+            from app.schemas.theme import ThemeConfig
+            # Pydantic will validate the structure and raise ValidationError if invalid
+            ThemeConfig.model_validate(config)
+        except Exception as e:
+            # Convert to ThemeValidationError with clean message
+            error_msg = str(e)
+            # Extract just the error details, remove Pydantic wrapper text
+            if "validation errors" in error_msg.lower():
+                raise ThemeValidationError(f"Theme config validation failed: {error_msg}")
+            raise ThemeValidationError(f"Theme config validation failed: {error_msg}")
 
     async def _unset_default_themes(self, exclude_id: Optional[UUID] = None) -> None:
         """Unset all default themes, optionally excluding one."""

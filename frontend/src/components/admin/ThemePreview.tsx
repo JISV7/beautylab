@@ -119,7 +119,7 @@ export const ThemePreview: React.FC<ThemePreviewProps> = ({
                             className="px-8 py-4 text-lg font-bold text-white bg-green-600 hover:bg-green-700 rounded-xl shadow-lg transition-colors flex items-center gap-3"
                         >
                             <Eye className="w-6 h-6" />
-                            Publish This Theme to Site
+                            Set Theme to Site
                         </button>
                     </div>
                 </div>

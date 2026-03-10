@@ -67,7 +67,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="auth-input w-full pl-10 pr-4"
+              className="auth-input w-full py-2.5 px-4 pl-11 rounded-lg"
               placeholder="John Doe"
               disabled={isLoading}
             />
@@ -85,7 +85,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="auth-input w-full pl-10 pr-4"
+              className="auth-input w-full py-2.5 px-4 pl-11 rounded-lg"
               placeholder="you@example.com"
               disabled={isLoading}
             />
@@ -103,7 +103,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="auth-input w-full pl-10 pr-12"
+              className="auth-input w-full py-2.5 px-4 pl-11 pr-12 rounded-lg"
               placeholder="••••••••"
               disabled={isLoading}
             />
@@ -133,7 +133,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
               required
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="auth-input w-full pl-10 pr-12"
+              className="auth-input w-full py-2.5 px-4 pl-11 pr-12 rounded-lg"
               placeholder="••••••••"
               disabled={isLoading}
             />

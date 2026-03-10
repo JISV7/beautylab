@@ -65,7 +65,7 @@ export const PasswordRecoveryForm: React.FC<PasswordRecoveryFormProps> = ({
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="auth-input w-full pl-10 pr-4"
+              className="auth-input w-full py-2.5 px-4 pl-11 rounded-lg"
               placeholder="you@example.com"
             />
           </div>

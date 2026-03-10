@@ -172,7 +172,11 @@ class ThemeUpdate(BaseModel):
 class ThemeResponse(BaseModel):
     """Schema for theme response."""
 
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(
+        from_attributes=True,
+        alias_generator=AliasGenerator(serialization_alias=to_camel),
+        populate_by_name=True,
+    )
 
     id: UUID
     name: str

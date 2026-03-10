@@ -26,13 +26,13 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
     onToggle,
     onStyleChange,
 }) => (
-    <div className="rounded-xl border theme-border shadow-sm overflow-hidden mb-4" style={{ backgroundColor: '#fffafb' }}>
+    <div className="theme-card mb-4">
         <div
-            className="p-5 flex items-center justify-between border-b theme-border cursor-pointer hover:bg-black/5 transition-colors"
+            className="p-5 flex items-center justify-between border-b theme-border cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
             onClick={onToggle}
         >
             <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded flex items-center justify-center font-bold text-slate-700" style={{ backgroundColor: 'rgba(0,0,0,0.05)' }}>
+                <div className="w-10 h-10 rounded flex items-center justify-center font-bold text-slate-700" style={{ backgroundColor: 'var(--palette-surface)' }}>
                     {shortLabel}
                 </div>
                 <h4 className="font-semibold text-slate-900">{label}</h4>
@@ -41,7 +41,7 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
         </div>
 
         {expanded && (
-            <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {/* Font Family */}
                 <label className="flex flex-col gap-2">
                     <span className="text-sm font-semibold text-slate-700">Font Family</span>
@@ -49,8 +49,7 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
                         <select
                             value={style.fontFamily}
                             onChange={(e) => onStyleChange('fontFamily', e.target.value)}
-                            className="w-full appearance-none rounded-lg border-slate-200 text-slate-900 py-2.5 pl-4 pr-10 focus:border-blue-500 focus:ring-blue-500"
-                            style={{ backgroundColor: '#fffafb' }}
+                            className="theme-input appearance-none cursor-pointer"
                         >
                             <option>Manrope</option>
                             <option>Inter</option>
@@ -70,12 +69,11 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
                     <span className="text-sm font-semibold text-slate-700">Size (rem)</span>
                     <div className="relative flex items-center">
                         <input
-                            className="w-full rounded-lg border-slate-200 text-slate-900 py-2.5 pl-4 pr-12 focus:border-blue-500 focus:ring-blue-500"
+                            className="theme-input pr-12"
                             type="number"
                             step="0.1"
                             value={style.size}
                             onChange={(e) => onStyleChange('size', parseFloat(e.target.value) || 1)}
-                            style={{ backgroundColor: '#fffafb' }}
                         />
                         <span className="absolute right-4 text-sm text-slate-500 font-medium">rem</span>
                     </div>
@@ -86,14 +84,13 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
                     <span className="text-sm font-semibold text-slate-700">Font Weight</span>
                     <div className="relative flex items-center">
                         <input
-                            className="w-full rounded-lg border-slate-200 text-slate-900 py-2.5 pl-4 pr-12 focus:border-blue-500 focus:ring-blue-500"
+                            className="theme-input pr-12"
                             type="number"
                             min="100"
                             max="900"
                             step="100"
                             value={style.fontWeight || 400}
                             onChange={(e) => onStyleChange('fontWeight', parseInt(e.target.value) || 400)}
-                            style={{ backgroundColor: '#fffafb' }}
                         />
                         <span className="absolute right-4 text-sm text-slate-500 font-medium">wght</span>
                     </div>
@@ -104,14 +101,13 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
                     <span className="text-sm font-semibold text-slate-700">Line Height</span>
                     <div className="relative flex items-center">
                         <input
-                            className="w-full rounded-lg border-slate-200 text-slate-900 py-2.5 pl-4 pr-12 focus:border-blue-500 focus:ring-blue-500"
+                            className="theme-input pr-12"
                             type="number"
                             min="0.5"
                             max="3.0"
                             step="0.1"
                             value={style.lineHeight || '1.5'}
                             onChange={(e) => onStyleChange('lineHeight', e.target.value)}
-                            style={{ backgroundColor: '#fffafb' }}
                         />
                         <span className="absolute right-4 text-sm text-slate-500 font-medium">lh</span>
                     </div>
@@ -128,15 +124,14 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
                                 value={style.color}
                                 onChange={(e) => onStyleChange('color', e.target.value)}
                             />
-                            <div className="w-10 h-10 rounded border-2 border-slate-200 shadow-sm" style={{ backgroundColor: style.color }}></div>
+                            <div className="w-10 h-10 rounded border-2 theme-border shadow-sm" style={{ backgroundColor: style.color }}></div>
                         </div>
                         <div className="flex-1 relative">
                             <input
-                                className="w-full rounded-lg border-slate-200 text-slate-900 py-2 pl-3 pr-10 focus:border-blue-500 focus:ring-blue-500 uppercase text-sm font-mono"
+                                className="theme-input uppercase text-sm font-mono pr-10"
                                 type="text"
                                 value={style.color}
                                 onChange={(e) => onStyleChange('color', e.target.value)}
-                                style={{ backgroundColor: '#fffafb' }}
                             />
                             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
                                 <Palette className="w-4 h-4" />
@@ -151,7 +146,6 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
 
 export const TypographyEditor: React.FC<TypographyEditorProps> = ({
     styles,
-    colors,
     onStyleChange,
     onFontUploaded,
     onFontDeleted,
@@ -254,8 +248,8 @@ export const TypographyEditor: React.FC<TypographyEditorProps> = ({
 
                 {/* Typography Blocks */}
                 <div className="flex flex-col gap-4">
-                    <h3 className="text-xl font-bold theme-text-base mt-2 flex items-center gap-2">
-                        <Type className="w-5 h-5 text-slate-700" /> Font Sizes & Colors
+                    <h3 className="text-xl font-bold flex items-center gap-2">
+                        <Type className="w-5 h-5" /> Font Sizes & Colors
                     </h3>
                     <StyleBlock
                         label="Heading 1 (H1)"
@@ -326,11 +320,11 @@ export const TypographyEditor: React.FC<TypographyEditorProps> = ({
             {/* Right Column: Live Preview */}
             <div className="lg:col-span-5">
                 <div className="sticky top-24 flex flex-col gap-4">
-                    <h3 className="text-xl font-bold theme-text-base flex items-center gap-2">
-                        <Type className="w-5 h-5 text-slate-700" /> Preview
+                    <h3 className="text-xl font-bold flex items-center gap-2">
+                        <Type className="w-5 h-5" /> Preview
                     </h3>
 
-                    <div className="rounded-xl border border-dashed border-slate-300 bg-white p-8 shadow-sm flex flex-col gap-6" style={{ minHeight: '500px' }}>
+                    <div className="theme-card flex flex-col gap-6" style={{ minHeight: '500px' }}>
                         <div style={{
                             fontFamily: styles.h1.fontFamily,
                             fontSize: `${styles.h1.size}rem`,
@@ -404,12 +398,7 @@ export const TypographyEditor: React.FC<TypographyEditorProps> = ({
 
                         <div className="mt-4">
                             <button
-                                className="px-6 py-3 rounded-lg font-semibold text-white transition-opacity hover:opacity-90"
-                                style={{
-                                    backgroundColor: colors.primary,
-                                    fontFamily: styles.p.fontFamily,
-                                    fontSize: `${styles.p.size}rem`
-                                }}
+                                className="theme-button theme-button-primary"
                             >
                                 Example Button
                             </button>

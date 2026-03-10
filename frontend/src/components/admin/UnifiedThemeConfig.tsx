@@ -263,9 +263,9 @@ export const UnifiedThemeConfig: React.FC = () => {
     if (viewMode === 'list') {
         return (
             <div className="flex-1 flex flex-col h-full overflow-hidden">
-                <div className="p-6 border-b theme-border flex items-center justify-between">
+                <div className="p-6 border-b theme-border flex items-center justify-between flex-wrap gap-4">
                     <div>
-                        <h1 className="text-2xl font-bold theme-text-base mb-1">Theme Management</h1>
+                        <h1 className="text-h1-size font-bold mb-1">Theme Management</h1>
                         <p className="theme-text-secondary">Create, edit, and publish themes for your site.</p>
                     </div>
                     <button

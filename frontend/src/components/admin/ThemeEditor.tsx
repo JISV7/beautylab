@@ -226,17 +226,17 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
     };
 
     return (
-        <div className="flex-1 flex flex-col h-full overflow-hidden theme-background">
+        <div className="flex-1 flex flex-col h-full overflow-hidden">
             {/* Header */}
-            <header className="h-16 theme-surface border-b theme-border px-8 flex items-center justify-between shrink-0 sticky top-0 z-10">
+            <header className="h-16 theme-surface border-b theme-border px-6 md:px-8 flex items-center justify-between shrink-0 sticky top-0 z-10">
                 <div className="flex items-center gap-4">
                     <button
                         onClick={onBack}
                         className="p-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
                     >
-                        <X className="w-5 h-5 theme-text-secondary" style={{ color: 'var(--decorator-color)' }} />
+                        <X className="w-5 h-5" />
                     </button>
-                    <h2 className="text-xl font-bold theme-text-base">
+                    <h2 className="text-xl font-bold">
                         Edit: {theme.name}
                     </h2>
                 </div>
@@ -251,14 +251,14 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                         onClick={onPublish}
                         className="px-4 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-lg shadow-sm transition-colors flex items-center gap-2"
                     >
-                        <Eye className="w-4 h-4" style={{ color: 'var(--decorator-color)' }} />
+                        <Eye className="w-4 h-4" />
                         Publish Theme
                     </button>
                     <button
                         onClick={handleSave}
-                        className="px-4 py-2 text-sm font-medium text-white theme-primary rounded-lg shadow-sm hover:opacity-90 transition-opacity flex items-center gap-2"
+                        className="px-4 py-2 text-sm font-medium text-white theme-button-primary rounded-lg shadow-sm hover:opacity-90 transition-opacity flex items-center gap-2"
                     >
-                        <Save className="w-4 h-4" style={{ color: 'var(--decorator-color)' }} />
+                        <Save className="w-4 h-4" />
                         Save Changes
                     </button>
                 </div>
@@ -267,14 +267,14 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
             <div className="flex-1 overflow-y-auto p-4 md:p-8">
                 <div className="max-w-7xl mx-auto space-y-8">
                     {/* Mode Tabs */}
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
                         {(['light', 'dark', 'accessibility'] as const).map(mode => (
                             <button
                                 key={mode}
                                 onClick={() => onModeChange(mode)}
                                 className={`px-4 py-2 text-sm font-bold rounded-lg transition-colors capitalize ${
                                     activeMode === mode
-                                        ? 'bg-blue-500 text-white'
+                                        ? 'theme-button theme-button-primary'
                                         : 'theme-text-secondary hover:bg-black/5 dark:hover:bg-white/5'
                                 }`}
                             >
@@ -289,22 +289,22 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                             onClick={() => setActiveTab('colors')}
                             className={`pb-2 flex items-center gap-2 font-medium transition-colors ${
                                 activeTab === 'colors'
-                                    ? 'text-blue-600 border-b-2 border-blue-500'
+                                    ? 'text-palette-primary border-b-2 border-palette-primary'
                                     : 'theme-text-secondary hover:text-slate-900 dark:hover:text-white'
                             }`}
                         >
-                            <Palette className="w-4 h-4" style={{ color: 'var(--decorator-color)' }} />
+                            <Palette className="w-4 h-4" />
                             Colors
                         </button>
                         <button
                             onClick={() => setActiveTab('typography')}
                             className={`pb-2 flex items-center gap-2 font-medium transition-colors ${
                                 activeTab === 'typography'
-                                    ? 'text-blue-600 border-b-2 border-blue-500'
+                                    ? 'text-palette-primary border-b-2 border-palette-primary'
                                     : 'theme-text-secondary hover:text-slate-900 dark:hover:text-white'
                             }`}
                         >
-                            <Type className="w-4 h-4" style={{ color: 'var(--decorator-color)' }} />
+                            <Type className="w-4 h-4" />
                             Typography
                         </button>
                     </div>
@@ -320,7 +320,6 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                     ) : (
                         <TypographyEditor
                             styles={styles}
-                            colors={colors}
                             onStyleChange={handleStyleChange}
                             onFontUploaded={() => {}}
                             onFontDeleted={() => {}}

@@ -71,12 +71,12 @@ export const ThemeTable: React.FC<ThemeTableProps> = ({
     const { data: tableData, totalPages } = getSortedAndPaginatedData();
 
     return (
-        <div className="theme-surface rounded-xl border theme-border overflow-hidden shadow-sm">
+        <div className="theme-card">
             <table className="w-full">
                 <thead className="bg-black/5 dark:bg-white/5 border-b theme-border">
                     <tr>
                         <th
-                            className="px-6 py-4 text-left text-sm font-bold theme-text-secondary cursor-pointer hover:opacity-70"
+                            className="px-4 md:px-6 py-4 text-left text-sm font-bold theme-text-secondary cursor-pointer hover:opacity-70"
                             onClick={() => onSort('name')}
                             role="columnheader"
                             aria-sort={sortColumn === 'name' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
@@ -87,7 +87,7 @@ export const ThemeTable: React.FC<ThemeTableProps> = ({
                             </div>
                         </th>
                         <th
-                            className="px-6 py-4 text-left text-sm font-bold theme-text-secondary cursor-pointer hover:opacity-70"
+                            className="px-4 md:px-6 py-4 text-left text-sm font-bold theme-text-secondary cursor-pointer hover:opacity-70"
                             onClick={() => onSort('isActive')}
                             role="columnheader"
                             aria-sort={sortColumn === 'isActive' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
@@ -98,7 +98,7 @@ export const ThemeTable: React.FC<ThemeTableProps> = ({
                             </div>
                         </th>
                         <th
-                            className="px-6 py-4 text-left text-sm font-bold theme-text-secondary cursor-pointer hover:opacity-70"
+                            className="px-4 md:px-6 py-4 text-left text-sm font-bold theme-text-secondary cursor-pointer hover:opacity-70"
                             onClick={() => onSort('isDefault')}
                             role="columnheader"
                             aria-sort={sortColumn === 'isDefault' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
@@ -108,10 +108,10 @@ export const ThemeTable: React.FC<ThemeTableProps> = ({
                                 <SortIcon column="isDefault" sortColumn={sortColumn} sortDirection={sortDirection} />
                             </div>
                         </th>
-                        <th className="px-6 py-4 text-left text-sm font-bold theme-text-secondary" role="columnheader">
+                        <th className="px-4 md:px-6 py-4 text-left text-sm font-bold theme-text-secondary" role="columnheader">
                             TYPE
                         </th>
-                        <th className="px-6 py-4 text-right text-sm font-bold theme-text-secondary" role="columnheader">
+                        <th className="px-4 md:px-6 py-4 text-right text-sm font-bold theme-text-secondary" role="columnheader">
                             ACTIONS
                         </th>
                     </tr>
@@ -122,10 +122,10 @@ export const ThemeTable: React.FC<ThemeTableProps> = ({
                             key={row.id}
                             className={`border-b theme-border hover:bg-black/5 dark:hover:bg-white/5 transition-colors ${idx % 2 === 0 ? 'bg-transparent' : 'bg-black/[0.02] dark:bg-white/[0.02]'}`}
                         >
-                            <td className="px-6 py-4">
-                                <span className="font-semibold theme-text-base">{row.name}</span>
+                            <td className="px-4 md:px-6 py-4">
+                                <span className="font-semibold">{row.name}</span>
                             </td>
-                            <td className="px-6 py-4">
+                            <td className="px-4 md:px-6 py-4">
                                 {row.isActive ? (
                                     <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
                                         <Check className="w-3 h-3" /> Active
@@ -134,7 +134,7 @@ export const ThemeTable: React.FC<ThemeTableProps> = ({
                                     <span className="theme-text-secondary">-</span>
                                 )}
                             </td>
-                            <td className="px-6 py-4">
+                            <td className="px-4 md:px-6 py-4">
                                 {row.isDefault ? (
                                     <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
                                         <Eye className="w-3 h-3" /> Default
@@ -143,10 +143,10 @@ export const ThemeTable: React.FC<ThemeTableProps> = ({
                                     <span className="theme-text-secondary">-</span>
                                 )}
                             </td>
-                            <td className="px-6 py-4">
+                            <td className="px-4 md:px-6 py-4">
                                 <span className="text-sm theme-text-secondary capitalize">{row.type}</span>
                             </td>
-                            <td className="px-6 py-4">
+                            <td className="px-4 md:px-6 py-4">
                                 <div className="flex items-center justify-end gap-2">
                                     <button
                                         onClick={() => onEdit(row.id)}
@@ -193,7 +193,7 @@ export const ThemeTable: React.FC<ThemeTableProps> = ({
 
             {/* Pagination */}
             {totalPages > 1 && (
-                <div className="px-6 py-4 border-t theme-border flex items-center justify-between">
+                <div className="px-4 md:px-6 py-4 border-t theme-border flex items-center justify-between flex-wrap gap-4">
                     <span className="text-sm theme-text-secondary">
                         Page {currentPage + 1} of {totalPages}
                     </span>

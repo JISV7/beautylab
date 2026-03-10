@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Search, Bell, User, LogOut, Settings, Shield, Sun, Moon, Eye , Code2} from 'lucide-react';
+import { Menu, Search, Bell, User, LogOut, Settings, Shield, Sun, Moon, Eye , Code2} from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
 
@@ -7,9 +7,10 @@ interface DashboardHeaderProps {
     onNavigate?: (page: string) => void;
     onNavigateToAdmin?: () => void;
     onLogout?: () => void;
+    onMenuToggle?: () => void;
 }
 
-export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNavigate, onNavigateToAdmin, onLogout }) => {
+export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNavigate, onNavigateToAdmin, onLogout, onMenuToggle }) => {
     const { user, logout } = useAuth();
     const { currentMode, setPaletteMode } = useTheme();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -36,9 +37,17 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNavigate, on
     };
 
     return (
-        <header className="dashboard-header z-40 px-6 py-4 flex items-center justify-between gap-4">
-            {/* Left Side: Logo + Search */}
-            <div className="flex items-center gap-4 sm:gap-6 flex-1 min-w-0">
+        <header className="dashboard-header z-40 px-4 lg:px-6 py-4 flex items-center justify-between gap-4">
+            {/* Left Side: Hamburger + Logo + Search */}
+            <div className="flex items-center gap-2 lg:gap-4 flex-1 min-w-0">
+                {/* Mobile Hamburger Menu */}
+                <button
+                    onClick={onMenuToggle}
+                    className="lg:hidden p-2 rounded-lg text-[var(--text-p-color)] hover:bg-[var(--palette-border)] transition-colors"
+                >
+                    <Menu className="w-6 h-6" />
+                </button>
+
                 {/* Logo */}
                 <a href="/" className="flex items-center gap-2 flex-shrink-0">
                     <div className="rounded-lg p-2 logo-brand-bg">

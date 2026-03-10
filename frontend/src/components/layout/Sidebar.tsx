@@ -1,14 +1,18 @@
 import React from 'react';
-import { BookOpen, Compass, Users, Home, Sparkles } from 'lucide-react';
+import { X, BookOpen, Compass, Users, Home, Sparkles } from 'lucide-react';
 
 interface SidebarProps {
     activeItem?: string;
     onNavigate?: (item: string) => void;
+    isOpen?: boolean;
+    onClose?: () => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ 
-    activeItem = 'home', 
-    onNavigate 
+export const Sidebar: React.FC<SidebarProps> = ({
+    activeItem = 'home',
+    onNavigate,
+    isOpen = false,
+    onClose
 }) => {
     const navItems = [
         { id: 'home', label: 'Home', icon: Home },
@@ -26,32 +30,48 @@ export const Sidebar: React.FC<SidebarProps> = ({
     };
 
     return (
-        <aside className="dashboard-sidebar w-64 flex flex-col">
-            {/* Navigation */}
-            <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-                {navItems.map((item) => {
-                    const Icon = item.icon;
-                    const isActive = activeItem === item.id;
+        <>
+            {/* Sidebar */}
+            <aside className={`
+                fixed inset-y-0 left-0 z-40 w-64 transform transition-transform duration-200
+                lg:translate-x-0 lg:static
+                bg-[var(--palette-surface)]
+                ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+            `}>
+                {/* Mobile Close Button */}
+                <div className="lg:hidden flex items-center justify-between p-4 border-b border-[var(--palette-border)]">
+                    <span className="text-[var(--text-h4-size)] text-[var(--text-h4-color)] font-bold">Menu</span>
+                    <button onClick={onClose} className="p-2 text-[var(--text-p-color)]">
+                        <X className="w-5 h-5" />
+                    </button>
+                </div>
 
-                    return (
-                        <button
-                            key={item.id}
-                            onClick={() => handleClick(item.id)}
-                            className={`
-                                w-full flex items-center gap-3 px-4 py-3 rounded-lg
-                                text-sm font-medium transition-all
-                                ${isActive 
-                                    ? 'bg-[var(--palette-primary)] text-[var(--text-p-color)]' 
-                                    : 'text-[var(--text-p-color)] hover:bg-[var(--palette-border)]'
-                                }
-                            `}
-                        >
-                            <Icon className="w-5 h-5 text-[var(--text-p-color)]" />
-                            {item.label}
-                        </button>
-                    );
-                })}
-            </nav>
-        </aside>
+                {/* Navigation */}
+                <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+                    {navItems.map((item) => {
+                        const Icon = item.icon;
+                        const isActive = activeItem === item.id;
+
+                        return (
+                            <button
+                                key={item.id}
+                                onClick={() => handleClick(item.id)}
+                                className={`
+                                    w-full flex items-center gap-3 px-4 py-3 rounded-lg
+                                    text-sm font-medium transition-all
+                                    ${isActive 
+                                        ? 'bg-[var(--palette-primary)] text-[var(--text-p-color)]' 
+                                        : 'text-[var(--text-p-color)] hover:bg-[var(--palette-border)]'
+                                    }
+                                `}
+                            >
+                                <Icon className="w-5 h-5 text-[var(--text-p-color)]" />
+                                {item.label}
+                            </button>
+                        );
+                    })}
+                </nav>
+            </aside>
+        </>
     );
 };

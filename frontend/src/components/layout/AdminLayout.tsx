@@ -2,33 +2,36 @@ import React from 'react';
 import { AdminSidebar } from './AdminSidebar';
 
 interface AdminLayoutProps {
-    children: React.ReactNode;
     activeSidebarItem?: string;
     onNavigate?: (item: string) => void;
     onBack?: () => void;
+    sidebarOpen?: boolean;
+    onSidebarClose?: () => void;
 }
 
 export const AdminLayout: React.FC<AdminLayoutProps> = ({
-    children,
     activeSidebarItem = 'theme',
     onNavigate,
     onBack,
+    sidebarOpen = false,
+    onSidebarClose
 }) => {
+    const handleNavigate = (item: string) => {
+        onNavigate?.(item);
+        // Close sidebar on mobile after navigation
+        onSidebarClose?.();
+    };
+
     return (
-        <div className="min-h-screen flex theme-background">
+        <>
             {/* Admin Sidebar */}
             <AdminSidebar
                 activeItem={activeSidebarItem}
-                onNavigate={onNavigate}
+                onNavigate={handleNavigate}
                 onBack={onBack}
+                isOpen={sidebarOpen}
+                onClose={onSidebarClose}
             />
-
-            {/* Main Content Area */}
-            <div className="flex-1 flex flex-col">
-                <main className="flex-1 overflow-y-auto">
-                    {children}
-                </main>
-            </div>
-        </div>
+        </>
     );
 };

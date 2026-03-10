@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Sidebar } from './Sidebar';
 import { DashboardHeader } from './DashboardHeader';
 
@@ -17,18 +17,27 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
     onAdminNavigate,
     onLogout,
 }) => {
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+
     const handleNavigation = (item: string) => {
         if (item === 'admin') {
             onAdminNavigate?.();
         } else {
             onNavigate?.(item);
         }
+        // Close sidebar on mobile after navigation
+        setSidebarOpen(false);
     };
 
     return (
         <div className="min-h-screen flex flex-col theme-background">
             {/* Header - Full Width Top */}
-            <DashboardHeader onNavigate={onNavigate} onNavigateToAdmin={onAdminNavigate} onLogout={onLogout} />
+            <DashboardHeader 
+                onNavigate={onNavigate} 
+                onNavigateToAdmin={onAdminNavigate} 
+                onLogout={onLogout}
+                onMenuToggle={() => setSidebarOpen(true)}
+            />
 
             {/* Bottom Row: Sidebar + Main Content */}
             <div className="flex flex-1">
@@ -36,6 +45,8 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                 <Sidebar
                     activeItem={activeItem}
                     onNavigate={handleNavigation}
+                    isOpen={sidebarOpen}
+                    onClose={() => setSidebarOpen(false)}
                 />
 
                 {/* Main Content Area */}
@@ -43,6 +54,14 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                     {children}
                 </main>
             </div>
+
+            {/* Mobile Overlay */}
+            {sidebarOpen && (
+                <div 
+                    className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+                    onClick={() => setSidebarOpen(false)}
+                />
+            )}
         </div>
     );
 };

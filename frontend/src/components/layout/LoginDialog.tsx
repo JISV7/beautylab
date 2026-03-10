@@ -29,30 +29,30 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({ open, onOpenChange, on
   };
 
   return (
-    <div className="auth-dialog-overlay fixed inset-0 flex items-center justify-center z-50 p-4">
-      <div className="auth-dialog w-full max-w-md relative overflow-hidden">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="w-full max-w-md relative overflow-hidden bg-[var(--palette-surface)] border border-[var(--palette-border)] rounded-2xl shadow-2xl">
         {/* Close button */}
         <button
           onClick={handleClose}
-          className="absolute right-4 top-4 auth-text-secondary hover:auth-text-base transition-colors z-10"
+          className="absolute right-4 top-4 text-[var(--text-p-color)] hover:opacity-80 transition-colors z-10"
         >
-          <X className="w-5 h-5 text-p-color" />
+          <X className="w-5 h-5" />
         </button>
 
         {/* Form switcher tabs */}
-        <div className="auth-tabs flex border-b">
+        <div className="flex border-b border-[var(--palette-border)]">
           <button
             onClick={() => setView('login')}
-            className={`flex-1 py-3 text-sm font-medium auth-tab ${
-              view === 'login' ? 'auth-tab-active' : ''
+            className={`flex-1 py-3 text-sm font-medium text-[var(--text-p-color)] transition-colors border-b-2 ${
+              view === 'login' ? 'border-[var(--palette-primary)] text-[var(--palette-primary)]' : 'border-transparent'
             }`}
           >
             Sign In
           </button>
           <button
             onClick={() => setView('register')}
-            className={`flex-1 py-3 text-sm font-medium auth-tab ${
-              view === 'register' ? 'auth-tab-active' : ''
+            className={`flex-1 py-3 text-sm font-medium text-[var(--text-p-color)] transition-colors border-b-2 ${
+              view === 'register' ? 'border-[var(--palette-primary)] text-[var(--palette-primary)]' : 'border-transparent'
             }`}
           >
             Sign Up

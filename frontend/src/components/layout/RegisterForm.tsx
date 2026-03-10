@@ -49,19 +49,19 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
   return (
     <div className="space-y-4">
       <div className="text-center">
-        <h2 className="text-p-color mb-1.5">Create Account</h2>
-        <p className="text-p-color text-sm">
+        <h2 className="text-[var(--text-h2-size)] text-[var(--text-h2-color)] text-[var(--text-h2-weight)] mb-1.5">Create Account</h2>
+        <p className="text-[var(--text-p-size)] text-[var(--text-p-color)] text-sm">
           Join us and start your learning journey
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-3.5">
         <div>
-          <label className="text-p-color block mb-1.5">
+          <label className="text-[var(--text-p-size)] text-[var(--text-p-color)] block mb-1.5">
             Full Name
           </label>
           <div className="relative">
-            <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 auth-text-secondary text-p-color" />
+            <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-p-color)] opacity-60" />
             <input
               type="text"
               required
@@ -75,11 +75,11 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         </div>
 
         <div>
-          <label className="text-p-color block mb-1.5">
+          <label className="text-[var(--text-p-size)] text-[var(--text-p-color)] block mb-1.5">
             Email Address
           </label>
           <div className="relative">
-            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 auth-text-secondary text-p-color" />
+            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-p-color)] opacity-60" />
             <input
               type="email"
               required
@@ -93,11 +93,11 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         </div>
 
         <div>
-          <label className="text-p-color block mb-1.5">
+          <label className="text-[var(--text-p-size)] text-[var(--text-p-color)] block mb-1.5">
             Password
           </label>
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 auth-text-secondary text-p-color" />
+            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-p-color)] opacity-60" />
             <input
               type={showPassword ? 'text' : 'password'}
               required
@@ -110,24 +110,24 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 auth-text-secondary hover:auth-text-primary transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-[var(--text-p-color)] opacity-60 hover:opacity-100 transition-opacity"
               disabled={isLoading}
             >
               {showPassword ? (
-                <EyeOff className="w-5 h-5 text-p-color" />
+                <EyeOff className="w-5 h-5" />
               ) : (
-                <Eye className="w-5 h-5 text-p-color" />
+                <Eye className="w-5 h-5" />
               )}
             </button>
           </div>
         </div>
 
         <div>
-          <label className="text-p-color block mb-1.5">
+          <label className="text-[var(--text-p-size)] text-[var(--text-p-color)] block mb-1.5">
             Confirm Password
           </label>
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 auth-text-secondary text-p-color" />
+            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-p-color)] opacity-60" />
             <input
               type={showConfirmPassword ? 'text' : 'password'}
               required
@@ -140,40 +140,40 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
             <button
               type="button"
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 auth-text-secondary hover:auth-text-primary transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-[var(--text-p-color)] opacity-60 hover:opacity-100 transition-opacity"
               disabled={isLoading}
             >
               {showConfirmPassword ? (
-                <EyeOff className="w-5 h-5 text-p-color" />
+                <EyeOff className="w-5 h-5" />
               ) : (
-                <Eye className="w-5 h-5 text-p-color" />
+                <Eye className="w-5 h-5" />
               )}
             </button>
           </div>
         </div>
 
         {error && (
-          <div className="auth-error text-sm rounded-lg p-3 text-red-600 bg-red-50 dark:text-red-400 dark:bg-red-900/30 border border-red-200 dark:border-red-800">
+          <div className="text-sm rounded-lg p-3 text-red-600 bg-red-50 dark:text-red-400 dark:bg-red-900/30 border border-red-200 dark:border-red-800">
             {error}
           </div>
         )}
 
         <button
           type="submit"
-          className="auth-button-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full py-2.5 px-4 rounded-lg bg-[var(--palette-primary)] text-[var(--decorator-color)] font-semibold hover:bg-[var(--palette-accent)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           disabled={isLoading}
         >
           {isLoading ? 'Creating Account...' : 'Create Account'}
-          {!isLoading && <ArrowRight className="w-4 h-4" style={{ color: 'var(--decorator-color)' }} />}
+          {!isLoading && <ArrowRight className="w-4 h-4" />}
         </button>
       </form>
 
       <div className="text-center">
-        <p className="text-p-color text-sm">
+        <p className="text-[var(--text-p-size)] text-[var(--text-p-color)] text-sm">
           Already have an account?{' '}
           <button
             onClick={onSwitchToLogin}
-            className="text-palette-primary"
+            className="text-[var(--palette-primary)] hover:opacity-80 transition-opacity"
           >
             Sign in
           </button>

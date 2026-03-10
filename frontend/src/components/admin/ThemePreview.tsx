@@ -13,7 +13,7 @@ const PaletteCard: React.FC<PaletteCardProps> = ({ mode, theme, onEdit }) => {
 
     return (
         <div className="theme-card">
-            <div className="p-4 border-b theme-border flex items-center justify-between">
+            <div className="p-4 border-b palette-border flex items-center justify-between">
                 <h3 className="font-bold capitalize">{mode} Mode</h3>
                 <button
                     onClick={onEdit}
@@ -50,9 +50,7 @@ const PaletteCard: React.FC<PaletteCardProps> = ({ mode, theme, onEdit }) => {
                     <h4 className="font-bold">
                         Heading Sample
                     </h4>
-                    <p
-                        className="theme-text-secondary"
-                    >
+                    <p className="text-p-font text-p-size text-p-color">
                         Paragraph text sample showing the typography settings.
                     </p>
                 </div>
@@ -74,12 +72,12 @@ export const ThemePreview: React.FC<ThemePreviewProps> = ({
 }) => {
     return (
         <div className="flex-1 flex flex-col h-full overflow-hidden">
-            <header className="h-16 theme-surface border-b theme-border px-6 md:px-8 flex items-center justify-between shrink-0 sticky top-0 z-10">
+            <header className="h-16 palette-surface border-b palette-border px-6 md:px-8 flex items-center justify-between shrink-0 sticky top-0 z-10">
                 <h2 className="text-xl font-bold">Preview: {theme.name}</h2>
                 <div className="flex gap-3">
                     <button
                         onClick={onClose}
-                        className="px-4 py-2 text-sm font-medium theme-text-secondary rounded-lg border theme-border hover:bg-black/5 dark:hover:bg-white/5 transition-colors flex items-center gap-2"
+                        className="px-4 py-2 text-sm font-medium text-p-color rounded-lg border palette-border hover:bg-black/5 dark:hover:bg-white/5 transition-colors flex items-center gap-2"
                     >
                         <X className="w-4 h-4" />
                         Close

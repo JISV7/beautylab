@@ -28,7 +28,7 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
 }) => (
     <div className="theme-card mb-4">
         <div
-            className="p-5 flex items-center justify-between border-b theme-border cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+            className="p-5 flex items-center justify-between border-b palette-border cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
             onClick={onToggle}
         >
             <div className="flex items-center gap-3">
@@ -124,7 +124,7 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
                                 value={style.color}
                                 onChange={(e) => onStyleChange('color', e.target.value)}
                             />
-                            <div className="w-10 h-10 rounded border-2 theme-border shadow-sm" style={{ backgroundColor: style.color }}></div>
+                            <div className="w-10 h-10 rounded border-2 palette-border shadow-sm" style={{ backgroundColor: style.color }}></div>
                         </div>
                         <div className="flex-1 relative">
                             <input
@@ -385,14 +385,16 @@ export const TypographyEditor: React.FC<TypographyEditorProps> = ({
                             Highlight Tag (H6)
                         </div>
 
-                        <div style={{
-                            fontFamily: styles.p.fontFamily,
-                            fontSize: `${styles.p.size}rem`,
-                            color: styles.p.color,
-                            fontWeight: styles.p.fontWeight || 400,
-                            lineHeight: styles.p.lineHeight || 1.6,
-                            marginTop: '1rem'
-                        }}>
+                        <div 
+                            className="text-p-font text-p-size text-p-color"
+                            style={{
+                                fontFamily: styles.p.fontFamily,
+                                fontSize: `${styles.p.size}rem`,
+                                fontWeight: styles.p.fontWeight || 400,
+                                lineHeight: styles.p.lineHeight || 1.6,
+                                marginTop: '1rem'
+                            }}
+                        >
                             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
                         </div>
 

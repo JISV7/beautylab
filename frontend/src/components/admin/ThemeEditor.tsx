@@ -228,7 +228,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
     return (
         <div className="flex-1 flex flex-col h-full overflow-hidden">
             {/* Header */}
-            <header className="h-16 theme-surface border-b theme-border px-6 md:px-8 flex items-center justify-between shrink-0 sticky top-0 z-10">
+            <header className="h-16 palette-surface border-b palette-border px-6 md:px-8 flex items-center justify-between shrink-0 sticky top-0 z-10">
                 <div className="flex items-center gap-4">
                     <button
                         onClick={onBack}
@@ -243,7 +243,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                 <div className="flex gap-3">
                     <button
                         onClick={handleDiscard}
-                        className="px-4 py-2 text-sm font-medium theme-text-secondary rounded-lg border theme-border hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                        className="px-4 py-2 text-sm font-medium text-p-color rounded-lg border palette-border hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
                     >
                         Discard
                     </button>
@@ -275,7 +275,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                                 className={`px-4 py-2 text-sm font-bold rounded-lg transition-colors capitalize ${
                                     activeMode === mode
                                         ? 'theme-button theme-button-primary'
-                                        : 'theme-text-secondary hover:bg-black/5 dark:hover:bg-white/5'
+                                        : 'text-p-color hover:bg-black/5 dark:hover:bg-white/5'
                                 }`}
                             >
                                 {mode}
@@ -284,13 +284,13 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                     </div>
 
                     {/* Content Tabs */}
-                    <div className="flex gap-4 border-b theme-border">
+                    <div className="flex gap-4 border-b palette-border">
                         <button
                             onClick={() => setActiveTab('colors')}
                             className={`pb-2 flex items-center gap-2 font-medium transition-colors ${
                                 activeTab === 'colors'
                                     ? 'text-palette-primary border-b-2 border-palette-primary'
-                                    : 'theme-text-secondary hover:text-slate-900 dark:hover:text-white'
+                                    : 'text-p-color hover:text-slate-900 dark:hover:text-white'
                             }`}
                         >
                             <Palette className="w-4 h-4" />
@@ -301,7 +301,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                             className={`pb-2 flex items-center gap-2 font-medium transition-colors ${
                                 activeTab === 'typography'
                                     ? 'text-palette-primary border-b-2 border-palette-primary'
-                                    : 'theme-text-secondary hover:text-slate-900 dark:hover:text-white'
+                                    : 'text-p-color hover:text-slate-900 dark:hover:text-white'
                             }`}
                         >
                             <Type className="w-4 h-4" />

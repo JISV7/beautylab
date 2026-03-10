@@ -10,7 +10,7 @@ interface ColorInputProps {
 
 const ColorInput: React.FC<ColorInputProps> = ({ label, value, onChange }) => (
     <div className="space-y-2">
-        <div className="text-sm font-semibold theme-text-secondary">{label}</div>
+        <div className="text-sm font-semibold text-p-color">{label}</div>
         <div className="flex items-center gap-3">
             <div className="relative group cursor-pointer shrink-0">
                 <input
@@ -20,7 +20,7 @@ const ColorInput: React.FC<ColorInputProps> = ({ label, value, onChange }) => (
                     onChange={(e) => onChange(e.target.value)}
                 />
                 <div
-                    className="w-12 h-12 rounded border-2 theme-border shadow-sm"
+                    className="w-12 h-12 rounded border-2 palette-border shadow-sm"
                     style={{ backgroundColor: value }}
                 ></div>
             </div>
@@ -31,7 +31,7 @@ const ColorInput: React.FC<ColorInputProps> = ({ label, value, onChange }) => (
                     value={value}
                     onChange={(e) => onChange(e.target.value)}
                 />
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 theme-text-secondary">
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-p-color">
                     <Palette className="w-4 h-4" />
                 </div>
             </div>
@@ -47,7 +47,7 @@ export const ColorEditor: React.FC<ColorEditorProps> = ({
 }) => {
     return (
         <div className="theme-card">
-            <div className="p-6 border-b theme-border flex items-center gap-3">
+            <div className="p-6 border-b palette-border flex items-center gap-3">
                 <Palette className="w-6 h-6 text-palette-primary" />
                 <h3 className="text-xl font-bold">
                     Color Palette - {activeMode.charAt(0).toUpperCase() + activeMode.slice(1)}
@@ -93,16 +93,13 @@ export const ColorEditor: React.FC<ColorEditorProps> = ({
             </div>
 
             {/* Live Preview Box */}
-            <div className="p-6 border-t theme-border" style={{ background: colors.background }}>
+            <div className="p-6 border-t palette-border" style={{ background: colors.background }}>
                 <h2 className="text-h1-color text-h1-font text-h1-size font-bold mb-4">
                     Real-Time Preview
                 </h2>
                 <p 
-                    className="mb-6"
+                    className="mb-6 text-p-font text-p-size text-p-color"
                     style={{ 
-                        color: styles.p.color, 
-                        fontFamily: styles.p.fontFamily, 
-                        fontSize: `${styles.p.size}rem`,
                         fontWeight: styles.p.fontWeight,
                         lineHeight: styles.p.lineHeight
                     }}
@@ -111,29 +108,19 @@ export const ColorEditor: React.FC<ColorEditorProps> = ({
                 </p>
 
                 <div 
-                    className="flex flex-col sm:flex-row gap-4 p-6 rounded-lg border" 
-                    style={{ backgroundColor: colors.surface, borderColor: colors.border }}
+                    className="flex flex-col sm:flex-row gap-4 p-6 rounded-lg border palette-border" 
+                    style={{ backgroundColor: colors.surface }}
                 >
                     <div className="flex-1 flex flex-col gap-2">
                         <h4 
-                            className="font-bold"
-                            style={{ 
-                                color: styles.h4.color, 
-                                fontFamily: styles.h4.fontFamily, 
-                                fontSize: `${styles.h4.size}rem`,
-                                fontWeight: styles.h4.fontWeight
-                            }}
+                            className="font-bold text-h4-font text-h4-size text-h4-color"
+                            style={{ fontWeight: styles.h4.fontWeight }}
                         >
                             Surface Card
                         </h4>
                         <p 
-                            className="text-sm"
-                            style={{ 
-                                color: styles.p.color, 
-                                fontFamily: styles.p.fontFamily, 
-                                fontSize: `${styles.p.size}rem`,
-                                fontWeight: styles.p.fontWeight
-                            }}
+                            className="text-sm text-p-font text-p-size text-p-color"
+                            style={{ fontWeight: styles.p.fontWeight }}
                         >
                             Example card content with configured colors and typography.
                         </p>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Menu } from 'lucide-react';
+import { AdminHeader } from '../components/layout/AdminHeader';
 import { AdminLayout } from '../components/layout/AdminLayout';
 import { UnifiedThemeConfig } from '../components/admin/UnifiedThemeConfig';
 import { UserManager } from '../components/admin/UserManager';
@@ -24,29 +24,21 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToDash
     };
 
     return (
-        <div className="min-h-screen flex theme-background">
-            {/* Admin Layout with Sidebar */}
-            <AdminLayout
-                activeSidebarItem={activeTab}
-                onNavigate={handleNavigate}
-                onBack={handleBack}
-                sidebarOpen={sidebarOpen}
-                onSidebarClose={() => setSidebarOpen(false)}
-            />
+        <div className="min-h-screen flex flex-col theme-background">
+            {/* Admin Header */}
+            <AdminHeader onBack={handleBack} onMenuToggle={() => setSidebarOpen(true)} />
 
-            {/* Main Content Area */}
-            <div className="flex-1 flex flex-col">
-                {/* Mobile Header */}
-                <header className="lg:hidden flex items-center gap-4 px-4 py-3 border-b border-[var(--palette-border)] bg-[var(--palette-surface)]">
-                    <button
-                        onClick={() => setSidebarOpen(true)}
-                        className="p-2 rounded-lg text-[var(--text-p-color)] hover:bg-[var(--palette-border)] transition-colors"
-                    >
-                        <Menu className="w-6 h-6" />
-                    </button>
-                    <span className="text-[var(--text-h4-size)] text-[var(--text-h4-color)] font-bold">Codyn Admin</span>
-                </header>
+            <div className="flex flex-1 overflow-hidden">
+                {/* Admin Layout with Sidebar */}
+                <AdminLayout
+                    activeSidebarItem={activeTab}
+                    onNavigate={handleNavigate}
+                    onBack={handleBack}
+                    sidebarOpen={sidebarOpen}
+                    onSidebarClose={() => setSidebarOpen(false)}
+                />
 
+                {/* Main Content Area */}
                 <main className="flex-1 overflow-y-auto p-6">
                     {activeTab === 'dashboard' && (
                         <div>

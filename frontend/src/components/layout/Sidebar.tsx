@@ -44,7 +44,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                                 ${isActive ? 'dashboard-sidebar-link-active' : ''}
                             `}
                         >
-                            <Icon className="w-5 h-5" style={{ color: 'var(--decorator-color)' }} />
+                            <Icon className="w-5 h-5" />
                             {item.label}
                         </button>
                     );

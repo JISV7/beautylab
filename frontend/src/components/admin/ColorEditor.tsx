@@ -9,9 +9,9 @@ interface ColorInputProps {
 }
 
 const ColorInput: React.FC<ColorInputProps> = ({ label, value, onChange }) => (
-    <div className="space-y-2">
-        <div className="text-sm font-semibold text-p-color">{label}</div>
-        <div className="flex items-center gap-3">
+    <div className="space-y-1.5">
+        <div className="text-xs font-semibold text-p-color">{label}</div>
+        <div className="flex items-center gap-2">
             <div className="relative group cursor-pointer shrink-0">
                 <input
                     className="opacity-0 absolute inset-0 w-full h-full cursor-pointer z-10"
@@ -20,19 +20,19 @@ const ColorInput: React.FC<ColorInputProps> = ({ label, value, onChange }) => (
                     onChange={(e) => onChange(e.target.value)}
                 />
                 <div
-                    className="w-12 h-12 rounded border-2 palette-border shadow-sm"
+                    className="w-10 h-10 rounded border-2 palette-border shadow-sm"
                     style={{ backgroundColor: value }}
                 ></div>
             </div>
             <div className="flex-1 relative">
                 <input
-                    className="theme-input uppercase text-sm font-mono"
+                    className="theme-input uppercase text-xs font-mono py-1.5"
                     type="text"
                     value={value}
                     onChange={(e) => onChange(e.target.value)}
                 />
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-p-color">
-                    <Palette className="w-4 h-4" />
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-p-color">
+                    <Palette className="w-3.5 h-3.5" />
                 </div>
             </div>
         </div>
@@ -133,6 +133,26 @@ export const ColorEditor: React.FC<ColorEditorProps> = ({
                         </button>
                         <button
                             className="theme-button theme-button-secondary"
+                        >
+                            Secondary
+                        </button>
+                        <button
+                            className="theme-button"
+                            style={{ 
+                                color: colors.secondary, 
+                                borderColor: colors.secondary, 
+                                backgroundColor: 'transparent',
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor = colors.secondary;
+                                e.currentTarget.style.borderColor = colors.secondary;
+                                e.currentTarget.style.color = '#FFFFFF';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor = 'transparent';
+                                e.currentTarget.style.borderColor = colors.secondary;
+                                e.currentTarget.style.color = colors.secondary;
+                            }}
                         >
                             Secondary
                         </button>

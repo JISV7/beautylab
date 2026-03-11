@@ -321,8 +321,6 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                         <TypographyEditor
                             styles={styles}
                             onStyleChange={handleStyleChange}
-                            onFontUploaded={() => {}}
-                            onFontDeleted={() => {}}
                         />
                     )}
                 </div>

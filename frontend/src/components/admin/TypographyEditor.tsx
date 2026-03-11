@@ -1,18 +1,13 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { Type, ChevronDown, ChevronUp, Palette } from 'lucide-react';
-import axios from 'axios';
 import type { TypographyEditorProps, TypographyStyle } from './types';
-import type { Font } from '../../data/theme.types';
-import { FontManager } from './FontManager';
-
-const API_URL = 'http://localhost:8000';
 
 interface StyleBlockProps {
     label: string;
     shortLabel: string;
     expanded: boolean;
     style: { fontFamily: string; size: number; color: string; fontWeight?: number; lineHeight?: string };
-    fonts: Font[];
+    fonts: string[];
     onToggle: () => void;
     onStyleChange: (field: keyof TypographyStyle, value: string | number) => void;
 }
@@ -55,7 +50,7 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
                             <option>Inter</option>
                             <option>System Default</option>
                             {fonts.map(f => (
-                                <option key={f.id} value={f.name}>{f.name}</option>
+                                <option key={f} value={f}>{f}</option>
                             ))}
                         </select>
                         <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
@@ -144,11 +139,16 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
     </div>
 );
 
+const toggleBlock = (
+    block: string,
+    setExpandedBlocks: React.Dispatch<React.SetStateAction<Record<string, boolean>>>
+) => {
+    setExpandedBlocks(prev => ({ ...prev, [block]: !prev[block] }));
+};
+
 export const TypographyEditor: React.FC<TypographyEditorProps> = ({
     styles,
     onStyleChange,
-    onFontUploaded,
-    onFontDeleted,
 }) => {
     const [expandedBlocks, setExpandedBlocks] = React.useState<Record<string, boolean>>({
         h1: true,
@@ -160,161 +160,79 @@ export const TypographyEditor: React.FC<TypographyEditorProps> = ({
         p: false
     });
 
-    const [installedFonts, setInstalledFonts] = React.useState<Font[]>([]);
-    const [uploading, setUploading] = React.useState(false);
-    const fileInputRef = useRef<HTMLInputElement | null>(null);
-
-    React.useEffect(() => {
-        fetchFonts();
-    }, []);
-
-    const fetchFonts = async () => {
-        try {
-            const response = await axios.get(`${API_URL}/fonts`);
-            setInstalledFonts(response.data);
-        } catch (error) {
-            console.error("Error fetching fonts:", error);
-        }
-    };
-
-    const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        if (!file) return;
-
-        const formData = new FormData();
-        formData.append('file', file);
-
-        setUploading(true);
-        try {
-            await axios.post(`${API_URL}/fonts/upload`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-                }
-            });
-            fetchFonts();
-            onFontUploaded();
-        } catch (error) {
-            console.error("Error uploading font:", error);
-            alert("Error uploading font. Ensure it's a valid font file.");
-        } finally {
-            setUploading(false);
-            if (fileInputRef.current) {
-                fileInputRef.current.value = '';
-            }
-        }
-    };
-
-    const handleDeleteFont = async (font: Font) => {
-        try {
-            await axios.delete(`${API_URL}/fonts/${font.id}`, {
-                headers: { 'Authorization': `Bearer ${localStorage.getItem('access_token')}` }
-            });
-            fetchFonts();
-            onFontDeleted(font.id);
-        } catch (error) {
-            console.error("Error deleting font:", error);
-            alert("Failed to delete font.");
-        }
-    };
-
-    const toggleBlock = (block: string) => {
-        setExpandedBlocks(prev => ({ ...prev, [block]: !prev[block] }));
-    };
-
-    const injectedStyles = installedFonts.map(font => `
-        @font-face {
-            font-family: '${font.name}';
-            src: url('${API_URL}${font.url}');
-            font-display: swap;
-        }
-    `).join('\n');
+    // Default fonts available (font loading from DB handled separately if needed)
+    const defaultFonts = ['Manrope', 'Inter', 'System Default'];
 
     return (
         <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <style>{injectedStyles}</style>
-
-            {/* Left Column: Controls */}
-            <div className="lg:col-span-7 flex flex-col gap-8">
-                {/* Font Manager */}
-                <FontManager
-                    installedFonts={installedFonts}
-                    uploading={uploading}
-                    fileInputRef={fileInputRef}
-                    onFileUpload={handleFileUpload}
-                    onFontDelete={handleDeleteFont}
-                    getFontUsage={() => []}
+            {/* Left Column: Typography Controls */}
+            <div className="lg:col-span-7 flex flex-col gap-4">
+                <h3 className="text-xl font-bold flex items-center gap-2">
+                    <Type className="w-5 h-5" /> Font Sizes & Colors
+                </h3>
+                <StyleBlock
+                    label="Heading 1 (H1)"
+                    shortLabel="H1"
+                    expanded={expandedBlocks.h1}
+                    style={styles.h1}
+                    fonts={defaultFonts}
+                    onToggle={() => toggleBlock('h1', setExpandedBlocks)}
+                    onStyleChange={(f, v) => onStyleChange('h1', f, v)}
                 />
-
-                {/* Typography Blocks */}
-                <div className="flex flex-col gap-4">
-                    <h3 className="text-xl font-bold flex items-center gap-2">
-                        <Type className="w-5 h-5" /> Font Sizes & Colors
-                    </h3>
-                    <StyleBlock
-                        label="Heading 1 (H1)"
-                        shortLabel="H1"
-                        expanded={expandedBlocks.h1}
-                        style={styles.h1}
-                        fonts={installedFonts}
-                        onToggle={() => toggleBlock('h1')}
-                        onStyleChange={(f, v) => onStyleChange('h1', f, v)}
-                    />
-                    <StyleBlock
-                        label="Heading 2 (H2)"
-                        shortLabel="H2"
-                        expanded={expandedBlocks.h2}
-                        style={styles.h2}
-                        fonts={installedFonts}
-                        onToggle={() => toggleBlock('h2')}
-                        onStyleChange={(f, v) => onStyleChange('h2', f, v)}
-                    />
-                    <StyleBlock
-                        label="Heading 3 (H3)"
-                        shortLabel="H3"
-                        expanded={expandedBlocks.h3}
-                        style={styles.h3}
-                        fonts={installedFonts}
-                        onToggle={() => toggleBlock('h3')}
-                        onStyleChange={(f, v) => onStyleChange('h3', f, v)}
-                    />
-                    <StyleBlock
-                        label="Heading 4 (H4)"
-                        shortLabel="H4"
-                        expanded={expandedBlocks.h4}
-                        style={styles.h4}
-                        fonts={installedFonts}
-                        onToggle={() => toggleBlock('h4')}
-                        onStyleChange={(f, v) => onStyleChange('h4', f, v)}
-                    />
-                    <StyleBlock
-                        label="Heading 5 (H5)"
-                        shortLabel="H5"
-                        expanded={expandedBlocks.h5}
-                        style={styles.h5}
-                        fonts={installedFonts}
-                        onToggle={() => toggleBlock('h5')}
-                        onStyleChange={(f, v) => onStyleChange('h5', f, v)}
-                    />
-                    <StyleBlock
-                        label="Heading 6 (H6)"
-                        shortLabel="H6"
-                        expanded={expandedBlocks.h6}
-                        style={styles.h6}
-                        fonts={installedFonts}
-                        onToggle={() => toggleBlock('h6')}
-                        onStyleChange={(f, v) => onStyleChange('h6', f, v)}
-                    />
-                    <StyleBlock
-                        label="Paragraph (p)"
-                        shortLabel="P"
-                        expanded={expandedBlocks.p}
-                        style={styles.p}
-                        fonts={installedFonts}
-                        onToggle={() => toggleBlock('p')}
-                        onStyleChange={(f, v) => onStyleChange('p', f, v)}
-                    />
-                </div>
+                <StyleBlock
+                    label="Heading 2 (H2)"
+                    shortLabel="H2"
+                    expanded={expandedBlocks.h2}
+                    style={styles.h2}
+                    fonts={defaultFonts}
+                    onToggle={() => toggleBlock('h2', setExpandedBlocks)}
+                    onStyleChange={(f, v) => onStyleChange('h2', f, v)}
+                />
+                <StyleBlock
+                    label="Heading 3 (H3)"
+                    shortLabel="H3"
+                    expanded={expandedBlocks.h3}
+                    style={styles.h3}
+                    fonts={defaultFonts}
+                    onToggle={() => toggleBlock('h3', setExpandedBlocks)}
+                    onStyleChange={(f, v) => onStyleChange('h3', f, v)}
+                />
+                <StyleBlock
+                    label="Heading 4 (H4)"
+                    shortLabel="H4"
+                    expanded={expandedBlocks.h4}
+                    style={styles.h4}
+                    fonts={defaultFonts}
+                    onToggle={() => toggleBlock('h4', setExpandedBlocks)}
+                    onStyleChange={(f, v) => onStyleChange('h4', f, v)}
+                />
+                <StyleBlock
+                    label="Heading 5 (H5)"
+                    shortLabel="H5"
+                    expanded={expandedBlocks.h5}
+                    style={styles.h5}
+                    fonts={defaultFonts}
+                    onToggle={() => toggleBlock('h5', setExpandedBlocks)}
+                    onStyleChange={(f, v) => onStyleChange('h5', f, v)}
+                />
+                <StyleBlock
+                    label="Heading 6 (H6)"
+                    shortLabel="H6"
+                    expanded={expandedBlocks.h6}
+                    style={styles.h6}
+                    fonts={defaultFonts}
+                    onToggle={() => toggleBlock('h6', setExpandedBlocks)}
+                    onStyleChange={(f, v) => onStyleChange('h6', f, v)}
+                />
+                <StyleBlock
+                    label="Paragraph (p)"
+                    shortLabel="P"
+                    expanded={expandedBlocks.p}
+                    style={styles.p}
+                    fonts={defaultFonts}
+                    onToggle={() => toggleBlock('p', setExpandedBlocks)}
+                    onStyleChange={(f, v) => onStyleChange('p', f, v)}
+                />
             </div>
 
             {/* Right Column: Live Preview */}
@@ -399,9 +317,7 @@ export const TypographyEditor: React.FC<TypographyEditorProps> = ({
                         </div>
 
                         <div className="mt-4">
-                            <button
-                                className="theme-button theme-button-primary"
-                            >
+                            <button className="theme-button theme-button-primary">
                                 Example Button
                             </button>
                         </div>

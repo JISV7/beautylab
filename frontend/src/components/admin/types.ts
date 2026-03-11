@@ -46,8 +46,6 @@ export interface ColorEditorProps {
 export interface TypographyEditorProps {
     styles: Record<string, TypographyStyle>;
     onStyleChange: (key: string, field: keyof TypographyStyle, value: string | number) => void;
-    onFontUploaded: () => void;
-    onFontDeleted: (fontId: string) => void;
 }
 
 export interface ThemePreviewProps {

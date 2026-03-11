@@ -228,38 +228,42 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
     return (
         <div className="flex-1 flex flex-col h-full overflow-hidden">
             {/* Header */}
-            <header className="h-16 palette-surface border-b palette-border px-6 md:px-8 flex items-center justify-between shrink-0 sticky top-0 z-10">
-                <div className="flex items-center gap-4">
+            <header className="h-auto sm:h-16 palette-surface border-b palette-border px-4 sm:px-6 md:px-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 shrink-0 sticky top-0 z-10 py-3 sm:py-0">
+                <div className="flex items-center gap-3 sm:gap-4">
                     <button
                         onClick={onBack}
                         className="p-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
                     >
                         <X className="w-5 h-5" />
                     </button>
-                    <h2 className="text-xl font-bold">
+                    <h2 className="text-lg sm:text-xl font-bold">
                         Edit: {theme.name}
                     </h2>
                 </div>
-                <div className="flex gap-3">
+                <div className="flex gap-2 sm:gap-3 flex-wrap justify-end">
                     <button
                         onClick={handleDiscard}
-                        className="px-4 py-2 text-sm font-medium text-p-color rounded-lg border palette-border hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                        className="px-3 py-2 text-xs sm:text-sm font-medium text-p-color rounded-lg border palette-border hover:bg-black/5 dark:hover:bg-white/5 transition-colors flex items-center gap-2"
+                        title="Discard changes"
                     >
-                        Discard
+                        <span className="hidden sm:inline">Discard</span>
+                        <X className="w-4 h-4 sm:hidden" />
                     </button>
                     <button
                         onClick={onPublish}
-                        className="px-4 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-lg shadow-sm transition-colors flex items-center gap-2"
+                        className="px-3 py-2 text-xs sm:text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-lg shadow-sm transition-colors flex items-center gap-2"
+                        title="Set theme to site"
                     >
-                        <Eye className="w-4 h-4" />
-                        Set Theme to Site
+                        <Eye className="w-4 h-4 sm:hidden" />
+                        <span className="hidden sm:inline">Set Theme to Site</span>
                     </button>
                     <button
                         onClick={handleSave}
-                        className="px-4 py-2 text-sm font-medium text-white theme-button-primary rounded-lg shadow-sm hover:opacity-90 transition-opacity flex items-center gap-2"
+                        className="px-3 py-2 text-xs sm:text-sm font-medium text-white theme-button-primary rounded-lg shadow-sm hover:opacity-90 transition-opacity flex items-center gap-2"
+                        title="Save changes"
                     >
-                        <Save className="w-4 h-4" />
-                        Save Changes
+                        <Save className="w-4 h-4 sm:hidden" />
+                        <span className="hidden sm:inline">Save Changes</span>
                     </button>
                 </div>
             </header>

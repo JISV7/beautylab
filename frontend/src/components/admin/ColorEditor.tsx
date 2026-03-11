@@ -93,13 +93,13 @@ export const ColorEditor: React.FC<ColorEditorProps> = ({
             </div>
 
             {/* Live Preview Box */}
-            <div className="p-6 border-t palette-border" style={{ background: colors.background }}>
+            <div className="p-6 border rounded-xl palette-border" style={{ background: colors.background }}>
                 <h2 className="text-h1-color text-h1-font text-h1-size font-bold mb-4">
                     Real-Time Preview
                 </h2>
-                <p 
+                <p
                     className="mb-6 text-p-font text-p-size text-p-color"
-                    style={{ 
+                    style={{
                         fontWeight: styles.p.fontWeight,
                         lineHeight: styles.p.lineHeight
                     }}
@@ -107,45 +107,58 @@ export const ColorEditor: React.FC<ColorEditorProps> = ({
                     This is an example of how text appears on the site. Colors and typography work together.
                 </p>
 
-                <div 
-                    className="flex flex-col sm:flex-row gap-4 p-6 rounded-lg border palette-border" 
-                    style={{ backgroundColor: colors.surface }}
+                <div
+                    className="flex flex-col gap-4 p-4 sm:p-6 rounded-lg border"
+                    style={{ 
+                        backgroundColor: colors.surface,
+                        borderColor: colors.border 
+                    }}
                 >
-                    <div className="flex-1 flex flex-col gap-2">
-                        <h4 
+                    <div className="flex flex-col gap-2">
+                        <h4
                             className="font-bold text-h4-font text-h4-size text-h4-color"
                             style={{ fontWeight: styles.h4.fontWeight }}
                         >
                             Surface Card
                         </h4>
-                        <p 
+                        <p
                             className="text-sm text-p-font text-p-size text-p-color"
                             style={{ fontWeight: styles.p.fontWeight }}
                         >
                             Example card content with configured colors and typography.
                         </p>
                     </div>
-                    <div className="flex items-center gap-3 shrink-0">
+                    <div className="flex flex-wrap gap-2 sm:gap-3 justify-start">
                         <button
-                            className="theme-button theme-button-primary"
+                            className="theme-button"
+                            style={{ 
+                                backgroundColor: colors.primary, 
+                                color: '#FFFFFF',
+                                borderColor: colors.primary 
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor = colors.accent;
+                                e.currentTarget.style.borderColor = colors.accent;
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor = colors.primary;
+                                e.currentTarget.style.borderColor = colors.primary;
+                            }}
                         >
                             Primary
                         </button>
                         <button
-                            className="theme-button theme-button-secondary"
-                        >
-                            Secondary
-                        </button>
-                        <button
                             className="theme-button"
                             style={{ 
-                                color: colors.secondary, 
-                                borderColor: colors.secondary, 
-                                backgroundColor: 'transparent',
+                                backgroundColor: 'transparent', 
+                                color: colors.secondary,
+                                borderColor: colors.secondary,
+                                borderWidth: '2px',
+                                borderStyle: 'solid'
                             }}
                             onMouseEnter={(e) => {
-                                e.currentTarget.style.backgroundColor = colors.secondary;
-                                e.currentTarget.style.borderColor = colors.secondary;
+                                e.currentTarget.style.backgroundColor = colors.accent;
+                                e.currentTarget.style.borderColor = colors.accent;
                                 e.currentTarget.style.color = '#FFFFFF';
                             }}
                             onMouseLeave={(e) => {
@@ -155,6 +168,24 @@ export const ColorEditor: React.FC<ColorEditorProps> = ({
                             }}
                         >
                             Secondary
+                        </button>
+                        <button
+                            className="theme-button"
+                            style={{ 
+                                backgroundColor: colors.accent, 
+                                color: '#FFFFFF',
+                                borderColor: colors.accent 
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor = colors.primary;
+                                e.currentTarget.style.borderColor = colors.primary;
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor = colors.accent;
+                                e.currentTarget.style.borderColor = colors.accent;
+                            }}
+                        >
+                            Accent
                         </button>
                     </div>
                 </div>

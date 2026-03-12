@@ -41,9 +41,9 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
         </div>
 
         {expanded && (
-            <div className="p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="p-4 sm:p-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
                 {/* Font Family */}
-                <label className="flex flex-col gap-2">
+                <label className="flex flex-col gap-2 min-w-0">
                     <span className="text-p-font text-p-size text-p-color text-p-weight">
                         Font Family
                     </span>
@@ -51,7 +51,7 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
                         <select
                             value={style.fontFamily}
                             onChange={(e) => onStyleChange('fontFamily', e.target.value)}
-                            className="theme-input appearance-none cursor-pointer"
+                            className="theme-input appearance-none cursor-pointer w-full"
                         >
                             <option>Manrope</option>
                             <option>Inter</option>
@@ -67,13 +67,13 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
                 </label>
 
                 {/* Size */}
-                <label className="flex flex-col gap-2">
+                <label className="flex flex-col gap-2 min-w-0">
                     <span className="text-p-font text-p-size text-p-color text-p-weight">
                         Size (rem)
                     </span>
                     <div className="relative flex items-center">
                         <input
-                            className="theme-input pr-12"
+                            className="theme-input pr-12 w-full"
                             type="number"
                             step="0.1"
                             value={style.size}
@@ -84,13 +84,13 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
                 </label>
 
                 {/* Font Weight */}
-                <label className="flex flex-col gap-2">
+                <label className="flex flex-col gap-2 min-w-0">
                     <span className="text-p-font text-p-size text-p-color text-p-weight">
                         Font Weight
                     </span>
                     <div className="relative flex items-center">
                         <input
-                            className="theme-input pr-12"
+                            className="theme-input pr-12 w-full"
                             type="number"
                             min="100"
                             max="900"
@@ -103,13 +103,13 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
                 </label>
 
                 {/* Line Height */}
-                <label className="flex flex-col gap-2">
+                <label className="flex flex-col gap-2 min-w-0">
                     <span className="text-p-font text-p-size text-p-color text-p-weight">
                         Line Height
                     </span>
                     <div className="relative flex items-center">
                         <input
-                            className="theme-input pr-12"
+                            className="theme-input pr-12 w-full"
                             type="number"
                             min="0.5"
                             max="3.0"
@@ -122,11 +122,11 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
                 </label>
 
                 {/* Color */}
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-2 min-w-0">
                     <span className="text-p-font text-p-size text-p-color text-p-weight">
                         Color
                     </span>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 w-full">
                         <div className="relative group cursor-pointer shrink-0">
                             <input
                                 className="opacity-0 absolute inset-0 w-full h-full cursor-pointer z-10"
@@ -136,9 +136,9 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
                             />
                             <div className="w-10 h-10 rounded border-2 palette-border shadow-sm" style={{ backgroundColor: style.color }}></div>
                         </div>
-                        <div className="flex-1 relative">
+                        <div className="flex-1 relative min-w-0">
                             <input
-                                className="theme-input uppercase text-sm font-mono pr-10"
+                                className="theme-input uppercase text-sm font-mono pr-10 w-full"
                                 type="text"
                                 value={style.color}
                                 onChange={(e) => onStyleChange('color', e.target.value)}
@@ -180,9 +180,9 @@ export const TypographyEditor: React.FC<TypographyEditorProps> = ({
     const defaultFonts = ['Manrope', 'Inter', 'System Default'];
 
     return (
-        <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
             {/* Left Column: Typography Controls */}
-            <div className="lg:col-span-7 flex flex-col gap-4">
+            <div className="lg:col-span-8 flex flex-col gap-3">
                 <h3 className="text-xl font-bold flex items-center gap-2">
                     <Type className="w-5 h-5" /> Font Sizes & Colors
                 </h3>
@@ -252,8 +252,8 @@ export const TypographyEditor: React.FC<TypographyEditorProps> = ({
             </div>
 
             {/* Right Column: Live Preview */}
-            <div className="lg:col-span-5">
-                <div className="sticky top-24 flex flex-col gap-4">
+            <div className="lg:col-span-4">
+                <div className="lg:sticky lg:top-24 flex flex-col gap-4">
                     <h3 className="text-xl font-bold flex items-center gap-2">
                         <Type className="w-5 h-5" /> Preview
                     </h3>

@@ -12,6 +12,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
     onModeChange,
     onSave,
     onPublish,
+    onPreview,
     onBack,
 }) => {
     const { fetchFonts } = useTheme();
@@ -263,21 +264,29 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
         <div className="flex-1 flex flex-col h-full overflow-hidden">
             {/* Header */}
             <header className="h-auto sm:h-16 palette-surface border-b palette-border px-4 sm:px-6 md:px-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 shrink-0 sticky top-0 z-10 py-3 sm:py-0">
-                <div className="flex items-center gap-3 sm:gap-4">
+                <div className="flex items-center gap-3 sm:gap-4 min-w-0">
                     <button
                         onClick={onBack}
-                        className="p-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                        className="p-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors shrink-0"
                     >
                         <X className="w-5 h-5" />
                     </button>
-                    <h2 className="text-lg sm:text-xl font-bold">
+                    <h2 className="text-lg sm:text-xl font-bold truncate">
                         Edit: {theme.name}
                     </h2>
                 </div>
-                <div className="flex gap-2 sm:gap-3 flex-wrap justify-end">
+                <div className="flex gap-2 flex-wrap items-center justify-end shrink-0">
+                    <button
+                        onClick={onPreview}
+                        className="px-3 py-2 text-xs sm:text-sm font-medium text-p-color rounded-lg border palette-border hover:bg-black/5 dark:hover:bg-white/5 transition-colors flex items-center gap-2 shrink-0"
+                        title="Preview theme"
+                    >
+                        <Eye className="w-4 h-4" />
+                        <span className="hidden sm:inline">Preview</span>
+                    </button>
                     <button
                         onClick={handleDiscard}
-                        className="px-3 py-2 text-xs sm:text-sm font-medium text-p-color rounded-lg border palette-border hover:bg-black/5 dark:hover:bg-white/5 transition-colors flex items-center gap-2"
+                        className="px-3 py-2 text-xs sm:text-sm font-medium text-p-color rounded-lg border palette-border hover:bg-black/5 dark:hover:bg-white/5 transition-colors flex items-center gap-2 shrink-0"
                         title="Discard changes"
                     >
                         <span className="hidden sm:inline">Discard</span>
@@ -285,15 +294,15 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                     </button>
                     <button
                         onClick={onPublish}
-                        className="px-3 py-2 text-xs sm:text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-lg shadow-sm transition-colors flex items-center gap-2"
+                        className="px-3 py-2 text-xs sm:text-sm font-medium decorator-color bg-palette-secondary hover:opacity-90 rounded-lg shadow-sm transition-opacity flex items-center gap-2 shrink-0"
                         title="Set theme to site"
                     >
-                        <Eye className="w-4 h-4 sm:hidden" />
+                        <span className="sm:hidden">Set theme</span>
                         <span className="hidden sm:inline">Set Theme to Site</span>
                     </button>
                     <button
                         onClick={handleSave}
-                        className="px-3 py-2 text-xs sm:text-sm font-medium text-white theme-button-primary rounded-lg shadow-sm hover:opacity-90 transition-opacity flex items-center gap-2"
+                        className="px-3 py-2 text-xs sm:text-sm font-medium text-white theme-button-primary rounded-lg shadow-sm hover:opacity-90 transition-opacity flex items-center gap-2 shrink-0"
                         title="Save changes"
                     >
                         <Save className="w-4 h-4 sm:hidden" />

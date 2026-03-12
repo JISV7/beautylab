@@ -34,6 +34,7 @@ export interface ThemeEditorProps {
     onModeChange: (mode: 'light' | 'dark' | 'accessibility') => void;
     onSave: (colors: ColorPalette, styles: Record<string, TypographyStyle>, currentPalette: ThemePalette) => void;
     onPublish: () => void;
+    onPreview: () => void;
     onBack: () => void;
 }
 

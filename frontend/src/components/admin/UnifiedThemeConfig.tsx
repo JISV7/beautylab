@@ -466,6 +466,7 @@ export const UnifiedThemeConfig: React.FC = () => {
                     onModeChange={setActiveMode}
                     onSave={handleSaveTheme}
                     onPublish={handlePublishTheme}
+                    onPreview={() => setViewMode('preview')}
                     onBack={() => {
                         setViewMode('list');
                         setActiveThemeId(null);

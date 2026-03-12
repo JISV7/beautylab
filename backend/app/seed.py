@@ -406,26 +406,26 @@ async def seed_default_theme(
         await db.commit()
         await db.refresh(theme)
 
-        # Update font usage tracking if font is available
-        if default_font and default_font.id:
-            theme_id_str = str(theme.id)
-            # Build new usage list and reassign (SQLAlchemy doesn't detect in-place mutations of JSONB)
-            new_usages = []
-            for palette in ["light", "dark", "accessibility"]:
-                for element in ["h1", "h2", "h3", "h4", "h5", "h6", "title", "subtitle", "paragraph", "decorator"]:
-                    new_usages.append({
-                        "theme_id": theme_id_str,
-                        "theme_name": theme.name,
-                        "palette": palette,
-                        "element": element
-                    })
-            default_font.font_usage = new_usages
-            await db.commit()
-            print(f"  Updated font usage tracking for Roboto ({len(new_usages)} entries)")
-
         print(f"  Created default theme: {theme_name}")
     else:
         print(f"  Default theme exists: {theme_name}")
+
+    # Update font usage tracking if font is available (ALWAYS runs, even for existing themes)
+    if default_font and default_font.id and theme:
+        theme_id_str = str(theme.id)
+        # Build new usage list and reassign (SQLAlchemy doesn't detect in-place mutations of JSONB)
+        new_usages = []
+        for palette in ["light", "dark", "accessibility"]:
+            for element in ["h1", "h2", "h3", "h4", "h5", "h6", "title", "subtitle", "paragraph", "decorator"]:
+                new_usages.append({
+                    "theme_id": theme_id_str,
+                    "theme_name": theme.name,
+                    "palette": palette,
+                    "element": element
+                })
+        default_font.font_usage = new_usages
+        await db.commit()
+        print(f"  Updated font usage tracking for Roboto ({len(new_usages)} entries)")
 
     return theme
 

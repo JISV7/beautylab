@@ -43,16 +43,16 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({ open, onOpenChange, on
         <div className="flex border-b border-[var(--palette-border)]">
           <button
             onClick={() => setView('login')}
-            className={`flex-1 py-3 text-sm font-medium text-[var(--text-p-color)] transition-colors border-b-2 ${
-              view === 'login' ? 'border-[var(--palette-primary)] text-[var(--palette-primary)]' : 'border-transparent'
+            className={`flex-1 py-3 text-sm sm:text-base text-p-font font-medium transition-colors border-b-2 ${
+              view === 'login' ? 'border-[var(--palette-primary)] text-[var(--palette-primary)]' : 'border-transparent text-[var(--text-p-color)]'
             }`}
           >
             Sign In
           </button>
           <button
             onClick={() => setView('register')}
-            className={`flex-1 py-3 text-sm font-medium text-[var(--text-p-color)] transition-colors border-b-2 ${
-              view === 'register' ? 'border-[var(--palette-primary)] text-[var(--palette-primary)]' : 'border-transparent'
+            className={`flex-1 py-3 text-sm sm:text-base text-p-font font-medium transition-colors border-b-2 ${
+              view === 'register' ? 'border-[var(--palette-primary)] text-[var(--palette-primary)]' : 'border-transparent text-[var(--text-p-color)]'
             }`}
           >
             Sign Up

@@ -58,14 +58,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
                                 onClick={() => handleClick(item.id)}
                                 className={`
                                     w-full flex items-center gap-3 px-4 py-3 rounded-lg
-                                    text-sm font-medium transition-all
-                                    ${isActive 
-                                        ? 'bg-[var(--palette-primary)] text-[var(--text-p-color)]' 
+                                    text-sm sm:text-base text-p-font transition-all
+                                    ${isActive
+                                        ? 'bg-[var(--palette-primary)] text-[var(--text-p-color)]'
                                         : 'text-[var(--text-p-color)] hover:bg-[var(--palette-border)]'
                                     }
                                 `}
                             >
-                                <Icon className="w-5 h-5 text-[var(--text-p-color)]" />
+                                <Icon className="w-5 h-5" />
                                 {item.label}
                             </button>
                         );

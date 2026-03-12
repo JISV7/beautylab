@@ -24,7 +24,7 @@ export interface ColorPalette {
     background: string;
     surface: string;
     border: string;
-    decorator?: string;
+    decorator: string;
 }
 
 export interface ThemeEditorProps {

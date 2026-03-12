@@ -1,5 +1,5 @@
 import React from 'react';
-import { Palette } from 'lucide-react';
+import { Palette, Sparkles } from 'lucide-react';
 import type { ColorEditorProps } from './types';
 
 interface ColorInputProps {
@@ -87,19 +87,31 @@ export const ColorEditor: React.FC<ColorEditorProps> = ({
                 />
                 <ColorInput
                     label="Decorator Color (Icons, Decorative Elements)"
-                    value={colors.decorator || '#ffffff'}
+                    value={colors.decorator}
                     onChange={(v) => onColorChange('decorator', v)}
                 />
             </div>
 
             {/* Live Preview Box */}
             <div className="p-6 border rounded-xl palette-border" style={{ background: colors.background }}>
-                <h2 className="text-h1-color text-h1-font text-h1-size font-bold mb-4">
-                    Real-Time Preview
-                </h2>
-                <p
-                    className="mb-6 text-p-font text-p-size text-p-color"
+                <h1
                     style={{
+                        fontFamily: styles.h1.fontFamily,
+                        fontSize: `${styles.h1.size}rem`,
+                        color: styles.h1.color,
+                        fontWeight: styles.h1.fontWeight,
+                        lineHeight: styles.h1.lineHeight
+                    }}
+                    className="mb-4"
+                >
+                    Real-Time Preview H1
+                </h1>
+                <p
+                    className="mb-6"
+                    style={{
+                        fontFamily: styles.p.fontFamily,
+                        fontSize: `${styles.p.size}rem`,
+                        color: styles.p.color,
                         fontWeight: styles.p.fontWeight,
                         lineHeight: styles.p.lineHeight
                     }}
@@ -109,21 +121,31 @@ export const ColorEditor: React.FC<ColorEditorProps> = ({
 
                 <div
                     className="flex flex-col gap-4 p-4 sm:p-6 rounded-lg border"
-                    style={{ 
+                    style={{
                         backgroundColor: colors.surface,
-                        borderColor: colors.border 
+                        borderColor: colors.border
                     }}
                 >
                     <div className="flex flex-col gap-2">
                         <h4
-                            className="font-bold text-h4-font text-h4-size text-h4-color"
-                            style={{ fontWeight: styles.h4.fontWeight }}
+                            style={{
+                                fontFamily: styles.h4.fontFamily,
+                                fontSize: `${styles.h4.size}rem`,
+                                color: styles.h4.color,
+                                fontWeight: styles.h4.fontWeight,
+                                lineHeight: styles.h4.lineHeight
+                            }}
                         >
-                            Surface Card
+                            Surface Card H4
                         </h4>
                         <p
-                            className="text-sm text-p-font text-p-size text-p-color"
-                            style={{ fontWeight: styles.p.fontWeight }}
+                            style={{
+                                fontFamily: styles.p.fontFamily,
+                                fontSize: `${styles.p.size}rem`,
+                                color: styles.p.color,
+                                fontWeight: styles.p.fontWeight,
+                                lineHeight: styles.p.lineHeight
+                            }}
                         >
                             Example card content with configured colors and typography.
                         </p>
@@ -131,10 +153,10 @@ export const ColorEditor: React.FC<ColorEditorProps> = ({
                     <div className="flex flex-wrap gap-2 sm:gap-3 justify-start">
                         <button
                             className="theme-button"
-                            style={{ 
-                                backgroundColor: colors.primary, 
+                            style={{
+                                backgroundColor: colors.primary,
                                 color: '#FFFFFF',
-                                borderColor: colors.primary 
+                                borderColor: colors.primary
                             }}
                             onMouseEnter={(e) => {
                                 e.currentTarget.style.backgroundColor = colors.accent;
@@ -149,8 +171,8 @@ export const ColorEditor: React.FC<ColorEditorProps> = ({
                         </button>
                         <button
                             className="theme-button"
-                            style={{ 
-                                backgroundColor: 'transparent', 
+                            style={{
+                                backgroundColor: 'transparent',
                                 color: colors.secondary,
                                 borderColor: colors.secondary,
                                 borderWidth: '2px',
@@ -171,10 +193,10 @@ export const ColorEditor: React.FC<ColorEditorProps> = ({
                         </button>
                         <button
                             className="theme-button"
-                            style={{ 
-                                backgroundColor: colors.accent, 
+                            style={{
+                                backgroundColor: colors.accent,
                                 color: '#FFFFFF',
-                                borderColor: colors.accent 
+                                borderColor: colors.accent
                             }}
                             onMouseEnter={(e) => {
                                 e.currentTarget.style.backgroundColor = colors.primary;
@@ -186,6 +208,25 @@ export const ColorEditor: React.FC<ColorEditorProps> = ({
                             }}
                         >
                             Accent
+                        </button>
+                        <button
+                            className="theme-button"
+                            style={{
+                                backgroundColor: colors.primary,
+                                color: colors.decorator,
+                                borderColor: colors.primary
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor = colors.accent;
+                                e.currentTarget.style.borderColor = colors.accent;
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor = colors.primary;
+                                e.currentTarget.style.borderColor = colors.primary;
+                            }}
+                        >
+                            <Sparkles className="w-4 h-4" />
+                            Decorator
                         </button>
                     </div>
                 </div>

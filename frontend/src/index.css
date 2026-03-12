@@ -199,6 +199,14 @@
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 768px) {
+    .theme-button {
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+    }
   }
 
   .theme-button-primary {

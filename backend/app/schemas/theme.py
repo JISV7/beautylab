@@ -24,6 +24,12 @@ class PaletteColors(BaseModel):
     surface: str = Field(..., description="Surface color for cards, panels")
     border: str = Field(..., description="Border and divider color")
 
+    @field_validator('primary', 'secondary', 'accent', 'background', 'surface', 'border')
+    @classmethod
+    def normalize_hex_color(cls, v: str) -> str:
+        """Normalize hex color values to uppercase for consistency."""
+        return v.upper()
+
     model_config = ConfigDict(
         json_schema_extra={
             "example": {
@@ -44,7 +50,7 @@ class PaletteColors(BaseModel):
 
 class TypographyElement(BaseModel):
     """Typography settings for a single element (h1-h6, p, etc.).
-    
+
     font_id is mandatory and must reference a valid font in the fonts table.
     This ensures proper font tracking and usage counting across themes.
     """
@@ -55,6 +61,12 @@ class TypographyElement(BaseModel):
     font_weight: int = Field(default=400, ge=100, le=900, description="Font weight 100-900", alias="fontWeight")
     color: str = Field(..., description="Text color for this element")
     line_height: Optional[str] = Field(None, description="Line height (e.g., '1.2')", alias="lineHeight")
+
+    @field_validator('color')
+    @classmethod
+    def normalize_hex_color(cls, v: str) -> str:
+        """Normalize hex color values to uppercase for consistency."""
+        return v.upper()
 
     model_config = ConfigDict(
         json_schema_extra={

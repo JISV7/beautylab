@@ -12,33 +12,51 @@ const PaletteCard: React.FC<PaletteCardProps> = ({ mode, theme, onEdit }) => {
     const modeData = theme.config[mode];
 
     return (
-        <div className="theme-card">
-            <div className="p-4 border-b palette-border flex items-center justify-between">
-                <h3 className="font-bold capitalize">{mode} Mode</h3>
+        <div
+            className="theme-card h-full flex flex-col"
+            style={{
+                backgroundColor: modeData.colors.surface,
+                borderColor: modeData.colors.border,
+            }}
+        >
+            <div
+                className="p-4 border-b flex items-center justify-between shrink-0"
+                style={{
+                    borderColor: modeData.colors.border,
+                    backgroundColor: modeData.colors.surface,
+                }}
+            >
+                <h3
+                    className="font-bold capitalize whitespace-nowrap"
+                    style={{ color: modeData.typography.h4.color }}
+                >
+                    {mode} Mode
+                </h3>
                 <button
                     onClick={onEdit}
-                    className="text-sm text-palette-primary hover:underline"
+                    className="text-sm hover:underline shrink-0"
+                    style={{ color: modeData.colors.primary }}
                 >
                     Edit
                 </button>
             </div>
-            <div className="p-6 space-y-4" style={{ backgroundColor: modeData.colors.background }}>
+            <div className="p-6 space-y-4 flex-1" style={{ backgroundColor: modeData.colors.background }}>
                 {/* Color swatches */}
                 <div className="grid grid-cols-3 gap-2">
                     <div
-                        className="rounded-lg p-2 text-xs text-center font-mono"
+                        className="rounded-lg p-1.5 sm:p-2 text-[0.6rem] sm:text-xs text-center font-mono leading-tight whitespace-nowrap"
                         style={{ backgroundColor: modeData.colors.primary, color: '#fff' }}
                     >
                         Primary
                     </div>
                     <div
-                        className="rounded-lg p-2 text-xs text-center font-mono"
+                        className="rounded-lg p-1.5 sm:p-2 text-[0.6rem] sm:text-xs text-center font-mono leading-tight whitespace-nowrap"
                         style={{ backgroundColor: modeData.colors.secondary, color: '#fff' }}
                     >
                         Secondary
                     </div>
                     <div
-                        className="rounded-lg p-2 text-xs text-center font-mono"
+                        className="rounded-lg p-1.5 sm:p-2 text-[0.6rem] sm:text-xs text-center font-mono leading-tight whitespace-nowrap"
                         style={{ backgroundColor: modeData.colors.accent, color: '#fff' }}
                     >
                         Accent
@@ -47,16 +65,39 @@ const PaletteCard: React.FC<PaletteCardProps> = ({ mode, theme, onEdit }) => {
 
                 {/* Typography sample */}
                 <div className="space-y-2">
-                    <h4 className="font-bold">
+                    <h4
+                        className="font-bold"
+                        style={{
+                            fontFamily: modeData.typography.h4.fontName,
+                            fontSize: `${modeData.typography.h4.fontSize}rem`,
+                            color: modeData.typography.h4.color,
+                            fontWeight: modeData.typography.h4.fontWeight || 400,
+                        }}
+                    >
                         Heading Sample
                     </h4>
-                    <p className="text-p-font text-p-size text-p-color">
+                    <p
+                        className="text-p-font text-p-size"
+                        style={{
+                            fontFamily: modeData.typography.paragraph.fontName,
+                            fontSize: `${modeData.typography.paragraph.fontSize}rem`,
+                            color: modeData.typography.paragraph.color,
+                            fontWeight: modeData.typography.paragraph.fontWeight || 400,
+                            lineHeight: modeData.typography.paragraph.lineHeight || 1.6,
+                        }}
+                    >
                         Paragraph text sample showing the typography settings.
                     </p>
                 </div>
 
                 {/* Button sample */}
-                <button className="theme-button theme-button-primary">
+                <button
+                    className="theme-button mt-auto"
+                    style={{
+                        backgroundColor: modeData.colors.primary,
+                        color: modeData.typography.decorator.color,
+                    }}
+                >
                     Button
                 </button>
             </div>
@@ -94,7 +135,7 @@ export const ThemePreview: React.FC<ThemePreviewProps> = ({
 
             <div className="flex-1 overflow-y-auto p-4 md:p-8">
                 <div className="max-w-7xl mx-auto">
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 items-start">
                         <PaletteCard
                             mode="light"
                             theme={theme}

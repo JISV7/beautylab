@@ -182,19 +182,8 @@ export const TypographyEditor: React.FC<TypographyEditorProps> = ({
         p: true
     });
 
-    // Generate @font-face rules for all uploaded fonts
-    const fontFaceStyles = fonts.map(font => `
-        @font-face {
-            font-family: '${font.name}';
-            src: url('http://localhost:8000${font.url}') format('truetype');
-            font-weight: normal;
-            font-style: normal;
-        }
-    `).join('\n');
-
     return (
         <>
-            <style>{fontFaceStyles}</style>
             <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
             {/* Left Column: Typography Controls */}
             <div className="lg:col-span-8 flex flex-col gap-3">

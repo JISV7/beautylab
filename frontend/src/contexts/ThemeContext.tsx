@@ -411,12 +411,36 @@ const useThemeActions = (dispatch: React.Dispatch<ThemeAction>) => {
     const fetchFonts = useCallback(async (): Promise<Font[]> => {
         try {
             const response = await api.get('/fonts');
-            return response.data;
+            const fonts: Font[] = response.data;
+            
+            // Inject @font-face rules for all uploaded fonts
+            injectFontFaces(fonts);
+            
+            return fonts;
         } catch (err: any) {
             console.error('Failed to fetch fonts:', err);
             return [];
         }
     }, []);
+
+    const injectFontFaces = (fonts: Font[]): void => {
+        // Remove existing dynamic font-face styles
+        document.getElementById('dynamic-font-faces')?.remove();
+        
+        // Create style element with @font-face rules using full backend URL
+        const style = document.createElement('style');
+        style.id = 'dynamic-font-faces';
+        style.textContent = fonts.map(font => `
+            @font-face {
+                font-family: '${font.name}';
+                src: url('${API_URL}${font.url}') format('truetype');
+                font-weight: normal;
+                font-style: normal;
+            }
+        `).join('\n');
+        
+        document.head.appendChild(style);
+    };
 
     const uploadFont = useCallback(async (file: File): Promise<Font> => {
         try {
@@ -490,10 +514,11 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         applyPalette(DEFAULT_FALLBACK_THEME.config.light, 'light');
     }, []);
 
-    // Load active theme
+    // Load active theme and fonts
     useEffect(() => {
         actions.loadActiveTheme();
-    }, [actions.loadActiveTheme]);
+        actions.fetchFonts(); // Load fonts globally on mount
+    }, [actions.loadActiveTheme, actions.fetchFonts]);
 
     // Listen for system preference changes
     useEffect(() => {

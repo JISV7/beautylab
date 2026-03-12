@@ -355,6 +355,8 @@ export const UnifiedThemeConfig: React.FC = () => {
         try {
             const updated = await updateTheme(activeTheme.id, { config: newConfig });
             setThemes(prev => prev.map(t => t.id === updated.id ? updated : t));
+            // Refresh fonts to update usage counts
+            await fetchFonts();
             setMessageModal({
                 isOpen: true,
                 type: 'success',

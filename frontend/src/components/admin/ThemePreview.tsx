@@ -6,58 +6,79 @@ interface PaletteCardProps {
     mode: 'light' | 'dark' | 'accessibility';
     theme: ThemePreviewProps['theme'];
     onEdit: () => void;
+    headerRef?: (el: HTMLDivElement | null) => void;
 }
 
-const PaletteCard: React.FC<PaletteCardProps> = ({ mode, theme, onEdit }) => {
+const PaletteCard: React.FC<PaletteCardProps> = ({ mode, theme, onEdit, headerRef }) => {
     const modeData = theme.config[mode];
+
+    // Build CSS variables for this card's mode
+    const cardStyle: React.CSSProperties = {
+        backgroundColor: modeData.colors.surface,
+        borderColor: modeData.colors.border,
+        // Set typography CSS variables for this mode
+        ['--text-h1-font' as string]: modeData.typography.h1.fontName,
+        ['--text-h1-size' as string]: `${modeData.typography.h1.fontSize}rem`,
+        ['--text-h1-color' as string]: modeData.typography.h1.color,
+        ['--text-h1-weight' as string]: String(modeData.typography.h1.fontWeight || 400),
+        ['--text-h1-line-height' as string]: modeData.typography.h1.lineHeight || '1.2',
+        ['--text-h4-font' as string]: modeData.typography.h4.fontName,
+        ['--text-h4-size' as string]: `${modeData.typography.h4.fontSize}rem`,
+        ['--text-h4-color' as string]: modeData.typography.h4.color,
+        ['--text-h4-weight' as string]: String(modeData.typography.h4.fontWeight || 400),
+        ['--text-p-font' as string]: modeData.typography.paragraph.fontName,
+        ['--text-p-size' as string]: `${modeData.typography.paragraph.fontSize}rem`,
+        ['--text-p-color' as string]: modeData.typography.paragraph.color,
+        ['--text-p-weight' as string]: String(modeData.typography.paragraph.fontWeight || 400),
+        ['--text-p-line-height' as string]: modeData.typography.paragraph.lineHeight || '1.6',
+        ['--decorator-color' as string]: modeData.typography.decorator.color,
+        ['--palette-primary' as string]: modeData.colors.primary,
+        ['--palette-secondary' as string]: modeData.colors.secondary,
+        ['--palette-accent' as string]: modeData.colors.accent,
+        ['--palette-surface' as string]: modeData.colors.surface,
+        ['--palette-background' as string]: modeData.colors.background,
+        ['--palette-border' as string]: modeData.colors.border,
+    } as any;
 
     return (
         <div
             className="theme-card h-full flex flex-col"
-            style={{
-                backgroundColor: modeData.colors.surface,
-                borderColor: modeData.colors.border,
-            }}
+            style={cardStyle}
         >
             <div
-                className="p-4 border-b flex items-center justify-between shrink-0"
-                style={{
-                    borderColor: modeData.colors.border,
-                    backgroundColor: modeData.colors.surface,
-                }}
+                ref={headerRef}
+                className="p-4 border-b shrink-0 relative flex items-center"
             >
                 <h3
-                    className="font-bold capitalize whitespace-nowrap"
-                    style={{ color: modeData.typography.h4.color }}
+                    className="font-bold capitalize pr-20 text-h4-font text-h4-size text-h4-color text-h4-weight"
                 >
                     {mode} Mode
                 </h3>
                 <button
                     onClick={onEdit}
-                    className="text-sm hover:underline shrink-0"
-                    style={{ color: modeData.colors.primary }}
+                    className="absolute top-4 right-4 text-sm hover:underline text-palette-primary"
                 >
                     Edit
                 </button>
             </div>
-            <div className="p-6 space-y-4 flex-1" style={{ backgroundColor: modeData.colors.background }}>
+            <div className="p-6 space-y-4 flex-1" style={{ backgroundColor: 'var(--palette-background)' }}>
                 {/* Color swatches */}
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-3 gap-2 min-w-0">
                     <div
-                        className="rounded-lg p-1.5 sm:p-2 text-[0.6rem] sm:text-xs text-center font-mono leading-tight whitespace-nowrap"
-                        style={{ backgroundColor: modeData.colors.primary, color: '#fff' }}
+                        className="rounded-lg px-1 py-2 text-center break-words text-p-font text-p-size text-p-color text-p-weight"
+                        style={{ backgroundColor: 'var(--palette-primary)' }}
                     >
                         Primary
                     </div>
                     <div
-                        className="rounded-lg p-1.5 sm:p-2 text-[0.6rem] sm:text-xs text-center font-mono leading-tight whitespace-nowrap"
-                        style={{ backgroundColor: modeData.colors.secondary, color: '#fff' }}
+                        className="rounded-lg px-1 py-2 text-center break-words text-p-font text-p-size text-p-color text-p-weight"
+                        style={{ backgroundColor: 'var(--palette-secondary)' }}
                     >
                         Secondary
                     </div>
                     <div
-                        className="rounded-lg p-1.5 sm:p-2 text-[0.6rem] sm:text-xs text-center font-mono leading-tight whitespace-nowrap"
-                        style={{ backgroundColor: modeData.colors.accent, color: '#fff' }}
+                        className="rounded-lg px-1 py-2 text-center break-words text-p-font text-p-size text-p-color text-p-weight"
+                        style={{ backgroundColor: 'var(--palette-accent)' }}
                     >
                         Accent
                     </div>
@@ -65,39 +86,16 @@ const PaletteCard: React.FC<PaletteCardProps> = ({ mode, theme, onEdit }) => {
 
                 {/* Typography sample */}
                 <div className="space-y-2">
-                    <h4
-                        className="font-bold"
-                        style={{
-                            fontFamily: modeData.typography.h4.fontName,
-                            fontSize: `${modeData.typography.h4.fontSize}rem`,
-                            color: modeData.typography.h4.color,
-                            fontWeight: modeData.typography.h4.fontWeight || 400,
-                        }}
-                    >
-                        Heading Sample
-                    </h4>
-                    <p
-                        className="text-p-font text-p-size"
-                        style={{
-                            fontFamily: modeData.typography.paragraph.fontName,
-                            fontSize: `${modeData.typography.paragraph.fontSize}rem`,
-                            color: modeData.typography.paragraph.color,
-                            fontWeight: modeData.typography.paragraph.fontWeight || 400,
-                            lineHeight: modeData.typography.paragraph.lineHeight || 1.6,
-                        }}
-                    >
+                    <h1 className="text-h1-font text-h1-size text-h1-color text-h1-weight">
+                        Heading Sample H1
+                    </h1>
+                    <p className="text-p-font text-p-size text-p-color text-p-weight text-p-line-height">
                         Paragraph text sample showing the typography settings.
                     </p>
                 </div>
 
                 {/* Button sample */}
-                <button
-                    className="theme-button mt-auto"
-                    style={{
-                        backgroundColor: modeData.colors.primary,
-                        color: modeData.typography.decorator.color,
-                    }}
-                >
+                <button className="theme-button theme-button-primary mt-auto">
                     Button
                 </button>
             </div>
@@ -111,6 +109,19 @@ export const ThemePreview: React.FC<ThemePreviewProps> = ({
     onClose,
     onPublish,
 }) => {
+    const headerRefs = React.useRef<(HTMLDivElement | null)[]>([]);
+
+    // Sync header heights to match the tallest
+    React.useEffect(() => {
+        const heights = headerRefs.current.map(ref => ref?.offsetHeight || 0);
+        const maxHeight = Math.max(...heights);
+        headerRefs.current.forEach(ref => {
+            if (ref) {
+                ref.style.height = `${maxHeight}px`;
+            }
+        });
+    }, [theme]);
+
     return (
         <div className="flex-1 flex flex-col h-full overflow-hidden">
             <header className="h-16 palette-surface border-b palette-border px-6 md:px-8 flex items-center justify-between shrink-0 sticky top-0 z-10">
@@ -135,21 +146,24 @@ export const ThemePreview: React.FC<ThemePreviewProps> = ({
 
             <div className="flex-1 overflow-y-auto p-4 md:p-8">
                 <div className="max-w-7xl mx-auto">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 items-start">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 items-stretch">
                         <PaletteCard
                             mode="light"
                             theme={theme}
                             onEdit={() => onEdit()}
+                            headerRef={el => headerRefs.current[0] = el}
                         />
                         <PaletteCard
                             mode="dark"
                             theme={theme}
                             onEdit={() => onEdit()}
+                            headerRef={el => headerRefs.current[1] = el}
                         />
                         <PaletteCard
                             mode="accessibility"
                             theme={theme}
                             onEdit={() => onEdit()}
+                            headerRef={el => headerRefs.current[2] = el}
                         />
                     </div>
 

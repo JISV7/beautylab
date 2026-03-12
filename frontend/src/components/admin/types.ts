@@ -54,7 +54,7 @@ export interface TypographyEditorProps {
 
 export interface ThemePreviewProps {
     theme: Theme;
-    onEdit: () => void;
+    onEdit: (mode: 'light' | 'dark' | 'accessibility') => void;
     onClose: () => void;
     onPublish: () => void;
 }

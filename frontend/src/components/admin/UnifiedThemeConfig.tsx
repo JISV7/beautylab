@@ -440,7 +440,10 @@ export const UnifiedThemeConfig: React.FC = () => {
             <>
                 <ThemePreview
                     theme={activeTheme}
-                    onEdit={() => setViewMode('edit')}
+                    onEdit={(mode) => {
+                        setActiveMode(mode);
+                        setViewMode('edit');
+                    }}
                     onClose={() => {
                         setViewMode('list');
                         setActiveThemeId(null);

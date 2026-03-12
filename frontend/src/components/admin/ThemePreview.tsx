@@ -5,7 +5,7 @@ import type { ThemePreviewProps } from './types';
 interface PaletteCardProps {
     mode: 'light' | 'dark' | 'accessibility';
     theme: ThemePreviewProps['theme'];
-    onEdit: () => void;
+    onEdit: (mode: 'light' | 'dark' | 'accessibility') => void;
     headerRef?: (el: HTMLDivElement | null) => void;
 }
 
@@ -55,7 +55,7 @@ const PaletteCard: React.FC<PaletteCardProps> = ({ mode, theme, onEdit, headerRe
                     {mode} Mode
                 </h3>
                 <button
-                    onClick={onEdit}
+                    onClick={() => onEdit(mode)}
                     className="absolute top-4 right-4 text-sm hover:underline text-palette-primary"
                 >
                     Edit
@@ -135,7 +135,7 @@ export const ThemePreview: React.FC<ThemePreviewProps> = ({
                         Close
                     </button>
                     <button
-                        onClick={onEdit}
+                        onClick={() => onEdit('light')}
                         className="px-4 py-2 text-sm font-medium text-white theme-button-primary rounded-lg shadow-sm hover:opacity-90 transition-opacity flex items-center gap-2"
                     >
                         <Edit className="w-4 h-4" />
@@ -150,19 +150,19 @@ export const ThemePreview: React.FC<ThemePreviewProps> = ({
                         <PaletteCard
                             mode="light"
                             theme={theme}
-                            onEdit={() => onEdit()}
+                            onEdit={onEdit}
                             headerRef={el => headerRefs.current[0] = el}
                         />
                         <PaletteCard
                             mode="dark"
                             theme={theme}
-                            onEdit={() => onEdit()}
+                            onEdit={onEdit}
                             headerRef={el => headerRefs.current[1] = el}
                         />
                         <PaletteCard
                             mode="accessibility"
                             theme={theme}
-                            onEdit={() => onEdit()}
+                            onEdit={onEdit}
                             headerRef={el => headerRefs.current[2] = el}
                         />
                     </div>

@@ -5,6 +5,7 @@ import type { ThemeEditorProps, ColorPalette, TypographyStyle } from './types';
 import type { Font } from '../../data/theme.types';
 import { ColorEditor } from './ColorEditor';
 import { TypographyEditor } from './TypographyEditor';
+import { FontManager } from './FontManager';
 
 export const ThemeEditor: React.FC<ThemeEditorProps> = ({
     theme,
@@ -15,9 +16,11 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
     onPreview,
     onBack,
 }) => {
-    const { fetchFonts } = useTheme();
+    const { fetchFonts, uploadFont, deleteFont } = useTheme();
     const [activeTab, setActiveTab] = React.useState<'colors' | 'typography'>('colors');
     const [fonts, setFonts] = React.useState<Font[]>([]);
+    const [uploading, setUploading] = React.useState(false);
+    const fileInputRef = React.useRef<HTMLInputElement>(null);
 
     // Fetch available fonts on mount
     React.useEffect(() => {
@@ -27,6 +30,53 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
         };
         loadFonts();
     }, [fetchFonts]);
+
+    const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        try {
+            setUploading(true);
+            const uploadedFont = await uploadFont(file);
+            setFonts(prev => [...prev, uploadedFont]);
+            // Clear the input
+            if (event.target) {
+                event.target.value = '';
+            }
+        } catch (error: any) {
+            console.error('Failed to upload font:', error);
+            alert(error.response?.data?.detail || 'Failed to upload font');
+        } finally {
+            setUploading(false);
+        }
+    };
+
+    const handleDeleteFont = async (font: Font) => {
+        try {
+            await deleteFont(font.id);
+            setFonts(prev => prev.filter(f => f.id !== font.id));
+        } catch (error: any) {
+            console.error('Failed to delete font:', error);
+            alert(error.response?.data?.detail || 'Failed to delete font');
+        }
+    };
+
+    const getFontUsage = (fontName: string) => {
+        const usages: { theme: string; elements: string[] }[] = [];
+        fonts.forEach(font => {
+            if (font.name === fontName && font.fontUsage) {
+                font.fontUsage.forEach(usage => {
+                    const existing = usages.find(u => u.theme === usage.themeName);
+                    if (existing) {
+                        existing.elements.push(usage.element);
+                    } else {
+                        usages.push({ theme: usage.themeName, elements: [usage.element] });
+                    }
+                });
+            }
+        });
+        return usages;
+    };
 
     // Color state
     const [colors, setColors] = React.useState<ColorPalette>({
@@ -365,12 +415,24 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                             onColorChange={handleColorChange}
                         />
                     ) : (
-                        <TypographyEditor
-                            styles={styles}
-                            colors={colors}
-                            fonts={fonts}
-                            onStyleChange={handleStyleChange}
-                        />
+                        <div className="space-y-8">
+                            <FontManager
+                                installedFonts={fonts}
+                                uploading={uploading}
+                                fileInputRef={fileInputRef}
+                                onFileUpload={handleFileUpload}
+                                onFontDelete={handleDeleteFont}
+                                getFontUsage={getFontUsage}
+                            />
+                            <div>
+                                <TypographyEditor
+                                    styles={styles}
+                                    colors={colors}
+                                    fonts={fonts}
+                                    onStyleChange={handleStyleChange}
+                                />
+                            </div>
+                        </div>
                     )}
                 </div>
             </div>

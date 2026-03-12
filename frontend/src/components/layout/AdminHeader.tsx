@@ -6,9 +6,10 @@ import { useTheme } from '../../contexts/ThemeContext';
 interface AdminHeaderProps {
     onBack?: () => void;
     onMenuToggle?: () => void;
+    onLogout?: () => void;
 }
 
-export const AdminHeader: React.FC<AdminHeaderProps> = ({ onBack, onMenuToggle }) => {
+export const AdminHeader: React.FC<AdminHeaderProps> = ({ onBack, onMenuToggle, onLogout }) => {
     const { user, logout } = useAuth();
     const { currentMode, setPaletteMode } = useTheme();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -162,6 +163,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({ onBack, onMenuToggle }
                                 onClick={() => {
                                     logout();
                                     setIsMenuOpen(false);
+                                    onLogout?.();
                                 }}
                                 className="w-full text-left px-4 py-2 text-p-font text-p-size text-p-color hover:bg-[var(--palette-primary)] hover:text-white flex items-center gap-2 transition-colors"
                             >

@@ -2,15 +2,15 @@ import React, { useState } from 'react';
 import { AdminHeader } from '../components/layout/AdminHeader';
 import { AdminLayout } from '../components/layout/AdminLayout';
 import { UnifiedThemeConfig } from '../components/admin/UnifiedThemeConfig';
-import { UserManager } from '../components/admin/UserManager';
 
 type AdminTab = 'dashboard' | 'themes' | 'users' | 'content';
 
 interface AdminDashboardProps {
     onNavigateToDashboard?: () => void;
+    onLogout?: () => void;
 }
 
-export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToDashboard }) => {
+export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToDashboard, onLogout }) => {
     const [activeTab, setActiveTab] = useState<AdminTab>('dashboard');
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -26,7 +26,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToDash
     return (
         <div className="min-h-screen flex flex-col theme-background">
             {/* Admin Header */}
-            <AdminHeader onBack={handleBack} onMenuToggle={() => setSidebarOpen(true)} />
+            <AdminHeader onBack={handleBack} onMenuToggle={() => setSidebarOpen(true)} onLogout={onLogout} />
 
             <div className="flex flex-1 overflow-hidden">
                 {/* Admin Layout with Sidebar */}
@@ -54,7 +54,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToDash
                         </div>
                     )}
                     {activeTab === 'users' && (
-                        <UserManager />
+                        <div>
+                            <h1 className="text-2xl font-bold text-[var(--text-h2-color)] mb-2">User Management</h1>
+                            <p className="text-[var(--text-p-color)]">
+                                User management features (Coming soon)...
+                            </p>
+                        </div>
                     )}
                     {activeTab === 'content' && (
                         <div>

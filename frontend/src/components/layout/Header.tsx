@@ -8,9 +8,10 @@ import { UserMenu } from './UserMenu';
 interface HeaderProps {
   onNavigateToDashboard?: () => void;
   onNavigateToAdmin?: () => void;
+  onLogout?: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ onNavigateToDashboard, onNavigateToAdmin }) => {
+export const Header: React.FC<HeaderProps> = ({ onNavigateToDashboard, onNavigateToAdmin, onLogout }) => {
   const { currentMode, setPaletteMode } = useTheme();
   const { isAuthenticated } = useAuth();
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
@@ -85,7 +86,7 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateToDashboard, onNavigat
 
             {/* Authentication */}
             {isAuthenticated ? (
-              <UserMenu onNavigateToAdmin={onNavigateToAdmin} />
+              <UserMenu onNavigateToAdmin={onNavigateToAdmin} onLogout={onLogout} />
             ) : (
               <button
                 onClick={() => setLoginDialogOpen(true)}

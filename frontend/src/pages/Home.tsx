@@ -10,14 +10,15 @@ import { useTheme } from '../contexts/ThemeContext';
 interface HomeProps {
     onNavigateToDashboard?: () => void;
     onNavigateToAdmin?: () => void;
+    onLogout?: () => void;
 }
 
-export function Home({ onNavigateToDashboard, onNavigateToAdmin }: HomeProps) {
+export function Home({ onNavigateToDashboard, onNavigateToAdmin, onLogout }: HomeProps) {
     const { currentMode } = useTheme();
 
     return (
         <div className={`min-h-screen flex flex-col ${currentMode}`}>
-            <Header onNavigateToDashboard={onNavigateToDashboard} onNavigateToAdmin={onNavigateToAdmin} />
+            <Header onNavigateToDashboard={onNavigateToDashboard} onNavigateToAdmin={onNavigateToAdmin} onLogout={onLogout} />
             <main className="flex-1">
                 <Hero />
                 <CourseCarousel />

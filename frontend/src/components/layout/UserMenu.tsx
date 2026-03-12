@@ -4,9 +4,10 @@ import { User, LogOut, Settings, Shield } from 'lucide-react';
 
 interface UserMenuProps {
     onNavigateToAdmin?: () => void;
+    onLogout?: () => void;
 }
 
-export const UserMenu: React.FC<UserMenuProps> = ({ onNavigateToAdmin }) => {
+export const UserMenu: React.FC<UserMenuProps> = ({ onNavigateToAdmin, onLogout }) => {
     const { user, logout } = useAuth();
     const [isOpen, setIsOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
@@ -91,12 +92,14 @@ export const UserMenu: React.FC<UserMenuProps> = ({ onNavigateToAdmin }) => {
                             onClick={() => {
                                 logout();
                                 setIsOpen(false);
+                                onLogout?.();
                             }}
                             className="w-full text-left px-4 py-2 text-sm theme-text-secondary hover:bg-[var(--theme-border)] hover:[color:var(--palette-primary)] flex items-center gap-2 transition-colors"
                             role="menuitem"
                             onKeyDown={(e) => handleMenuItemKeyDown(e, () => {
                                 logout();
                                 setIsOpen(false);
+                                onLogout?.();
                             })}
                         >
                             <LogOut className="w-4 h-4" style={{ color: 'var(--decorator-color)' }} />

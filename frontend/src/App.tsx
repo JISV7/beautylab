@@ -41,11 +41,12 @@ function App() {
         {currentPage === 'dashboard' ? (
           <Dashboard onNavigateToAdmin={handleNavigateToAdmin} onLogout={handleLogout} />
         ) : currentPage === 'admin' ? (
-          <AdminDashboard onNavigateToDashboard={handleNavigateToDashboard} />
+          <AdminDashboard onNavigateToDashboard={handleNavigateToDashboard} onLogout={handleLogout} />
         ) : (
           <Home
             onNavigateToDashboard={handleNavigateToDashboard}
             onNavigateToAdmin={handleNavigateToAdmin}
+            onLogout={handleLogout}
           />
         )}
       </AuthProvider>

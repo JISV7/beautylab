@@ -24,17 +24,67 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Axios response interceptor to handle 401 errors globally
+// Utility to check if JWT token is expired
+const isTokenExpired = (token: string): boolean => {
+    try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        return payload.exp * 1000 < Date.now();
+    } catch {
+        return true;
+    }
+};
+
+// Function to refresh access token using refresh token
+const refreshAccessToken = async (): Promise<string | null> => {
+    const refreshToken = localStorage.getItem('refresh_token');
+    if (!refreshToken) return null;
+    
+    try {
+        const formData = new URLSearchParams();
+        formData.append('refresh_token', refreshToken);
+        
+        const response = await axios.post(`${API_URL}/auth/refresh`, formData, {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+        });
+        const data = response.data;
+        localStorage.setItem('access_token', data.access_token);
+        if (data.refresh_token) {
+            localStorage.setItem('refresh_token', data.refresh_token);
+        }
+        return data.access_token;
+    } catch (error) {
+        console.error('Failed to refresh token:', error);
+        return null;
+    }
+};
+
+// Axios response interceptor to handle 401 errors and auto-refresh
 axios.interceptors.response.use(
     (response) => response,
-    (error) => {
-        if (error.response?.status === 401) {
-            // Token expired or invalid - logout and redirect to home
-            localStorage.removeItem('access_token');
-            localStorage.removeItem('refresh_token');
-            localStorage.setItem('currentPage', 'home');
-            window.location.href = '/';
+    async (error) => {
+        const originalRequest = error.config;
+        
+        // If error is 401 and we haven't retried yet
+        if (error.response?.status === 401 && !originalRequest._retry) {
+            originalRequest._retry = true;
+            
+            // Try to refresh the token
+            const newToken = await refreshAccessToken();
+            
+            if (newToken) {
+                // Retry original request with new token
+                originalRequest.headers.Authorization = `Bearer ${newToken}`;
+                return axios(originalRequest);
+            }
         }
+        
+        // Token refresh failed or not 401 - logout and redirect to home
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        localStorage.setItem('currentPage', 'home');
+        window.location.href = '/';
         return Promise.reject(error);
     }
 );
@@ -73,7 +123,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     useEffect(() => {
         const token = localStorage.getItem('access_token');
         if (token) {
-            fetchUser(token);
+            // Check if token is expired
+            if (isTokenExpired(token)) {
+                // Token expired, try to refresh
+                refreshAccessToken().then((newToken) => {
+                    if (newToken) {
+                        fetchUser(newToken);
+                    } else {
+                        logout();
+                        window.location.href = '/';
+                    }
+                });
+            } else {
+                fetchUser(token);
+            }
             // Restore dashboard page for authenticated users
             const savedPage = localStorage.getItem('currentPage');
             if (!savedPage || savedPage === 'home') {

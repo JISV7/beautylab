@@ -46,6 +46,7 @@ export interface ColorEditorProps {
 export interface TypographyEditorProps {
     styles: Record<string, TypographyStyle>;
     colors: ColorPalette;
+    fonts: Font[];
     onStyleChange: (key: string, field: keyof TypographyStyle, value: string | number) => void;
 }
 

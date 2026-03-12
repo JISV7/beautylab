@@ -1,13 +1,14 @@
 import React from 'react';
 import { Type, ChevronDown, ChevronUp, Palette } from 'lucide-react';
 import type { TypographyEditorProps, TypographyStyle } from './types';
+import type { Font } from '../../data/theme.types';
 
 interface StyleBlockProps {
     label: string;
     shortLabel: string;
     expanded: boolean;
     style: { fontFamily: string; size: number; color: string; fontWeight?: number; lineHeight?: string };
-    fonts: string[];
+    fonts: Font[];
     onToggle: () => void;
     onStyleChange: (field: keyof TypographyStyle, value: string | number) => void;
 }
@@ -53,11 +54,8 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
                             onChange={(e) => onStyleChange('fontFamily', e.target.value)}
                             className="theme-input appearance-none cursor-pointer w-full"
                         >
-                            <option>Manrope</option>
-                            <option>Inter</option>
-                            <option>System Default</option>
                             {fonts.map(f => (
-                                <option key={f} value={f}>{f}</option>
+                                <option key={f.id} value={f.name}>{f.name}</option>
                             ))}
                         </select>
                         <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
@@ -164,6 +162,7 @@ const toggleBlock = (
 export const TypographyEditor: React.FC<TypographyEditorProps> = ({
     styles,
     colors,
+    fonts,
     onStyleChange,
 }) => {
     const [expandedBlocks, setExpandedBlocks] = React.useState<Record<string, boolean>>({
@@ -176,11 +175,20 @@ export const TypographyEditor: React.FC<TypographyEditorProps> = ({
         p: true
     });
 
-    // Default fonts available (font loading from DB handled separately if needed)
-    const defaultFonts = ['Manrope', 'Inter', 'System Default'];
+    // Generate @font-face rules for all uploaded fonts
+    const fontFaceStyles = fonts.map(font => `
+        @font-face {
+            font-family: '${font.name}';
+            src: url('http://localhost:8000${font.url}') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+    `).join('\n');
 
     return (
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <>
+            <style>{fontFaceStyles}</style>
+            <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
             {/* Left Column: Typography Controls */}
             <div className="lg:col-span-8 flex flex-col gap-3">
                 <h3 className="text-xl font-bold flex items-center gap-2">
@@ -191,7 +199,7 @@ export const TypographyEditor: React.FC<TypographyEditorProps> = ({
                     shortLabel="H1"
                     expanded={expandedBlocks.h1}
                     style={styles.h1}
-                    fonts={defaultFonts}
+                    fonts={fonts}
                     onToggle={() => toggleBlock('h1', setExpandedBlocks)}
                     onStyleChange={(f, v) => onStyleChange('h1', f, v)}
                 />
@@ -200,7 +208,7 @@ export const TypographyEditor: React.FC<TypographyEditorProps> = ({
                     shortLabel="H2"
                     expanded={expandedBlocks.h2}
                     style={styles.h2}
-                    fonts={defaultFonts}
+                    fonts={fonts}
                     onToggle={() => toggleBlock('h2', setExpandedBlocks)}
                     onStyleChange={(f, v) => onStyleChange('h2', f, v)}
                 />
@@ -209,7 +217,7 @@ export const TypographyEditor: React.FC<TypographyEditorProps> = ({
                     shortLabel="H3"
                     expanded={expandedBlocks.h3}
                     style={styles.h3}
-                    fonts={defaultFonts}
+                    fonts={fonts}
                     onToggle={() => toggleBlock('h3', setExpandedBlocks)}
                     onStyleChange={(f, v) => onStyleChange('h3', f, v)}
                 />
@@ -218,7 +226,7 @@ export const TypographyEditor: React.FC<TypographyEditorProps> = ({
                     shortLabel="H4"
                     expanded={expandedBlocks.h4}
                     style={styles.h4}
-                    fonts={defaultFonts}
+                    fonts={fonts}
                     onToggle={() => toggleBlock('h4', setExpandedBlocks)}
                     onStyleChange={(f, v) => onStyleChange('h4', f, v)}
                 />
@@ -227,7 +235,7 @@ export const TypographyEditor: React.FC<TypographyEditorProps> = ({
                     shortLabel="H5"
                     expanded={expandedBlocks.h5}
                     style={styles.h5}
-                    fonts={defaultFonts}
+                    fonts={fonts}
                     onToggle={() => toggleBlock('h5', setExpandedBlocks)}
                     onStyleChange={(f, v) => onStyleChange('h5', f, v)}
                 />
@@ -236,7 +244,7 @@ export const TypographyEditor: React.FC<TypographyEditorProps> = ({
                     shortLabel="H6"
                     expanded={expandedBlocks.h6}
                     style={styles.h6}
-                    fonts={defaultFonts}
+                    fonts={fonts}
                     onToggle={() => toggleBlock('h6', setExpandedBlocks)}
                     onStyleChange={(f, v) => onStyleChange('h6', f, v)}
                 />
@@ -245,7 +253,7 @@ export const TypographyEditor: React.FC<TypographyEditorProps> = ({
                     shortLabel="P"
                     expanded={expandedBlocks.p}
                     style={styles.p}
-                    fonts={defaultFonts}
+                    fonts={fonts}
                     onToggle={() => toggleBlock('p', setExpandedBlocks)}
                     onStyleChange={(f, v) => onStyleChange('p', f, v)}
                 />
@@ -357,5 +365,6 @@ export const TypographyEditor: React.FC<TypographyEditorProps> = ({
                 </div>
             </div>
         </div>
+        </>
     );
 };

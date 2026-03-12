@@ -1,6 +1,8 @@
 import React from 'react';
 import { Save, Palette, Type, Eye, X } from 'lucide-react';
+import { useTheme } from '../../contexts/ThemeContext';
 import type { ThemeEditorProps, ColorPalette, TypographyStyle } from './types';
+import type { Font } from '../../data/theme.types';
 import { ColorEditor } from './ColorEditor';
 import { TypographyEditor } from './TypographyEditor';
 
@@ -12,7 +14,18 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
     onPublish,
     onBack,
 }) => {
+    const { fetchFonts } = useTheme();
     const [activeTab, setActiveTab] = React.useState<'colors' | 'typography'>('colors');
+    const [fonts, setFonts] = React.useState<Font[]>([]);
+
+    // Fetch available fonts on mount
+    React.useEffect(() => {
+        const loadFonts = async () => {
+            const loadedFonts = await fetchFonts();
+            setFonts(loadedFonts);
+        };
+        loadFonts();
+    }, [fetchFonts]);
 
     // Color state
     const [colors, setColors] = React.useState<ColorPalette>({
@@ -325,6 +338,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                         <TypographyEditor
                             styles={styles}
                             colors={colors}
+                            fonts={fonts}
                             onStyleChange={handleStyleChange}
                         />
                     )}

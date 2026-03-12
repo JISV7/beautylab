@@ -57,14 +57,14 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                                 onClick={() => handleClick(item.id)}
                                 className={`
                                     w-full flex items-center gap-3 px-4 py-3 rounded-lg
-                                    text-sm font-medium transition-all
-                                    ${isActive 
-                                        ? 'bg-[var(--palette-primary)] text-[var(--text-p-color)]' 
+                                    text-sm sm:text-base text-p-font transition-all
+                                    ${isActive
+                                        ? 'bg-[var(--palette-primary)] text-[var(--text-p-color)]'
                                         : 'text-[var(--text-p-color)] hover:bg-[var(--palette-border)]'
                                     }
                                 `}
                             >
-                                <Icon className="w-5 h-5 text-[var(--text-p-color)]" />
+                                <Icon className="w-5 h-5" />
                                 {item.label}
                             </button>
                         );
@@ -74,8 +74,8 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                 {/* Admin Badge */}
                 <div className="p-4 border-t border-[var(--palette-border)]">
                     <div className="bg-[var(--palette-surface)] border border-[var(--palette-border)] p-4 rounded-lg">
-                        <p className="text-xs font-medium text-[var(--text-p-color)] opacity-70 mb-2">Admin Mode</p>
-                        <p className="text-xs text-[var(--text-p-color)]">
+                        <p className="text-xs text-p-font text-[var(--text-p-color)] opacity-70 mb-2">Admin Mode</p>
+                        <p className="text-xs text-p-font text-[var(--text-p-color)]">
                             You have full access to customize the site appearance.
                         </p>
                     </div>

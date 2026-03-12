@@ -63,7 +63,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({ onBack, onMenuToggle }
                 {/* Back to Dashboard */}
                 <button
                     onClick={onBack}
-                    className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-lg text-[var(--text-p-size)] text-[var(--text-p-color)] hover:bg-[var(--palette-border)] transition-colors"
+                    className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-lg text-[var(--text-p-size)] text-[var(--text-p-color)] hover:bg-[var(--palette-border)] transition-colors text-p-font"
                 >
                     <ArrowLeft className="w-4 h-4" />
                     <span className="text-sm font-medium">Back to Dashboard</span>

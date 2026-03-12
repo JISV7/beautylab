@@ -65,22 +65,30 @@ async def list_fonts(db: AsyncSession = Depends(get_db)):
     """Get all installed custom fonts."""
     result = await db.execute(select(Font).order_by(Font.name))
     fonts = result.scalars().all()
-    
-    # Include usage count in response
+
+    # Include usage count and uploader name in response
     font_list = []
     for font in fonts:
+        # Get uploader name if available
+        uploader_name = None
+        if font.created_by:
+            from app.models.user import User
+            user_result = await db.execute(select(User.full_name).where(User.id == font.created_by))
+            uploader_name = user_result.scalar_one_or_none()
+
         font_dict = {
             "id": font.id,
             "name": font.name,
             "filename": font.filename,
             "url": font.url,
             "created_by": font.created_by,
-            "created_at": font.created_at,
+            "created_by_name": uploader_name,
+            "created_at": font.created_at.isoformat() if font.created_at else None,
             "font_usage": font.font_usage or [],
             "usage_count": len(font.font_usage) if font.font_usage else 0
         }
         font_list.append(font_dict)
-    
+
     return font_list
 
 
@@ -176,7 +184,8 @@ async def upload_font(
         "filename": db_font.filename,
         "url": db_font.url,
         "created_by": db_font.created_by,
-        "created_at": db_font.created_at,
+        "created_by_name": current_user.full_name,
+        "created_at": db_font.created_at.isoformat(),
         "font_usage": [],
         "usage_count": 0
     }

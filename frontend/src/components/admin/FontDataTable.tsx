@@ -9,7 +9,7 @@ interface FontDataTableProps {
 }
 
 interface SortConfig {
-    column: 'name' | 'filename' | 'created_at' | 'usage_count';
+    column: 'name' | 'filename' | 'created_at' | 'usage_count' | 'created_by';
     direction: 'asc' | 'desc';
 }
 
@@ -73,7 +73,14 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
                     comparison = a.filename.localeCompare(b.filename);
                     break;
                 case 'created_at':
-                    comparison = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+                    const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+                    const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+                    comparison = dateA - dateB;
+                    break;
+                case 'created_by':
+                    const nameA = (a.createdByName || a.createdBy || '').toLowerCase();
+                    const nameB = (b.createdByName || b.createdBy || '').toLowerCase();
+                    comparison = nameA.localeCompare(nameB);
                     break;
                 case 'usage_count':
                     comparison = (a.usageCount || 0) - (b.usageCount || 0);
@@ -138,6 +145,11 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
                                 </button>
                             </th>
                             <th className="px-4 py-3 text-left text-sm font-bold text-p-color cursor-pointer hover:opacity-70 whitespace-nowrap">
+                                <button onClick={() => handleSort('created_by')} className="flex items-center">
+                                    Uploaded By<SortIcon column="created_by" />
+                                </button>
+                            </th>
+                            <th className="px-4 py-3 text-left text-sm font-bold text-p-color cursor-pointer hover:opacity-70 whitespace-nowrap">
                                 <button onClick={() => handleSort('created_at')} className="flex items-center">
                                     Uploaded<SortIcon column="created_at" />
                                 </button>
@@ -173,7 +185,10 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
                                     {font.filename}
                                 </td>
                                 <td className="px-4 py-3 text-sm text-slate-600">
-                                    {new Date(font.createdAt).toLocaleDateString()}
+                                    {font.createdByName || font.createdBy || 'Unknown'}
+                                </td>
+                                <td className="px-4 py-3 text-sm text-slate-600">
+                                    {font.createdAt ? new Date(font.createdAt).toLocaleDateString() : 'N/A'}
                                 </td>
                                 <td className="px-4 py-3">
                                     <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${

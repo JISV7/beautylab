@@ -81,6 +81,7 @@ export interface Font {
   filename: string;
   url: string;
   createdBy?: string;
+  createdByName?: string;
   createdAt: string;
   fontUsage?: FontUsageEntry[];
   usageCount: number;

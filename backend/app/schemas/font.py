@@ -1,12 +1,13 @@
 from pydantic import BaseModel, ConfigDict, Field
+from pydantic.alias_generators import to_camel
 from datetime import datetime
 from uuid import UUID
-from typing import Optional, List, Literal
+from typing import List, Literal
 
 
 class FontUsageEntry(BaseModel):
     """Entry tracking where a font is used."""
-    
+
     theme_id: UUID
     theme_name: str
     palette: Literal["light", "dark", "accessibility"]
@@ -25,15 +26,20 @@ class FontResponse(FontBase):
     id: UUID
     filename: str
     url: str
-    created_by: Optional[UUID] = None
-    created_at: datetime
-    font_usage: Optional[list] = None
-    usage_count: int = 0
+    created_by: UUID
+    created_by_name: str
+    created_at: str
+    font_usage: list
+    usage_count: int
 
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(
+        from_attributes=True,
+        alias_generator=to_camel,
+        populate_by_name=True,
+    )
 
 
 class FontWithUsage(FontResponse):
     """Font with detailed usage information."""
-    
+
     usages: List[FontUsageEntry] = []

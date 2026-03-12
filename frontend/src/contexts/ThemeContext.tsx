@@ -25,16 +25,16 @@ const DEFAULT_FALLBACK_THEME: Theme = {
                 border: '#dddddd'
             },
             typography: {
-                h1: { fontName: 'Roboto', fontSize: '2.5', fontWeight: 400, color: '#2f27ce' },
-                h2: { fontName: 'Roboto', fontSize: '2.0', fontWeight: 400, color: '#2f27ce' },
-                h3: { fontName: 'Roboto', fontSize: '1.75', fontWeight: 400, color: '#433bff' },
-                h4: { fontName: 'Roboto', fontSize: '1.5', fontWeight: 400, color: '#1a1675' },
-                h5: { fontName: 'Roboto', fontSize: '1.25', fontWeight: 400, color: '#1a1675' },
-                h6: { fontName: 'Roboto', fontSize: '1.0', fontWeight: 400, color: '#1a1675' },
-                title: { fontName: 'Roboto', fontSize: '1.5', fontWeight: 700, color: '#1a1675' },
-                subtitle: { fontName: 'Roboto', fontSize: '1.25', fontWeight: 600, color: '#1a1675' },
-                paragraph: { fontName: 'Roboto', fontSize: '1.0', fontWeight: 400, color: '#1a1a2e' },
-                decorator: { fontName: 'Roboto', fontSize: '1.0', fontWeight: 500, color: '#ffffff' }
+                h1: { fontId: '', fontName: 'Roboto', fontSize: '2.5', fontWeight: 400, color: '#2f27ce' },
+                h2: { fontId: '', fontName: 'Roboto', fontSize: '2.0', fontWeight: 400, color: '#2f27ce' },
+                h3: { fontId: '', fontName: 'Roboto', fontSize: '1.75', fontWeight: 400, color: '#433bff' },
+                h4: { fontId: '', fontName: 'Roboto', fontSize: '1.5', fontWeight: 400, color: '#1a1675' },
+                h5: { fontId: '', fontName: 'Roboto', fontSize: '1.25', fontWeight: 400, color: '#1a1675' },
+                h6: { fontId: '', fontName: 'Roboto', fontSize: '1.0', fontWeight: 400, color: '#1a1675' },
+                title: { fontId: '', fontName: 'Roboto', fontSize: '1.5', fontWeight: 700, color: '#1a1675' },
+                subtitle: { fontId: '', fontName: 'Roboto', fontSize: '1.25', fontWeight: 600, color: '#1a1675' },
+                paragraph: { fontId: '', fontName: 'Roboto', fontSize: '1.0', fontWeight: 400, color: '#1a1a2e' },
+                decorator: { fontId: '', fontName: 'Roboto', fontSize: '1.0', fontWeight: 500, color: '#ffffff' }
             }
         },
         dark: {
@@ -47,16 +47,16 @@ const DEFAULT_FALLBACK_THEME: Theme = {
                 border: '#dddddd'
             },
             typography: {
-                h1: { fontName: 'Roboto', fontSize: '2.5', fontWeight: 400, color: '#2f27ce' },
-                h2: { fontName: 'Roboto', fontSize: '2.0', fontWeight: 400, color: '#2f27ce' },
-                h3: { fontName: 'Roboto', fontSize: '1.75', fontWeight: 400, color: '#433bff' },
-                h4: { fontName: 'Roboto', fontSize: '1.5', fontWeight: 400, color: '#1a1675' },
-                h5: { fontName: 'Roboto', fontSize: '1.25', fontWeight: 400, color: '#1a1675' },
-                h6: { fontName: 'Roboto', fontSize: '1.0', fontWeight: 400, color: '#1a1675' },
-                title: { fontName: 'Roboto', fontSize: '1.5', fontWeight: 700, color: '#1a1675' },
-                subtitle: { fontName: 'Roboto', fontSize: '1.25', fontWeight: 600, color: '#1a1675' },
-                paragraph: { fontName: 'Roboto', fontSize: '1.0', fontWeight: 400, color: '#1a1a2e' },
-                decorator: { fontName: 'Roboto', fontSize: '1.0', fontWeight: 500, color: '#ffffff' }
+                h1: { fontId: '', fontName: 'Roboto', fontSize: '2.5', fontWeight: 400, color: '#2f27ce' },
+                h2: { fontId: '', fontName: 'Roboto', fontSize: '2.0', fontWeight: 400, color: '#2f27ce' },
+                h3: { fontId: '', fontName: 'Roboto', fontSize: '1.75', fontWeight: 400, color: '#433bff' },
+                h4: { fontId: '', fontName: 'Roboto', fontSize: '1.5', fontWeight: 400, color: '#1a1675' },
+                h5: { fontId: '', fontName: 'Roboto', fontSize: '1.25', fontWeight: 400, color: '#1a1675' },
+                h6: { fontId: '', fontName: 'Roboto', fontSize: '1.0', fontWeight: 400, color: '#1a1675' },
+                title: { fontId: '', fontName: 'Roboto', fontSize: '1.5', fontWeight: 700, color: '#1a1675' },
+                subtitle: { fontId: '', fontName: 'Roboto', fontSize: '1.25', fontWeight: 600, color: '#1a1675' },
+                paragraph: { fontId: '', fontName: 'Roboto', fontSize: '1.0', fontWeight: 400, color: '#1a1a2e' },
+                decorator: { fontId: '', fontName: 'Roboto', fontSize: '1.0', fontWeight: 500, color: '#ffffff' }
             }
         },
         accessibility: {
@@ -69,16 +69,16 @@ const DEFAULT_FALLBACK_THEME: Theme = {
                 border: '#dddddd'
             },
             typography: {
-                h1: { fontName: 'Roboto', fontSize: '2.5', fontWeight: 400, color: '#2f27ce' },
-                h2: { fontName: 'Roboto', fontSize: '2.0', fontWeight: 400, color: '#2f27ce' },
-                h3: { fontName: 'Roboto', fontSize: '1.75', fontWeight: 400, color: '#433bff' },
-                h4: { fontName: 'Roboto', fontSize: '1.5', fontWeight: 400, color: '#1a1675' },
-                h5: { fontName: 'Roboto', fontSize: '1.25', fontWeight: 400, color: '#1a1675' },
-                h6: { fontName: 'Roboto', fontSize: '1.0', fontWeight: 400, color: '#1a1675' },
-                title: { fontName: 'Roboto', fontSize: '1.5', fontWeight: 700, color: '#1a1675' },
-                subtitle: { fontName: 'Roboto', fontSize: '1.25', fontWeight: 600, color: '#1a1675' },
-                paragraph: { fontName: 'Roboto', fontSize: '1.0', fontWeight: 400, color: '#1a1a2e' },
-                decorator: { fontName: 'Roboto', fontSize: '1.0', fontWeight: 500, color: '#ffffff' }
+                h1: { fontId: '', fontName: 'Roboto', fontSize: '2.5', fontWeight: 400, color: '#2f27ce' },
+                h2: { fontId: '', fontName: 'Roboto', fontSize: '2.0', fontWeight: 400, color: '#2f27ce' },
+                h3: { fontId: '', fontName: 'Roboto', fontSize: '1.75', fontWeight: 400, color: '#433bff' },
+                h4: { fontId: '', fontName: 'Roboto', fontSize: '1.5', fontWeight: 400, color: '#1a1675' },
+                h5: { fontId: '', fontName: 'Roboto', fontSize: '1.25', fontWeight: 400, color: '#1a1675' },
+                h6: { fontId: '', fontName: 'Roboto', fontSize: '1.0', fontWeight: 400, color: '#1a1675' },
+                title: { fontId: '', fontName: 'Roboto', fontSize: '1.5', fontWeight: 700, color: '#1a1675' },
+                subtitle: { fontId: '', fontName: 'Roboto', fontSize: '1.25', fontWeight: 600, color: '#1a1675' },
+                paragraph: { fontId: '', fontName: 'Roboto', fontSize: '1.0', fontWeight: 400, color: '#1a1a2e' },
+                decorator: { fontId: '', fontName: 'Roboto', fontSize: '1.0', fontWeight: 500, color: '#ffffff' }
             }
         }
     }

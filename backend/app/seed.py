@@ -225,55 +225,51 @@ async def seed_admin_user(
     return admin
 
 
-async def seed_fonts(db: AsyncSession, root_user: User) -> Font:
+async def seed_fonts(db: AsyncSession, root_user: User) -> Font | None:
     """Seed default fonts.
-    
+
     Copies the Roboto font from the Default directory and creates
     a Font database entry owned by the root user.
-    
+
     Args:
         db: Database session
         root_user: Root user who will own the font
-        
+
     Returns:
-        The created Font object
+        The created Font object, or None if font file is not available
     """
     print("Seeding fonts...")
-    
+
     # Check if Roboto font already exists
     result = await db.execute(select(Font).where(Font.name == "Roboto"))
     existing_font = result.scalar_one_or_none()
-    
+
     if existing_font:
-        print(f"  Font exists: Roboto")
+        print(f"  Font exists: Roboto (ID: {existing_font.id})")
         return existing_font
-    
+
     # Source font file from within backend directory
     # Font is stored in app/fonts/ to be available in Docker container
     backend_root = Path(__file__).parent
     source_path = backend_root / "fonts" / "Roboto-VariableFont_wdth,wght.ttf"
-    
+
     if not source_path.exists():
         print(f"  Warning: Font file not found at {source_path}")
-        print(f"  Skipping font seeding")
-        # Return a mock font-like object so seeding can continue
-        class MockFont:
-            id = None
-            name = "Roboto"
-        return MockFont()
-    
+        print(f"  Skipping font seeding - themes will need font assignment later")
+        return None
+
     # Setup upload directory
     upload_dir = Path("uploads/fonts")
     upload_dir.mkdir(parents=True, exist_ok=True)
-    
+
     # Generate unique filename
     unique_filename = f"{uuid.uuid4()}.ttf"
     dest_path = upload_dir / unique_filename
-    
+
     # Copy font file
     shutil.copy2(source_path, dest_path)
     print(f"  Copied font file to {dest_path}")
-    
+
     # Create database entry
     db_font = Font(
         name="Roboto",
@@ -281,12 +277,12 @@ async def seed_fonts(db: AsyncSession, root_user: User) -> Font:
         url=f"/static/fonts/{unique_filename}",
         created_by=root_user.id,
     )
-    
+
     db.add(db_font)
     await db.commit()
     await db.refresh(db_font)
-    print(f"  Created font: Roboto (owned by {root_user.email})")
-    
+    print(f"  Created font: Roboto (ID: {db_font.id}, owned by {root_user.email})")
+
     return db_font
 
 
@@ -316,16 +312,15 @@ async def seed_default_theme(
         font_id_str = str(default_font.id) if default_font and default_font.id else None
         font_name = default_font.name if default_font else "Roboto"
 
-        # Helper to create typography element with optional font_id
+        # Helper to create typography element with mandatory font_id and font_name
         def make_typography_element(font_size: str, font_weight: int, color: str) -> dict:
             elem = {
+                "font_id": font_id_str,
                 "font_name": font_name,
                 "font_size": font_size,
                 "font_weight": font_weight,
                 "color": color,
             }
-            if font_id_str:
-                elem["font_id"] = font_id_str
             return elem
 
         # Default theme config based on Default/DefaultTheme.md
@@ -411,7 +406,7 @@ async def seed_default_theme(
         await db.commit()
         await db.refresh(theme)
 
-        # Update font usage tracking
+        # Update font usage tracking if font is available
         if default_font and default_font.id:
             theme_id_str = str(theme.id)
             # Build new usage list and reassign (SQLAlchemy doesn't detect in-place mutations of JSONB)
@@ -427,7 +422,7 @@ async def seed_default_theme(
             default_font.font_usage = new_usages
             await db.commit()
             print(f"  Updated font usage tracking for Roboto ({len(new_usages)} entries)")
-        
+
         print(f"  Created default theme: {theme_name}")
     else:
         print(f"  Default theme exists: {theme_name}")

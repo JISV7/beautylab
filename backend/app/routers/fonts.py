@@ -1,7 +1,7 @@
 import os
 import shutil
 import uuid
-from typing import List
+from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, status
 from sqlalchemy import select
@@ -14,12 +14,50 @@ from app.core.dependencies import get_current_user, RequireAdmin
 from app.schemas.font import FontResponse, FontWithUsage
 from app.services.theme_service import ThemeService, FontInUseError
 
+try:
+    from fontTools.ttLib import TTFont
+    FONTTOOLS_AVAILABLE = True
+except ImportError:
+    FONTTOOLS_AVAILABLE = False
+
 router = APIRouter(prefix="/fonts", tags=["Fonts"])
 
 UPLOAD_DIR = "uploads/fonts"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 ALLOWED_EXTENSIONS = {".ttf", ".otf", ".woff", ".woff2"}
+
+
+def extract_font_metadata(filepath: str) -> Optional[str]:
+    """Extract font family name from font file using fonttools.
+    
+    Args:
+        filepath: Path to the font file
+        
+    Returns:
+        Font family name if available, None otherwise
+    """
+    if not FONTTOOLS_AVAILABLE:
+        return None
+    
+    try:
+        font = TTFont(filepath)
+        name_table = font["name"]
+        
+        # Name ID 1 = Font Family name
+        for record in name_table.names:
+            if record.nameID == 1:
+                return record.toUnicode()
+        
+        # Fallback: try name ID 16 (Typographic Family)
+        for record in name_table.names:
+            if record.nameID == 16:
+                return record.toUnicode()
+    except Exception:
+        # If extraction fails, return None to use filename as fallback
+        pass
+    
+    return None
 
 
 @router.get("", response_model=List[FontResponse])
@@ -111,13 +149,16 @@ async def upload_font(
     except Exception as e:
         raise HTTPException(status_code=500, detail="Failed to save file.")
 
-    # Font name is derived from the original filename without extension
-    font_name = os.path.splitext(file.filename)[0] if file.filename else "Unknown Font"
+    # Extract font metadata from file (font family name)
+    extracted_name = extract_font_metadata(filepath)
+    
+    # Use extracted name if available, otherwise derive from filename
+    font_name = extracted_name if extracted_name else os.path.splitext(file.filename)[0] if file.filename else "Unknown Font"
 
     # The URL that the frontend will load it from
     font_url = f"/static/fonts/{unique_filename}"
 
-    # Create DB entry
+    # Create DB entry with all available font information
     db_font = Font(
         name=font_name,
         filename=unique_filename,

@@ -396,7 +396,11 @@ class ThemeService:
         return result.scalar() or 0
 
     async def _update_font_usage_for_theme(self, theme: Theme) -> None:
-        """Update font usage tracking for a theme."""
+        """Update font usage tracking for a theme.
+        
+        Scans all typography elements in the theme config and updates
+        font usage tracking. font_id is now mandatory for all elements.
+        """
         config = theme.config
 
         # Clear old references first
@@ -412,14 +416,21 @@ class ThemeService:
 
             for element_name, element_config in typography.items():
                 font_id = element_config.get("font_id")
-                if font_id:
-                    await self._add_font_usage(
-                        UUID(font_id) if isinstance(font_id, str) else font_id,
-                        theme.id,
-                        theme.name,
-                        palette_name,
-                        element_name
-                    )
+                font_name = element_config.get("font_name", "Unknown")
+                
+                # font_id is now mandatory - skip if missing
+                if not font_id:
+                    # Log warning but continue (migration should have set all font_ids)
+                    print(f"  Warning: Typography element {element_name} in {theme.name} missing font_id")
+                    continue
+                    
+                await self._add_font_usage(
+                    UUID(font_id) if isinstance(font_id, str) else font_id,
+                    theme.id,
+                    theme.name,
+                    palette_name,
+                    element_name
+                )
 
     async def _add_font_usage(
         self,

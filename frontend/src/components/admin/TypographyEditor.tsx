@@ -51,7 +51,14 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
                     <div className="relative">
                         <select
                             value={style.fontFamily}
-                            onChange={(e) => onStyleChange('fontFamily', e.target.value)}
+                            onChange={(e) => {
+                                // Find the selected font object to get its ID
+                                const selectedFont = fonts.find(f => f.name === e.target.value);
+                                if (selectedFont) {
+                                    onStyleChange('fontFamily', e.target.value);
+                                    onStyleChange('fontId', selectedFont.id);
+                                }
+                            }}
                             className="theme-input appearance-none cursor-pointer w-full"
                         >
                             {fonts.map(f => (

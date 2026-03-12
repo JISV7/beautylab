@@ -22,8 +22,8 @@ export interface PaletteColors {
 // ==================== Typography Types ====================
 
 export interface TypographyElement {
-  fontId?: string;        // UUID of the font (optional, null = system default)
-  fontName?: string;      // Font display name
+  fontId: string;        // UUID of the font (mandatory, references fonts.id)
+  fontName: string;      // Font display name (mandatory)
   fontSize: string;       // Font size in rem (e.g., "2.5")
   fontWeight: number;     // Font weight 100-900
   color: string;          // Text color for this element

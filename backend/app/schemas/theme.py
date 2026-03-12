@@ -43,10 +43,14 @@ class PaletteColors(BaseModel):
 # ==================== Typography Schemas ====================
 
 class TypographyElement(BaseModel):
-    """Typography settings for a single element (h1-h6, p, etc.)."""
+    """Typography settings for a single element (h1-h6, p, etc.).
+    
+    font_id is mandatory and must reference a valid font in the fonts table.
+    This ensures proper font tracking and usage counting across themes.
+    """
 
-    font_id: Optional[UUID] = Field(None, description="Font UUID (null for system default)", alias="fontId")
-    font_name: Optional[str] = Field(None, description="Font name for display", alias="fontName")
+    font_id: UUID = Field(..., description="Font UUID (must reference fonts.id)", alias="fontId")
+    font_name: str = Field(..., description="Font name for display", alias="fontName")
     font_size: str = Field(..., description="Font size in rem units", alias="fontSize")
     font_weight: int = Field(default=400, ge=100, le=900, description="Font weight 100-900", alias="fontWeight")
     color: str = Field(..., description="Text color for this element")

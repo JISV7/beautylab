@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
-import type { Theme, ThemeConfig, ThemePalette, TypographyElement } from '../../data/theme.types';
+import type { Theme, ThemeConfig, ThemePalette, TypographyElement, Font } from '../../data/theme.types';
 import type { ColorPalette, TypographyStyle } from './types';
 import { ThemeTable } from './ThemeTable';
 import { ThemeEditor } from './ThemeEditor';
@@ -9,9 +9,10 @@ import { CreateThemeModal } from './CreateThemeModal';
 import { MessageModal } from './MessageModal';
 
 // Helper to create a complete default theme config with all required fields
-function createDefaultThemeConfig(): ThemeConfig {
+function createDefaultThemeConfig(defaultFontId: string, defaultFontName: string = 'Roboto'): ThemeConfig {
     const defaultTypography: TypographyElement = {
-        fontName: 'Roboto',
+        fontId: defaultFontId,
+        fontName: defaultFontName,
         fontSize: '1.0',
         fontWeight: 400,
         color: '#1a1a2e',
@@ -59,6 +60,7 @@ const toThemePalette = (
     colors,
     typography: {
         h1: {
+            fontId: currentPalette.typography.h1?.fontId || styles.h1.fontId || '',
             fontName: styles.h1.fontFamily,
             fontSize: String(styles.h1.size),
             fontWeight: styles.h1.fontWeight ?? currentPalette.typography.h1?.fontWeight ?? 400,
@@ -66,6 +68,7 @@ const toThemePalette = (
             color: styles.h1.color
         },
         h2: {
+            fontId: currentPalette.typography.h2?.fontId || styles.h2.fontId || '',
             fontName: styles.h2.fontFamily,
             fontSize: String(styles.h2.size),
             fontWeight: styles.h2.fontWeight ?? currentPalette.typography.h2?.fontWeight ?? 400,
@@ -73,6 +76,7 @@ const toThemePalette = (
             color: styles.h2.color
         },
         h3: {
+            fontId: currentPalette.typography.h3?.fontId || styles.h3.fontId || '',
             fontName: styles.h3.fontFamily,
             fontSize: String(styles.h3.size),
             fontWeight: styles.h3.fontWeight ?? currentPalette.typography.h3?.fontWeight ?? 400,
@@ -80,6 +84,7 @@ const toThemePalette = (
             color: styles.h3.color
         },
         h4: {
+            fontId: currentPalette.typography.h4?.fontId || styles.h4.fontId || '',
             fontName: styles.h4.fontFamily,
             fontSize: String(styles.h4.size),
             fontWeight: styles.h4.fontWeight ?? currentPalette.typography.h4?.fontWeight ?? 400,
@@ -87,6 +92,7 @@ const toThemePalette = (
             color: styles.h4.color
         },
         h5: {
+            fontId: currentPalette.typography.h5?.fontId || styles.h5.fontId || '',
             fontName: styles.h5.fontFamily,
             fontSize: String(styles.h5.size),
             fontWeight: styles.h5.fontWeight ?? currentPalette.typography.h5?.fontWeight ?? 400,
@@ -94,6 +100,7 @@ const toThemePalette = (
             color: styles.h5.color
         },
         h6: {
+            fontId: currentPalette.typography.h6?.fontId || styles.h6.fontId || '',
             fontName: styles.h6.fontFamily,
             fontSize: String(styles.h6.size),
             fontWeight: styles.h6.fontWeight ?? currentPalette.typography.h6?.fontWeight ?? 400,
@@ -101,6 +108,7 @@ const toThemePalette = (
             color: styles.h6.color
         },
         title: {
+            fontId: currentPalette.typography.title?.fontId || styles.h1.fontId || '',
             fontName: styles.h1.fontFamily,
             fontSize: String(styles.h1.size),
             fontWeight: styles.h1.fontWeight ?? currentPalette.typography.title?.fontWeight ?? 700,
@@ -108,6 +116,7 @@ const toThemePalette = (
             color: styles.h1.color
         },
         subtitle: {
+            fontId: currentPalette.typography.subtitle?.fontId || styles.h2.fontId || '',
             fontName: styles.h2.fontFamily,
             fontSize: String(styles.h2.size),
             fontWeight: styles.h2.fontWeight ?? currentPalette.typography.subtitle?.fontWeight ?? 600,
@@ -115,6 +124,7 @@ const toThemePalette = (
             color: styles.h2.color
         },
         paragraph: {
+            fontId: currentPalette.typography.paragraph?.fontId || styles.p.fontId || '',
             fontName: styles.p.fontFamily,
             fontSize: String(styles.p.size),
             fontWeight: styles.p.fontWeight ?? currentPalette.typography.paragraph?.fontWeight ?? 400,
@@ -122,6 +132,7 @@ const toThemePalette = (
             color: styles.p.color
         },
         decorator: {
+            fontId: currentPalette.typography.decorator?.fontId || styles.p.fontId || '',
             fontName: styles.p.fontFamily,
             fontSize: String(styles.p.size),
             fontWeight: styles.p.fontWeight ?? currentPalette.typography.decorator?.fontWeight ?? 500,
@@ -132,7 +143,7 @@ const toThemePalette = (
 });
 
 export const UnifiedThemeConfig: React.FC = () => {
-    const { fetchAllThemes, activateTheme, createTheme, updateTheme, deleteTheme } = useTheme();
+    const { fetchAllThemes, activateTheme, createTheme, updateTheme, deleteTheme, fetchFonts } = useTheme();
 
     // View mode: 'list' | 'edit' | 'preview'
     const [viewMode, setViewMode] = useState<'list' | 'edit' | 'preview'>('list');
@@ -141,6 +152,10 @@ export const UnifiedThemeConfig: React.FC = () => {
     const [themes, setThemes] = useState<Theme[]>([]);
     const [activeThemeId, setActiveThemeId] = useState<string | null>(null);
     const [activeMode, setActiveMode] = useState<'light' | 'dark' | 'accessibility'>('light');
+
+    // Font state
+    const [fonts, setFonts] = useState<Font[]>([]);
+    const [defaultFontId, setDefaultFontId] = useState<string>('');
 
     // Modal state
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -156,11 +171,15 @@ export const UnifiedThemeConfig: React.FC = () => {
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
     const rowsPerPage = 10;
 
-    // Load themes from API
+    // Load themes and fonts from API
     useEffect(() => {
-        const loadThemes = async () => {
-            const loadedThemes = await fetchAllThemes();
+        const loadData = async () => {
+            const [loadedThemes, loadedFonts] = await Promise.all([
+                fetchAllThemes(),
+                fetchFonts()
+            ]);
             setThemes(loadedThemes);
+            setFonts(loadedFonts);
 
             // Find active theme
             const active = loadedThemes.find(t => t.isActive);
@@ -169,10 +188,17 @@ export const UnifiedThemeConfig: React.FC = () => {
             } else if (loadedThemes.length > 0) {
                 setActiveThemeId(loadedThemes[0].id);
             }
+
+            // Find default font (Roboto or first available)
+            const robotoFont = loadedFonts.find(f => f.name === 'Roboto');
+            const firstFont = robotoFont || loadedFonts[0];
+            if (firstFont) {
+                setDefaultFontId(firstFont.id);
+            }
         };
 
-        loadThemes();
-    }, [fetchAllThemes]);
+        loadData();
+    }, [fetchAllThemes, fetchFonts]);
 
     // Get active theme object
     const activeTheme = themes.find(t => t.id === activeThemeId) || null;
@@ -180,12 +206,12 @@ export const UnifiedThemeConfig: React.FC = () => {
     // Theme CRUD operations
     const handleCreateTheme = async (name: string, description: string) => {
         try {
-            // Create a new theme with a complete default config
+            // Create a new theme with a complete default config using the default font
             const newThemeData: Partial<Theme> = {
                 name,
                 description,
                 type: 'custom' as const,
-                config: createDefaultThemeConfig(),
+                config: createDefaultThemeConfig(defaultFontId, fonts.find(f => f.id === defaultFontId)?.name || 'Roboto'),
                 isActive: false,
                 isDefault: false,
             };

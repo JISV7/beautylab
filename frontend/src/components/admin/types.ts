@@ -2,6 +2,7 @@ import type { Theme, Font, ThemePalette } from '../../data/theme.types';
 
 export interface TypographyStyle {
     fontFamily: string;
+    fontId: string;  // UUID of the selected font
     size: number;
     color: string;
     fontWeight?: number;

@@ -41,49 +41,56 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
     // Typography state
     const [styles, setStyles] = React.useState<Record<string, TypographyStyle>>({
         h1: {
-            fontFamily: theme.config[activeMode].typography.h1?.fontName || 'Manrope',
+            fontFamily: theme.config[activeMode].typography.h1?.fontName || 'Roboto',
+            fontId: theme.config[activeMode].typography.h1?.fontId || '',
             size: parseFloat(theme.config[activeMode].typography.h1?.fontSize || '2.5'),
             color: theme.config[activeMode].typography.h1?.color || '#000000',
             fontWeight: theme.config[activeMode].typography.h1?.fontWeight || 400,
             lineHeight: theme.config[activeMode].typography.h1?.lineHeight || '1.2'
         },
         h2: {
-            fontFamily: theme.config[activeMode].typography.h2?.fontName || 'Manrope',
+            fontFamily: theme.config[activeMode].typography.h2?.fontName || 'Roboto',
+            fontId: theme.config[activeMode].typography.h2?.fontId || '',
             size: parseFloat(theme.config[activeMode].typography.h2?.fontSize || '2.0'),
             color: theme.config[activeMode].typography.h2?.color || '#000000',
             fontWeight: theme.config[activeMode].typography.h2?.fontWeight || 400,
             lineHeight: theme.config[activeMode].typography.h2?.lineHeight || '1.2'
         },
         h3: {
-            fontFamily: theme.config[activeMode].typography.h3?.fontName || 'Manrope',
+            fontFamily: theme.config[activeMode].typography.h3?.fontName || 'Roboto',
+            fontId: theme.config[activeMode].typography.h3?.fontId || '',
             size: parseFloat(theme.config[activeMode].typography.h3?.fontSize || '1.75'),
             color: theme.config[activeMode].typography.h3?.color || '#000000',
             fontWeight: theme.config[activeMode].typography.h3?.fontWeight || 400,
             lineHeight: theme.config[activeMode].typography.h3?.lineHeight || '1.3'
         },
         h4: {
-            fontFamily: theme.config[activeMode].typography.h4?.fontName || 'Manrope',
+            fontFamily: theme.config[activeMode].typography.h4?.fontName || 'Roboto',
+            fontId: theme.config[activeMode].typography.h4?.fontId || '',
             size: parseFloat(theme.config[activeMode].typography.h4?.fontSize || '1.5'),
             color: theme.config[activeMode].typography.h4?.color || '#000000',
             fontWeight: theme.config[activeMode].typography.h4?.fontWeight || 400,
             lineHeight: theme.config[activeMode].typography.h4?.lineHeight || '1.4'
         },
         h5: {
-            fontFamily: theme.config[activeMode].typography.h5?.fontName || 'Manrope',
+            fontFamily: theme.config[activeMode].typography.h5?.fontName || 'Roboto',
+            fontId: theme.config[activeMode].typography.h5?.fontId || '',
             size: parseFloat(theme.config[activeMode].typography.h5?.fontSize || '1.25'),
             color: theme.config[activeMode].typography.h5?.color || '#000000',
             fontWeight: theme.config[activeMode].typography.h5?.fontWeight || 400,
             lineHeight: theme.config[activeMode].typography.h5?.lineHeight || '1.4'
         },
         h6: {
-            fontFamily: theme.config[activeMode].typography.h6?.fontName || 'Manrope',
+            fontFamily: theme.config[activeMode].typography.h6?.fontName || 'Roboto',
+            fontId: theme.config[activeMode].typography.h6?.fontId || '',
             size: parseFloat(theme.config[activeMode].typography.h6?.fontSize || '1.0'),
             color: theme.config[activeMode].typography.h6?.color || '#000000',
             fontWeight: theme.config[activeMode].typography.h6?.fontWeight || 400,
             lineHeight: theme.config[activeMode].typography.h6?.lineHeight || '1.5'
         },
         p: {
-            fontFamily: theme.config[activeMode].typography.paragraph?.fontName || 'Manrope',
+            fontFamily: theme.config[activeMode].typography.paragraph?.fontName || 'Roboto',
+            fontId: theme.config[activeMode].typography.paragraph?.fontId || '',
             size: parseFloat(theme.config[activeMode].typography.paragraph?.fontSize || '1.0'),
             color: theme.config[activeMode].typography.paragraph?.color || '#000000',
             fontWeight: theme.config[activeMode].typography.paragraph?.fontWeight || 400,
@@ -106,49 +113,56 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
 
         setStyles({
             h1: {
-                fontFamily: modeData.typography.h1?.fontName || 'Manrope',
+                fontFamily: modeData.typography.h1?.fontName || 'Roboto',
+                fontId: modeData.typography.h1?.fontId || '',
                 size: parseFloat(modeData.typography.h1?.fontSize || '2.5'),
                 color: modeData.typography.h1?.color || '#000000',
                 fontWeight: modeData.typography.h1?.fontWeight || 400,
                 lineHeight: modeData.typography.h1?.lineHeight || '1.2'
             },
             h2: {
-                fontFamily: modeData.typography.h2?.fontName || 'Manrope',
+                fontFamily: modeData.typography.h2?.fontName || 'Roboto',
+                fontId: modeData.typography.h2?.fontId || '',
                 size: parseFloat(modeData.typography.h2?.fontSize || '2.0'),
                 color: modeData.typography.h2?.color || '#000000',
                 fontWeight: modeData.typography.h2?.fontWeight || 400,
                 lineHeight: modeData.typography.h2?.lineHeight || '1.2'
             },
             h3: {
-                fontFamily: modeData.typography.h3?.fontName || 'Manrope',
+                fontFamily: modeData.typography.h3?.fontName || 'Roboto',
+                fontId: modeData.typography.h3?.fontId || '',
                 size: parseFloat(modeData.typography.h3?.fontSize || '1.75'),
                 color: modeData.typography.h3?.color || '#000000',
                 fontWeight: modeData.typography.h3?.fontWeight || 400,
                 lineHeight: modeData.typography.h3?.lineHeight || '1.3'
             },
             h4: {
-                fontFamily: modeData.typography.h4?.fontName || 'Manrope',
+                fontFamily: modeData.typography.h4?.fontName || 'Roboto',
+                fontId: modeData.typography.h4?.fontId || '',
                 size: parseFloat(modeData.typography.h4?.fontSize || '1.5'),
                 color: modeData.typography.h4?.color || '#000000',
                 fontWeight: modeData.typography.h4?.fontWeight || 400,
                 lineHeight: modeData.typography.h4?.lineHeight || '1.4'
             },
             h5: {
-                fontFamily: modeData.typography.h5?.fontName || 'Manrope',
+                fontFamily: modeData.typography.h5?.fontName || 'Roboto',
+                fontId: modeData.typography.h5?.fontId || '',
                 size: parseFloat(modeData.typography.h5?.fontSize || '1.25'),
                 color: modeData.typography.h5?.color || '#000000',
                 fontWeight: modeData.typography.h5?.fontWeight || 400,
                 lineHeight: modeData.typography.h5?.lineHeight || '1.4'
             },
             h6: {
-                fontFamily: modeData.typography.h6?.fontName || 'Manrope',
+                fontFamily: modeData.typography.h6?.fontName || 'Roboto',
+                fontId: modeData.typography.h6?.fontId || '',
                 size: parseFloat(modeData.typography.h6?.fontSize || '1.0'),
                 color: modeData.typography.h6?.color || '#000000',
                 fontWeight: modeData.typography.h6?.fontWeight || 400,
                 lineHeight: modeData.typography.h6?.lineHeight || '1.5'
             },
             p: {
-                fontFamily: modeData.typography.paragraph?.fontName || 'Manrope',
+                fontFamily: modeData.typography.paragraph?.fontName || 'Roboto',
+                fontId: modeData.typography.paragraph?.fontId || '',
                 size: parseFloat(modeData.typography.paragraph?.fontSize || '1.0'),
                 color: modeData.typography.paragraph?.color || '#000000',
                 fontWeight: modeData.typography.paragraph?.fontWeight || 400,
@@ -187,49 +201,56 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
 
         setStyles({
             h1: {
-                fontFamily: modeData.typography.h1?.fontName || 'Manrope',
+                fontFamily: modeData.typography.h1?.fontName || 'Roboto',
+                fontId: modeData.typography.h1?.fontId || '',
                 size: parseFloat(modeData.typography.h1?.fontSize || '2.5'),
                 color: modeData.typography.h1?.color || '#000000',
                 fontWeight: modeData.typography.h1?.fontWeight || 400,
                 lineHeight: modeData.typography.h1?.lineHeight || '1.2'
             },
             h2: {
-                fontFamily: modeData.typography.h2?.fontName || 'Manrope',
+                fontFamily: modeData.typography.h2?.fontName || 'Roboto',
+                fontId: modeData.typography.h2?.fontId || '',
                 size: parseFloat(modeData.typography.h2?.fontSize || '2.0'),
                 color: modeData.typography.h2?.color || '#000000',
                 fontWeight: modeData.typography.h2?.fontWeight || 400,
                 lineHeight: modeData.typography.h2?.lineHeight || '1.2'
             },
             h3: {
-                fontFamily: modeData.typography.h3?.fontName || 'Manrope',
+                fontFamily: modeData.typography.h3?.fontName || 'Roboto',
+                fontId: modeData.typography.h3?.fontId || '',
                 size: parseFloat(modeData.typography.h3?.fontSize || '1.75'),
                 color: modeData.typography.h3?.color || '#000000',
                 fontWeight: modeData.typography.h3?.fontWeight || 400,
                 lineHeight: modeData.typography.h3?.lineHeight || '1.3'
             },
             h4: {
-                fontFamily: modeData.typography.h4?.fontName || 'Manrope',
+                fontFamily: modeData.typography.h4?.fontName || 'Roboto',
+                fontId: modeData.typography.h4?.fontId || '',
                 size: parseFloat(modeData.typography.h4?.fontSize || '1.5'),
                 color: modeData.typography.h4?.color || '#000000',
                 fontWeight: modeData.typography.h4?.fontWeight || 400,
                 lineHeight: modeData.typography.h4?.lineHeight || '1.4'
             },
             h5: {
-                fontFamily: modeData.typography.h5?.fontName || 'Manrope',
+                fontFamily: modeData.typography.h5?.fontName || 'Roboto',
+                fontId: modeData.typography.h5?.fontId || '',
                 size: parseFloat(modeData.typography.h5?.fontSize || '1.25'),
                 color: modeData.typography.h5?.color || '#000000',
                 fontWeight: modeData.typography.h5?.fontWeight || 400,
                 lineHeight: modeData.typography.h5?.lineHeight || '1.4'
             },
             h6: {
-                fontFamily: modeData.typography.h6?.fontName || 'Manrope',
+                fontFamily: modeData.typography.h6?.fontName || 'Roboto',
+                fontId: modeData.typography.h6?.fontId || '',
                 size: parseFloat(modeData.typography.h6?.fontSize || '1.0'),
                 color: modeData.typography.h6?.color || '#000000',
                 fontWeight: modeData.typography.h6?.fontWeight || 400,
                 lineHeight: modeData.typography.h6?.lineHeight || '1.5'
             },
             p: {
-                fontFamily: modeData.typography.paragraph?.fontName || 'Manrope',
+                fontFamily: modeData.typography.paragraph?.fontName || 'Roboto',
+                fontId: modeData.typography.paragraph?.fontId || '',
                 size: parseFloat(modeData.typography.paragraph?.fontSize || '1.0'),
                 color: modeData.typography.paragraph?.color || '#000000',
                 fontWeight: modeData.typography.paragraph?.fontWeight || 400,

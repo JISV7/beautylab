@@ -148,6 +148,7 @@ const toggleBlock = (
 
 export const TypographyEditor: React.FC<TypographyEditorProps> = ({
     styles,
+    colors,
     onStyleChange,
 }) => {
     const [expandedBlocks, setExpandedBlocks] = React.useState<Record<string, boolean>>({
@@ -303,13 +304,13 @@ export const TypographyEditor: React.FC<TypographyEditorProps> = ({
                             Highlight Tag (H6)
                         </div>
 
-                        <div 
-                            className="text-p-font text-p-size text-p-color"
+                        <div
                             style={{
                                 fontFamily: styles.p.fontFamily,
                                 fontSize: `${styles.p.size}rem`,
-                                fontWeight: styles.p.fontWeight || 400,
-                                lineHeight: styles.p.lineHeight || 1.6,
+                                color: styles.p.color,
+                                fontWeight: styles.p.fontWeight,
+                                lineHeight: styles.p.lineHeight,
                                 marginTop: '1rem'
                             }}
                         >
@@ -317,7 +318,23 @@ export const TypographyEditor: React.FC<TypographyEditorProps> = ({
                         </div>
 
                         <div className="mt-4">
-                            <button className="theme-button theme-button-primary">
+                            <button
+                                className="theme-button"
+                                style={{
+                                    backgroundColor: colors.primary,
+                                    color: colors.decorator,
+                                    fontFamily: styles.p.fontFamily,
+                                    fontSize: `${styles.p.size}rem`,
+                                    fontWeight: styles.p.fontWeight,
+                                    lineHeight: styles.p.lineHeight
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.currentTarget.style.backgroundColor = colors.accent;
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.currentTarget.style.backgroundColor = colors.primary;
+                                }}
+                            >
                                 Example Button
                             </button>
                         </div>

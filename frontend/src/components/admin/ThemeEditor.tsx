@@ -324,6 +324,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                     ) : (
                         <TypographyEditor
                             styles={styles}
+                            colors={colors}
                             onStyleChange={handleStyleChange}
                         />
                     )}

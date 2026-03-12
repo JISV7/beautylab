@@ -27,10 +27,15 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
             onClick={onToggle}
         >
             <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded flex items-center justify-center font-bold text-slate-700" style={{ backgroundColor: 'var(--palette-surface)' }}>
+                <div
+                    className="w-10 h-10 rounded flex items-center justify-center text-h4-font text-h4-size text-h4-color text-h4-weight"
+                    style={{ backgroundColor: 'var(--palette-surface)' }}
+                >
                     {shortLabel}
                 </div>
-                <h4 className="font-semibold text-slate-900">{label}</h4>
+                <h4 className="text-h4-font text-h4-size text-h4-color text-h4-weight">
+                    {label}
+                </h4>
             </div>
             {expanded ? <ChevronUp className="w-5 h-5 text-slate-400" /> : <ChevronDown className="w-5 h-5 text-slate-400" />}
         </div>
@@ -39,7 +44,9 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
             <div className="p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {/* Font Family */}
                 <label className="flex flex-col gap-2">
-                    <span className="text-sm font-semibold text-slate-700">Font Family</span>
+                    <span className="text-p-font text-p-size text-p-color text-p-weight">
+                        Font Family
+                    </span>
                     <div className="relative">
                         <select
                             value={style.fontFamily}
@@ -61,7 +68,9 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
 
                 {/* Size */}
                 <label className="flex flex-col gap-2">
-                    <span className="text-sm font-semibold text-slate-700">Size (rem)</span>
+                    <span className="text-p-font text-p-size text-p-color text-p-weight">
+                        Size (rem)
+                    </span>
                     <div className="relative flex items-center">
                         <input
                             className="theme-input pr-12"
@@ -76,7 +85,9 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
 
                 {/* Font Weight */}
                 <label className="flex flex-col gap-2">
-                    <span className="text-sm font-semibold text-slate-700">Font Weight</span>
+                    <span className="text-p-font text-p-size text-p-color text-p-weight">
+                        Font Weight
+                    </span>
                     <div className="relative flex items-center">
                         <input
                             className="theme-input pr-12"
@@ -93,7 +104,9 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
 
                 {/* Line Height */}
                 <label className="flex flex-col gap-2">
-                    <span className="text-sm font-semibold text-slate-700">Line Height</span>
+                    <span className="text-p-font text-p-size text-p-color text-p-weight">
+                        Line Height
+                    </span>
                     <div className="relative flex items-center">
                         <input
                             className="theme-input pr-12"
@@ -110,7 +123,9 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
 
                 {/* Color */}
                 <div className="flex flex-col gap-2">
-                    <span className="text-sm font-semibold text-slate-700">Color</span>
+                    <span className="text-p-font text-p-size text-p-color text-p-weight">
+                        Color
+                    </span>
                     <div className="flex items-center gap-3">
                         <div className="relative group cursor-pointer shrink-0">
                             <input
@@ -153,12 +168,12 @@ export const TypographyEditor: React.FC<TypographyEditorProps> = ({
 }) => {
     const [expandedBlocks, setExpandedBlocks] = React.useState<Record<string, boolean>>({
         h1: true,
-        h2: false,
-        h3: false,
-        h4: false,
-        h5: false,
-        h6: false,
-        p: false
+        h2: true,
+        h3: true,
+        h4: true,
+        h5: true,
+        h6: true,
+        p: true
     });
 
     // Default fonts available (font loading from DB handled separately if needed)

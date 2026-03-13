@@ -79,5 +79,4 @@ export interface FontManagerProps {
     fileInputRef: React.RefObject<HTMLInputElement | null>;
     onFileUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
     onFontDelete: (font: Font) => void;
-    getFontUsage: (fontName: string) => { theme: string; elements: string[] }[];
 }

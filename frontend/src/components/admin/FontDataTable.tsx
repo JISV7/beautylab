@@ -5,7 +5,6 @@ import type { Font } from '../../data/theme.types';
 interface FontDataTableProps {
     fonts: Font[];
     onDelete: (font: Font) => void;
-    getFontUsage: (fontName: string) => { theme: string; elements: string[] }[];
 }
 
 interface SortConfig {
@@ -21,7 +20,6 @@ interface PageConfig {
 export const FontDataTable: React.FC<FontDataTableProps> = ({
     fonts,
     onDelete,
-    getFontUsage,
 }) => {
     const [sortConfig, setSortConfig] = useState<SortConfig>({
         column: 'created_at',
@@ -32,6 +30,8 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
         rowsPerPage: 10,
     });
     const [searchQuery, setSearchQuery] = useState('');
+    const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+    const [fontToDelete, setFontToDelete] = useState<Font | null>(null);
 
     const handleSort = (column: SortConfig['column']) => {
         setSortConfig((prev) => ({
@@ -40,19 +40,46 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
         }));
     };
 
-    const handleDeleteFont = (font: Font) => {
-        const usage = getFontUsage(font.name);
+    const handleDeleteClick = (font: Font) => {
+        setFontToDelete(font);
+        setDeleteConfirmOpen(true);
+    };
 
-        if (usage.length > 0) {
-            const usageText = usage.map(u =>
-                `${u.theme} (${u.elements.join(', ')})`
-            ).join('; ');
-            alert(`Cannot delete '${font.name}' because it is being used in:\n${usageText}\n\nPlease change the typography settings in those themes before deleting this font.`);
-            return;
+    const handleConfirmDelete = () => {
+        if (fontToDelete) {
+            onDelete(fontToDelete);
+            setDeleteConfirmOpen(false);
+            setFontToDelete(null);
         }
+    };
 
-        if (!window.confirm(`Are you sure you want to delete the font "${font.name}"?`)) return;
-        onDelete(font);
+    const getDeleteMessage = (font: Font) => {
+        const usage = font.fontUsage || [];
+        if (usage.length > 0) {
+            const usageText = usage.map((u: any) => `${u.themeName} (${u.element})`).join(', ');
+            return (
+                <>
+                    This font is currently being used in:
+                    <br />
+                    <span className="text-amber-600 dark:text-amber-400 mt-2 block font-medium">
+                        {usageText}
+                    </span>
+                    <br />
+                    <span className="text-red-600 dark:text-red-400 mt-2 block">
+                        Please remove it from these themes before deleting.
+                    </span>
+                </>
+            );
+        }
+        return (
+            <>
+                Are you sure you want to delete <strong>"{font.name}"</strong>?
+                <br />
+                <span className="text-red-600 dark:text-red-400 mt-2 block">
+                    This action cannot be undone.
+                </span>
+            </>
+        );
     };
 
     const filteredAndSortedData = useMemo(() => {
@@ -201,7 +228,7 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
                                 </td>
                                 <td className="px-4 py-3 text-right">
                                     <button
-                                        onClick={() => handleDeleteFont(font)}
+                                        onClick={() => handleDeleteClick(font)}
                                         className="text-slate-400 hover:text-red-500 transition-colors"
                                         title={font.usageCount ? 'Cannot delete - font in use' : 'Delete font'}
                                     >
@@ -212,7 +239,7 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
                         ))}
                         {paginatedData.length === 0 && (
                             <tr>
-                                <td colSpan={5} className="px-4 py-12 text-center text-slate-500">
+                                <td colSpan={6} className="px-4 py-12 text-center text-slate-500">
                                     {searchQuery ? 'No fonts match your search.' : 'No fonts uploaded yet.'}
                                 </td>
                             </tr>
@@ -257,6 +284,43 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
                         >
                             Next
                         </button>
+                    </div>
+                </div>
+            )}
+
+            {/* Delete Confirmation Modal */}
+            {deleteConfirmOpen && fontToDelete && (
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                    <div className="w-full max-w-md relative overflow-hidden bg-[var(--palette-surface)] border border-[var(--palette-border)] rounded-2xl shadow-2xl">
+                        <div className="p-6">
+                            <div className="flex items-start gap-4 mb-4">
+                                <Trash2 className="w-6 h-6 text-red-600" />
+                                <div className="flex-1">
+                                    <h2 className="text-xl font-bold text-[var(--text-h2-color)] mb-2">
+                                        Delete Font
+                                    </h2>
+                                    {getDeleteMessage(fontToDelete)}
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-3 mt-6">
+                                <button
+                                    onClick={() => {
+                                        setDeleteConfirmOpen(false);
+                                        setFontToDelete(null);
+                                    }}
+                                    className="flex-1 px-4 py-2 rounded-lg border border-[var(--palette-border)] text-[var(--text-p-color)] hover:bg-[var(--palette-border)] transition-colors"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={handleConfirmDelete}
+                                    disabled={(fontToDelete.fontUsage || []).length > 0}
+                                    className="flex-1 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             )}

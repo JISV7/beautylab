@@ -193,7 +193,13 @@ export const UnifiedThemeConfig: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(0);
     const [sortColumn, setSortColumn] = useState<'name' | 'isActive' | 'isDefault'>('name');
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+    const [searchQuery, setSearchQuery] = useState('');
     const rowsPerPage = 10;
+
+    // Filter themes based on search query
+    const filteredThemes = themes.filter(theme =>
+        theme.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     // Load themes and fonts from API
     useEffect(() => {
@@ -453,16 +459,36 @@ export const UnifiedThemeConfig: React.FC = () => {
                             <h1 className="text-h1-size font-bold mb-1">Theme Management</h1>
                             <p className="text-p-font text-p-size text-p-color">Create, edit, and publish themes for your site.</p>
                         </div>
-                        <button
-                            onClick={handleShowCreateModal}
-                            className="theme-button theme-button-primary"
-                        >
-                            + Create Theme
-                        </button>
+                        <div className="flex items-center gap-3">
+                            {/* Search Input */}
+                            <div className="relative">
+                                <input
+                                    type="text"
+                                    placeholder="Search themes..."
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    className="theme-input pl-4 pr-10 w-64"
+                                />
+                                {searchQuery && (
+                                    <button
+                                        onClick={() => setSearchQuery('')}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                                    >
+                                        ×
+                                    </button>
+                                )}
+                            </div>
+                            <button
+                                onClick={handleShowCreateModal}
+                                className="theme-button theme-button-primary"
+                            >
+                                + Create Theme
+                            </button>
+                        </div>
                     </div>
                     <div className="flex-1 overflow-y-auto p-6">
                         <ThemeTable
-                            themes={themes}
+                            themes={filteredThemes}
                             currentPage={currentPage}
                             rowsPerPage={rowsPerPage}
                             sortColumn={sortColumn}

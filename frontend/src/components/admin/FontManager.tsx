@@ -9,20 +9,27 @@ export const FontManager: React.FC<FontManagerProps> = ({
     fileInputRef,
     onFileUpload,
     onFontDelete,
-    getFontUsage,
 }) => {
     const [isUploadExpanded, setIsUploadExpanded] = useState(true);
     const [isTableExpanded, setIsTableExpanded] = useState(true);
 
     const handleDrop = (e: React.DragEvent) => {
         e.preventDefault();
-        const file = e.dataTransfer.files[0];
-        if (file && (file.name.endsWith('.ttf') || file.name.endsWith('.otf') || file.name.endsWith('.woff') || file.name.endsWith('.woff2'))) {
-            const event = { target: { files: [file] } } as unknown as React.ChangeEvent<HTMLInputElement>;
-            onFileUpload(event);
-        } else {
-            alert('Please upload a valid font file (.ttf, .otf, .woff, .woff2)');
+        const files = Array.from(e.dataTransfer.files).filter(
+            file => file.name.endsWith('.ttf') || file.name.endsWith('.otf') || 
+                    file.name.endsWith('.woff') || file.name.endsWith('.woff2')
+        );
+        
+        if (files.length === 0) {
+            alert('Please upload valid font files (.ttf, .otf, .woff, .woff2)');
+            return;
         }
+        
+        // Create a mock event with multiple files
+        const dataTransfer = new DataTransfer();
+        files.forEach(file => dataTransfer.items.add(file));
+        const event = { target: { files: dataTransfer.files } } as unknown as React.ChangeEvent<HTMLInputElement>;
+        onFileUpload(event);
     };
 
     const handleDragOver = (e: React.DragEvent) => {
@@ -58,6 +65,7 @@ export const FontManager: React.FC<FontManagerProps> = ({
                                 Drag and drop your font files here
                             </p>
                             <p className="text-sm text-slate-500 mb-4">
+                                Upload multiple fonts at once<br />
                                 Supported formats: .ttf, .otf, .woff, .woff2
                             </p>
                             <input
@@ -66,6 +74,7 @@ export const FontManager: React.FC<FontManagerProps> = ({
                                 onChange={onFileUpload}
                                 className="hidden"
                                 accept=".ttf,.otf,.woff,.woff2"
+                                multiple
                             />
                             <button
                                 onClick={() => fileInputRef.current?.click()}
@@ -98,7 +107,6 @@ export const FontManager: React.FC<FontManagerProps> = ({
                     <FontDataTable
                         fonts={installedFonts}
                         onDelete={onFontDelete}
-                        getFontUsage={getFontUsage}
                     />
                 )}
             </div>

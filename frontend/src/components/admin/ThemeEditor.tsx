@@ -32,20 +32,22 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
     }, [fetchFonts]);
 
     const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        if (!file) return;
+        const files = event.target.files;
+        if (!files || files.length === 0) return;
 
         try {
             setUploading(true);
-            const uploadedFont = await uploadFont(file);
-            setFonts(prev => [...prev, uploadedFont]);
+            // Upload all files in parallel
+            const uploadPromises = Array.from(files).map(file => uploadFont(file));
+            const uploadedFonts = await Promise.all(uploadPromises);
+            setFonts(prev => [...prev, ...uploadedFonts]);
             // Clear the input
             if (event.target) {
                 event.target.value = '';
             }
         } catch (error: any) {
-            console.error('Failed to upload font:', error);
-            alert(error.response?.data?.detail || 'Failed to upload font');
+            console.error('Failed to upload fonts:', error);
+            alert(error.response?.data?.detail || 'Failed to upload fonts');
         } finally {
             setUploading(false);
         }
@@ -59,23 +61,6 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
             console.error('Failed to delete font:', error);
             alert(error.response?.data?.detail || 'Failed to delete font');
         }
-    };
-
-    const getFontUsage = (fontName: string) => {
-        const usages: { theme: string; elements: string[] }[] = [];
-        fonts.forEach(font => {
-            if (font.name === fontName && font.fontUsage) {
-                font.fontUsage.forEach(usage => {
-                    const existing = usages.find(u => u.theme === usage.themeName);
-                    if (existing) {
-                        existing.elements.push(usage.element);
-                    } else {
-                        usages.push({ theme: usage.themeName, elements: [usage.element] });
-                    }
-                });
-            }
-        });
-        return usages;
     };
 
     // Color state
@@ -422,7 +407,6 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                                 fileInputRef={fileInputRef}
                                 onFileUpload={handleFileUpload}
                                 onFontDelete={handleDeleteFont}
-                                getFontUsage={getFontUsage}
                             />
                             <div>
                                 <TypographyEditor

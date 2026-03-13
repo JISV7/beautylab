@@ -84,7 +84,7 @@ export interface Font {
   createdByName?: string;
   createdAt: string;
   fontUsage?: FontUsageEntry[];
-  usageCount: number;
+  usageCount?: number;
 }
 
 export interface FontUsageEntry {

@@ -226,8 +226,11 @@ class ThemeService:
                 f"Cannot delete theme '{theme.name}' - {user_count} user(s) have it as preferred theme."
             )
 
-        # Clear font usage references
-        await self._clear_font_usage_for_theme(theme_id)
+        # Note: Default themes CAN be deleted if they are not active and not in use by users
+        # The is_default flag does not prevent deletion on its own
+
+        # Clear font usage references (without committing, we'll commit with theme deletion)
+        await self._clear_font_usage_for_theme_no_commit(theme_id)
 
         await self.db.delete(theme)
         await self.db.commit()
@@ -400,21 +403,33 @@ class ThemeService:
 
         Scans all typography elements in the theme config and updates
         font usage tracking. font_id is now mandatory for all elements.
-        
+
         Note: Handles both camelCase (fontId from frontend) and snake_case (font_id) formats.
+        All operations are done in a single transaction.
         """
         config = theme.config
+        theme_id_str = str(theme.id)
 
-        # Clear old references first
-        await self._clear_font_usage_for_theme(theme.id)
+        print(f"[FontUsage] Updating font usage for theme '{theme.name}' ({theme.id})")
+
+        # First, clear old references (without committing)
+        await self._clear_font_usage_for_theme_no_commit(theme.id)
+
+        # Track fonts we're adding
+        fonts_added = set()
 
         # Scan all palettes for font usage
         for palette_name in ["light", "dark", "accessibility"]:
             if palette_name not in config:
+                print(f"[FontUsage]   Palette '{palette_name}' not found in config")
                 continue
 
             palette = config[palette_name]
             typography = palette.get("typography", {})
+
+            if not typography:
+                print(f"[FontUsage]   No typography in palette '{palette_name}'")
+                continue
 
             for element_name, element_config in typography.items():
                 # Support both camelCase (from frontend) and snake_case formats
@@ -423,19 +438,34 @@ class ThemeService:
 
                 # font_id is now mandatory - skip if missing
                 if not font_id:
-                    # Log warning but continue (migration should have set all font_ids)
-                    print(f"  Warning: Typography element {element_name} in {theme.name} missing font_id")
+                    print(f"[FontUsage]   Warning: Element {element_name} in {palette_name} missing font_id")
                     continue
 
-                await self._add_font_usage(
-                    UUID(font_id) if isinstance(font_id, str) else font_id,
+                # Convert to UUID if string
+                if isinstance(font_id, str):
+                    try:
+                        font_uuid = UUID(font_id)
+                    except ValueError:
+                        print(f"[FontUsage]   Warning: Invalid font_id '{font_id}' for element {element_name}")
+                        continue
+                else:
+                    font_uuid = font_id
+
+                # Add the font usage entry (without committing)
+                await self._add_font_usage_no_commit(
+                    font_uuid,
                     theme.id,
                     theme.name,
                     palette_name,
                     element_name
                 )
+                fonts_added.add(str(font_uuid))
 
-    async def _add_font_usage(
+        # Commit all changes at once
+        await self.db.commit()
+        print(f"[FontUsage]   Added {len(fonts_added)} unique font(s) for theme '{theme.name}'")
+
+    async def _add_font_usage_no_commit(
         self,
         font_id: UUID,
         theme_id: UUID,
@@ -443,30 +473,49 @@ class ThemeService:
         palette: str,
         element: str
     ) -> None:
-        """Add a font usage entry."""
+        """Add a font usage entry without committing.
+
+        Must be called within a transaction. Caller is responsible for committing.
+        """
         result = await self.db.execute(select(Font).where(Font.id == font_id))
         font = result.scalar_one_or_none()
 
-        if font:
-            if not font.font_usage:
-                font.font_usage = []
+        if not font:
+            print(f"[FontUsage]     Warning: Font {font_id} not found in database")
+            return
 
+        if not font.font_usage:
+            font.font_usage = []
+
+        # Check if this entry already exists to avoid duplicates
+        entry_exists = any(
+            u.get("theme_id") == str(theme_id) and
+            u.get("palette") == palette and
+            u.get("element") == element
+            for u in font.font_usage
+        )
+
+        if not entry_exists:
             font.font_usage.append({
                 "theme_id": str(theme_id),
                 "theme_name": theme_name,
                 "palette": palette,
                 "element": element
             })
+            print(f"[FontUsage]     Added usage: {font.name} -> {theme_name}/{palette}/{element}")
+        else:
+            print(f"[FontUsage]     Entry exists: {font.name} -> {theme_name}/{palette}/{element}")
 
-            await self.db.commit()
+    async def _clear_font_usage_for_theme_no_commit(self, theme_id: UUID) -> None:
+        """Remove all font usage references for a theme without committing.
 
-    async def _clear_font_usage_for_theme(self, theme_id: UUID) -> None:
-        """Remove all font usage references for a theme."""
+        Must be called within a transaction. Caller is responsible for committing.
+        """
         result = await self.db.execute(select(Font).where(Font.font_usage.isnot(None)))
         fonts = result.scalars().all()
 
         theme_id_str = str(theme_id)
-        modified = False
+        removed_count = 0
 
         for font in fonts:
             original_count = len(font.font_usage)
@@ -474,11 +523,13 @@ class ThemeService:
                 usage for usage in font.font_usage
                 if usage.get("theme_id") != theme_id_str
             ]
-            if len(font.font_usage) != original_count:
-                modified = True
+            removed = original_count - len(font.font_usage)
+            if removed > 0:
+                removed_count += removed
+                print(f"[FontUsage]     Removed {removed} usage(s) from font '{font.name}'")
 
-        if modified:
-            await self.db.commit()
+        if removed_count > 0:
+            print(f"[FontUsage]     Total removed {removed_count} old usage(s) for theme {theme_id_str}")
 
     async def _get_all_fonts(self) -> Dict[UUID, Font]:
         """Get all fonts as a dict."""

@@ -9,6 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
 from app.models.font import Font
+from app.models.theme import Theme
 from app.models.user import User
 from app.core.dependencies import get_current_user, RequireAdmin
 from app.schemas.font import FontResponse, FontWithUsage
@@ -76,16 +77,20 @@ async def list_fonts(db: AsyncSession = Depends(get_db)):
             user_result = await db.execute(select(User.full_name).where(User.id == font.created_by))
             uploader_name = user_result.scalar_one_or_none()
 
+        # Ensure font_usage is a list and calculate usage count
+        font_usage = font.font_usage if font.font_usage else []
+        usage_count = len(font_usage)
+
         font_dict = {
-            "id": font.id,
+            "id": str(font.id),
             "name": font.name,
             "filename": font.filename,
             "url": font.url,
-            "created_by": font.created_by,
+            "created_by": str(font.created_by) if font.created_by else None,
             "created_by_name": uploader_name,
             "created_at": font.created_at.isoformat() if font.created_at else None,
-            "font_usage": font.font_usage or [],
-            "usage_count": len(font.font_usage) if font.font_usage else 0
+            "font_usage": font_usage,
+            "usage_count": usage_count
         }
         font_list.append(font_dict)
 
@@ -106,9 +111,10 @@ async def get_font_with_usage(
 
     # Build usage list with theme names
     usages = []
-    if font.font_usage:
+    font_usage = font.font_usage if font.font_usage else []
+    if font_usage:
         theme_service = ThemeService(db)
-        for usage in font.font_usage:
+        for usage in font_usage:
             usages.append({
                 "theme_id": usage["theme_id"],
                 "theme_name": usage["theme_name"],
@@ -117,14 +123,14 @@ async def get_font_with_usage(
             })
 
     return {
-        "id": font.id,
+        "id": str(font.id),
         "name": font.name,
         "filename": font.filename,
         "url": font.url,
-        "created_by": font.created_by,
-        "created_at": font.created_at,
-        "font_usage": font.font_usage or [],
-        "usage_count": len(font.font_usage) if font.font_usage else 0,
+        "created_by": str(font.created_by) if font.created_by else None,
+        "created_at": font.created_at.isoformat() if font.created_at else None,
+        "font_usage": font_usage,
+        "usage_count": len(font_usage),
         "usages": usages
     }
 
@@ -228,3 +234,54 @@ async def delete_font(
 
     await db.delete(font)
     await db.commit()
+
+
+@router.post("/rebuild-usage", status_code=status.HTTP_200_OK)
+async def rebuild_font_usage(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(RequireAdmin)
+):
+    """Rebuild font usage tracking from existing themes.
+
+    This endpoint scans all themes and rebuilds the font_usage tracking
+    for each font. Use this to fix inconsistencies between theme configs
+    and font usage counts.
+
+    Returns the number of fonts updated.
+    """
+    theme_service = ThemeService(db)
+
+    # Get all themes
+    result = await db.execute(select(Theme))
+    themes = result.scalars().all()
+
+    # Clear all font usage first
+    clear_result = await db.execute(select(Font).where(Font.font_usage.isnot(None)))
+    all_fonts = clear_result.scalars().all()
+    for font in all_fonts:
+        font.font_usage = []
+
+    # Rebuild usage from each theme
+    updated_fonts = set()
+    for theme in themes:
+        print(f"[RebuildUsage] Processing theme: {theme.name} ({theme.id})")
+        await theme_service._update_font_usage_for_theme(theme)
+
+        # Track which fonts were updated
+        if theme.config:
+            for palette_name in ["light", "dark", "accessibility"]:
+                if palette_name in theme.config:
+                    palette = theme.config[palette_name]
+                    typography = palette.get("typography", {})
+                    for element_name, element_config in typography.items():
+                        font_id = element_config.get("font_id") or element_config.get("fontId")
+                        if font_id:
+                            updated_fonts.add(str(font_id))
+
+    await db.commit()
+
+    return {
+        "message": f"Font usage rebuilt successfully",
+        "themes_processed": len(themes),
+        "fonts_updated": len(updated_fonts)
+    }

@@ -62,7 +62,7 @@ const toThemePalette = (
     colors,
     typography: {
         h1: {
-            fontId: currentPalette.typography.h1?.fontId || styles.h1.fontId || '',
+            fontId: styles.h1.fontId || currentPalette.typography.h1?.fontId || '',
             fontName: styles.h1.fontFamily,
             fontSize: String(styles.h1.size),
             fontWeight: styles.h1.fontWeight ?? currentPalette.typography.h1?.fontWeight ?? 400,
@@ -70,7 +70,7 @@ const toThemePalette = (
             color: styles.h1.color
         },
         h2: {
-            fontId: currentPalette.typography.h2?.fontId || styles.h2.fontId || '',
+            fontId: styles.h2.fontId || currentPalette.typography.h2?.fontId || '',
             fontName: styles.h2.fontFamily,
             fontSize: String(styles.h2.size),
             fontWeight: styles.h2.fontWeight ?? currentPalette.typography.h2?.fontWeight ?? 400,
@@ -78,7 +78,7 @@ const toThemePalette = (
             color: styles.h2.color
         },
         h3: {
-            fontId: currentPalette.typography.h3?.fontId || styles.h3.fontId || '',
+            fontId: styles.h3.fontId || currentPalette.typography.h3?.fontId || '',
             fontName: styles.h3.fontFamily,
             fontSize: String(styles.h3.size),
             fontWeight: styles.h3.fontWeight ?? currentPalette.typography.h3?.fontWeight ?? 400,
@@ -86,7 +86,7 @@ const toThemePalette = (
             color: styles.h3.color
         },
         h4: {
-            fontId: currentPalette.typography.h4?.fontId || styles.h4.fontId || '',
+            fontId: styles.h4.fontId || currentPalette.typography.h4?.fontId || '',
             fontName: styles.h4.fontFamily,
             fontSize: String(styles.h4.size),
             fontWeight: styles.h4.fontWeight ?? currentPalette.typography.h4?.fontWeight ?? 400,
@@ -94,7 +94,7 @@ const toThemePalette = (
             color: styles.h4.color
         },
         h5: {
-            fontId: currentPalette.typography.h5?.fontId || styles.h5.fontId || '',
+            fontId: styles.h5.fontId || currentPalette.typography.h5?.fontId || '',
             fontName: styles.h5.fontFamily,
             fontSize: String(styles.h5.size),
             fontWeight: styles.h5.fontWeight ?? currentPalette.typography.h5?.fontWeight ?? 400,
@@ -102,7 +102,7 @@ const toThemePalette = (
             color: styles.h5.color
         },
         h6: {
-            fontId: currentPalette.typography.h6?.fontId || styles.h6.fontId || '',
+            fontId: styles.h6.fontId || currentPalette.typography.h6?.fontId || '',
             fontName: styles.h6.fontFamily,
             fontSize: String(styles.h6.size),
             fontWeight: styles.h6.fontWeight ?? currentPalette.typography.h6?.fontWeight ?? 400,
@@ -110,7 +110,7 @@ const toThemePalette = (
             color: styles.h6.color
         },
         title: {
-            fontId: currentPalette.typography.title?.fontId || styles.h1.fontId || '',
+            fontId: styles.h1.fontId || currentPalette.typography.title?.fontId || '',
             fontName: styles.h1.fontFamily,
             fontSize: String(styles.h1.size),
             fontWeight: styles.h1.fontWeight ?? currentPalette.typography.title?.fontWeight ?? 700,
@@ -118,7 +118,7 @@ const toThemePalette = (
             color: styles.h1.color
         },
         subtitle: {
-            fontId: currentPalette.typography.subtitle?.fontId || styles.h2.fontId || '',
+            fontId: styles.h2.fontId || currentPalette.typography.subtitle?.fontId || '',
             fontName: styles.h2.fontFamily,
             fontSize: String(styles.h2.size),
             fontWeight: styles.h2.fontWeight ?? currentPalette.typography.subtitle?.fontWeight ?? 600,
@@ -126,7 +126,7 @@ const toThemePalette = (
             color: styles.h2.color
         },
         paragraph: {
-            fontId: currentPalette.typography.paragraph?.fontId || styles.p.fontId || '',
+            fontId: styles.p.fontId || currentPalette.typography.paragraph?.fontId || '',
             fontName: styles.p.fontFamily,
             fontSize: String(styles.p.size),
             fontWeight: styles.p.fontWeight ?? currentPalette.typography.paragraph?.fontWeight ?? 400,
@@ -134,7 +134,7 @@ const toThemePalette = (
             color: styles.p.color
         },
         decorator: {
-            fontId: currentPalette.typography.decorator?.fontId || styles.p.fontId || '',
+            fontId: styles.p.fontId || currentPalette.typography.decorator?.fontId || '',
             fontName: styles.p.fontFamily,
             fontSize: String(styles.p.size),
             fontWeight: styles.p.fontWeight ?? currentPalette.typography.decorator?.fontWeight ?? 500,
@@ -403,17 +403,8 @@ export const UnifiedThemeConfig: React.FC = () => {
         const theme = themes.find(t => t.id === themeId);
         if (!theme) return;
 
-        // Cannot delete default theme
-        if (theme.isDefault) {
-            setMessageModal({
-                isOpen: true,
-                type: 'error',
-                message: `Cannot delete "${theme.name}" because it is the default theme.`
-            });
-            return;
-        }
-
         // Cannot delete active theme - must deactivate first
+        // This applies to ALL themes including default - there must always be at least one active theme
         if (theme.isActive) {
             setMessageModal({
                 isOpen: true,

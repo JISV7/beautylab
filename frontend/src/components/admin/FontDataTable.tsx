@@ -55,7 +55,8 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
 
     const getDeleteMessage = (font: Font) => {
         const usage = font.fontUsage || [];
-        if (usage.length > 0) {
+        const usageCount = font.usageCount || 0;
+        if (usageCount > 0) {
             const usageText = usage.map((u: any) => `${u.themeName} (${u.element})`).join(', ');
             return (
                 <>
@@ -230,9 +231,9 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
                                     <button
                                         onClick={() => handleDeleteClick(font)}
                                         className="text-slate-400 hover:text-red-500 transition-colors"
-                                        title={font.usageCount ? 'Cannot delete - font in use' : 'Delete font'}
+                                        title={(font.usageCount || 0) > 0 ? 'Cannot delete - font in use' : 'Delete font'}
                                     >
-                                        <Trash2 className={`w-4 h-4 ${font.usageCount ? 'opacity-50 cursor-not-allowed' : ''}`} />
+                                        <Trash2 className={`w-4 h-4 ${(font.usageCount || 0) > 0 ? 'opacity-50 cursor-not-allowed' : ''}`} />
                                     </button>
                                 </td>
                             </tr>
@@ -314,7 +315,7 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
                                 </button>
                                 <button
                                     onClick={handleConfirmDelete}
-                                    disabled={(fontToDelete.fontUsage || []).length > 0}
+                                    disabled={(fontToDelete.usageCount || 0) > 0}
                                     className="flex-1 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     Delete

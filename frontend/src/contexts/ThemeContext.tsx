@@ -360,10 +360,13 @@ const useThemeActions = (dispatch: React.Dispatch<ThemeAction>) => {
             const response = await api.post(`/themes/activate/${themeId}`);
             const activated = response.data;
             await fetchAllThemes();
-            
+
             // Cache the newly activated theme for instant load on next visit
             cacheTheme(activated);
-            
+
+            // Update the active theme in state - this will trigger the useEffect to apply the palette
+            dispatch({ type: 'SET_ACTIVE_THEME', payload: activated });
+
             return activated;
         } catch (err: any) {
             console.error('Failed to activate theme:', err);

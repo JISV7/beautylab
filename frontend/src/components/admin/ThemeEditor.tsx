@@ -40,7 +40,11 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
             // Upload all files in parallel
             const uploadPromises = Array.from(files).map(file => uploadFont(file));
             const uploadedFonts = await Promise.all(uploadPromises);
-            setFonts(prev => [...prev, ...uploadedFonts]);
+            
+            // Refresh fonts from context to inject @font-face rules
+            const allFonts = await fetchFonts();
+            setFonts(allFonts);
+            
             // Clear the input
             if (event.target) {
                 event.target.value = '';
@@ -56,7 +60,9 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
     const handleDeleteFont = async (font: Font) => {
         try {
             await deleteFont(font.id);
-            setFonts(prev => prev.filter(f => f.id !== font.id));
+            // Refresh fonts from context to update the list
+            const allFonts = await fetchFonts();
+            setFonts(allFonts);
         } catch (error: any) {
             console.error('Failed to delete font:', error);
             alert(error.response?.data?.detail || 'Failed to delete font');

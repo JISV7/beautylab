@@ -7,6 +7,7 @@ import { ThemeEditor } from './ThemeEditor';
 import { ThemePreview } from './ThemePreview';
 import { CreateThemeModal } from './CreateThemeModal';
 import { MessageModal } from './MessageModal';
+import { ConfirmModal } from './ConfirmModal';
 
 // Helper to create a complete default theme config with all required fields
 function createDefaultThemeConfig(defaultFontId: string, defaultFontName: string = 'Roboto'): ThemeConfig {
@@ -165,6 +166,29 @@ export const UnifiedThemeConfig: React.FC = () => {
         message: string;
     }>({ isOpen: false, type: 'success', message: '' });
 
+    // Confirm modal state (for delete, duplicate, publish)
+    const [confirmModal, setConfirmModal] = useState<{
+        isOpen: boolean;
+        type: 'danger' | 'primary' | 'success';
+        title: string;
+        message: string | React.ReactNode;
+        confirmText: string;
+        action: ((value?: string) => void) | null;
+        showInput: boolean;
+        inputValue: string;
+        inputPlaceholder: string;
+    }>({
+        isOpen: false,
+        type: 'primary',
+        title: '',
+        message: '',
+        confirmText: 'Confirm',
+        action: null,
+        showInput: false,
+        inputValue: '',
+        inputPlaceholder: '',
+    });
+
     // DataTables state
     const [currentPage, setCurrentPage] = useState(0);
     const [sortColumn, setSortColumn] = useState<'name' | 'isActive' | 'isDefault'>('name');
@@ -240,13 +264,27 @@ export const UnifiedThemeConfig: React.FC = () => {
         setIsCreateModalOpen(true);
     };
 
-    const handleDuplicateTheme = async (themeId: string) => {
+    const handleDuplicateTheme = (themeId: string) => {
         const sourceTheme = themes.find(t => t.id === themeId);
         if (!sourceTheme) return;
 
-        const newName = prompt("Enter a name for the duplicated theme:", `${sourceTheme.name} Copy`);
-        if (!newName) return;
+        setConfirmModal({
+            isOpen: true,
+            type: 'primary',
+            title: 'Duplicate Theme',
+            message: 'Enter a name for the duplicated theme:',
+            confirmText: 'Duplicate',
+            action: (newName?: string) => {
+                duplicateThemeAction(sourceTheme, newName);
+            },
+            showInput: true,
+            inputValue: `${sourceTheme.name} Copy`,
+            inputPlaceholder: 'Theme name',
+        });
+    };
 
+    const duplicateThemeAction = async (sourceTheme: Theme, newName: string | undefined) => {
+        if (!newName) return;
         try {
             const newThemeData: Partial<Theme> = {
                 name: newName,
@@ -272,72 +310,6 @@ export const UnifiedThemeConfig: React.FC = () => {
                 isOpen: true,
                 type: 'error',
                 message: error.response?.data?.detail || 'Failed to duplicate theme.'
-            });
-        }
-    };
-
-    const handleDeleteTheme = async (themeId: string) => {
-        const theme = themes.find(t => t.id === themeId);
-        if (!theme) return;
-
-        if (theme.isDefault) {
-            setMessageModal({
-                isOpen: true,
-                type: 'error',
-                message: `Cannot delete "${theme.name}" because it is the default theme.`
-            });
-            return;
-        }
-
-        if (!window.confirm(`Are you sure you want to delete "${theme.name}"?`)) return;
-
-        try {
-            await deleteTheme(themeId);
-            setThemes(prev => prev.filter(t => t.id !== themeId));
-            if (activeThemeId === themeId) {
-                setActiveThemeId(null);
-            }
-            setViewMode('list');
-            setMessageModal({
-                isOpen: true,
-                type: 'success',
-                message: `Theme "${theme.name}" deleted successfully!`
-            });
-        } catch (error: any) {
-            console.error('Failed to delete theme:', error);
-            setMessageModal({
-                isOpen: true,
-                type: 'error',
-                message: error.response?.data?.detail || 'Failed to delete theme.'
-            });
-        }
-    };
-
-    const handlePublishTheme = async () => {
-        if (!activeTheme) return;
-
-        if (!window.confirm(`Activate "${activeTheme.name}"? This will make it the active theme for all users.`)) {
-            return;
-        }
-
-        try {
-            await activateTheme(activeTheme.id);
-            // Update local state
-            setThemes(prev => prev.map(t => ({
-                ...t,
-                isActive: t.id === activeTheme.id
-            })));
-            setMessageModal({
-                isOpen: true,
-                type: 'success',
-                message: `Theme "${activeTheme.name}" has been activated!`
-            });
-        } catch (error: any) {
-            console.error('Failed to activate theme:', error);
-            setMessageModal({
-                isOpen: true,
-                type: 'error',
-                message: error.response?.data?.detail || 'Failed to activate theme.'
             });
         }
     };
@@ -370,6 +342,96 @@ export const UnifiedThemeConfig: React.FC = () => {
                 message: error.response?.data?.detail || 'Failed to save theme.'
             });
         }
+    };
+
+    const handleDeleteTheme = (themeId: string) => {
+        const theme = themes.find(t => t.id === themeId);
+        if (!theme) return;
+
+        if (theme.isDefault) {
+            setMessageModal({
+                isOpen: true,
+                type: 'error',
+                message: `Cannot delete "${theme.name}" because it is the default theme.`
+            });
+            return;
+        }
+
+        setConfirmModal({
+            isOpen: true,
+            type: 'danger',
+            title: 'Delete Theme',
+            message: (
+                <>
+                    Are you sure you want to delete <strong>"{theme.name}"</strong>?
+                    <br />
+                    <span className="text-red-600 dark:text-red-400 mt-2 block">
+                        This action cannot be undone.
+                    </span>
+                </>
+            ),
+            confirmText: 'Delete',
+            action: () => {
+                deleteThemeAction(themeId, theme.name);
+            },
+            showInput: false,
+            inputValue: '',
+            inputPlaceholder: '',
+        });
+    };
+
+    const deleteThemeAction = (themeId: string, themeName: string) => {
+        deleteTheme(themeId);
+        setThemes(prev => prev.filter(t => t.id !== themeId));
+        if (activeThemeId === themeId) {
+            setActiveThemeId(null);
+        }
+        setViewMode('list');
+        setMessageModal({
+            isOpen: true,
+            type: 'success',
+            message: `Theme "${themeName}" deleted successfully!`
+        });
+    };
+
+    const handlePublishTheme = () => {
+        if (!activeTheme) return;
+
+        setConfirmModal({
+            isOpen: true,
+            type: 'success',
+            title: 'Activate Theme',
+            message: (
+                <>
+                    Activate <strong>"{activeTheme.name}"</strong> as the active theme?
+                    <br />
+                    <span className="text-[var(--text-p-color)] mt-2 block">
+                        This will make it the active theme for all users.
+                    </span>
+                </>
+            ),
+            confirmText: 'Activate',
+            action: () => {
+                publishThemeAction();
+            },
+            showInput: false,
+            inputValue: '',
+            inputPlaceholder: '',
+        });
+    };
+
+    const publishThemeAction = () => {
+        if (!activeTheme) return;
+        activateTheme(activeTheme.id);
+        setThemes(prev => prev.map(t => ({
+            ...t,
+            isActive: t.id === activeTheme.id
+        })));
+        setMessageModal({
+            isOpen: true,
+            type: 'success',
+            message: `Theme "${activeTheme.name}" has been activated!`
+        });
     };
 
     const handleSort = (column: 'name' | 'isActive' | 'isDefault') => {
@@ -433,6 +495,23 @@ export const UnifiedThemeConfig: React.FC = () => {
                     type={messageModal.type}
                     message={messageModal.message}
                 />
+                <ConfirmModal
+                    isOpen={confirmModal.isOpen}
+                    onClose={() => setConfirmModal({ ...confirmModal, isOpen: false })}
+                    onConfirm={() => {
+                        if (confirmModal.action) {
+                            confirmModal.action(confirmModal.showInput ? confirmModal.inputValue : undefined);
+                        }
+                    }}
+                    title={confirmModal.title}
+                    message={confirmModal.message}
+                    confirmText={confirmModal.confirmText}
+                    type={confirmModal.type}
+                    showInput={confirmModal.showInput}
+                    inputValue={confirmModal.inputValue}
+                    onInputChange={(value) => setConfirmModal({ ...confirmModal, inputValue: value })}
+                    inputPlaceholder={confirmModal.inputPlaceholder}
+                />
             </>
         );
     }
@@ -458,6 +537,23 @@ export const UnifiedThemeConfig: React.FC = () => {
                     type={messageModal.type}
                     message={messageModal.message}
                 />
+                <ConfirmModal
+                    isOpen={confirmModal.isOpen}
+                    onClose={() => setConfirmModal({ ...confirmModal, isOpen: false })}
+                    onConfirm={() => {
+                        if (confirmModal.action) {
+                            confirmModal.action(confirmModal.showInput ? confirmModal.inputValue : undefined);
+                        }
+                    }}
+                    title={confirmModal.title}
+                    message={confirmModal.message}
+                    confirmText={confirmModal.confirmText}
+                    type={confirmModal.type}
+                    showInput={confirmModal.showInput}
+                    inputValue={confirmModal.inputValue}
+                    onInputChange={(value) => setConfirmModal({ ...confirmModal, inputValue: value })}
+                    inputPlaceholder={confirmModal.inputPlaceholder}
+                />
             </>
         );
     }
@@ -482,6 +578,23 @@ export const UnifiedThemeConfig: React.FC = () => {
                     onClose={() => setMessageModal({ ...messageModal, isOpen: false })}
                     type={messageModal.type}
                     message={messageModal.message}
+                />
+                <ConfirmModal
+                    isOpen={confirmModal.isOpen}
+                    onClose={() => setConfirmModal({ ...confirmModal, isOpen: false })}
+                    onConfirm={() => {
+                        if (confirmModal.action) {
+                            confirmModal.action(confirmModal.showInput ? confirmModal.inputValue : undefined);
+                        }
+                    }}
+                    title={confirmModal.title}
+                    message={confirmModal.message}
+                    confirmText={confirmModal.confirmText}
+                    type={confirmModal.type}
+                    showInput={confirmModal.showInput}
+                    inputValue={confirmModal.inputValue}
+                    onInputChange={(value) => setConfirmModal({ ...confirmModal, inputValue: value })}
+                    inputPlaceholder={confirmModal.inputPlaceholder}
                 />
             </>
         );

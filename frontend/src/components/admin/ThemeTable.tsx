@@ -173,8 +173,7 @@ export const ThemeTable: React.FC<ThemeTableProps> = ({
                                     <button
                                         onClick={() => onDelete(row.id)}
                                         className="p-1.5 sm:p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-                                        title={row.isDefault ? "Cannot delete default theme" : "Delete"}
-                                        disabled={row.isDefault}
+                                        title="Delete"
                                     >
                                         <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                     </button>

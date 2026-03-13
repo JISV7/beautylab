@@ -4,85 +4,26 @@ import type { Theme, ThemePalette, Font } from '../data/theme.types';
 
 const API_URL = 'http://localhost:8000';
 
-// Default fallback theme
-const DEFAULT_FALLBACK_THEME: Theme = {
-    id: 'default-fallback',
-    name: 'Default Fallback',
-    description: 'Fallback theme for initial load',
-    type: 'preset',
-    isActive: true,
-    isDefault: true,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    config: {
-        light: {
-            colors: {
-                primary: '#2f27ce',
-                secondary: '#dedcff',
-                accent: '#433bff',
-                background: '#fbfbfe',
-                surface: '#eeeef0',
-                border: '#dddddd'
-            },
-            typography: {
-                h1: { fontId: '', fontName: 'Roboto', fontSize: '2.5', fontWeight: 400, color: '#2f27ce' },
-                h2: { fontId: '', fontName: 'Roboto', fontSize: '2.0', fontWeight: 400, color: '#2f27ce' },
-                h3: { fontId: '', fontName: 'Roboto', fontSize: '1.75', fontWeight: 400, color: '#433bff' },
-                h4: { fontId: '', fontName: 'Roboto', fontSize: '1.5', fontWeight: 400, color: '#1a1675' },
-                h5: { fontId: '', fontName: 'Roboto', fontSize: '1.25', fontWeight: 400, color: '#1a1675' },
-                h6: { fontId: '', fontName: 'Roboto', fontSize: '1.0', fontWeight: 400, color: '#1a1675' },
-                title: { fontId: '', fontName: 'Roboto', fontSize: '1.5', fontWeight: 700, color: '#1a1675' },
-                subtitle: { fontId: '', fontName: 'Roboto', fontSize: '1.25', fontWeight: 600, color: '#1a1675' },
-                paragraph: { fontId: '', fontName: 'Roboto', fontSize: '1.0', fontWeight: 400, color: '#1a1a2e' },
-                decorator: { fontId: '', fontName: 'Roboto', fontSize: '1.0', fontWeight: 500, color: '#ffffff' }
-            }
-        },
-        dark: {
-            colors: {
-                primary: '#2f27ce',
-                secondary: '#dedcff',
-                accent: '#433bff',
-                background: '#fbfbfe',
-                surface: '#eeeef0',
-                border: '#dddddd'
-            },
-            typography: {
-                h1: { fontId: '', fontName: 'Roboto', fontSize: '2.5', fontWeight: 400, color: '#2f27ce' },
-                h2: { fontId: '', fontName: 'Roboto', fontSize: '2.0', fontWeight: 400, color: '#2f27ce' },
-                h3: { fontId: '', fontName: 'Roboto', fontSize: '1.75', fontWeight: 400, color: '#433bff' },
-                h4: { fontId: '', fontName: 'Roboto', fontSize: '1.5', fontWeight: 400, color: '#1a1675' },
-                h5: { fontId: '', fontName: 'Roboto', fontSize: '1.25', fontWeight: 400, color: '#1a1675' },
-                h6: { fontId: '', fontName: 'Roboto', fontSize: '1.0', fontWeight: 400, color: '#1a1675' },
-                title: { fontId: '', fontName: 'Roboto', fontSize: '1.5', fontWeight: 700, color: '#1a1675' },
-                subtitle: { fontId: '', fontName: 'Roboto', fontSize: '1.25', fontWeight: 600, color: '#1a1675' },
-                paragraph: { fontId: '', fontName: 'Roboto', fontSize: '1.0', fontWeight: 400, color: '#1a1a2e' },
-                decorator: { fontId: '', fontName: 'Roboto', fontSize: '1.0', fontWeight: 500, color: '#ffffff' }
-            }
-        },
-        accessibility: {
-            colors: {
-                primary: '#2f27ce',
-                secondary: '#dedcff',
-                accent: '#433bff',
-                background: '#fbfbfe',
-                surface: '#eeeef0',
-                border: '#dddddd'
-            },
-            typography: {
-                h1: { fontId: '', fontName: 'Roboto', fontSize: '2.5', fontWeight: 400, color: '#2f27ce' },
-                h2: { fontId: '', fontName: 'Roboto', fontSize: '2.0', fontWeight: 400, color: '#2f27ce' },
-                h3: { fontId: '', fontName: 'Roboto', fontSize: '1.75', fontWeight: 400, color: '#433bff' },
-                h4: { fontId: '', fontName: 'Roboto', fontSize: '1.5', fontWeight: 400, color: '#1a1675' },
-                h5: { fontId: '', fontName: 'Roboto', fontSize: '1.25', fontWeight: 400, color: '#1a1675' },
-                h6: { fontId: '', fontName: 'Roboto', fontSize: '1.0', fontWeight: 400, color: '#1a1675' },
-                title: { fontId: '', fontName: 'Roboto', fontSize: '1.5', fontWeight: 700, color: '#1a1675' },
-                subtitle: { fontId: '', fontName: 'Roboto', fontSize: '1.25', fontWeight: 600, color: '#1a1675' },
-                paragraph: { fontId: '', fontName: 'Roboto', fontSize: '1.0', fontWeight: 400, color: '#1a1a2e' },
-                decorator: { fontId: '', fontName: 'Roboto', fontSize: '1.0', fontWeight: 500, color: '#ffffff' }
-            }
-        }
+// Helper functions for theme caching
+const getCachedTheme = (): Theme | null => {
+    try {
+        const cached = localStorage.getItem('cachedActiveTheme');
+        return cached ? JSON.parse(cached) : null;
+    } catch {
+        return null;
     }
 };
+
+const cacheTheme = (theme: Theme) => {
+    try {
+        localStorage.setItem('cachedActiveTheme', JSON.stringify(theme));
+    } catch {
+        // Ignore localStorage errors
+    }
+};
+
+// Get cached theme for initial state
+const cachedTheme = getCachedTheme();
 
 // Theme state for useReducer
 interface ThemeState {
@@ -107,10 +48,10 @@ type ThemeAction =
 
 // Initial state
 const initialState: ThemeState = {
-    activeTheme: DEFAULT_FALLBACK_THEME,
-    currentPalette: DEFAULT_FALLBACK_THEME.config.light,
-    currentMode: 'light',
-    availableThemes: [DEFAULT_FALLBACK_THEME],
+    activeTheme: cachedTheme,
+    currentPalette: cachedTheme?.config.light || null,
+    currentMode: cachedTheme ? ('light' as const) : 'light',
+    availableThemes: cachedTheme ? [cachedTheme] : [],
     isLoading: false,
     error: null,
 };
@@ -315,35 +256,36 @@ const useThemeActions = (dispatch: React.Dispatch<ThemeAction>) => {
             if (themes.length === 0) {
                 try {
                     const defaultResponse = await api.get('/themes/default');
-                    themes.push(defaultResponse.data);
+                    themes = [defaultResponse.data];
                 } catch {
-                    console.log('No theme found in database, using fallback theme');
-                    themes = [DEFAULT_FALLBACK_THEME];
+                    console.log('No theme found in database');
+                    themes = [];
                 }
             }
 
-            const theme = themes[0];
-            dispatch({ type: 'SET_ACTIVE_THEME', payload: theme });
-            dispatch({ type: 'SET_AVAILABLE_THEMES', payload: themes });
+            if (themes.length > 0) {
+                const theme = themes[0];
+                
+                // Cache the theme for instant load on next visit
+                cacheTheme(theme);
+                
+                dispatch({ type: 'SET_ACTIVE_THEME', payload: theme });
+                dispatch({ type: 'SET_AVAILABLE_THEMES', payload: themes });
 
-            let mode: 'light' | 'dark' | 'accessibility' = 'light';
-            const savedMode = localStorage.getItem('paletteMode') as 'light' | 'dark' | 'accessibility' | null;
-            if (savedMode && ['light', 'dark', 'accessibility'].includes(savedMode)) {
-                mode = savedMode;
-            } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                mode = 'dark';
+                let mode: 'light' | 'dark' | 'accessibility' = 'light';
+                const savedMode = localStorage.getItem('paletteMode') as 'light' | 'dark' | 'accessibility' | null;
+                if (savedMode && ['light', 'dark', 'accessibility'].includes(savedMode)) {
+                    mode = savedMode;
+                } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    mode = 'dark';
+                }
+
+                dispatch({ type: 'SET_PALETTE_MODE', payload: mode });
+                applyPalette(theme.config[mode], mode);
             }
-
-            dispatch({ type: 'SET_PALETTE_MODE', payload: mode });
-            applyPalette(theme.config[mode], mode);
         } catch (err: any) {
             console.error('Failed to load theme:', err);
             dispatch({ type: 'SET_ERROR', payload: err.response?.data?.detail || err.message || 'Failed to load theme' });
-
-            const theme = DEFAULT_FALLBACK_THEME;
-            const mode: 'light' | 'dark' | 'accessibility' = 'light';
-            dispatch({ type: 'INITIALIZE', payload: { theme, mode } });
-            applyPalette(theme.config[mode], mode);
         } finally {
             dispatch({ type: 'SET_LOADING', payload: false });
         }
@@ -369,7 +311,12 @@ const useThemeActions = (dispatch: React.Dispatch<ThemeAction>) => {
     const createTheme = useCallback(async (themeData: Partial<Theme>): Promise<Theme> => {
         try {
             const response = await api.post('/themes/', themeData);
-            return response.data;
+            const created = response.data;
+            
+            // Cache the newly created theme
+            cacheTheme(created);
+            
+            return created;
         } catch (err: any) {
             console.error('Failed to create theme:', err);
             throw err;
@@ -379,8 +326,13 @@ const useThemeActions = (dispatch: React.Dispatch<ThemeAction>) => {
     const updateTheme = useCallback(async (themeId: string, themeData: Partial<Theme>): Promise<Theme> => {
         try {
             const response = await api.patch(`/themes/${themeId}`, themeData);
-            dispatch({ type: 'UPDATE_THEME', payload: response.data });
-            return response.data;
+            const updated = response.data;
+            dispatch({ type: 'UPDATE_THEME', payload: updated });
+            
+            // Cache the updated theme for instant load on next visit
+            cacheTheme(updated);
+            
+            return updated;
         } catch (err: any) {
             console.error('Failed to update theme:', err);
             throw err;
@@ -391,6 +343,12 @@ const useThemeActions = (dispatch: React.Dispatch<ThemeAction>) => {
         try {
             await api.delete(`/themes/${themeId}`);
             dispatch({ type: 'REMOVE_THEME', payload: themeId });
+            
+            // If deleted theme was cached, clear cache
+            const cached = getCachedTheme();
+            if (cached?.id === themeId) {
+                localStorage.removeItem('cachedActiveTheme');
+            }
         } catch (err: any) {
             console.error('Failed to delete theme:', err);
             throw err;
@@ -400,8 +358,13 @@ const useThemeActions = (dispatch: React.Dispatch<ThemeAction>) => {
     const activateTheme = useCallback(async (themeId: string): Promise<Theme> => {
         try {
             const response = await api.post(`/themes/activate/${themeId}`);
+            const activated = response.data;
             await fetchAllThemes();
-            return response.data;
+            
+            // Cache the newly activated theme for instant load on next visit
+            cacheTheme(activated);
+            
+            return activated;
         } catch (err: any) {
             console.error('Failed to activate theme:', err);
             throw err;
@@ -509,15 +472,10 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const actions = useThemeActions(dispatch);
     const { detectSystemPreference } = useSystemPreference(state.activeTheme, dispatch);
 
-    // Apply fallback theme on mount
-    useEffect(() => {
-        applyPalette(DEFAULT_FALLBACK_THEME.config.light, 'light');
-    }, []);
-
-    // Load active theme and fonts
+    // Load active theme and fonts on mount
     useEffect(() => {
         actions.loadActiveTheme();
-        actions.fetchFonts(); // Load fonts globally on mount
+        actions.fetchFonts();
     }, [actions.loadActiveTheme, actions.fetchFonts]);
 
     // Listen for system preference changes

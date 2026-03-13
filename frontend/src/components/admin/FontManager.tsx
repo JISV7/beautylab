@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
 import { UploadCloud, Loader2, ChevronDown, ChevronUp } from 'lucide-react';
 import type { FontManagerProps } from './types';
+import type { Font } from '../../data/theme.types';
 import { FontDataTable } from './FontDataTable';
 
-export const FontManager: React.FC<FontManagerProps> = ({
+export const FontManager: React.FC<FontManagerProps & {
+    onApplyToAll?: (font: Font) => void;
+}> = ({
     installedFonts,
     uploading,
     fileInputRef,
     onFileUpload,
     onFontDelete,
+    onApplyToAll,
 }) => {
     const [isUploadExpanded, setIsUploadExpanded] = useState(true);
     const [isTableExpanded, setIsTableExpanded] = useState(true);
@@ -107,6 +111,7 @@ export const FontManager: React.FC<FontManagerProps> = ({
                     <FontDataTable
                         fonts={installedFonts}
                         onDelete={onFontDelete}
+                        onApplyToAll={onApplyToAll}
                     />
                 )}
             </div>

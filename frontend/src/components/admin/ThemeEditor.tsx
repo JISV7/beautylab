@@ -63,6 +63,22 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
         }
     };
 
+    const handleApplyFontToAll = (font: Font) => {
+        const fontName = font.name;
+        const fontId = font.id;
+        // Apply the selected font to all H1-H6 and P elements
+        setStyles(prev => ({
+            ...prev,
+            h1: { ...prev.h1, fontFamily: fontName, fontId },
+            h2: { ...prev.h2, fontFamily: fontName, fontId },
+            h3: { ...prev.h3, fontFamily: fontName, fontId },
+            h4: { ...prev.h4, fontFamily: fontName, fontId },
+            h5: { ...prev.h5, fontFamily: fontName, fontId },
+            h6: { ...prev.h6, fontFamily: fontName, fontId },
+            p: { ...prev.p, fontFamily: fontName, fontId },
+        }));
+    };
+
     // Color state
     const [colors, setColors] = React.useState<ColorPalette>({
         primary: theme.config[activeMode].colors.primary,
@@ -407,6 +423,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                                 fileInputRef={fileInputRef}
                                 onFileUpload={handleFileUpload}
                                 onFontDelete={handleDeleteFont}
+                                onApplyToAll={handleApplyFontToAll}
                             />
                             <div>
                                 <TypographyEditor

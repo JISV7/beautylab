@@ -1,10 +1,11 @@
 import React, { useState, useMemo } from 'react';
-import { ChevronDown, Trash2, Search } from 'lucide-react';
+import { ChevronDown, Trash2, Search, Check } from 'lucide-react';
 import type { Font } from '../../data/theme.types';
 
 interface FontDataTableProps {
     fonts: Font[];
     onDelete: (font: Font) => void;
+    onApplyToAll?: (font: Font) => void;
 }
 
 interface SortConfig {
@@ -20,6 +21,7 @@ interface PageConfig {
 export const FontDataTable: React.FC<FontDataTableProps> = ({
     fonts,
     onDelete,
+    onApplyToAll,
 }) => {
     const [sortConfig, setSortConfig] = useState<SortConfig>({
         column: 'created_at',
@@ -228,13 +230,24 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
                                     </span>
                                 </td>
                                 <td className="px-4 py-3 text-right">
-                                    <button
-                                        onClick={() => handleDeleteClick(font)}
-                                        className="text-slate-400 hover:text-red-500 transition-colors"
-                                        title={(font.usageCount || 0) > 0 ? 'Cannot delete - font in use' : 'Delete font'}
-                                    >
-                                        <Trash2 className={`w-4 h-4 ${(font.usageCount || 0) > 0 ? 'opacity-50 cursor-not-allowed' : ''}`} />
-                                    </button>
+                                    <div className="flex items-center justify-end gap-2">
+                                        {onApplyToAll && (
+                                            <button
+                                                onClick={() => onApplyToAll(font)}
+                                                className="text-slate-400 hover:text-emerald-500 transition-colors"
+                                                title="Apply to all"
+                                            >
+                                                <Check className="w-4 h-4" />
+                                            </button>
+                                        )}
+                                        <button
+                                            onClick={() => handleDeleteClick(font)}
+                                            className="text-slate-400 hover:text-red-500 transition-colors"
+                                            title={(font.usageCount || 0) > 0 ? 'Cannot delete - font in use' : 'Delete font'}
+                                        >
+                                            <Trash2 className={`w-4 h-4 ${(font.usageCount || 0) > 0 ? 'opacity-50 cursor-not-allowed' : ''}`} />
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         ))}

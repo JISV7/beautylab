@@ -325,7 +325,7 @@ async def seed_default_theme(
 
         # Default theme config based on Default/DefaultTheme.md
         # Typography sizes follow 1.2 scale rule (major second musical interval):
-        # paragraph = 1.0, h6 = 1.0, h5 = 1.2, h4 = 1.44, h3 = 1.73, h2 = 2.076, h1 = 2.488
+        # paragraph = 1.0, h6 = 1.0, h5 = 1.2, h4 = 1.44, h3 = 1.73, h2 = 2.076, h1 = 2.492
         default_config = {
             "light": {
                 "colors": {
@@ -359,7 +359,7 @@ async def seed_default_theme(
                     "border": "#212121"
                 },
                 "typography": {
-                    "h1": make_typography_element("2.488", 400, "#C50707"),
+                    "h1": make_typography_element("2.492", 400, "#C50707"),
                     "h2": make_typography_element("2.076", 400, "#C50707"),
                     "h3": make_typography_element("1.73", 400, "#CC284F"),
                     "h4": make_typography_element("1.44", 400, "#FF4D4D"),
@@ -381,7 +381,7 @@ async def seed_default_theme(
                     "border": "#DDDDDD"
                 },
                 "typography": {
-                    "h1": make_typography_element("2.488", 400, "#2F27CE"),
+                    "h1": make_typography_element("2.492", 400, "#2F27CE"),
                     "h2": make_typography_element("2.076", 400, "#2F27CE"),
                     "h3": make_typography_element("1.73", 400, "#433BFF"),
                     "h4": make_typography_element("1.44", 400, "#1A1675"),

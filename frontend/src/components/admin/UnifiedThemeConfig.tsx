@@ -257,12 +257,17 @@ export const UnifiedThemeConfig: React.FC = () => {
                 type: 'success',
                 message: `Theme "${name}" created successfully!`
             });
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error('Failed to create theme:', error);
+            let message = 'Failed to create theme. Please check the backend logs.';
+            if (error && typeof error === 'object' && 'response' in error) {
+                const err = error as { response?: { data?: { detail?: string } } };
+                message = err.response?.data?.detail || message;
+            }
             setMessageModal({
                 isOpen: true,
                 type: 'error',
-                message: error.response?.data?.detail || 'Failed to create theme. Please check the backend logs.'
+                message
             });
         }
     };
@@ -359,12 +364,17 @@ export const UnifiedThemeConfig: React.FC = () => {
                 type: 'success',
                 message: `Theme "${newName}" duplicated successfully!`
             });
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error('Failed to duplicate theme:', error);
+            let message = 'Failed to duplicate theme.';
+            if (error && typeof error === 'object' && 'response' in error) {
+                const err = error as { response?: { data?: { detail?: string } } };
+                message = err.response?.data?.detail || message;
+            }
             setMessageModal({
                 isOpen: true,
                 type: 'error',
-                message: error.response?.data?.detail || 'Failed to duplicate theme.'
+                message
             });
         }
     };
@@ -389,12 +399,17 @@ export const UnifiedThemeConfig: React.FC = () => {
                 type: 'success',
                 message: `Theme "${activeTheme.name}" saved successfully!`
             });
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error('Failed to save theme:', error);
+            let message = 'Failed to save theme.';
+            if (error && typeof error === 'object' && 'response' in error) {
+                const err = error as { response?: { data?: { detail?: string } } };
+                message = err.response?.data?.detail || message;
+            }
             setMessageModal({
                 isOpen: true,
                 type: 'error',
-                message: error.response?.data?.detail || 'Failed to save theme.'
+                message
             });
         }
     };
@@ -450,13 +465,18 @@ export const UnifiedThemeConfig: React.FC = () => {
                 type: 'success',
                 message: `Theme "${themeName}" deleted successfully!`
             });
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error('Failed to delete theme:', error);
             // Show error from backend (e.g., theme in use by users)
+            let message = `Failed to delete theme "${themeName}". Please check if it's being used.`;
+            if (error && typeof error === 'object' && 'response' in error) {
+                const err = error as { response?: { data?: { detail?: string } } };
+                message = err.response?.data?.detail || message;
+            }
             setMessageModal({
                 isOpen: true,
                 type: 'error',
-                message: error.response?.data?.detail || `Failed to delete theme "${themeName}". Please check if it's being used.`
+                message
             });
         }
     };

@@ -283,9 +283,17 @@ const useThemeActions = (dispatch: React.Dispatch<ThemeAction>) => {
                 dispatch({ type: 'SET_PALETTE_MODE', payload: mode });
                 applyPalette(theme.config[mode], mode);
             }
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error('Failed to load theme:', err);
-            dispatch({ type: 'SET_ERROR', payload: err.response?.data?.detail || err.message || 'Failed to load theme' });
+            let message = 'Failed to load theme';
+            if (err && typeof err === 'object' && 'response' in err) {
+                const error = err as { response?: { data?: { detail?: string } } };
+                message = error.response?.data?.detail || message;
+            }
+            if (err instanceof Error) {
+                message = err.message;
+            }
+            dispatch({ type: 'SET_ERROR', payload: message });
         } finally {
             dispatch({ type: 'SET_LOADING', payload: false });
         }
@@ -302,7 +310,7 @@ const useThemeActions = (dispatch: React.Dispatch<ThemeAction>) => {
             const themes: Theme[] = response.data.themes || response.data;
             dispatch({ type: 'SET_AVAILABLE_THEMES', payload: themes });
             return themes;
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error('Failed to fetch themes:', err);
             throw err;
         }
@@ -312,12 +320,12 @@ const useThemeActions = (dispatch: React.Dispatch<ThemeAction>) => {
         try {
             const response = await api.post('/themes/', themeData);
             const created = response.data;
-            
+
             // Cache the newly created theme
             cacheTheme(created);
-            
+
             return created;
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error('Failed to create theme:', err);
             throw err;
         }
@@ -328,12 +336,12 @@ const useThemeActions = (dispatch: React.Dispatch<ThemeAction>) => {
             const response = await api.patch(`/themes/${themeId}`, themeData);
             const updated = response.data;
             dispatch({ type: 'UPDATE_THEME', payload: updated });
-            
+
             // Cache the updated theme for instant load on next visit
             cacheTheme(updated);
-            
+
             return updated;
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error('Failed to update theme:', err);
             throw err;
         }
@@ -343,13 +351,13 @@ const useThemeActions = (dispatch: React.Dispatch<ThemeAction>) => {
         try {
             await api.delete(`/themes/${themeId}`);
             dispatch({ type: 'REMOVE_THEME', payload: themeId });
-            
+
             // If deleted theme was cached, clear cache
             const cached = getCachedTheme();
             if (cached?.id === themeId) {
                 localStorage.removeItem('cachedActiveTheme');
             }
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error('Failed to delete theme:', err);
             throw err;
         }
@@ -368,7 +376,7 @@ const useThemeActions = (dispatch: React.Dispatch<ThemeAction>) => {
             dispatch({ type: 'SET_ACTIVE_THEME', payload: activated });
 
             return activated;
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error('Failed to activate theme:', err);
             throw err;
         }
@@ -378,12 +386,12 @@ const useThemeActions = (dispatch: React.Dispatch<ThemeAction>) => {
         try {
             const response = await api.get('/fonts');
             const fonts: Font[] = response.data;
-            
+
             // Inject @font-face rules for all uploaded fonts
             injectFontFaces(fonts);
-            
+
             return fonts;
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error('Failed to fetch fonts:', err);
             return [];
         }
@@ -419,7 +427,7 @@ const useThemeActions = (dispatch: React.Dispatch<ThemeAction>) => {
                 },
             });
             return response.data;
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error('Failed to upload font:', err);
             throw err;
         }
@@ -428,7 +436,7 @@ const useThemeActions = (dispatch: React.Dispatch<ThemeAction>) => {
     const deleteFont = useCallback(async (fontId: string): Promise<void> => {
         try {
             await api.delete(`/fonts/${fontId}`);
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error('Failed to delete font:', err);
             throw err;
         }
@@ -479,7 +487,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     useEffect(() => {
         actions.loadActiveTheme();
         actions.fetchFonts();
-    }, [actions.loadActiveTheme, actions.fetchFonts]);
+    }, [actions]);
 
     // Listen for system preference changes
     useEffect(() => {

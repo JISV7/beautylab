@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 
 const API_URL = 'http://localhost:8000';
@@ -94,7 +94,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
-    const fetchUser = async (token: string) => {
+    const fetchUser = useCallback(async (token: string) => {
         try {
             const response = await axios.get(`${API_URL}/users/me`, {
                 headers: {
@@ -118,7 +118,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         } finally {
             setIsLoading(false);
         }
-    };
+    }, []);
 
     useEffect(() => {
         const token = localStorage.getItem('access_token');
@@ -145,7 +145,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         } else {
             setIsLoading(false);
         }
-    }, []);
+    }, [fetchUser]);
 
     const login = async (email: string, password: string) => {
         const formData = new URLSearchParams();
@@ -167,7 +167,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             localStorage.setItem('currentPage', 'dashboard');
 
             await fetchUser(data.access_token);
-        } catch (error: any) {
+        } catch (error: unknown) {
             if (axios.isAxiosError(error) && error.response) {
                 throw new Error(error.response.data.detail || 'Login failed');
             }
@@ -184,7 +184,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             });
             // Auto login after successful registration
             await login(email, password);
-        } catch (error: any) {
+        } catch (error: unknown) {
             if (axios.isAxiosError(error) && error.response) {
                 const detail = error.response.data.detail;
                 if (typeof detail === 'string') {

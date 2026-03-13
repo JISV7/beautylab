@@ -38,7 +38,7 @@ const PaletteCard: React.FC<PaletteCardProps> = ({ mode, theme, onEdit, headerRe
         ['--palette-surface' as string]: modeData.colors.surface,
         ['--palette-background' as string]: modeData.colors.background,
         ['--palette-border' as string]: modeData.colors.border,
-    } as any;
+    };
 
     return (
         <div

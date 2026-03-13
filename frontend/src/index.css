@@ -80,6 +80,9 @@
   .decorator-color { color: var(--decorator-color); }
   .decorator-size { width: calc(1rem * var(--decorator-size)); height: calc(1rem * var(--decorator-size)); }
 
+  /* ==================== Logo Utilities ==================== */
+  .logo-brand-bg { background-color: #F83A3A; }
+
   /* ==================== Additional Color Utilities ==================== */
   .text-primary { color: var(--palette-primary); }
   .text-secondary { color: var(--palette-secondary); }

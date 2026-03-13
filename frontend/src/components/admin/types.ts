@@ -1,5 +1,10 @@
 import type { Theme, Font, ThemePalette } from '../../data/theme.types';
 
+export interface SortConfig {
+    column: 'name' | 'filename' | 'created_at' | 'usage_count' | 'created_by';
+    direction: 'asc' | 'desc';
+}
+
 export interface TypographyStyle {
     fontFamily: string;
     fontId: string;  // UUID of the selected font

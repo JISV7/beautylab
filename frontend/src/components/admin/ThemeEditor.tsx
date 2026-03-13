@@ -39,19 +39,24 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
             setUploading(true);
             // Upload all files in parallel
             const uploadPromises = Array.from(files).map(file => uploadFont(file));
-            const uploadedFonts = await Promise.all(uploadPromises);
-            
+            await Promise.all(uploadPromises);
+
             // Refresh fonts from context to inject @font-face rules
             const allFonts = await fetchFonts();
             setFonts(allFonts);
-            
+
             // Clear the input
             if (event.target) {
                 event.target.value = '';
             }
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error('Failed to upload fonts:', error);
-            alert(error.response?.data?.detail || 'Failed to upload fonts');
+            let message = 'Failed to upload fonts';
+            if (error && typeof error === 'object' && 'response' in error) {
+                const err = error as { response?: { data?: { detail?: string } } };
+                message = err.response?.data?.detail || message;
+            }
+            alert(message);
         } finally {
             setUploading(false);
         }
@@ -63,9 +68,14 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
             // Refresh fonts from context to update the list
             const allFonts = await fetchFonts();
             setFonts(allFonts);
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error('Failed to delete font:', error);
-            alert(error.response?.data?.detail || 'Failed to delete font');
+            let message = 'Failed to delete font';
+            if (error && typeof error === 'object' && 'response' in error) {
+                const err = error as { response?: { data?: { detail?: string } } };
+                message = err.response?.data?.detail || message;
+            }
+            alert(message);
         }
     };
 

@@ -2,6 +2,22 @@ import React, { useState, useMemo } from 'react';
 import { ChevronDown, Trash2, Search, Check } from 'lucide-react';
 import type { Font } from '../../data/theme.types';
 
+interface SortIconProps {
+    column: SortConfig['column'];
+    sortConfig: SortConfig;
+}
+
+const SortIcon: React.FC<SortIconProps> = ({ column, sortConfig }) => {
+    if (sortConfig.column !== column) return null;
+    return (
+        <ChevronDown
+            className={`w-4 h-4 inline ml-1 transition-transform ${
+                sortConfig.direction === 'asc' ? 'rotate-180' : ''
+            }`}
+        />
+    );
+};
+
 interface FontDataTableProps {
     fonts: Font[];
     onDelete: (font: Font) => void;
@@ -59,7 +75,7 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
         const usage = font.fontUsage || [];
         const usageCount = font.usageCount || 0;
         if (usageCount > 0) {
-            const usageText = usage.map((u: any) => `${u.themeName} (${u.element})`).join(', ');
+            const usageText = usage.map((u) => `${u.themeName} (${u.element})`).join(', ');
             return (
                 <>
                     This font is currently being used in:
@@ -87,7 +103,7 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
 
     const filteredAndSortedData = useMemo(() => {
         // Filter by search query
-        let data = fonts.filter(font =>
+        const data = fonts.filter(font =>
             font.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
             font.filename.toLowerCase().includes(searchQuery.toLowerCase())
         );
@@ -96,25 +112,30 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
         data.sort((a, b) => {
             let comparison = 0;
             switch (sortConfig.column) {
-                case 'name':
+                case 'name': {
                     comparison = a.name.localeCompare(b.name);
                     break;
-                case 'filename':
+                }
+                case 'filename': {
                     comparison = a.filename.localeCompare(b.filename);
                     break;
-                case 'created_at':
+                }
+                case 'created_at': {
                     const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
                     const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
                     comparison = dateA - dateB;
                     break;
-                case 'created_by':
+                }
+                case 'created_by': {
                     const nameA = (a.createdByName || a.createdBy || '').toLowerCase();
                     const nameB = (b.createdByName || b.createdBy || '').toLowerCase();
                     comparison = nameA.localeCompare(nameB);
                     break;
-                case 'usage_count':
+                }
+                case 'usage_count': {
                     comparison = (a.usageCount || 0) - (b.usageCount || 0);
                     break;
+                }
             }
             return sortConfig.direction === 'asc' ? comparison : -comparison;
         });
@@ -125,17 +146,6 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
     const totalPages = Math.ceil(filteredAndSortedData.length / pageConfig.rowsPerPage);
     const start = pageConfig.currentPage * pageConfig.rowsPerPage;
     const paginatedData = filteredAndSortedData.slice(start, start + pageConfig.rowsPerPage);
-
-    const SortIcon: React.FC<{ column: SortConfig['column'] }> = ({ column }) => {
-        if (sortConfig.column !== column) return null;
-        return (
-            <ChevronDown
-                className={`w-4 h-4 inline ml-1 transition-transform ${
-                    sortConfig.direction === 'asc' ? 'rotate-180' : ''
-                }`}
-            />
-        );
-    };
 
     return (
         <div className="theme-card overflow-hidden p-0">
@@ -166,27 +176,27 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
                         <tr>
                             <th className="px-4 py-3 text-left text-sm font-bold text-p-color cursor-pointer hover:opacity-70 whitespace-nowrap">
                                 <button onClick={() => handleSort('name')} className="flex items-center">
-                                    Font Name<SortIcon column="name" />
+                                    Font Name<SortIcon column="name" sortConfig={sortConfig} />
                                 </button>
                             </th>
                             <th className="px-4 py-3 text-left text-sm font-bold text-p-color cursor-pointer hover:opacity-70 whitespace-nowrap">
                                 <button onClick={() => handleSort('filename')} className="flex items-center">
-                                    Filename<SortIcon column="filename" />
+                                    Filename<SortIcon column="filename" sortConfig={sortConfig} />
                                 </button>
                             </th>
                             <th className="px-4 py-3 text-left text-sm font-bold text-p-color cursor-pointer hover:opacity-70 whitespace-nowrap">
                                 <button onClick={() => handleSort('created_by')} className="flex items-center">
-                                    Uploaded By<SortIcon column="created_by" />
+                                    Uploaded By<SortIcon column="created_by" sortConfig={sortConfig} />
                                 </button>
                             </th>
                             <th className="px-4 py-3 text-left text-sm font-bold text-p-color cursor-pointer hover:opacity-70 whitespace-nowrap">
                                 <button onClick={() => handleSort('created_at')} className="flex items-center">
-                                    Uploaded<SortIcon column="created_at" />
+                                    Uploaded<SortIcon column="created_at" sortConfig={sortConfig} />
                                 </button>
                             </th>
                             <th className="px-4 py-3 text-left text-sm font-bold text-p-color cursor-pointer hover:opacity-70 whitespace-nowrap">
                                 <button onClick={() => handleSort('usage_count')} className="flex items-center">
-                                    Usage Count<SortIcon column="usage_count" />
+                                    Usage Count<SortIcon column="usage_count" sortConfig={sortConfig} />
                                 </button>
                             </th>
                             <th className="px-4 py-3 text-right text-sm font-bold text-p-color">

@@ -38,22 +38,22 @@ export const Modal: React.FC<ModalProps> = ({
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             {/* Backdrop */}
             <div
                 className="absolute inset-0 bg-black/50 backdrop-blur-sm"
                 onClick={onClose}
             />
 
-            {/* Modal */}
+            {/* Modal - flex layout for proper scrolling */}
             <div
-                className="relative z-10 w-full max-w-md mx-4 palette-surface palette-border border rounded-xl shadow-2xl"
+                className="relative z-10 w-full max-w-md mx-4 flex flex-col max-h-[80vh] palette-surface palette-border border rounded-xl shadow-2xl"
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="modal-title"
             >
-                {/* Header */}
-                <div className="flex items-center justify-between p-6 border-b palette-border">
+                {/* Header - shrink-0 to stay fixed */}
+                <div className="shrink-0 flex items-center justify-between p-6 border-b palette-border">
                     <h2 id="modal-title" className="text-xl font-bold text-p-color">
                         {title}
                     </h2>
@@ -66,14 +66,14 @@ export const Modal: React.FC<ModalProps> = ({
                     </button>
                 </div>
 
-                {/* Content */}
-                <div className="p-6">
+                {/* Content - scrollable */}
+                <div className="overflow-y-auto flex-1 p-6">
                     {children}
                 </div>
 
-                {/* Footer */}
+                {/* Footer - shrink-0 to stay fixed */}
                 {footer && (
-                    <div className="flex items-center justify-end gap-3 p-6 border-t palette-border">
+                    <div className="shrink-0 flex items-center justify-end gap-3 p-6 border-t palette-border">
                         {footer}
                     </div>
                 )}

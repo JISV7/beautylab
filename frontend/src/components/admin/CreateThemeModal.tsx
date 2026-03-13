@@ -45,7 +45,7 @@ export const CreateThemeModal: React.FC<CreateThemeModalProps> = ({
                     </button>
                     <button
                         onClick={handleSubmit}
-                        className="px-4 py-2 text-sm font-medium text-white theme-button-primary"
+                        className="px-4 py-2 text-sm font-medium text-white theme-button-primary rounded-lg"
                     >
                         Create Theme
                     </button>
@@ -54,7 +54,7 @@ export const CreateThemeModal: React.FC<CreateThemeModalProps> = ({
         >
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                    <label htmlFor="theme-name" className="block text-sm font-semibold text-p-color mb-2">
+                    <label htmlFor="theme-name" className="block text-p-font text-p-size text-p-color mb-2">
                         Theme Name
                     </label>
                     <input
@@ -69,7 +69,7 @@ export const CreateThemeModal: React.FC<CreateThemeModalProps> = ({
                     />
                 </div>
                 <div>
-                    <label htmlFor="theme-description" className="block text-sm font-semibold text-p-color mb-2">
+                    <label htmlFor="theme-description" className="block text-p-font text-p-size text-p-color mb-2">
                         Description (Optional)
                     </label>
                     <textarea

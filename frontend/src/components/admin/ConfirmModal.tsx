@@ -66,8 +66,15 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
     };
 
     return (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4" onKeyDown={handleKeyDown}>
-            <div className="w-full max-w-md relative overflow-hidden bg-[var(--palette-surface)] border border-[var(--palette-border)] rounded-2xl shadow-2xl">
+        <div 
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4" 
+            onClick={onClose}
+            onKeyDown={handleKeyDown}
+        >
+            <div 
+                className="w-full max-w-md relative max-h-[80vh] flex flex-col bg-[var(--palette-surface)] border border-[var(--palette-border)] rounded-2xl shadow-2xl"
+                onClick={(e) => e.stopPropagation()}
+            >
                 {/* Close button */}
                 <button
                     onClick={onClose}
@@ -76,8 +83,8 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
                     <X className="w-5 h-5" />
                 </button>
 
-                {/* Content */}
-                <div className="p-6">
+                {/* Scrollable content area */}
+                <div className="p-6 overflow-y-auto flex-1">
                     {/* Icon and Title */}
                     <div className="flex items-start gap-4 mb-4">
                         {getIcon()}
@@ -104,23 +111,23 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
                             />
                         </div>
                     )}
+                </div>
 
-                    {/* Action Buttons */}
-                    <div className="flex items-center gap-3 mt-6">
-                        <button
-                            onClick={onClose}
-                            className="flex-1 px-4 py-2 rounded-lg border border-[var(--palette-border)] text-[var(--text-p-color)] hover:bg-[var(--palette-border)] transition-colors"
-                        >
-                            {cancelText}
-                        </button>
-                        <button
-                            onClick={handleConfirm}
-                            className={`flex-1 px-4 py-2 rounded-lg transition-colors ${getButtonStyles()}`}
-                            disabled={showInput && !inputValue?.trim()}
-                        >
-                            {confirmText}
-                        </button>
-                    </div>
+                {/* Fixed button area */}
+                <div className="p-6 border-t border-[var(--palette-border)] flex items-center gap-3 shrink-0 bg-[var(--palette-surface)]">
+                    <button
+                        onClick={onClose}
+                        className="flex-1 px-4 py-2 rounded-lg border border-[var(--palette-border)] text-[var(--text-p-color)] hover:bg-[var(--palette-border)] transition-colors"
+                    >
+                        {cancelText}
+                    </button>
+                    <button
+                        onClick={handleConfirm}
+                        className={`flex-1 px-4 py-2 rounded-lg transition-colors ${getButtonStyles()}`}
+                        disabled={showInput && !inputValue?.trim()}
+                    >
+                        {confirmText}
+                    </button>
                 </div>
             </div>
         </div>

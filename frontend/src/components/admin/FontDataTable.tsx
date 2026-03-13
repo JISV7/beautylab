@@ -151,7 +151,7 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
                         className="w-full pl-10 pr-4 py-2 rounded-lg palette-surface palette-border border text-p-font text-p-size text-p-color placeholder-[var(--palette-text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
                     />
                 </div>
-                <div className="text-sm text-slate-500">
+                <div className="text-p-font text-p-size text-sm sm:text-base text-slate-500 whitespace-nowrap">
                     {filteredAndSortedData.length} font{filteredAndSortedData.length !== 1 ? 's' : ''} found
                 </div>
             </div>
@@ -251,7 +251,7 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
             {/* Pagination */}
             {totalPages > 1 && (
                 <div className="px-4 py-3 border-t palette-border flex items-center justify-between">
-                    <div className="text-sm text-slate-500">
+                    <div className="text-p-font text-p-size text-sm sm:text-base text-slate-500">
                         Showing {start + 1} to {Math.min(start + pageConfig.rowsPerPage, filteredAndSortedData.length)} of {filteredAndSortedData.length} fonts
                     </div>
                     <div className="flex items-center gap-2">

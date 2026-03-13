@@ -41,7 +41,7 @@ export const FontManager: React.FC<FontManagerProps> = ({
             {/* Upload Section */}
             <div className="theme-card">
                 <div
-                    className="p-6 border-b palette-border flex items-center justify-between cursor-pointer"
+                    className="p-6 border-b palette-border flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer"
                     onClick={() => setIsUploadExpanded(!isUploadExpanded)}
                 >
                     <div className="flex items-center gap-2">
@@ -49,7 +49,7 @@ export const FontManager: React.FC<FontManagerProps> = ({
                         <h3 className="text-lg font-bold">Upload Fonts</h3>
                     </div>
                     <div className="flex items-center gap-2 text-slate-500">
-                        <span className="text-sm">{installedFonts.length} fonts installed</span>
+                        <span className="text-p-font text-p-size text-sm sm:text-base">{installedFonts.length} fonts installed</span>
                         {isUploadExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
                     </div>
                 </div>

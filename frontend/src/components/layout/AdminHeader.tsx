@@ -53,7 +53,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({ onBack, onMenuToggle, 
                         <input
                             type="text"
                             placeholder="Search..."
-                            className="w-full pl-10 pr-4 py-2 rounded-lg palette-surface palette-border border text-p-color placeholder-[var(--palette-text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
+                            className="w-full pl-10 pr-4 py-2 rounded-lg palette-surface palette-border border text-p-font text-p-size text-p-color placeholder-[var(--palette-text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
                         />
                     </div>
                 </div>

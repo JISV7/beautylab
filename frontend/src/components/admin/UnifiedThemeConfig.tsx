@@ -271,9 +271,57 @@ export const UnifiedThemeConfig: React.FC = () => {
         setIsCreateModalOpen(true);
     };
 
+    /**
+     * Generate a unique name for duplicated theme.
+     * Handles "Copy" suffix intelligently to avoid "Copy Copy Copy..." issue.
+     * Examples:
+     * - "Theme" -> "Theme Copy"
+     * - "Theme Copy" -> "Theme Copy 2"
+     * - "Theme Copy 2" -> "Theme Copy 3"
+     */
+    const generateDuplicateName = (baseName: string): string => {
+        // Check if name already ends with "Copy" or "Copy N"
+        const copyMatch = baseName.match(/^(.*) Copy(?: (\d+))?$/);
+        
+        let originalName: string;
+        let copyNumber: number;
+        
+        if (copyMatch) {
+            // Name already has "Copy" suffix
+            originalName = copyMatch[1] || baseName;
+            copyNumber = copyMatch[2] ? parseInt(copyMatch[2], 10) + 1 : 2;
+        } else {
+            // First copy
+            originalName = baseName;
+            copyNumber = 1;
+        }
+        
+        // Generate candidate name
+        const candidateName = copyNumber === 1 
+            ? `${originalName} Copy`
+            : `${originalName} Copy ${copyNumber}`;
+        
+        // Check if this name already exists and increment if needed
+        const existingNames = new Set(themes.map(t => t.name.toLowerCase()));
+        let finalName = candidateName;
+        let counter = copyNumber;
+        
+        while (existingNames.has(finalName.toLowerCase())) {
+            counter++;
+            finalName = counter === 1 
+                ? `${originalName} Copy`
+                : `${originalName} Copy ${counter}`;
+        }
+        
+        return finalName;
+    };
+
     const handleDuplicateTheme = (themeId: string) => {
         const sourceTheme = themes.find(t => t.id === themeId);
         if (!sourceTheme) return;
+
+        // Generate unique name automatically
+        const duplicateName = generateDuplicateName(sourceTheme.name);
 
         setConfirmModal({
             isOpen: true,
@@ -285,7 +333,7 @@ export const UnifiedThemeConfig: React.FC = () => {
                 duplicateThemeAction(sourceTheme, newName);
             },
             showInput: true,
-            inputValue: `${sourceTheme.name} Copy`,
+            inputValue: duplicateName,
             inputPlaceholder: 'Theme name',
         });
     };
@@ -355,11 +403,22 @@ export const UnifiedThemeConfig: React.FC = () => {
         const theme = themes.find(t => t.id === themeId);
         if (!theme) return;
 
+        // Cannot delete default theme
         if (theme.isDefault) {
             setMessageModal({
                 isOpen: true,
                 type: 'error',
                 message: `Cannot delete "${theme.name}" because it is the default theme.`
+            });
+            return;
+        }
+
+        // Cannot delete active theme - must deactivate first
+        if (theme.isActive) {
+            setMessageModal({
+                isOpen: true,
+                type: 'error',
+                message: `Cannot delete "${theme.name}" because it is currently active. Please activate a different theme first, then try deleting this one.`
             });
             return;
         }
@@ -387,18 +446,28 @@ export const UnifiedThemeConfig: React.FC = () => {
         });
     };
 
-    const deleteThemeAction = (themeId: string, themeName: string) => {
-        deleteTheme(themeId);
-        setThemes(prev => prev.filter(t => t.id !== themeId));
-        if (activeThemeId === themeId) {
-            setActiveThemeId(null);
+    const deleteThemeAction = async (themeId: string, themeName: string) => {
+        try {
+            await deleteTheme(themeId);
+            setThemes(prev => prev.filter(t => t.id !== themeId));
+            if (activeThemeId === themeId) {
+                setActiveThemeId(null);
+            }
+            setViewMode('list');
+            setMessageModal({
+                isOpen: true,
+                type: 'success',
+                message: `Theme "${themeName}" deleted successfully!`
+            });
+        } catch (error: any) {
+            console.error('Failed to delete theme:', error);
+            // Show error from backend (e.g., theme in use by users)
+            setMessageModal({
+                isOpen: true,
+                type: 'error',
+                message: error.response?.data?.detail || `Failed to delete theme "${themeName}". Please check if it's being used.`
+            });
         }
-        setViewMode('list');
-        setMessageModal({
-            isOpen: true,
-            type: 'success',
-            message: `Theme "${themeName}" deleted successfully!`
-        });
     };
 
     const handlePublishTheme = () => {

@@ -203,7 +203,7 @@ class ThemeService:
 
     async def delete_theme(self, theme_id: UUID) -> bool:
         """Delete a theme with validation.
-        
+
         Raises:
             ThemeActiveError: If theme is currently active
             ThemeInUseError: If theme is set as preferred by users
@@ -216,7 +216,7 @@ class ThemeService:
         # Cannot delete active theme
         if theme.is_active:
             raise ThemeActiveError(
-                f"Cannot delete active theme '{theme.name}'. Deactivate it first."
+                f"Cannot delete active theme '{theme.name}'. Please activate a different theme first, then try deleting this one."
             )
 
         # Check if any users have this as preferred theme
@@ -397,9 +397,11 @@ class ThemeService:
 
     async def _update_font_usage_for_theme(self, theme: Theme) -> None:
         """Update font usage tracking for a theme.
-        
+
         Scans all typography elements in the theme config and updates
         font usage tracking. font_id is now mandatory for all elements.
+        
+        Note: Handles both camelCase (fontId from frontend) and snake_case (font_id) formats.
         """
         config = theme.config
 
@@ -415,15 +417,16 @@ class ThemeService:
             typography = palette.get("typography", {})
 
             for element_name, element_config in typography.items():
-                font_id = element_config.get("font_id")
-                font_name = element_config.get("font_name", "Unknown")
-                
+                # Support both camelCase (from frontend) and snake_case formats
+                font_id = element_config.get("font_id") or element_config.get("fontId")
+                font_name = element_config.get("font_name") or element_config.get("fontName", "Unknown")
+
                 # font_id is now mandatory - skip if missing
                 if not font_id:
                     # Log warning but continue (migration should have set all font_ids)
                     print(f"  Warning: Typography element {element_name} in {theme.name} missing font_id")
                     continue
-                    
+
                 await self._add_font_usage(
                     UUID(font_id) if isinstance(font_id, str) else font_id,
                     theme.id,

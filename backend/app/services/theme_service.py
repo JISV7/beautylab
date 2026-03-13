@@ -357,10 +357,15 @@ class ThemeService:
 
     def _validate_theme_config(self, config: Dict[str, Any]) -> None:
         """Validate theme configuration using Pydantic schema.
-        
+
         This leverages Pydantic's built-in validation instead of manual checks.
         Pydantic handles alias conversion (camelCase ↔ snake_case) automatically.
-        
+        The validation includes:
+        - Structure validation (all required fields present)
+        - Typography hierarchy validation (H1 > H2 > H3 > H4 > H5 > H6 >= P)
+        - Color format validation
+        - Font ID reference validation
+
         Raises:
             ThemeValidationError: If config is invalid
         """
@@ -376,6 +381,30 @@ class ThemeService:
             if "validation errors" in error_msg.lower():
                 raise ThemeValidationError(f"Theme config validation failed: {error_msg}")
             raise ThemeValidationError(f"Theme config validation failed: {error_msg}")
+
+    def validate_typography_sizes(self, config: Dict[str, Any]) -> Tuple[bool, List[str]]:
+        """Validate typography size hierarchy without raising exceptions.
+        
+        This is a convenience method for frontend validation feedback.
+        
+        Args:
+            config: Theme config dictionary
+            
+        Returns:
+            Tuple of (is_valid, list_of_error_messages)
+        """
+        try:
+            from app.schemas.theme import ThemeConfig
+            ThemeConfig.model_validate(config)
+            return True, []
+        except Exception as e:
+            error_msg = str(e)
+            # Extract individual errors from Pydantic validation error
+            if "Typography hierarchy validation failed:" in error_msg:
+                errors = error_msg.split("Typography hierarchy validation failed:")[1].strip()
+                error_list = [err.strip() for err in errors.split(";")]
+                return False, error_list
+            return False, [error_msg]
 
     async def _unset_default_themes(self, exclude_id: Optional[UUID] = None) -> None:
         """Unset all default themes, optionally excluding one."""

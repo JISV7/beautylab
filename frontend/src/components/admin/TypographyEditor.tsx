@@ -11,6 +11,8 @@ interface StyleBlockProps {
     fonts: Font[];
     onToggle: () => void;
     onStyleChange: (field: keyof TypographyStyle, value: string | number) => void;
+    validationErrors?: string[];
+    currentElement?: string;
 }
 
 const StyleBlock: React.FC<StyleBlockProps> = ({
@@ -21,7 +23,16 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
     fonts,
     onToggle,
     onStyleChange,
-}) => (
+    validationErrors = [],
+    currentElement = '',
+}) => {
+    // Check if current element has validation errors and extract minimum required size
+    const elementError = validationErrors.find(err => err.startsWith(currentElement.toUpperCase()));
+    const minSizeMatch = elementError?.match(/Minimum required: ([\d.]+)rem/);
+    const minRequired = minSizeMatch ? parseFloat(minSizeMatch[1]) : null;
+    const hasError = !!elementError;
+
+    return (
     <div className="theme-card mb-4">
         <div
             className="p-5 flex items-center justify-between border-b palette-border cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
@@ -78,14 +89,24 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
                     </span>
                     <div className="relative flex items-center">
                         <input
-                            className="theme-input pr-12 w-full"
+                            className={`pr-12 w-full theme-input ${
+                                hasError ? 'border-red-500 focus:ring-red-500' : ''
+                            }`}
                             type="number"
                             step="0.1"
                             value={style.size}
                             onChange={(e) => onStyleChange('size', parseFloat(e.target.value) || 1)}
+                            min={minRequired || 0}
                         />
-                        <span className="absolute right-4 text-sm text-slate-500 font-medium">rem</span>
+                        <span className={`absolute right-4 text-sm font-medium ${
+                            hasError ? 'text-red-500' : 'text-slate-500'
+                        }`}>rem</span>
                     </div>
+                    {hasError && minRequired && (
+                        <span className="text-xs text-red-600 dark:text-red-400 mt-1">
+                            Minimum required: {minRequired.toFixed(3)}rem
+                        </span>
+                    )}
                 </label>
 
                 {/* Font Weight */}
@@ -157,7 +178,8 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
             </div>
         )}
     </div>
-);
+    );
+};
 
 const toggleBlock = (
     block: string,
@@ -166,11 +188,14 @@ const toggleBlock = (
     setExpandedBlocks(prev => ({ ...prev, [block]: !prev[block] }));
 };
 
-export const TypographyEditor: React.FC<TypographyEditorProps> = ({
+export const TypographyEditor: React.FC<TypographyEditorProps & {
+    validationErrors?: string[];
+}> = ({
     styles,
     colors,
     fonts,
     onStyleChange,
+    validationErrors = [],
 }) => {
     const [expandedBlocks, setExpandedBlocks] = React.useState<Record<string, boolean>>({
         h1: true,
@@ -198,6 +223,8 @@ export const TypographyEditor: React.FC<TypographyEditorProps> = ({
                     fonts={fonts}
                     onToggle={() => toggleBlock('h1', setExpandedBlocks)}
                     onStyleChange={(f, v) => onStyleChange('h1', f, v)}
+                    validationErrors={validationErrors}
+                    currentElement="h1"
                 />
                 <StyleBlock
                     label="Heading 2 (H2)"
@@ -207,6 +234,8 @@ export const TypographyEditor: React.FC<TypographyEditorProps> = ({
                     fonts={fonts}
                     onToggle={() => toggleBlock('h2', setExpandedBlocks)}
                     onStyleChange={(f, v) => onStyleChange('h2', f, v)}
+                    validationErrors={validationErrors}
+                    currentElement="h2"
                 />
                 <StyleBlock
                     label="Heading 3 (H3)"
@@ -216,6 +245,8 @@ export const TypographyEditor: React.FC<TypographyEditorProps> = ({
                     fonts={fonts}
                     onToggle={() => toggleBlock('h3', setExpandedBlocks)}
                     onStyleChange={(f, v) => onStyleChange('h3', f, v)}
+                    validationErrors={validationErrors}
+                    currentElement="h3"
                 />
                 <StyleBlock
                     label="Heading 4 (H4)"
@@ -225,6 +256,8 @@ export const TypographyEditor: React.FC<TypographyEditorProps> = ({
                     fonts={fonts}
                     onToggle={() => toggleBlock('h4', setExpandedBlocks)}
                     onStyleChange={(f, v) => onStyleChange('h4', f, v)}
+                    validationErrors={validationErrors}
+                    currentElement="h4"
                 />
                 <StyleBlock
                     label="Heading 5 (H5)"
@@ -234,6 +267,8 @@ export const TypographyEditor: React.FC<TypographyEditorProps> = ({
                     fonts={fonts}
                     onToggle={() => toggleBlock('h5', setExpandedBlocks)}
                     onStyleChange={(f, v) => onStyleChange('h5', f, v)}
+                    validationErrors={validationErrors}
+                    currentElement="h5"
                 />
                 <StyleBlock
                     label="Heading 6 (H6)"
@@ -243,6 +278,8 @@ export const TypographyEditor: React.FC<TypographyEditorProps> = ({
                     fonts={fonts}
                     onToggle={() => toggleBlock('h6', setExpandedBlocks)}
                     onStyleChange={(f, v) => onStyleChange('h6', f, v)}
+                    validationErrors={validationErrors}
+                    currentElement="h6"
                 />
                 <StyleBlock
                     label="Paragraph (p)"
@@ -252,6 +289,8 @@ export const TypographyEditor: React.FC<TypographyEditorProps> = ({
                     fonts={fonts}
                     onToggle={() => toggleBlock('p', setExpandedBlocks)}
                     onStyleChange={(f, v) => onStyleChange('p', f, v)}
+                    validationErrors={validationErrors}
+                    currentElement="p"
                 />
             </div>
 

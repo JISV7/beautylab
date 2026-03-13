@@ -95,7 +95,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
         h1: {
             fontFamily: theme.config[activeMode].typography.h1?.fontName || 'Roboto',
             fontId: theme.config[activeMode].typography.h1?.fontId || '',
-            size: parseFloat(theme.config[activeMode].typography.h1?.fontSize || '2.5'),
+            size: parseFloat(theme.config[activeMode].typography.h1?.fontSize || '2.488'),
             color: theme.config[activeMode].typography.h1?.color || '#000000',
             fontWeight: theme.config[activeMode].typography.h1?.fontWeight || 400,
             lineHeight: theme.config[activeMode].typography.h1?.lineHeight || '1.2'
@@ -103,7 +103,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
         h2: {
             fontFamily: theme.config[activeMode].typography.h2?.fontName || 'Roboto',
             fontId: theme.config[activeMode].typography.h2?.fontId || '',
-            size: parseFloat(theme.config[activeMode].typography.h2?.fontSize || '2.0'),
+            size: parseFloat(theme.config[activeMode].typography.h2?.fontSize || '2.074'),
             color: theme.config[activeMode].typography.h2?.color || '#000000',
             fontWeight: theme.config[activeMode].typography.h2?.fontWeight || 400,
             lineHeight: theme.config[activeMode].typography.h2?.lineHeight || '1.2'
@@ -111,7 +111,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
         h3: {
             fontFamily: theme.config[activeMode].typography.h3?.fontName || 'Roboto',
             fontId: theme.config[activeMode].typography.h3?.fontId || '',
-            size: parseFloat(theme.config[activeMode].typography.h3?.fontSize || '1.75'),
+            size: parseFloat(theme.config[activeMode].typography.h3?.fontSize || '1.73'),
             color: theme.config[activeMode].typography.h3?.color || '#000000',
             fontWeight: theme.config[activeMode].typography.h3?.fontWeight || 400,
             lineHeight: theme.config[activeMode].typography.h3?.lineHeight || '1.3'
@@ -119,7 +119,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
         h4: {
             fontFamily: theme.config[activeMode].typography.h4?.fontName || 'Roboto',
             fontId: theme.config[activeMode].typography.h4?.fontId || '',
-            size: parseFloat(theme.config[activeMode].typography.h4?.fontSize || '1.5'),
+            size: parseFloat(theme.config[activeMode].typography.h4?.fontSize || '1.44'),
             color: theme.config[activeMode].typography.h4?.color || '#000000',
             fontWeight: theme.config[activeMode].typography.h4?.fontWeight || 400,
             lineHeight: theme.config[activeMode].typography.h4?.lineHeight || '1.4'
@@ -127,7 +127,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
         h5: {
             fontFamily: theme.config[activeMode].typography.h5?.fontName || 'Roboto',
             fontId: theme.config[activeMode].typography.h5?.fontId || '',
-            size: parseFloat(theme.config[activeMode].typography.h5?.fontSize || '1.25'),
+            size: parseFloat(theme.config[activeMode].typography.h5?.fontSize || '1.2'),
             color: theme.config[activeMode].typography.h5?.color || '#000000',
             fontWeight: theme.config[activeMode].typography.h5?.fontWeight || 400,
             lineHeight: theme.config[activeMode].typography.h5?.lineHeight || '1.4'
@@ -167,7 +167,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
             h1: {
                 fontFamily: modeData.typography.h1?.fontName || 'Roboto',
                 fontId: modeData.typography.h1?.fontId || '',
-                size: parseFloat(modeData.typography.h1?.fontSize || '2.5'),
+                size: parseFloat(modeData.typography.h1?.fontSize || '2.488'),
                 color: modeData.typography.h1?.color || '#000000',
                 fontWeight: modeData.typography.h1?.fontWeight || 400,
                 lineHeight: modeData.typography.h1?.lineHeight || '1.2'
@@ -175,7 +175,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
             h2: {
                 fontFamily: modeData.typography.h2?.fontName || 'Roboto',
                 fontId: modeData.typography.h2?.fontId || '',
-                size: parseFloat(modeData.typography.h2?.fontSize || '2.0'),
+                size: parseFloat(modeData.typography.h2?.fontSize || '2.074'),
                 color: modeData.typography.h2?.color || '#000000',
                 fontWeight: modeData.typography.h2?.fontWeight || 400,
                 lineHeight: modeData.typography.h2?.lineHeight || '1.2'
@@ -183,7 +183,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
             h3: {
                 fontFamily: modeData.typography.h3?.fontName || 'Roboto',
                 fontId: modeData.typography.h3?.fontId || '',
-                size: parseFloat(modeData.typography.h3?.fontSize || '1.75'),
+                size: parseFloat(modeData.typography.h3?.fontSize || '1.73'),
                 color: modeData.typography.h3?.color || '#000000',
                 fontWeight: modeData.typography.h3?.fontWeight || 400,
                 lineHeight: modeData.typography.h3?.lineHeight || '1.3'
@@ -191,7 +191,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
             h4: {
                 fontFamily: modeData.typography.h4?.fontName || 'Roboto',
                 fontId: modeData.typography.h4?.fontId || '',
-                size: parseFloat(modeData.typography.h4?.fontSize || '1.5'),
+                size: parseFloat(modeData.typography.h4?.fontSize || '1.44'),
                 color: modeData.typography.h4?.color || '#000000',
                 fontWeight: modeData.typography.h4?.fontWeight || 400,
                 lineHeight: modeData.typography.h4?.lineHeight || '1.4'
@@ -199,7 +199,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
             h5: {
                 fontFamily: modeData.typography.h5?.fontName || 'Roboto',
                 fontId: modeData.typography.h5?.fontId || '',
-                size: parseFloat(modeData.typography.h5?.fontSize || '1.25'),
+                size: parseFloat(modeData.typography.h5?.fontSize || '1.2'),
                 color: modeData.typography.h5?.color || '#000000',
                 fontWeight: modeData.typography.h5?.fontWeight || 400,
                 lineHeight: modeData.typography.h5?.lineHeight || '1.4'
@@ -234,7 +234,61 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
         }));
     };
 
+    // Typography size validation
+    const [validationErrors, setValidationErrors] = React.useState<string[]>([]);
+
+    const validateTypographySizes = React.useCallback(() => {
+        const errors: string[] = [];
+        const sizes: Record<string, number> = {
+            h1: styles.h1.size,
+            h2: styles.h2.size,
+            h3: styles.h3.size,
+            h4: styles.h4.size,
+            h5: styles.h5.size,
+            h6: styles.h6.size,
+            p: styles.p.size,
+        };
+
+        // Check H6 >= P
+        if (sizes.h6 < sizes.p) {
+            errors.push(
+                `H6 size (${sizes.h6}rem) must be at least equal to Paragraph size (${sizes.p}rem). Minimum required: ${sizes.p}rem`
+            );
+        }
+
+        // Define hierarchy checks: [higher, lower]
+        const hierarchyChecks: Array<[string, string]> = [
+            ['h5', 'h6'],
+            ['h4', 'h5'],
+            ['h3', 'h4'],
+            ['h2', 'h3'],
+            ['h1', 'h2'],
+        ];
+
+        for (const [higher, lower] of hierarchyChecks) {
+            const minRequired = sizes[lower] * 1.2;
+            if (sizes[higher] < minRequired) {
+                errors.push(
+                    `${higher.toUpperCase()} size (${sizes[higher]}rem) must be at least 1.2× ${lower.toUpperCase()} size (${sizes[lower]}rem). Minimum required: ${minRequired.toFixed(3)}rem`
+                );
+            }
+        }
+
+        setValidationErrors(errors);
+        return errors.length === 0;
+    }, [styles]);
+
+    // Validate when styles change
+    React.useEffect(() => {
+        validateTypographySizes();
+    }, [validateTypographySizes]);
+
     const handleSave = () => {
+        // Check validation before saving
+        if (validationErrors.length > 0) {
+            alert('Please fix the following typography errors before saving:\n\n' + validationErrors.join('\n'));
+            return;
+        }
         const currentPalette = theme.config[activeMode];
         onSave(colors, styles, currentPalette);
     };
@@ -255,7 +309,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
             h1: {
                 fontFamily: modeData.typography.h1?.fontName || 'Roboto',
                 fontId: modeData.typography.h1?.fontId || '',
-                size: parseFloat(modeData.typography.h1?.fontSize || '2.5'),
+                size: parseFloat(modeData.typography.h1?.fontSize || '2.488'),
                 color: modeData.typography.h1?.color || '#000000',
                 fontWeight: modeData.typography.h1?.fontWeight || 400,
                 lineHeight: modeData.typography.h1?.lineHeight || '1.2'
@@ -263,7 +317,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
             h2: {
                 fontFamily: modeData.typography.h2?.fontName || 'Roboto',
                 fontId: modeData.typography.h2?.fontId || '',
-                size: parseFloat(modeData.typography.h2?.fontSize || '2.0'),
+                size: parseFloat(modeData.typography.h2?.fontSize || '2.074'),
                 color: modeData.typography.h2?.color || '#000000',
                 fontWeight: modeData.typography.h2?.fontWeight || 400,
                 lineHeight: modeData.typography.h2?.lineHeight || '1.2'
@@ -271,7 +325,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
             h3: {
                 fontFamily: modeData.typography.h3?.fontName || 'Roboto',
                 fontId: modeData.typography.h3?.fontId || '',
-                size: parseFloat(modeData.typography.h3?.fontSize || '1.75'),
+                size: parseFloat(modeData.typography.h3?.fontSize || '1.73'),
                 color: modeData.typography.h3?.color || '#000000',
                 fontWeight: modeData.typography.h3?.fontWeight || 400,
                 lineHeight: modeData.typography.h3?.lineHeight || '1.3'
@@ -279,7 +333,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
             h4: {
                 fontFamily: modeData.typography.h4?.fontName || 'Roboto',
                 fontId: modeData.typography.h4?.fontId || '',
-                size: parseFloat(modeData.typography.h4?.fontSize || '1.5'),
+                size: parseFloat(modeData.typography.h4?.fontSize || '1.44'),
                 color: modeData.typography.h4?.color || '#000000',
                 fontWeight: modeData.typography.h4?.fontWeight || 400,
                 lineHeight: modeData.typography.h4?.lineHeight || '1.4'
@@ -287,7 +341,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
             h5: {
                 fontFamily: modeData.typography.h5?.fontName || 'Roboto',
                 fontId: modeData.typography.h5?.fontId || '',
-                size: parseFloat(modeData.typography.h5?.fontSize || '1.25'),
+                size: parseFloat(modeData.typography.h5?.fontSize || '1.2'),
                 color: modeData.typography.h5?.color || '#000000',
                 fontWeight: modeData.typography.h5?.fontWeight || 400,
                 lineHeight: modeData.typography.h5?.lineHeight || '1.4'
@@ -364,6 +418,29 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
 
             <div className="flex-1 overflow-y-auto p-4 md:p-8">
                 <div className="max-w-7xl mx-auto space-y-8">
+                    {/* Validation Error Banner */}
+                    {validationErrors.length > 0 && (
+                        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+                            <div className="flex items-start gap-3">
+                                <div className="shrink-0">
+                                    <svg className="w-5 h-5 text-red-600 dark:text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                                    </svg>
+                                </div>
+                                <div className="flex-1">
+                                    <h3 className="text-sm font-semibold text-red-800 dark:text-red-200">
+                                        Typography Size Validation Errors
+                                    </h3>
+                                    <ul className="mt-2 text-sm text-red-700 dark:text-red-300 list-disc list-inside space-y-1">
+                                        {validationErrors.map((error, idx) => (
+                                            <li key={idx}>{error}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
                     {/* Mode Tabs */}
                     <div className="flex items-center gap-2 flex-wrap">
                         {(['light', 'dark', 'accessibility'] as const).map(mode => (
@@ -431,6 +508,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                                     colors={colors}
                                     fonts={fonts}
                                     onStyleChange={handleStyleChange}
+                                    validationErrors={validationErrors}
                                 />
                             </div>
                         </div>

@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import Any, Dict, List, Literal, Optional
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator, AliasGenerator, AliasPath
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator, AliasGenerator, AliasPath
 from pydantic.alias_generators import to_camel
 
 
@@ -97,6 +97,75 @@ class TypographyConfig(BaseModel):
     subtitle: TypographyElement = Field(..., description="Subtitle typography")
     paragraph: TypographyElement = Field(..., description="Paragraph typography")
     decorator: TypographyElement = Field(..., description="Decorator typography for icons and decorative elements")
+
+    @model_validator(mode='after')
+    def validate_typography_hierarchy(self):
+        """Validate that heading sizes follow proper hierarchy.
+
+        Rules:
+        - H6 >= P (paragraph size is the base)
+        - H5 >= H6 × 1.2
+        - H4 >= H5 × 1.2
+        - H3 >= H4 × 1.2
+        - H2 >= H3 × 1.2
+        - H1 >= H2 × 1.2
+
+        A small tolerance (0.005) is applied to account for rounding in
+        multi-step 1.2× calculations (e.g., 1.73 × 1.2 = 2.076, but the
+        true mathematical value from 1.44 × 1.2 × 1.2 = 2.0736).
+
+        Returns:
+            TypographyConfig: self
+
+        Raises:
+            ValueError: If hierarchy validation fails
+        """
+        # Get font sizes as floats
+        sizes = {}
+        for key in ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'paragraph']:
+            element = getattr(self, key, None)
+            if element:
+                try:
+                    sizes[key] = float(element.font_size)
+                except (ValueError, TypeError, AttributeError):
+                    # Skip validation if size is not a valid number
+                    pass
+
+        errors = []
+
+        # Check H6 >= P (they should be equal, but we allow H6 to be larger)
+        if 'h6' in sizes and 'paragraph' in sizes:
+            if sizes['h6'] < sizes['paragraph']:
+                errors.append(
+                    f"H6 size ({sizes['h6']}rem) must be at least equal to Paragraph size ({sizes['paragraph']}rem). "
+                    f"Minimum required: {sizes['paragraph']}rem"
+                )
+
+        # Define hierarchy checks: (higher_level, lower_level)
+        hierarchy_checks = [
+            ('h5', 'h6'),
+            ('h4', 'h5'),
+            ('h3', 'h4'),
+            ('h2', 'h3'),
+            ('h1', 'h2'),
+        ]
+
+        # Tolerance for rounding errors in multi-step 1.2× calculations
+        tolerance = 0.005
+
+        for higher, lower in hierarchy_checks:
+            if higher in sizes and lower in sizes:
+                min_required = sizes[lower] * 1.2
+                if sizes[higher] + tolerance < min_required:
+                    errors.append(
+                        f"{higher.upper()} size ({sizes[higher]}rem) must be at least 1.2× {lower.upper()} size ({sizes[lower]}rem). "
+                        f"Minimum required: {min_required:.3f}rem"
+                    )
+
+        if errors:
+            raise ValueError("Typography hierarchy validation failed: " + "; ".join(errors))
+        
+        return self
 
 
 # ==================== Palette Schema ====================

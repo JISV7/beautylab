@@ -32,14 +32,14 @@ function createDefaultThemeConfig(defaultFontId: string, defaultFontName: string
             decorator: '#ffffff'
         },
         typography: {
-            h1: { ...defaultTypography, fontSize: '2.5', fontWeight: 400, color: '#2f27ce' },
-            h2: { ...defaultTypography, fontSize: '2.0', fontWeight: 400, color: '#2f27ce' },
-            h3: { ...defaultTypography, fontSize: '1.75', fontWeight: 400, color: '#433bff' },
-            h4: { ...defaultTypography, fontSize: '1.5', fontWeight: 400, color: '#1a1675' },
-            h5: { ...defaultTypography, fontSize: '1.25', fontWeight: 400, color: '#1a1675' },
+            h1: { ...defaultTypography, fontSize: '2.488', fontWeight: 400, color: '#2f27ce' },
+            h2: { ...defaultTypography, fontSize: '2.074', fontWeight: 400, color: '#2f27ce' },
+            h3: { ...defaultTypography, fontSize: '1.73', fontWeight: 400, color: '#433bff' },
+            h4: { ...defaultTypography, fontSize: '1.44', fontWeight: 400, color: '#1a1675' },
+            h5: { ...defaultTypography, fontSize: '1.2', fontWeight: 400, color: '#1a1675' },
             h6: { ...defaultTypography, fontSize: '1.0', fontWeight: 400, color: '#1a1675' },
             title: { ...defaultTypography, fontSize: '1.5', fontWeight: 700, color: '#1a1675' },
-            subtitle: { ...defaultTypography, fontSize: '1.25', fontWeight: 600, color: '#1a1675' },
+            subtitle: { ...defaultTypography, fontSize: '1.0', fontWeight: 600, color: '#1a1675' },
             paragraph: { ...defaultTypography, fontSize: '1.0', fontWeight: 400, color: '#1a1a2e' },
             decorator: { ...defaultTypography, fontSize: '1.0', fontWeight: 500, color: '#ffffff' }
         }

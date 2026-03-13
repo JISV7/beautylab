@@ -324,6 +324,8 @@ async def seed_default_theme(
             return elem
 
         # Default theme config based on Default/DefaultTheme.md
+        # Typography sizes follow 1.2 scale rule (major second musical interval):
+        # paragraph = 1.0, h6 = 1.0, h5 = 1.2, h4 = 1.44, h3 = 1.73, h2 = 2.076, h1 = 2.488
         default_config = {
             "light": {
                 "colors": {
@@ -335,14 +337,14 @@ async def seed_default_theme(
                     "border": "#DDDDDD"
                 },
                 "typography": {
-                    "h1": make_typography_element("2.5", 400, "#F83A3A"),
-                    "h2": make_typography_element("2.0", 400, "#F83A3A"),
-                    "h3": make_typography_element("1.75", 400, "#D73359"),
-                    "h4": make_typography_element("1.5", 400, "#8F1D1D"),
-                    "h5": make_typography_element("1.25", 400, "#8F1D1D"),
+                    "h1": make_typography_element("2.492", 400, "#F83A3A"),
+                    "h2": make_typography_element("2.076", 400, "#F83A3A"),
+                    "h3": make_typography_element("1.73", 400, "#D73359"),
+                    "h4": make_typography_element("1.44", 400, "#8F1D1D"),
+                    "h5": make_typography_element("1.2", 400, "#8F1D1D"),
                     "h6": make_typography_element("1.0", 400, "#8F1D1D"),
                     "title": make_typography_element("1.5", 700, "#8F1D1D"),
-                    "subtitle": make_typography_element("1.25", 600, "#8F1D1D"),
+                    "subtitle": make_typography_element("1.0", 600, "#8F1D1D"),
                     "paragraph": make_typography_element("1.0", 400, "#1A1A1A"),
                     "decorator": make_typography_element("1.0", 500, "#FFFFFF")
                 }
@@ -357,14 +359,14 @@ async def seed_default_theme(
                     "border": "#212121"
                 },
                 "typography": {
-                    "h1": make_typography_element("2.5", 400, "#C50707"),
-                    "h2": make_typography_element("2.0", 400, "#C50707"),
-                    "h3": make_typography_element("1.75", 400, "#CC284F"),
-                    "h4": make_typography_element("1.5", 400, "#FF4D4D"),
-                    "h5": make_typography_element("1.25", 400, "#FF4D4D"),
+                    "h1": make_typography_element("2.488", 400, "#C50707"),
+                    "h2": make_typography_element("2.076", 400, "#C50707"),
+                    "h3": make_typography_element("1.73", 400, "#CC284F"),
+                    "h4": make_typography_element("1.44", 400, "#FF4D4D"),
+                    "h5": make_typography_element("1.2", 400, "#FF4D4D"),
                     "h6": make_typography_element("1.0", 400, "#FF4D4D"),
                     "title": make_typography_element("1.5", 700, "#FF4D4D"),
-                    "subtitle": make_typography_element("1.25", 600, "#FF4D4D"),
+                    "subtitle": make_typography_element("1.0", 600, "#FF4D4D"),
                     "paragraph": make_typography_element("1.0", 400, "#E0E0E0"),
                     "decorator": make_typography_element("1.0", 500, "#FFFFFF")
                 }
@@ -379,14 +381,14 @@ async def seed_default_theme(
                     "border": "#DDDDDD"
                 },
                 "typography": {
-                    "h1": make_typography_element("2.5", 400, "#2F27CE"),
-                    "h2": make_typography_element("2.0", 400, "#2F27CE"),
-                    "h3": make_typography_element("1.75", 400, "#433BFF"),
-                    "h4": make_typography_element("1.5", 400, "#1A1675"),
-                    "h5": make_typography_element("1.25", 400, "#1A1675"),
+                    "h1": make_typography_element("2.488", 400, "#2F27CE"),
+                    "h2": make_typography_element("2.076", 400, "#2F27CE"),
+                    "h3": make_typography_element("1.73", 400, "#433BFF"),
+                    "h4": make_typography_element("1.44", 400, "#1A1675"),
+                    "h5": make_typography_element("1.2", 400, "#1A1675"),
                     "h6": make_typography_element("1.0", 400, "#1A1675"),
                     "title": make_typography_element("1.5", 700, "#1A1675"),
-                    "subtitle": make_typography_element("1.25", 600, "#1A1675"),
+                    "subtitle": make_typography_element("1.0", 600, "#1A1675"),
                     "paragraph": make_typography_element("1.0", 400, "#1A1A2E"),
                     "decorator": make_typography_element("1.0", 500, "#FFFFFF")
                 }

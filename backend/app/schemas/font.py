@@ -13,6 +13,12 @@ class FontUsageEntry(BaseModel):
     palette: Literal["light", "dark", "accessibility"]
     element: str = Field(..., description="Typography element (h1, h2, ..., p)")
 
+    model_config = ConfigDict(
+        from_attributes=True,
+        alias_generator=to_camel,
+        populate_by_name=True,
+    )
+
 
 class FontBase(BaseModel):
     name: str = Field(..., max_length=100, description="Font display name")
@@ -29,7 +35,7 @@ class FontResponse(FontBase):
     created_by: UUID
     created_by_name: str
     created_at: str
-    font_usage: list
+    font_usage: List[FontUsageEntry] = []
     usage_count: int
 
     model_config = ConfigDict(

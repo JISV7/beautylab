@@ -291,11 +291,21 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
 
             {/* Delete Confirmation Modal */}
             {deleteConfirmOpen && fontToDelete && (
-                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                    <div className="w-full max-w-md relative overflow-hidden bg-[var(--palette-surface)] border border-[var(--palette-border)] rounded-2xl shadow-2xl">
-                        <div className="p-6">
+                <div 
+                    className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+                    onClick={() => {
+                        setDeleteConfirmOpen(false);
+                        setFontToDelete(null);
+                    }}
+                >
+                    <div 
+                        className="w-full max-w-md relative max-h-[80vh] flex flex-col bg-[var(--palette-surface)] border border-[var(--palette-border)] rounded-2xl shadow-2xl"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        {/* Scrollable content area */}
+                        <div className="p-6 overflow-y-auto flex-1">
                             <div className="flex items-start gap-4 mb-4">
-                                <Trash2 className="w-6 h-6 text-red-600" />
+                                <Trash2 className="w-6 h-6 text-red-600 shrink-0" />
                                 <div className="flex-1">
                                     <h2 className="text-xl font-bold text-[var(--text-h2-color)] mb-2">
                                         Delete Font
@@ -303,24 +313,25 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
                                     {getDeleteMessage(fontToDelete)}
                                 </div>
                             </div>
-                            <div className="flex items-center gap-3 mt-6">
-                                <button
-                                    onClick={() => {
-                                        setDeleteConfirmOpen(false);
-                                        setFontToDelete(null);
-                                    }}
-                                    className="flex-1 px-4 py-2 rounded-lg border border-[var(--palette-border)] text-[var(--text-p-color)] hover:bg-[var(--palette-border)] transition-colors"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    onClick={handleConfirmDelete}
-                                    disabled={(fontToDelete.usageCount || 0) > 0}
-                                    className="flex-1 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    Delete
-                                </button>
-                            </div>
+                        </div>
+                        {/* Fixed button area */}
+                        <div className="p-6 border-t border-[var(--palette-border)] flex items-center gap-3 shrink-0 bg-[var(--palette-surface)]">
+                            <button
+                                onClick={() => {
+                                    setDeleteConfirmOpen(false);
+                                    setFontToDelete(null);
+                                }}
+                                className="flex-1 px-4 py-2 rounded-lg border border-[var(--palette-border)] text-[var(--text-p-color)] hover:bg-[var(--palette-border)] transition-colors"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleConfirmDelete}
+                                disabled={(fontToDelete.usageCount || 0) > 0}
+                                className="flex-1 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                Delete
+                            </button>
                         </div>
                     </div>
                 </div>

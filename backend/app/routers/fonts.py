@@ -81,6 +81,16 @@ async def list_fonts(db: AsyncSession = Depends(get_db)):
         font_usage = font.font_usage if font.font_usage else []
         usage_count = len(font_usage)
 
+        # Convert font_usage entries to camelCase for frontend
+        font_usage_camel = []
+        for usage in font_usage:
+            font_usage_camel.append({
+                "themeId": usage.get("theme_id"),
+                "themeName": usage.get("theme_name"),
+                "palette": usage.get("palette"),
+                "element": usage.get("element")
+            })
+
         font_dict = {
             "id": str(font.id),
             "name": font.name,
@@ -89,7 +99,7 @@ async def list_fonts(db: AsyncSession = Depends(get_db)):
             "created_by": str(font.created_by) if font.created_by else None,
             "created_by_name": uploader_name,
             "created_at": font.created_at.isoformat() if font.created_at else None,
-            "font_usage": font_usage,
+            "font_usage": font_usage_camel,
             "usage_count": usage_count
         }
         font_list.append(font_dict)
@@ -116,11 +126,21 @@ async def get_font_with_usage(
         theme_service = ThemeService(db)
         for usage in font_usage:
             usages.append({
-                "theme_id": usage["theme_id"],
-                "theme_name": usage["theme_name"],
-                "palette": usage["palette"],
-                "element": usage["element"]
+                "themeId": usage.get("theme_id"),
+                "themeName": usage.get("theme_name"),
+                "palette": usage.get("palette"),
+                "element": usage.get("element")
             })
+
+    # Convert font_usage entries to camelCase for frontend
+    font_usage_camel = []
+    for usage in font_usage:
+        font_usage_camel.append({
+            "themeId": usage.get("theme_id"),
+            "themeName": usage.get("theme_name"),
+            "palette": usage.get("palette"),
+            "element": usage.get("element")
+        })
 
     return {
         "id": str(font.id),
@@ -129,7 +149,7 @@ async def get_font_with_usage(
         "url": font.url,
         "created_by": str(font.created_by) if font.created_by else None,
         "created_at": font.created_at.isoformat() if font.created_at else None,
-        "font_usage": font_usage,
+        "font_usage": font_usage_camel,
         "usage_count": len(font_usage),
         "usages": usages
     }

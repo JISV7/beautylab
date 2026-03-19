@@ -5,12 +5,14 @@ interface CreateThemeModalProps {
     isOpen: boolean;
     onClose: () => void;
     onSubmit: (name: string, description: string) => void;
+    onRandomSubmit: () => void;
 }
 
 export const CreateThemeModal: React.FC<CreateThemeModalProps> = ({
     isOpen,
     onClose,
     onSubmit,
+    onRandomSubmit,
 }) => {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
@@ -48,6 +50,12 @@ export const CreateThemeModal: React.FC<CreateThemeModalProps> = ({
                         className="px-4 py-2 text-sm font-medium text-white theme-button-primary rounded-lg"
                     >
                         Create Theme
+                    </button>
+                    <button
+                        onClick={onRandomSubmit}
+                        className="px-4 py-2 text-sm font-medium text-white theme-button-primary rounded-lg flex items-center gap-2"
+                    >
+                        Random
                     </button>
                 </>
             }

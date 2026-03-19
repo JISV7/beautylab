@@ -10,8 +10,27 @@ import { CreateThemeModal } from './CreateThemeModal';
 import { MessageModal } from './MessageModal';
 import { ConfirmModal } from './ConfirmModal';
 
+// Helper to convert HSL to HEX
+function hslToHex(h: number, s: number, l: number): string {
+    l /= 100;
+    const a = (s * Math.min(l, 1 - l)) / 100;
+    const f = (n: number) => {
+        const k = (n + h / 30) % 12;
+        const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+        return Math.round(255 * color).toString(16).padStart(2, '0');
+    };
+    return `#${f(0)}${f(8)}${f(4)}`;
+}
+
 // Helper to create a complete default theme config with all required fields
-function createDefaultThemeConfig(defaultFontId: string, defaultFontName: string = 'Roboto'): ThemeConfig {
+function createDefaultThemeConfig(
+    defaultFontId: string,
+    defaultFontName: string = 'Roboto',
+    customColors?: {
+        light: { primary: string; secondary: string; accent: string };
+        dark: { primary: string; secondary: string; accent: string };
+    }
+): ThemeConfig {
     const defaultTypography: TypographyElement = {
         fontId: defaultFontId,
         fontName: defaultFontName,
@@ -21,20 +40,20 @@ function createDefaultThemeConfig(defaultFontId: string, defaultFontName: string
         lineHeight: '1.6'
     };
 
-    const defaultPalette: ThemePalette = {
+    const lightPalette: ThemePalette = {
         colors: {
-            primary: '#2f27ce',
-            secondary: '#dedcff',
-            accent: '#433bff',
-            background: '#fbfbfe',
-            surface: '#eeeef0',
-            border: '#dddddd',
-            decorator: '#ffffff'
+            primary: customColors?.light.primary || '#F83A3A',
+            secondary: customColors?.light.secondary || '#FAA2B6',
+            accent: customColors?.light.accent || '#D73359',
+            background: '#FBFBFE',
+            surface: '#EEEEF0',
+            border: '#DDDDDD',
+            decorator: '#FFFFFF'
         },
         typography: {
-            h1: { ...defaultTypography, fontSize: '2.488', fontWeight: 400, color: '#2f27ce' },
-            h2: { ...defaultTypography, fontSize: '2.074', fontWeight: 400, color: '#2f27ce' },
-            h3: { ...defaultTypography, fontSize: '1.73', fontWeight: 400, color: '#433bff' },
+            h1: { ...defaultTypography, fontSize: '2.492', fontWeight: 400, color: customColors?.light.primary || '#F83A3A' },
+            h2: { ...defaultTypography, fontSize: '2.076', fontWeight: 400, color: customColors?.light.primary || '#F83A3A' },
+            h3: { ...defaultTypography, fontSize: '1.73', fontWeight: 400, color: customColors?.light.accent || '#D73359' },
             h4: { ...defaultTypography, fontSize: '1.44', fontWeight: 400, color: '#1a1675' },
             h5: { ...defaultTypography, fontSize: '1.2', fontWeight: 400, color: '#1a1675' },
             h6: { ...defaultTypography, fontSize: '1.0', fontWeight: 400, color: '#1a1675' },
@@ -45,10 +64,34 @@ function createDefaultThemeConfig(defaultFontId: string, defaultFontName: string
         }
     };
 
+    const darkPalette: ThemePalette = {
+        colors: {
+            primary: customColors?.dark.primary || '#C50707',
+            secondary: customColors?.dark.secondary || '#5C0519',
+            accent: customColors?.dark.accent || '#CC284F',
+            background: '#010104',
+            surface: '#0e0e10',
+            border: '#212121',
+            decorator: '#000000'
+        },
+        typography: {
+            h1: { ...defaultTypography, fontSize: '2.492', fontWeight: 400, color: customColors?.dark.primary || '#C50707' },
+            h2: { ...defaultTypography, fontSize: '2.076', fontWeight: 400, color: customColors?.dark.primary || '#C50707' },
+            h3: { ...defaultTypography, fontSize: '1.73', fontWeight: 400, color: customColors?.dark.accent || '#CC284F' },
+            h4: { ...defaultTypography, fontSize: '1.44', fontWeight: 400, color: '#e0e0e0' },
+            h5: { ...defaultTypography, fontSize: '1.2', fontWeight: 400, color: '#e0e0e0' },
+            h6: { ...defaultTypography, fontSize: '1.0', fontWeight: 400, color: '#e0e0e0' },
+            title: { ...defaultTypography, fontSize: '1.5', fontWeight: 700, color: '#ffffff' },
+            subtitle: { ...defaultTypography, fontSize: '1.0', fontWeight: 600, color: '#ffffff' },
+            paragraph: { ...defaultTypography, fontSize: '1.0', fontWeight: 400, color: '#d1d1d1' },
+            decorator: { ...defaultTypography, fontSize: '1.0', fontWeight: 500, color: '#000000' }
+        }
+    };
+
     return {
-        light: JSON.parse(JSON.stringify(defaultPalette)),
-        dark: JSON.parse(JSON.stringify(defaultPalette)),
-        accessibility: JSON.parse(JSON.stringify(defaultPalette))
+        light: lightPalette,
+        dark: darkPalette,
+        accessibility: JSON.parse(JSON.stringify(lightPalette))
     };
 }
 
@@ -145,6 +188,23 @@ const toThemePalette = (
 });
 
 export const UnifiedThemeConfig: React.FC = () => {
+    // Helper for random color generation (analogous colors for both modes)
+    const generateAnalogousColors = () => {
+        const h = Math.floor(Math.random() * 360);
+        const s = 75 + Math.floor(Math.random() * 15); // 75-90% (vibrant)
+
+        const getColors = (pL: number, sL: number, aL: number) => ({
+            primary: hslToHex(h, s, pL),
+            secondary: hslToHex((h + 30) % 360, s, sL),
+            accent: hslToHex((h - 30 + 360) % 360, s, aL),
+        });
+
+        return {
+            light: getColors(60, 80, 50),
+            dark: getColors(40, 20, 45),
+        };
+    };
+
     const { fetchAllThemes, activateTheme, createTheme, updateTheme, deleteTheme, fetchFonts } = useTheme();
 
     // View mode: 'list' | 'edit' | 'preview'
@@ -267,6 +327,47 @@ export const UnifiedThemeConfig: React.FC = () => {
         }
     };
 
+    const handleCreateRandomTheme = async () => {
+        const dualModeColors = generateAnalogousColors();
+        const date = new Date().toLocaleDateString();
+        const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const name = `Random ${date} ${time}`;
+        const description = 'Quickly generated theme with analogous colors for light and dark modes.';
+
+        try {
+            const newThemeData: Partial<Theme> = {
+                name,
+                description,
+                type: 'custom' as const,
+                config: createDefaultThemeConfig(
+                    defaultFontId,
+                    fonts.find(f => f.id === defaultFontId)?.name || 'Roboto',
+                    dualModeColors
+                ),
+                isActive: false,
+                isDefault: false,
+            };
+
+            const created = await createTheme(newThemeData);
+            setThemes(prev => [...prev, created]);
+            setActiveThemeId(created.id);
+            setViewMode('edit');
+            setIsCreateModalOpen(false);
+            setMessageModal({
+                isOpen: true,
+                type: 'success',
+                message: `Random theme "${name}" created!`
+            });
+        } catch (error: any) {
+            console.error('Failed to create random theme:', error);
+            setMessageModal({
+                isOpen: true,
+                type: 'error',
+                message: error.response?.data?.detail || 'Failed to create random theme.'
+            });
+        }
+    };
+
     const handleShowCreateModal = () => {
         setIsCreateModalOpen(true);
     };
@@ -282,10 +383,10 @@ export const UnifiedThemeConfig: React.FC = () => {
     const generateDuplicateName = (baseName: string): string => {
         // Check if name already ends with "Copy" or "Copy N"
         const copyMatch = baseName.match(/^(.*) Copy(?: (\d+))?$/);
-        
+
         let originalName: string;
         let copyNumber: number;
-        
+
         if (copyMatch) {
             // Name already has "Copy" suffix
             originalName = copyMatch[1] || baseName;
@@ -295,24 +396,24 @@ export const UnifiedThemeConfig: React.FC = () => {
             originalName = baseName;
             copyNumber = 1;
         }
-        
+
         // Generate candidate name
-        const candidateName = copyNumber === 1 
+        const candidateName = copyNumber === 1
             ? `${originalName} Copy`
             : `${originalName} Copy ${copyNumber}`;
-        
+
         // Check if this name already exists and increment if needed
         const existingNames = new Set(themes.map(t => t.name.toLowerCase()));
         let finalName = candidateName;
         let counter = copyNumber;
-        
+
         while (existingNames.has(finalName.toLowerCase())) {
             counter++;
-            finalName = counter === 1 
+            finalName = counter === 1
                 ? `${originalName} Copy`
                 : `${originalName} Copy ${counter}`;
         }
-        
+
         return finalName;
     };
 
@@ -576,6 +677,7 @@ export const UnifiedThemeConfig: React.FC = () => {
                     isOpen={isCreateModalOpen}
                     onClose={() => setIsCreateModalOpen(false)}
                     onSubmit={handleCreateTheme}
+                    onRandomSubmit={handleCreateRandomTheme}
                 />
                 <MessageModal
                     isOpen={messageModal.isOpen}

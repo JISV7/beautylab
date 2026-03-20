@@ -5,15 +5,17 @@ Revises: 008_add_educational_catalog
 Create Date: 2026-03-20
 
 """
+
 from typing import Sequence, Union
 
 import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
+
 from alembic import op
 
 # revision identifiers, used by Alembic.
-revision: str = "009_add_learning_paths"
-down_revision: Union[str, None] = "008_add_educational_catalog"
+revision: str = "009_learning_paths"
+down_revision: Union[str, None] = "008_educational_catalog"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
@@ -22,7 +24,12 @@ def upgrade() -> None:
     # 1. Learning paths table
     op.create_table(
         "learning_paths",
-        sa.Column("id", postgresql.UUID(as_uuid=True), server_default=sa.text("gen_random_uuid()"), nullable=False),
+        sa.Column(
+            "id",
+            postgresql.UUID(as_uuid=True),
+            server_default=sa.text("gen_random_uuid()"),
+            nullable=False,
+        ),
         sa.Column("title", sa.String(length=255), nullable=False),
         sa.Column("slug", sa.String(length=280), nullable=False),
         sa.Column("description", sa.Text(), nullable=True),
@@ -30,8 +37,12 @@ def upgrade() -> None:
         # product_id is mandatory: each learning path must have a corresponding product
         sa.Column("product_id", postgresql.UUID(as_uuid=True), nullable=False),
         sa.Column("published", sa.Boolean(), nullable=False, server_default=sa.text("false")),
-        sa.Column("created_at", sa.TIMESTAMP(timezone=True), server_default=sa.func.now(), nullable=True),
-        sa.Column("updated_at", sa.TIMESTAMP(timezone=True), server_default=sa.func.now(), nullable=True),
+        sa.Column(
+            "created_at", sa.TIMESTAMP(timezone=True), server_default=sa.func.now(), nullable=True
+        ),
+        sa.Column(
+            "updated_at", sa.TIMESTAMP(timezone=True), server_default=sa.func.now(), nullable=True
+        ),
         sa.ForeignKeyConstraint(["product_id"], ["products.id"], ondelete="RESTRICT"),
         sa.PrimaryKeyConstraint("id"),
         sa.UniqueConstraint("slug"),
@@ -45,12 +56,16 @@ def upgrade() -> None:
         sa.Column("learning_path_id", postgresql.UUID(as_uuid=True), nullable=False),
         sa.Column("course_id", postgresql.UUID(as_uuid=True), nullable=False),
         sa.Column("order", sa.Integer(), nullable=False, server_default=sa.text("0")),
-        sa.Column("created_at", sa.TIMESTAMP(timezone=True), server_default=sa.func.now(), nullable=True),
+        sa.Column(
+            "created_at", sa.TIMESTAMP(timezone=True), server_default=sa.func.now(), nullable=True
+        ),
         sa.ForeignKeyConstraint(["course_id"], ["courses.id"], ondelete="CASCADE"),
         sa.ForeignKeyConstraint(["learning_path_id"], ["learning_paths.id"], ondelete="CASCADE"),
         sa.PrimaryKeyConstraint("learning_path_id", "course_id"),
     )
-    op.create_index("idx_lp_courses_path", "learning_path_courses", ["learning_path_id"], unique=False)
+    op.create_index(
+        "idx_lp_courses_path", "learning_path_courses", ["learning_path_id"], unique=False
+    )
     op.create_index("idx_lp_courses_course", "learning_path_courses", ["course_id"], unique=False)
 
     # 3. Triggers for updated_at

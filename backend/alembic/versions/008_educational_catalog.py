@@ -5,15 +5,17 @@ Revises: 007_add_invoices_and_lines
 Create Date: 2026-03-20
 
 """
+
 from typing import Sequence, Union
 
 import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
+
 from alembic import op
 
 # revision identifiers, used by Alembic.
-revision: str = "008_add_educational_catalog"
-down_revision: Union[str, None] = "007_add_invoices_and_lines"
+revision: str = "008_educational_catalog"
+down_revision: Union[str, None] = "007_invoices"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
@@ -28,8 +30,12 @@ def upgrade() -> None:
         sa.Column("description", sa.Text(), nullable=True),
         sa.Column("parent_id", sa.Integer(), nullable=True),
         sa.Column("order", sa.Integer(), nullable=False, server_default=sa.text("0")),
-        sa.Column("created_at", sa.TIMESTAMP(timezone=True), server_default=sa.func.now(), nullable=True),
-        sa.Column("updated_at", sa.TIMESTAMP(timezone=True), server_default=sa.func.now(), nullable=True),
+        sa.Column(
+            "created_at", sa.TIMESTAMP(timezone=True), server_default=sa.func.now(), nullable=True
+        ),
+        sa.Column(
+            "updated_at", sa.TIMESTAMP(timezone=True), server_default=sa.func.now(), nullable=True
+        ),
         sa.ForeignKeyConstraint(["parent_id"], ["categories.id"], ondelete="SET NULL"),
         sa.PrimaryKeyConstraint("id"),
         sa.UniqueConstraint("slug"),
@@ -44,7 +50,9 @@ def upgrade() -> None:
         sa.Column("slug", sa.String(length=60), nullable=False),
         sa.Column("description", sa.Text(), nullable=True),
         sa.Column("order", sa.Integer(), nullable=False, server_default=sa.text("0")),
-        sa.Column("created_at", sa.TIMESTAMP(timezone=True), server_default=sa.func.now(), nullable=True),
+        sa.Column(
+            "created_at", sa.TIMESTAMP(timezone=True), server_default=sa.func.now(), nullable=True
+        ),
         sa.PrimaryKeyConstraint("id"),
         sa.UniqueConstraint("slug"),
     )
@@ -52,7 +60,12 @@ def upgrade() -> None:
     # 3. Courses table
     op.create_table(
         "courses",
-        sa.Column("id", postgresql.UUID(as_uuid=True), server_default=sa.text("gen_random_uuid()"), nullable=False),
+        sa.Column(
+            "id",
+            postgresql.UUID(as_uuid=True),
+            server_default=sa.text("gen_random_uuid()"),
+            nullable=False,
+        ),
         sa.Column("title", sa.String(length=255), nullable=False),
         sa.Column("slug", sa.String(length=280), nullable=False),
         sa.Column("description", sa.Text(), nullable=True),
@@ -63,8 +76,12 @@ def upgrade() -> None:
         # product_id is mandatory: each course must have a corresponding product
         sa.Column("product_id", postgresql.UUID(as_uuid=True), nullable=False),
         sa.Column("published", sa.Boolean(), nullable=False, server_default=sa.text("false")),
-        sa.Column("created_at", sa.TIMESTAMP(timezone=True), server_default=sa.func.now(), nullable=True),
-        sa.Column("updated_at", sa.TIMESTAMP(timezone=True), server_default=sa.func.now(), nullable=True),
+        sa.Column(
+            "created_at", sa.TIMESTAMP(timezone=True), server_default=sa.func.now(), nullable=True
+        ),
+        sa.Column(
+            "updated_at", sa.TIMESTAMP(timezone=True), server_default=sa.func.now(), nullable=True
+        ),
         sa.ForeignKeyConstraint(["category_id"], ["categories.id"], ondelete="SET NULL"),
         sa.ForeignKeyConstraint(["level_id"], ["levels.id"], ondelete="SET NULL"),
         sa.ForeignKeyConstraint(["product_id"], ["products.id"], ondelete="RESTRICT"),
@@ -104,6 +121,7 @@ def upgrade() -> None:
         ('Data Science', 'data-science', 3),
         ('Desarrollo Web', 'desarrollo-web', 4);
     """)
+
 
 def downgrade() -> None:
     # Drop triggers

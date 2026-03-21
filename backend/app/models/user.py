@@ -1,6 +1,5 @@
 """User model."""
 
-from datetime import datetime
 from typing import TYPE_CHECKING, Optional
 from uuid import UUID
 
@@ -27,14 +26,22 @@ class User(Base, TimestampMixin):
     )
     email: Mapped[str] = mapped_column(String(255), unique=True, nullable=False, index=True)
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
-    full_name: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    full_name: Mapped[str | None] = mapped_column(String(100), nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
     is_verified: Mapped[bool] = mapped_column(Boolean, default=False)
-    preferred_theme_id: Mapped[Optional[UUID]] = mapped_column(
+    preferred_theme_id: Mapped[UUID | None] = mapped_column(
         Uuid(as_uuid=True),
         ForeignKey("themes.id", ondelete="SET NULL"),
         nullable=True,
     )
+    # Fiscal fields (migration 004)
+    rif: Mapped[str | None] = mapped_column(String(20), nullable=True, index=True)
+    document_type: Mapped[str | None] = mapped_column(String(10), nullable=True)
+    document_number: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    business_name: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    fiscal_address: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    phone: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    is_contributor: Mapped[bool | None] = mapped_column(Boolean, default=False)
 
     # Relationships
     user_roles: Mapped[list["UserRole"]] = relationship(

@@ -3,20 +3,21 @@ import shutil
 import uuid
 from typing import List, Optional
 
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, status
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.dependencies import RequireAdmin, get_current_user
 from app.database import get_db
 from app.models.font import Font
 from app.models.theme import Theme
 from app.models.user import User
-from app.core.dependencies import get_current_user, RequireAdmin
 from app.schemas.font import FontResponse, FontWithUsage
-from app.services.theme_service import ThemeService, FontInUseError
+from app.services.theme_service import FontInUseError, ThemeService
 
 try:
     from fontTools.ttLib import TTFont
+
     FONTTOOLS_AVAILABLE = True
 except ImportError:
     FONTTOOLS_AVAILABLE = False
@@ -31,25 +32,25 @@ ALLOWED_EXTENSIONS = {".ttf", ".otf", ".woff", ".woff2"}
 
 def extract_font_metadata(filepath: str) -> Optional[str]:
     """Extract font family name from font file using fonttools.
-    
+
     Args:
         filepath: Path to the font file
-        
+
     Returns:
         Font family name if available, None otherwise
     """
     if not FONTTOOLS_AVAILABLE:
         return None
-    
+
     try:
         font = TTFont(filepath)
         name_table = font["name"]
-        
+
         # Name ID 1 = Font Family name
         for record in name_table.names:
             if record.nameID == 1:
                 return record.toUnicode()
-        
+
         # Fallback: try name ID 16 (Typographic Family)
         for record in name_table.names:
             if record.nameID == 16:
@@ -57,7 +58,7 @@ def extract_font_metadata(filepath: str) -> Optional[str]:
     except Exception:
         # If extraction fails, return None to use filename as fallback
         pass
-    
+
     return None
 
 
@@ -74,6 +75,7 @@ async def list_fonts(db: AsyncSession = Depends(get_db)):
         uploader_name = None
         if font.created_by:
             from app.models.user import User
+
             user_result = await db.execute(select(User.full_name).where(User.id == font.created_by))
             uploader_name = user_result.scalar_one_or_none()
 
@@ -84,12 +86,14 @@ async def list_fonts(db: AsyncSession = Depends(get_db)):
         # Convert font_usage entries to camelCase for frontend
         font_usage_camel = []
         for usage in font_usage:
-            font_usage_camel.append({
-                "themeId": usage.get("theme_id"),
-                "themeName": usage.get("theme_name"),
-                "palette": usage.get("palette"),
-                "element": usage.get("element")
-            })
+            font_usage_camel.append(
+                {
+                    "themeId": usage.get("theme_id"),
+                    "themeName": usage.get("theme_name"),
+                    "palette": usage.get("palette"),
+                    "element": usage.get("element"),
+                }
+            )
 
         font_dict = {
             "id": str(font.id),
@@ -100,7 +104,7 @@ async def list_fonts(db: AsyncSession = Depends(get_db)):
             "created_by_name": uploader_name,
             "created_at": font.created_at.isoformat() if font.created_at else None,
             "font_usage": font_usage_camel,
-            "usage_count": usage_count
+            "usage_count": usage_count,
         }
         font_list.append(font_dict)
 
@@ -125,22 +129,26 @@ async def get_font_with_usage(
     if font_usage:
         theme_service = ThemeService(db)
         for usage in font_usage:
-            usages.append({
-                "themeId": usage.get("theme_id"),
-                "themeName": usage.get("theme_name"),
-                "palette": usage.get("palette"),
-                "element": usage.get("element")
-            })
+            usages.append(
+                {
+                    "themeId": usage.get("theme_id"),
+                    "themeName": usage.get("theme_name"),
+                    "palette": usage.get("palette"),
+                    "element": usage.get("element"),
+                }
+            )
 
     # Convert font_usage entries to camelCase for frontend
     font_usage_camel = []
     for usage in font_usage:
-        font_usage_camel.append({
-            "themeId": usage.get("theme_id"),
-            "themeName": usage.get("theme_name"),
-            "palette": usage.get("palette"),
-            "element": usage.get("element")
-        })
+        font_usage_camel.append(
+            {
+                "themeId": usage.get("theme_id"),
+                "themeName": usage.get("theme_name"),
+                "palette": usage.get("palette"),
+                "element": usage.get("element"),
+            }
+        )
 
     return {
         "id": str(font.id),
@@ -151,7 +159,7 @@ async def get_font_with_usage(
         "created_at": font.created_at.isoformat() if font.created_at else None,
         "font_usage": font_usage_camel,
         "usage_count": len(font_usage),
-        "usages": usages
+        "usages": usages,
     }
 
 
@@ -169,7 +177,7 @@ async def upload_font(
     if ext not in ALLOWED_EXTENSIONS:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Invalid file extension. Allowed: {', '.join(ALLOWED_EXTENSIONS)}"
+            detail=f"Invalid file extension. Allowed: {', '.join(ALLOWED_EXTENSIONS)}",
         )
 
     # Generate unique filename to avoid collisions
@@ -185,19 +193,22 @@ async def upload_font(
 
     # Extract font metadata from file (font family name)
     extracted_name = extract_font_metadata(filepath)
-    
+
     # Use extracted name if available, otherwise derive from filename
-    font_name = extracted_name if extracted_name else os.path.splitext(file.filename)[0] if file.filename else "Unknown Font"
+    font_name = (
+        extracted_name
+        if extracted_name
+        else os.path.splitext(file.filename)[0]
+        if file.filename
+        else "Unknown Font"
+    )
 
     # The URL that the frontend will load it from
     font_url = f"/static/fonts/{unique_filename}"
 
     # Create DB entry with all available font information
     db_font = Font(
-        name=font_name,
-        filename=unique_filename,
-        url=font_url,
-        created_by=current_user.id
+        name=font_name, filename=unique_filename, url=font_url, created_by=current_user.id
     )
 
     db.add(db_font)
@@ -213,7 +224,7 @@ async def upload_font(
         "created_by_name": current_user.full_name,
         "created_at": db_font.created_at.isoformat(),
         "font_usage": [],
-        "usage_count": 0
+        "usage_count": 0,
     }
 
 
@@ -221,22 +232,19 @@ async def upload_font(
 async def delete_font(
     font_id: uuid.UUID,
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(RequireAdmin)
+    current_user: User = Depends(RequireAdmin),
 ):
     """Delete a custom font.
-    
+
     Cannot delete if font is in use by any theme palette.
     """
     theme_service = ThemeService(db)
-    
+
     # Check if font can be deleted
     can_delete, reason = await theme_service.can_delete_font(font_id)
-    
+
     if not can_delete:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=reason
-        )
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=reason)
 
     result = await db.execute(select(Font).where(Font.id == font_id))
     font = result.scalar_one_or_none()
@@ -258,8 +266,7 @@ async def delete_font(
 
 @router.post("/rebuild-usage", status_code=status.HTTP_200_OK)
 async def rebuild_font_usage(
-    db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(RequireAdmin)
+    db: AsyncSession = Depends(get_db), current_user: User = Depends(RequireAdmin)
 ):
     """Rebuild font usage tracking from existing themes.
 
@@ -303,5 +310,5 @@ async def rebuild_font_usage(
     return {
         "message": f"Font usage rebuilt successfully",
         "themes_processed": len(themes),
-        "fonts_updated": len(updated_fonts)
+        "fonts_updated": len(updated_fonts),
     }

@@ -22,9 +22,9 @@ from app.services.auth_service import AuthService
 settings = get_settings()
 
 # Test database URL (in-memory or separate test database)
-TEST_DATABASE_URL = settings.database_url.replace(
-    "postgresql://", "postgresql+asyncpg://"
-).replace("/beautylab", "/beautylab_test")
+TEST_DATABASE_URL = settings.database_url.replace("postgresql://", "postgresql+asyncpg://").replace(
+    "/beautylab", "/beautylab_test"
+)
 
 
 @pytest.fixture(scope="session")

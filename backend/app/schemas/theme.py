@@ -4,11 +4,19 @@ from datetime import datetime
 from typing import Any, Dict, List, Literal, Optional
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator, AliasGenerator, AliasPath
+from pydantic import (
+    AliasGenerator,
+    AliasPath,
+    BaseModel,
+    ConfigDict,
+    Field,
+    field_validator,
+    model_validator,
+)
 from pydantic.alias_generators import to_camel
 
-
 # ==================== Color Schemas ====================
+
 
 class PaletteColors(BaseModel):
     """Color palette for a theme mode.
@@ -24,7 +32,7 @@ class PaletteColors(BaseModel):
     surface: str = Field(..., description="Surface color for cards, panels")
     border: str = Field(..., description="Border and divider color")
 
-    @field_validator('primary', 'secondary', 'accent', 'background', 'surface', 'border')
+    @field_validator("primary", "secondary", "accent", "background", "surface", "border")
     @classmethod
     def normalize_hex_color(cls, v: str) -> str:
         """Normalize hex color values to uppercase for consistency."""
@@ -38,7 +46,7 @@ class PaletteColors(BaseModel):
                 "accent": "#433bff",
                 "background": "#fbfbfe",
                 "surface": "#eeeef0",
-                "border": "#dddddd"
+                "border": "#dddddd",
             }
         },
         alias_generator=AliasGenerator(validation_alias=to_camel),
@@ -47,6 +55,7 @@ class PaletteColors(BaseModel):
 
 
 # ==================== Typography Schemas ====================
+
 
 class TypographyElement(BaseModel):
     """Typography settings for a single element (h1-h6, p, etc.).
@@ -58,11 +67,15 @@ class TypographyElement(BaseModel):
     font_id: UUID = Field(..., description="Font UUID (must reference fonts.id)", alias="fontId")
     font_name: str = Field(..., description="Font name for display", alias="fontName")
     font_size: str = Field(..., description="Font size in rem units", alias="fontSize")
-    font_weight: int = Field(default=400, ge=100, le=900, description="Font weight 100-900", alias="fontWeight")
+    font_weight: int = Field(
+        default=400, ge=100, le=900, description="Font weight 100-900", alias="fontWeight"
+    )
     color: str = Field(..., description="Text color for this element")
-    line_height: Optional[str] = Field(None, description="Line height (e.g., '1.2')", alias="lineHeight")
+    line_height: Optional[str] = Field(
+        None, description="Line height (e.g., '1.2')", alias="lineHeight"
+    )
 
-    @field_validator('color')
+    @field_validator("color")
     @classmethod
     def normalize_hex_color(cls, v: str) -> str:
         """Normalize hex color values to uppercase for consistency."""
@@ -76,7 +89,7 @@ class TypographyElement(BaseModel):
                 "font_size": "2.5",
                 "font_weight": 800,
                 "color": "#2f27ce",
-                "line_height": "1.2"
+                "line_height": "1.2",
             }
         },
         alias_generator=AliasGenerator(serialization_alias=to_camel),
@@ -96,9 +109,11 @@ class TypographyConfig(BaseModel):
     title: TypographyElement = Field(..., description="Title typography (legacy)")
     subtitle: TypographyElement = Field(..., description="Subtitle typography")
     paragraph: TypographyElement = Field(..., description="Paragraph typography")
-    decorator: TypographyElement = Field(..., description="Decorator typography for icons and decorative elements")
+    decorator: TypographyElement = Field(
+        ..., description="Decorator typography for icons and decorative elements"
+    )
 
-    @model_validator(mode='after')
+    @model_validator(mode="after")
     def validate_typography_hierarchy(self):
         """Validate that heading sizes follow proper hierarchy.
 
@@ -122,7 +137,7 @@ class TypographyConfig(BaseModel):
         """
         # Get font sizes as floats
         sizes = {}
-        for key in ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'paragraph']:
+        for key in ["h1", "h2", "h3", "h4", "h5", "h6", "paragraph"]:
             element = getattr(self, key, None)
             if element:
                 try:
@@ -134,8 +149,8 @@ class TypographyConfig(BaseModel):
         errors = []
 
         # Check H6 >= P (they should be equal, but we allow H6 to be larger)
-        if 'h6' in sizes and 'paragraph' in sizes:
-            if sizes['h6'] < sizes['paragraph']:
+        if "h6" in sizes and "paragraph" in sizes:
+            if sizes["h6"] < sizes["paragraph"]:
                 errors.append(
                     f"H6 size ({sizes['h6']}rem) must be at least equal to Paragraph size ({sizes['paragraph']}rem). "
                     f"Minimum required: {sizes['paragraph']}rem"
@@ -143,11 +158,11 @@ class TypographyConfig(BaseModel):
 
         # Define hierarchy checks: (higher_level, lower_level)
         hierarchy_checks = [
-            ('h5', 'h6'),
-            ('h4', 'h5'),
-            ('h3', 'h4'),
-            ('h2', 'h3'),
-            ('h1', 'h2'),
+            ("h5", "h6"),
+            ("h4", "h5"),
+            ("h3", "h4"),
+            ("h2", "h3"),
+            ("h1", "h2"),
         ]
 
         # Tolerance for rounding errors in multi-step 1.2× calculations
@@ -164,11 +179,12 @@ class TypographyConfig(BaseModel):
 
         if errors:
             raise ValueError("Typography hierarchy validation failed: " + "; ".join(errors))
-        
+
         return self
 
 
 # ==================== Palette Schema ====================
+
 
 class ThemePalette(BaseModel):
     """A single theme palette (light, dark, or accessibility)."""
@@ -176,57 +192,65 @@ class ThemePalette(BaseModel):
     colors: PaletteColors
     typography: TypographyConfig
 
-    model_config = ConfigDict(json_schema_extra={
-        "example": {
-            "colors": {
-                "primary": "#2f27ce",
-                "secondary": "#dedcff",
-                "accent": "#433bff",
-                "background": "#fbfbfe",
-                "surface": "#eeeef0",
-                "border": "#dddddd"
-            },
-            "typography": {
-                "h1": {"font_size": "2.5", "font_weight": 400, "color": "#2f27ce"},
-                "h2": {"font_size": "2.0", "font_weight": 400, "color": "#2f27ce"},
-                "h3": {"font_size": "1.75", "font_weight": 400, "color": "#433bff"},
-                "h4": {"font_size": "1.5", "font_weight": 400, "color": "#1a1675"},
-                "h5": {"font_size": "1.25", "font_weight": 400, "color": "#1a1675"},
-                "h6": {"font_size": "1.0", "font_weight": 400, "color": "#1a1675"},
-                "title": {"font_size": "1.5", "font_weight": 700, "color": "#1a1675"},
-                "subtitle": {"font_size": "1.25", "font_weight": 600, "color": "#1a1675"},
-                "paragraph": {"font_size": "1.0", "font_weight": 400, "color": "#1a1a2e"},
-                "decorator": {"font_size": "1.0", "font_weight": 500, "color": "#ffffff"}
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "colors": {
+                    "primary": "#2f27ce",
+                    "secondary": "#dedcff",
+                    "accent": "#433bff",
+                    "background": "#fbfbfe",
+                    "surface": "#eeeef0",
+                    "border": "#dddddd",
+                },
+                "typography": {
+                    "h1": {"font_size": "2.5", "font_weight": 400, "color": "#2f27ce"},
+                    "h2": {"font_size": "2.0", "font_weight": 400, "color": "#2f27ce"},
+                    "h3": {"font_size": "1.75", "font_weight": 400, "color": "#433bff"},
+                    "h4": {"font_size": "1.5", "font_weight": 400, "color": "#1a1675"},
+                    "h5": {"font_size": "1.25", "font_weight": 400, "color": "#1a1675"},
+                    "h6": {"font_size": "1.0", "font_weight": 400, "color": "#1a1675"},
+                    "title": {"font_size": "1.5", "font_weight": 700, "color": "#1a1675"},
+                    "subtitle": {"font_size": "1.25", "font_weight": 600, "color": "#1a1675"},
+                    "paragraph": {"font_size": "1.0", "font_weight": 400, "color": "#1a1a2e"},
+                    "decorator": {"font_size": "1.0", "font_weight": 500, "color": "#ffffff"},
+                },
             }
         }
-    })
+    )
 
 
 # ==================== Theme Config Schema ====================
 
+
 class ThemeConfig(BaseModel):
     """Complete theme configuration with 3 palettes."""
-    
+
     light: ThemePalette = Field(..., description="Light mode palette")
     dark: ThemePalette = Field(..., description="Dark mode palette")
-    accessibility: ThemePalette = Field(..., description="Accessibility mode palette (high contrast)")
+    accessibility: ThemePalette = Field(
+        ..., description="Accessibility mode palette (high contrast)"
+    )
 
-    @field_validator('light', 'dark', 'accessibility')
+    @field_validator("light", "dark", "accessibility")
     @classmethod
     def validate_palette_colors(cls, v):
         """Ensure palette has valid colors."""
         if isinstance(v, dict):
-            colors = v.get('colors', {})
+            colors = v.get("colors", {})
             if not colors:
-                raise ValueError('Palette must include colors')
+                raise ValueError("Palette must include colors")
         return v
 
-    model_config = ConfigDict(json_schema_extra={
-        "description": "Theme configuration with light, dark, and accessibility palettes"
-    })
+    model_config = ConfigDict(
+        json_schema_extra={
+            "description": "Theme configuration with light, dark, and accessibility palettes"
+        }
+    )
 
 
 # ==================== Theme Base Schemas ====================
+
 
 class ThemeBase(BaseModel):
     """Base theme schema."""
@@ -287,9 +311,10 @@ class ThemeListResponse(BaseModel):
 
 # ==================== Font Usage Schema ====================
 
+
 class FontUsageEntry(BaseModel):
     """Entry tracking where a font is used."""
-    
+
     theme_id: UUID
     theme_name: str
     palette: Literal["light", "dark", "accessibility"]
@@ -298,7 +323,7 @@ class FontUsageEntry(BaseModel):
 
 class FontUsageResponse(BaseModel):
     """Font usage information."""
-    
+
     font_id: UUID
     font_name: str
     usage_count: int
@@ -307,15 +332,16 @@ class FontUsageResponse(BaseModel):
 
 # ==================== Validation Schemas ====================
 
+
 class ThemeValidationRequest(BaseModel):
     """Request to validate a theme config."""
-    
+
     config: ThemeConfig
 
 
 class ThemeValidationResponse(BaseModel):
     """Response from theme validation."""
-    
+
     valid: bool
     errors: List[str] = []
     warnings: List[str] = []

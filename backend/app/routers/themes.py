@@ -20,9 +20,9 @@ from app.schemas.theme import (
     ThemeValidationResponse,
 )
 from app.services.theme_service import (
-    ThemeService,
     ThemeActiveError,
     ThemeInUseError,
+    ThemeService,
     ThemeValidationError,
 )
 
@@ -128,8 +128,8 @@ async def create_theme(
 
     try:
         # Convert Pydantic ThemeConfig to plain dict for SQLAlchemy
-        config_dict = theme_data.config.model_dump(mode='json')
-        
+        config_dict = theme_data.config.model_dump(mode="json")
+
         theme = await theme_service.create_theme(
             name=theme_data.name,
             description=theme_data.description,
@@ -166,7 +166,7 @@ async def update_theme(
         update_kwargs["description"] = theme_data.description
     if theme_data.config is not None:
         # Convert Pydantic ThemeConfig to plain dict for SQLAlchemy
-        update_kwargs["config"] = theme_data.config.model_dump(mode='json')
+        update_kwargs["config"] = theme_data.config.model_dump(mode="json")
     if theme_data.is_active is not None:
         update_kwargs["is_active"] = theme_data.is_active
     if theme_data.is_default is not None:
@@ -196,13 +196,13 @@ async def delete_theme(
     db: AsyncSession = Depends(get_db),
 ) -> None:
     """Delete a theme (admin only).
-    
+
     Cannot delete if:
     - Theme is currently active
     - Theme is set as preferred by any user
     """
     theme_service = ThemeService(db)
-    
+
     try:
         success = await theme_service.delete_theme(theme_id)
     except ThemeActiveError as e:
@@ -230,7 +230,7 @@ async def activate_theme(
     db: AsyncSession = Depends(get_db),
 ) -> ThemeResponse:
     """Activate a theme (deactivates all others).
-    
+
     Only one theme can be active at a time. This is the theme users will see.
     """
     theme_service = ThemeService(db)
@@ -251,11 +251,11 @@ async def validate_theme_config(
     _: User = Depends(RequireAdmin),
 ) -> ThemeValidationResponse:
     """Validate a theme configuration structure.
-    
+
     Use this endpoint to validate theme config before saving.
     """
     theme_service = ThemeService(None)  # type: ignore
-    
+
     try:
         theme_service._validate_theme_config(validation_data.config)
         return ThemeValidationResponse(valid=True)
@@ -297,11 +297,11 @@ async def set_user_preferred_theme(
     db: AsyncSession = Depends(get_db),
 ) -> ThemeResponse:
     """Set or clear current user's preferred theme.
-    
+
     Users can only choose from active themes.
     """
     theme_service = ThemeService(db)
-    
+
     if theme_id:
         # Verify theme exists and is active
         theme = await theme_service.get_theme_by_id(theme_id)
@@ -311,7 +311,7 @@ async def set_user_preferred_theme(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Theme not found",
             )
-        
+
         if not theme.is_active:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,

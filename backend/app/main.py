@@ -10,7 +10,7 @@ from fastapi.staticfiles import StaticFiles
 
 from app.config import get_settings
 from app.database import close_db, init_db
-from app.routers import admin, auth, themes, users, fonts
+from app.routers import admin, auth, catalog, fonts, products, themes, users
 
 settings = get_settings()
 
@@ -47,6 +47,8 @@ app.add_middleware(
 # Include routers
 app.include_router(auth.router)
 app.include_router(users.router)
+app.include_router(products.router)
+app.include_router(catalog.router)
 app.include_router(themes.router)
 app.include_router(admin.router)
 app.include_router(fonts.router)

@@ -6,33 +6,38 @@ from uuid import UUID
 from sqlalchemy import func, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models.theme import Theme
 from app.models.font import Font
+from app.models.theme import Theme
 from app.models.user import User
 
 
 class ThemeServiceError(Exception):
     """Base exception for theme service errors."""
+
     pass
 
 
 class ThemeActiveError(ThemeServiceError):
     """Raised when trying to delete an active theme."""
+
     pass
 
 
 class ThemeInUseError(ThemeServiceError):
     """Raised when trying to delete a theme that is in use by users."""
+
     pass
 
 
 class FontInUseError(ThemeServiceError):
     """Raised when trying to delete a font that is in use."""
+
     pass
 
 
 class ThemeValidationError(ThemeServiceError):
     """Raised when theme config validation fails."""
+
     pass
 
 
@@ -103,9 +108,7 @@ class ThemeService:
         total = total_result.scalar() or 0
 
         # Get themes
-        result = await self.db.execute(
-            query.order_by(Theme.name).offset(offset).limit(page_size)
-        )
+        result = await self.db.execute(query.order_by(Theme.name).offset(offset).limit(page_size))
         themes = result.scalars().all()
 
         return list(themes), total
@@ -304,18 +307,20 @@ class ThemeService:
             )
             theme = theme_result.scalar_one_or_none()
             if theme:
-                usages.append({
-                    "theme_id": usage["theme_id"],
-                    "theme_name": theme.name,
-                    "palette": usage["palette"],
-                    "element": usage["element"]
-                })
+                usages.append(
+                    {
+                        "theme_id": usage["theme_id"],
+                        "theme_name": theme.name,
+                        "palette": usage["palette"],
+                        "element": usage["element"],
+                    }
+                )
 
         return usages
 
     async def can_delete_font(self, font_id: UUID) -> Tuple[bool, str]:
         """Check if a font can be safely deleted.
-        
+
         Returns:
             Tuple of (can_delete, reason_message)
         """
@@ -329,11 +334,14 @@ class ThemeService:
             return True, ""
 
         usage_count = len(font.font_usage)
-        return False, f"Font is used in {usage_count} theme palette(s). Remove it from those themes first."
+        return (
+            False,
+            f"Font is used in {usage_count} theme palette(s). Remove it from those themes first.",
+        )
 
     async def delete_font(self, font_id: UUID) -> bool:
         """Delete a font if not in use.
-        
+
         Raises:
             FontInUseError: If font is used in any theme
         """
@@ -372,6 +380,7 @@ class ThemeService:
         try:
             # Import here to avoid circular imports
             from app.schemas.theme import ThemeConfig
+
             # Pydantic will validate the structure and raise ValidationError if invalid
             ThemeConfig.model_validate(config)
         except Exception as e:
@@ -384,17 +393,18 @@ class ThemeService:
 
     def validate_typography_sizes(self, config: Dict[str, Any]) -> Tuple[bool, List[str]]:
         """Validate typography size hierarchy without raising exceptions.
-        
+
         This is a convenience method for frontend validation feedback.
-        
+
         Args:
             config: Theme config dictionary
-            
+
         Returns:
             Tuple of (is_valid, list_of_error_messages)
         """
         try:
             from app.schemas.theme import ThemeConfig
+
             ThemeConfig.model_validate(config)
             return True, []
         except Exception as e:
@@ -463,11 +473,15 @@ class ThemeService:
             for element_name, element_config in typography.items():
                 # Support both camelCase (from frontend) and snake_case formats
                 font_id = element_config.get("font_id") or element_config.get("fontId")
-                font_name = element_config.get("font_name") or element_config.get("fontName", "Unknown")
+                font_name = element_config.get("font_name") or element_config.get(
+                    "fontName", "Unknown"
+                )
 
                 # font_id is now mandatory - skip if missing
                 if not font_id:
-                    print(f"[FontUsage]   Warning: Element {element_name} in {palette_name} missing font_id")
+                    print(
+                        f"[FontUsage]   Warning: Element {element_name} in {palette_name} missing font_id"
+                    )
                     continue
 
                 # Convert to UUID if string
@@ -475,18 +489,16 @@ class ThemeService:
                     try:
                         font_uuid = UUID(font_id)
                     except ValueError:
-                        print(f"[FontUsage]   Warning: Invalid font_id '{font_id}' for element {element_name}")
+                        print(
+                            f"[FontUsage]   Warning: Invalid font_id '{font_id}' for element {element_name}"
+                        )
                         continue
                 else:
                     font_uuid = font_id
 
                 # Add the font usage entry (without committing)
                 await self._add_font_usage_no_commit(
-                    font_uuid,
-                    theme.id,
-                    theme.name,
-                    palette_name,
-                    element_name
+                    font_uuid, theme.id, theme.name, palette_name, element_name
                 )
                 fonts_added.add(str(font_uuid))
 
@@ -495,12 +507,7 @@ class ThemeService:
         print(f"[FontUsage]   Added {len(fonts_added)} unique font(s) for theme '{theme.name}'")
 
     async def _add_font_usage_no_commit(
-        self,
-        font_id: UUID,
-        theme_id: UUID,
-        theme_name: str,
-        palette: str,
-        element: str
+        self, font_id: UUID, theme_id: UUID, theme_name: str, palette: str, element: str
     ) -> None:
         """Add a font usage entry without committing.
 
@@ -518,19 +525,21 @@ class ThemeService:
 
         # Check if this entry already exists to avoid duplicates
         entry_exists = any(
-            u.get("theme_id") == str(theme_id) and
-            u.get("palette") == palette and
-            u.get("element") == element
+            u.get("theme_id") == str(theme_id)
+            and u.get("palette") == palette
+            and u.get("element") == element
             for u in font.font_usage
         )
 
         if not entry_exists:
-            font.font_usage.append({
-                "theme_id": str(theme_id),
-                "theme_name": theme_name,
-                "palette": palette,
-                "element": element
-            })
+            font.font_usage.append(
+                {
+                    "theme_id": str(theme_id),
+                    "theme_name": theme_name,
+                    "palette": palette,
+                    "element": element,
+                }
+            )
             print(f"[FontUsage]     Added usage: {font.name} -> {theme_name}/{palette}/{element}")
         else:
             print(f"[FontUsage]     Entry exists: {font.name} -> {theme_name}/{palette}/{element}")
@@ -549,8 +558,7 @@ class ThemeService:
         for font in fonts:
             original_count = len(font.font_usage)
             font.font_usage = [
-                usage for usage in font.font_usage
-                if usage.get("theme_id") != theme_id_str
+                usage for usage in font.font_usage if usage.get("theme_id") != theme_id_str
             ]
             removed = original_count - len(font.font_usage)
             if removed > 0:
@@ -558,7 +566,9 @@ class ThemeService:
                 print(f"[FontUsage]     Removed {removed} usage(s) from font '{font.name}'")
 
         if removed_count > 0:
-            print(f"[FontUsage]     Total removed {removed_count} old usage(s) for theme {theme_id_str}")
+            print(
+                f"[FontUsage]     Total removed {removed_count} old usage(s) for theme {theme_id_str}"
+            )
 
     async def _get_all_fonts(self) -> Dict[UUID, Font]:
         """Get all fonts as a dict."""

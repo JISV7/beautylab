@@ -334,7 +334,7 @@ async def seed_default_theme(
                     "accent": "#D73359",
                     "background": "#FBFBFE",
                     "surface": "#EEEEF0",
-                    "border": "#DDDDDD"
+                    "border": "#DDDDDD",
                 },
                 "typography": {
                     "h1": make_typography_element("2.492", 400, "#F83A3A"),
@@ -346,8 +346,8 @@ async def seed_default_theme(
                     "title": make_typography_element("1.5", 700, "#8F1D1D"),
                     "subtitle": make_typography_element("1.0", 600, "#8F1D1D"),
                     "paragraph": make_typography_element("1.0", 400, "#1A1A1A"),
-                    "decorator": make_typography_element("1.0", 500, "#FFFFFF")
-                }
+                    "decorator": make_typography_element("1.0", 500, "#FFFFFF"),
+                },
             },
             "dark": {
                 "colors": {
@@ -356,7 +356,7 @@ async def seed_default_theme(
                     "accent": "#CC284F",
                     "background": "#010104",
                     "surface": "#0E0E10",
-                    "border": "#212121"
+                    "border": "#212121",
                 },
                 "typography": {
                     "h1": make_typography_element("2.488", 400, "#C50707"),
@@ -368,8 +368,8 @@ async def seed_default_theme(
                     "title": make_typography_element("1.5", 700, "#FF4D4D"),
                     "subtitle": make_typography_element("1.0", 600, "#FF4D4D"),
                     "paragraph": make_typography_element("1.0", 400, "#E0E0E0"),
-                    "decorator": make_typography_element("1.0", 500, "#FFFFFF")
-                }
+                    "decorator": make_typography_element("1.0", 500, "#FFFFFF"),
+                },
             },
             "accessibility": {
                 "colors": {
@@ -378,7 +378,7 @@ async def seed_default_theme(
                     "accent": "#433BFF",
                     "background": "#FBFBFE",
                     "surface": "#EEEEF0",
-                    "border": "#DDDDDD"
+                    "border": "#DDDDDD",
                 },
                 "typography": {
                     "h1": make_typography_element("2.488", 400, "#2F27CE"),
@@ -390,9 +390,9 @@ async def seed_default_theme(
                     "title": make_typography_element("1.5", 700, "#1A1675"),
                     "subtitle": make_typography_element("1.0", 600, "#1A1675"),
                     "paragraph": make_typography_element("1.0", 400, "#1A1A2E"),
-                    "decorator": make_typography_element("1.0", 500, "#FFFFFF")
-                }
-            }
+                    "decorator": make_typography_element("1.0", 500, "#FFFFFF"),
+                },
+            },
         }
 
         theme = Theme(
@@ -418,13 +418,26 @@ async def seed_default_theme(
         # Build new usage list and reassign (SQLAlchemy doesn't detect in-place mutations of JSONB)
         new_usages = []
         for palette in ["light", "dark", "accessibility"]:
-            for element in ["h1", "h2", "h3", "h4", "h5", "h6", "title", "subtitle", "paragraph", "decorator"]:
-                new_usages.append({
-                    "theme_id": theme_id_str,
-                    "theme_name": theme.name,
-                    "palette": palette,
-                    "element": element
-                })
+            for element in [
+                "h1",
+                "h2",
+                "h3",
+                "h4",
+                "h5",
+                "h6",
+                "title",
+                "subtitle",
+                "paragraph",
+                "decorator",
+            ]:
+                new_usages.append(
+                    {
+                        "theme_id": theme_id_str,
+                        "theme_name": theme.name,
+                        "palette": palette,
+                        "element": element,
+                    }
+                )
         default_font.font_usage = new_usages
         await db.commit()
         print(f"  Updated font usage tracking for Roboto ({len(new_usages)} entries)")

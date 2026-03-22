@@ -2,7 +2,7 @@
 
 from datetime import datetime
 from decimal import Decimal
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 from uuid import UUID
 
 from sqlalchemy import Boolean, ForeignKey, Integer, String, Uuid
@@ -34,9 +34,9 @@ class Coupon(Base, TimestampMixin):
     min_purchase: Mapped[Decimal] = mapped_column(
         NUMERIC(10, 2), nullable=False, default=Decimal("0.00")
     )
-    max_uses: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    max_uses: Mapped[int | None] = mapped_column(Integer, nullable=True)
     used_count: Mapped[int] = mapped_column(Integer, default=0)
-    expires_at: Mapped[Optional[datetime]] = mapped_column(nullable=True)
+    expires_at: Mapped[datetime | None] = mapped_column(nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
 
     # Relationships
@@ -76,4 +76,7 @@ class CouponUsage(Base):
     invoice: Mapped["Invoice"] = relationship("Invoice")
 
     def __repr__(self) -> str:
-        return f"<CouponUsage(coupon={self.coupon_id}, user={self.user_id}, invoice={self.invoice_id})>"
+        return (
+            f"<CouponUsage(coupon={self.coupon_id}, "
+            f"user={self.user_id}, invoice={self.invoice_id})>"
+        )

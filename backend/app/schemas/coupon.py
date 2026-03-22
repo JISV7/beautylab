@@ -2,7 +2,7 @@
 
 from datetime import datetime
 from decimal import Decimal
-from typing import Literal, Optional
+from typing import Literal
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
@@ -19,8 +19,8 @@ class CouponBase(BaseModel):
     min_purchase: Decimal = Field(
         default=Decimal("0.00"), ge=0, description="Minimum purchase required"
     )
-    max_uses: Optional[int] = Field(None, ge=1, description="Maximum uses (NULL = unlimited)")
-    expires_at: Optional[datetime] = Field(None, description="Expiration date")
+    max_uses: int | None = Field(None, ge=1, description="Maximum uses (NULL = unlimited)")
+    expires_at: datetime | None = Field(None, description="Expiration date")
     is_active: bool = Field(default=True, description="Whether coupon is active")
 
     @field_validator("code")
@@ -43,11 +43,11 @@ class CouponCreate(CouponBase):
 class CouponUpdate(BaseModel):
     """Schema for updating a coupon."""
 
-    discount_value: Optional[Decimal] = Field(None, gt=0)
-    min_purchase: Optional[Decimal] = Field(None, ge=0)
-    max_uses: Optional[int] = Field(None, ge=1)
-    expires_at: Optional[datetime] = None
-    is_active: Optional[bool] = None
+    discount_value: Decimal | None = Field(None, gt=0)
+    min_purchase: Decimal | None = Field(None, ge=0)
+    max_uses: int | None = Field(None, ge=1)
+    expires_at: datetime | None = None
+    is_active: bool | None = None
 
 
 class CouponResponse(BaseModel):
@@ -60,9 +60,9 @@ class CouponResponse(BaseModel):
     discount_type: str
     discount_value: Decimal
     min_purchase: Decimal
-    max_uses: Optional[int] = None
+    max_uses: int | None = None
     used_count: int
-    expires_at: Optional[datetime] = None
+    expires_at: datetime | None = None
     is_active: bool
     created_at: datetime
     updated_at: datetime
@@ -79,10 +79,10 @@ class CouponValidateResponse(BaseModel):
     """Response from coupon validation."""
 
     valid: bool
-    coupon: Optional[CouponResponse] = None
+    coupon: CouponResponse | None = None
     discount_amount: Decimal = Decimal("0.00")
     message: str
-    final_total: Optional[Decimal] = None
+    final_total: Decimal | None = None
 
 
 class CouponListResponse(BaseModel):

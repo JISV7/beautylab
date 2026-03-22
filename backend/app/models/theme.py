@@ -1,6 +1,5 @@
 """Theme model."""
 
-from datetime import datetime
 from typing import TYPE_CHECKING, Any, Optional
 from uuid import UUID
 
@@ -25,12 +24,12 @@ class Theme(Base, TimestampMixin):
         default=__import__("uuid").uuid4,
     )
     name: Mapped[str] = mapped_column(String(100), nullable=False)
-    description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
     type: Mapped[str] = mapped_column(String(20), default="custom")
     config: Mapped[dict[str, Any]] = mapped_column(JSONB, nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, default=False, index=True)
     is_default: Mapped[bool] = mapped_column(Boolean, default=False)
-    created_by: Mapped[Optional[UUID]] = mapped_column(
+    created_by: Mapped[UUID | None] = mapped_column(
         Uuid(as_uuid=True),
         ForeignKey("users.id"),
         nullable=True,

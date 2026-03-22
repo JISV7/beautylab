@@ -1,6 +1,5 @@
 """Admin router for user and role management."""
 
-from typing import Optional
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
@@ -293,9 +292,9 @@ async def remove_permission_from_role(
 async def list_audit_logs(
     page: int = Query(1, ge=1),
     page_size: int = Query(50, ge=1, le=100),
-    user_id: Optional[UUID] = None,
-    resource_type: Optional[str] = None,
-    action: Optional[str] = None,
+    user_id: UUID | None = None,
+    resource_type: str | None = None,
+    action: str | None = None,
     _: User = Depends(RequireAdmin),
     db: AsyncSession = Depends(get_db),
 ) -> AuditLogListResponse:

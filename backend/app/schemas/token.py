@@ -1,6 +1,6 @@
 """Token schemas for JWT authentication."""
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 
 class Token(BaseModel):

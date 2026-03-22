@@ -1,22 +1,16 @@
 """Alembic migrations module."""
 
+import asyncio
 from logging.config import fileConfig
 
-from sqlalchemy import engine_from_config, pool
+from sqlalchemy import pool
 from sqlalchemy.ext.asyncio import create_async_engine
 
 from alembic import context
 from app.config import get_settings
-from app.models.audit_log import AuditLog
 
 # Import models and config
 from app.models.base import Base
-from app.models.permission import Permission
-from app.models.role import Role
-from app.models.role_permission import RolePermission
-from app.models.theme import Theme
-from app.models.user import User
-from app.models.user_role import UserRole
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -57,9 +51,6 @@ def run_migrations_offline() -> None:
 
     with context.begin_transaction():
         context.run_migrations()
-
-
-import asyncio
 
 
 def do_run_migrations(connection):

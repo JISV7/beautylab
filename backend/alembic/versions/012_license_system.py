@@ -6,7 +6,7 @@ Create Date: 2026-03-21
 
 """
 
-from typing import Sequence, Union
+from collections.abc import Sequence
 
 import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
@@ -14,9 +14,9 @@ from sqlalchemy.dialects import postgresql
 from alembic import op
 
 revision: str = "012_license_system"
-down_revision: Union[str, None] = "011_shopping_cart"
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+down_revision: str | None = "011_shopping_cart"
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
 
 def upgrade() -> None:
@@ -221,13 +221,15 @@ def upgrade() -> None:
     )
     op.execute("COMMENT ON TABLE payment_methods IS 'User saved payment methods';")
     op.execute(
-        "COMMENT ON COLUMN payment_methods.method_type IS 'credit_card, debit_card, cash_deposit, or bank_transfer';"
+        "COMMENT ON COLUMN payment_methods.method_type IS "
+        "'credit_card, debit_card, cash_deposit, or bank_transfer';"
     )
     op.execute(
         "COMMENT ON TABLE payments IS 'Individual payment transactions (supports split payments)';"
     )
     op.execute(
-        "COMMENT ON TABLE payment_details IS 'Sensitive payment information (hashed card numbers, etc.)';"
+        "COMMENT ON TABLE payment_details IS "
+        "'Sensitive payment information (hashed card numbers, etc.)';"
     )
 
 

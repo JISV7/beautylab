@@ -7,20 +7,17 @@ Create Date: 2026-03-12
 """
 
 import json
-from typing import Sequence, Union
-from uuid import UUID
+from collections.abc import Sequence
 
 import sqlalchemy as sa
-from sqlalchemy.dialects import postgresql
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from alembic import op
 
 # revision identifiers, used by Alembic.
 revision: str = "003_make_font_id_mandatory"
-down_revision: Union[str, None] = "002_add_theme_config_structure"
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+down_revision: str | None = "002_add_theme_config_structure"
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
 
 def upgrade() -> None:
@@ -117,7 +114,7 @@ def upgrade() -> None:
             "dark": { "colors": {...}, "typography": {...} },
             "accessibility": { "colors": {...}, "typography": {...} }
         }
-        
+
         Typography elements MUST include:
         - font_id: UUID (required, references fonts.id)
         - font_name: String (required, display name)
@@ -139,7 +136,6 @@ def downgrade() -> None:
 
     for theme in themes:
         theme_id = theme[0]
-        theme_name = theme[1]
         config = theme[2]
 
         if not config:

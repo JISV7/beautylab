@@ -1,6 +1,5 @@
 """Authentication service."""
 
-from typing import Optional
 from uuid import UUID
 
 from sqlalchemy import select
@@ -23,10 +22,10 @@ class AuthService:
     def __init__(self, db: AsyncSession):
         self.db = db
 
-    async def authenticate(self, email: str, password: str) -> Optional[User]:
+    async def authenticate(self, email: str, password: str) -> User | None:
         """Authenticate user with email and password."""
         result = await self.db.execute(
-            select(User).where(User.email == email).where(User.is_active == True)
+            select(User).where(User.email == email).where(User.is_active)
         )
         user = result.scalar_one_or_none()
 
@@ -42,7 +41,7 @@ class AuthService:
         self,
         email: str,
         password: str,
-        full_name: Optional[str] = None,
+        full_name: str | None = None,
     ) -> User:
         """Create a new user with the 'user' role."""
         password_hash = hash_password(password)
@@ -69,7 +68,7 @@ class AuthService:
 
         return user
 
-    async def get_user_by_email(self, email: str) -> Optional[User]:
+    async def get_user_by_email(self, email: str) -> User | None:
         """Get user by email."""
         result = await self.db.execute(select(User).where(User.email == email))
         return result.scalar_one_or_none()
@@ -106,9 +105,7 @@ class AuthService:
         user_id = UUID(payload["sub"])
 
         # Verify user still exists and is active
-        result = await self.db.execute(
-            select(User).where(User.id == user_id).where(User.is_active == True)
-        )
+        result = await self.db.execute(select(User).where(User.id == user_id).where(User.is_active))
         user = result.scalar_one_or_none()
 
         if not user:

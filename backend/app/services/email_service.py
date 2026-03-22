@@ -3,7 +3,6 @@
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from pathlib import Path
 
 from app.config import get_settings
 
@@ -94,21 +93,28 @@ class EmailService:
         # Build items HTML
         items_html = ""
         for item in items:
-            items_html += f"""
-            <tr>
-                <td style="padding: 8px; border-bottom: 1px solid #ddd;">{item.get("description", "")}</td>
-                <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: center;">{item.get("quantity", 1)}</td>
-                <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: right;">${item.get("unit_price", "0.00")}</td>
-                <td style="padding: 8px; border-bottom: 1px solid #ddd; text-align: right;">${item.get("line_total", "0.00")}</td>
-            </tr>
-            """
+            desc = item.get("description", "")
+            qty = item.get("quantity", 1)
+            price = item.get("unit_price", "0.00")
+            total = item.get("line_total", "0.00")
+            items_html += (
+                f"<tr>"
+                f'<td style="padding: 8px; border-bottom: 1px solid #ddd;">{desc}</td>'
+                f'<td style="padding: 8px; border-bottom: 1px solid #ddd; '
+                f'text-align: center;">{qty}</td>'
+                f'<td style="padding: 8px; border-bottom: 1px solid #ddd; '
+                f'text-align: right;">${price}</td>'
+                f'<td style="padding: 8px; border-bottom: 1px solid #ddd; '
+                f'text-align: right;">${total}</td>'
+                f"</tr>"
+            )
 
         download_button = ""
         if download_url:
             download_button = f"""
             <div style="margin-top: 30px; text-align: center;">
-                <a href="{download_url}" 
-                   style="background-color: #4CAF50; color: white; padding: 14px 20px; 
+                <a href="{download_url}"
+                   style="background-color: #4CAF50; color: white; padding: 14px 20px;
                           text-decoration: none; border-radius: 4px; display: inline-block;">
                     Download PDF Invoice
                 </a>
@@ -122,12 +128,15 @@ class EmailService:
             <style>
                 body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
                 .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
-                .header {{ background-color: #4CAF50; color: white; padding: 20px; text-align: center; }}
+                .header {{ background-color: #4CAF50; color: white; padding: 20px;
+                           text-align: center; }}
                 .content {{ padding: 20px; background-color: #f9f9f9; }}
-                .invoice-details {{ background-color: white; padding: 20px; margin: 20px 0; border-radius: 4px; }}
+                .invoice-details {{ background-color: white; padding: 20px; margin: 20px 0;
+                                   border-radius: 4px; }}
                 table {{ width: 100%; border-collapse: collapse; margin: 20px 0; }}
                 th {{ background-color: #4CAF50; color: white; padding: 10px; text-align: left; }}
-                .total {{ font-size: 18px; font-weight: bold; text-align: right; margin-top: 20px; }}
+                .total {{ font-size: 18px; font-weight: bold; text-align: right;
+                         margin-top: 20px; }}
                 .footer {{ text-align: center; padding: 20px; color: #666; font-size: 12px; }}
             </style>
         </head>
@@ -137,15 +146,15 @@ class EmailService:
                     <h1>BeautyLab</h1>
                     <p>Invoice {invoice_number}</p>
                 </div>
-                
+
                 <div class="content">
                     <p>Dear Customer,</p>
                     <p>Thank you for your purchase! Please find your invoice details below.</p>
-                    
+
                     <div class="invoice-details">
                         <p><strong>Invoice Number:</strong> {invoice_number}</p>
                         <p><strong>Issue Date:</strong> {issue_date}</p>
-                        
+
                         <table>
                             <thead>
                                 <tr>
@@ -159,19 +168,19 @@ class EmailService:
                                 {items_html}
                             </tbody>
                         </table>
-                        
+
                         <div class="total">
                             Total: ${total}
                         </div>
                     </div>
-                    
+
                     {download_button}
-                    
+
                     <p>If you have any questions, please don't hesitate to contact us.</p>
-                    
+
                     <p>Best regards,<br>The BeautyLab Team</p>
                 </div>
-                
+
                 <div class="footer">
                     <p>&copy; 2026 BeautyLab. All rights reserved.</p>
                 </div>
@@ -182,16 +191,16 @@ class EmailService:
 
         text_content = f"""
         Invoice {invoice_number}
-        
+
         Issue Date: {issue_date}
-        
+
         Items:
-        {chr(10).join([f"- {item.get('description', '')} x{item.get('quantity', 1)}: ${item.get('line_total', '0.00')}" for item in items])}
-        
+        {self._format_items_text(items)}
+
         Total: ${total}
-        
+
         Thank you for your purchase!
-        
+
         Best regards,
         The BeautyLab Team
         """
@@ -202,6 +211,16 @@ class EmailService:
             html_content=html_content,
             text_content=text_content,
         )
+
+    def _format_items_text(self, items: list[dict]) -> str:
+        """Format invoice items as text."""
+        lines = []
+        for item in items:
+            desc = item.get("description", "")
+            qty = item.get("quantity", 1)
+            total = item.get("line_total", "0.00")
+            lines.append(f"- {desc} x{qty}: ${total}")
+        return "\n".join(lines)
 
     def send_welcome_email(self, to_email: str, user_name: str) -> bool:
         """Send welcome email to new user."""
@@ -214,10 +233,12 @@ class EmailService:
             <style>
                 body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
                 .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
-                .header {{ background-color: #4CAF50; color: white; padding: 20px; text-align: center; }}
+                .header {{ background-color: #4CAF50; color: white; padding: 20px;
+                           text-align: center; }}
                 .content {{ padding: 20px; background-color: #f9f9f9; }}
-                .button {{ background-color: #4CAF50; color: white; padding: 14px 20px; 
-                           text-decoration: none; border-radius: 4px; display: inline-block; }}
+                .button {{ background-color: #4CAF50; color: white; padding: 14px 20px;
+                           text-decoration: none; border-radius: 4px;
+                           display: inline-block; }}
                 .footer {{ text-align: center; padding: 20px; color: #666; font-size: 12px; }}
             </style>
         </head>
@@ -226,10 +247,11 @@ class EmailService:
                 <div class="header">
                     <h1>Welcome to BeautyLab!</h1>
                 </div>
-                
+
                 <div class="content">
                     <p>Hello {user_name},</p>
-                    <p>Thank you for joining BeautyLab - your dynamic theming platform for beauty salons.</p>
+                    <p>Thank you for joining BeautyLab - your dynamic theming platform
+                       for beauty salons.</p>
                     <p>Get started by exploring our features:</p>
                     <ul>
                         <li>Create custom themes</li>
@@ -240,7 +262,7 @@ class EmailService:
                         <a href="https://beautylab.com/dashboard" class="button">Go to Dashboard</a>
                     </p>
                 </div>
-                
+
                 <div class="footer">
                     <p>&copy; 2026 BeautyLab. All rights reserved.</p>
                 </div>

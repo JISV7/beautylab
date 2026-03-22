@@ -1,5 +1,4 @@
-from datetime import datetime
-from typing import List, Literal
+from typing import Literal
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -36,7 +35,7 @@ class FontResponse(FontBase):
     created_by: UUID
     created_by_name: str
     created_at: str
-    font_usage: List[FontUsageEntry] = []
+    font_usage: list[FontUsageEntry] = []
     usage_count: int
 
     model_config = ConfigDict(
@@ -49,4 +48,4 @@ class FontResponse(FontBase):
 class FontWithUsage(FontResponse):
     """Font with detailed usage information."""
 
-    usages: List[FontUsageEntry] = []
+    usages: list[FontUsageEntry] = []

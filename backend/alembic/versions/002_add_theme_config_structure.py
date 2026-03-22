@@ -6,7 +6,7 @@ Create Date: 2026-03-07
 
 """
 
-from typing import Sequence, Union
+from collections.abc import Sequence
 
 import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
@@ -15,9 +15,9 @@ from alembic import op
 
 # revision identifiers, used by Alembic.
 revision: str = "002_add_theme_config_structure"
-down_revision: Union[str, None] = "7d0e2068b0eb"
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+down_revision: str | None = "7d0e2068b0eb"
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
 
 def upgrade() -> None:
@@ -47,7 +47,7 @@ def upgrade() -> None:
     # Note: PostgreSQL doesn't support complex JSONB validation via CHECK constraints
     # Validation is done at application level
     op.execute("""
-        COMMENT ON COLUMN themes.config IS 
+        COMMENT ON COLUMN themes.config IS
         'JSONB structure: {
             "light": { "colors": {...}, "typography": {...} },
             "dark": { "colors": {...}, "typography": {...} },
@@ -57,7 +57,7 @@ def upgrade() -> None:
 
     # Add comment to fonts.font_usage
     op.execute("""
-        COMMENT ON COLUMN fonts.font_usage IS 
+        COMMENT ON COLUMN fonts.font_usage IS
         'JSONB array tracking theme usage: [
             { "theme_id": "uuid", "palette": "light|dark|accessibility", "element": "h1|h2|...|p" },
             ...

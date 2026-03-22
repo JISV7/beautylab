@@ -6,16 +6,16 @@ Create Date: 2026-03-20
 
 """
 
-from typing import Sequence, Union
+from collections.abc import Sequence
 
 import sqlalchemy as sa
 
 from alembic import op
 
 revision: str = "005_company_billing"
-down_revision: Union[str, None] = "004_fiscal_fields"
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+down_revision: str | None = "004_fiscal_fields"
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
 
 def upgrade() -> None:
@@ -101,7 +101,13 @@ def upgrade() -> None:
     # Insert default company data
     op.execute("""
         INSERT INTO company_info (business_name, rif, fiscal_address, phone, email)
-        VALUES ('Academia Online de Programación e IA', 'J-123456789', 'Av. Principal, Caracas, Venezuela', '0212-1234567', 'info@academia.com')
+        VALUES (
+            'Academia Online de Programación e IA',
+            'J-123456789',
+            'Av. Principal, Caracas, Venezuela',
+            '0212-1234567',
+            'info@academia.com'
+        )
     """)
 
     op.execute("""
@@ -111,16 +117,24 @@ def upgrade() -> None:
 
     # Triggers
     op.execute(
-        "CREATE TRIGGER update_company_info_updated_at BEFORE UPDATE ON company_info FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();"
+        "CREATE TRIGGER update_company_info_updated_at "
+        "BEFORE UPDATE ON company_info "
+        "FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();"
     )
     op.execute(
-        "CREATE TRIGGER update_printers_updated_at BEFORE UPDATE ON printers FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();"
+        "CREATE TRIGGER update_printers_updated_at "
+        "BEFORE UPDATE ON printers "
+        "FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();"
     )
     op.execute(
-        "CREATE TRIGGER update_control_number_ranges_updated_at BEFORE UPDATE ON control_number_ranges FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();"
+        "CREATE TRIGGER update_control_number_ranges_updated_at "
+        "BEFORE UPDATE ON control_number_ranges "
+        "FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();"
     )
     op.execute(
-        "CREATE TRIGGER update_point_of_sale_updated_at BEFORE UPDATE ON point_of_sale FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();"
+        "CREATE TRIGGER update_point_of_sale_updated_at "
+        "BEFORE UPDATE ON point_of_sale "
+        "FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();"
     )
 
 

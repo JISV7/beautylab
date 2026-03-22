@@ -2,7 +2,6 @@
 
 from datetime import datetime
 from decimal import Decimal
-from typing import Optional
 from uuid import UUID
 
 from sqlalchemy import func, select
@@ -10,7 +9,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.coupon import Coupon, CouponUsage
 from app.models.invoice import Invoice
-from app.models.user import User
 from app.schemas.coupon import CouponCreate, CouponUpdate, CouponValidateRequest
 
 
@@ -50,12 +48,12 @@ class CouponService:
     def __init__(self, db: AsyncSession):
         self.db = db
 
-    async def get_coupon_by_id(self, coupon_id: UUID) -> Optional[Coupon]:
+    async def get_coupon_by_id(self, coupon_id: UUID) -> Coupon | None:
         """Get coupon by ID."""
         result = await self.db.execute(select(Coupon).where(Coupon.id == coupon_id))
         return result.scalar_one_or_none()
 
-    async def get_coupon_by_code(self, code: str) -> Optional[Coupon]:
+    async def get_coupon_by_code(self, code: str) -> Coupon | None:
         """Get coupon by code."""
         result = await self.db.execute(select(Coupon).where(Coupon.code == code.upper()))
         return result.scalar_one_or_none()
@@ -63,7 +61,7 @@ class CouponService:
     async def validate_coupon(
         self,
         request: CouponValidateRequest,
-        user_id: Optional[UUID] = None,
+        user_id: UUID | None = None,
     ) -> dict:
         """
         Validate a coupon code for use.
@@ -228,7 +226,7 @@ class CouponService:
         self,
         page: int = 1,
         page_size: int = 10,
-        is_active: Optional[bool] = None,
+        is_active: bool | None = None,
     ) -> tuple[list[Coupon], int]:
         """Get all coupons with pagination."""
         query = select(Coupon)

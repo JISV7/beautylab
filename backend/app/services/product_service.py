@@ -1,6 +1,6 @@
 """Product service for business logic operations."""
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from decimal import Decimal
 from uuid import UUID
 
@@ -230,7 +230,7 @@ class ProductService:
 
         This is a frontend-only calculation - no database changes needed.
         """
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         created_at = product.created_at
 
         if not created_at:
@@ -238,7 +238,7 @@ class ProductService:
 
         # Make created_at timezone aware if it isn't
         if created_at.tzinfo is None:
-            created_at = created_at.replace(tzinfo=timezone.utc)
+            created_at = created_at.replace(tzinfo=UTC)
 
         age = now - created_at
 

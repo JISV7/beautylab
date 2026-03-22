@@ -1,12 +1,11 @@
 """Theme schemas for request/response validation with structured palette support."""
 
 from datetime import datetime
-from typing import Any, Dict, List, Literal, Optional
+from typing import Literal
 from uuid import UUID
 
 from pydantic import (
     AliasGenerator,
-    AliasPath,
     BaseModel,
     ConfigDict,
     Field,
@@ -71,7 +70,7 @@ class TypographyElement(BaseModel):
         default=400, ge=100, le=900, description="Font weight 100-900", alias="fontWeight"
     )
     color: str = Field(..., description="Text color for this element")
-    line_height: Optional[str] = Field(
+    line_height: str | None = Field(
         None, description="Line height (e.g., '1.2')", alias="lineHeight"
     )
 
@@ -152,7 +151,8 @@ class TypographyConfig(BaseModel):
         if "h6" in sizes and "paragraph" in sizes:
             if sizes["h6"] < sizes["paragraph"]:
                 errors.append(
-                    f"H6 size ({sizes['h6']}rem) must be at least equal to Paragraph size ({sizes['paragraph']}rem). "
+                    f"H6 size ({sizes['h6']}rem) must be at least equal to "
+                    f"Paragraph size ({sizes['paragraph']}rem). "
                     f"Minimum required: {sizes['paragraph']}rem"
                 )
 
@@ -173,7 +173,8 @@ class TypographyConfig(BaseModel):
                 min_required = sizes[lower] * 1.2
                 if sizes[higher] + tolerance < min_required:
                     errors.append(
-                        f"{higher.upper()} size ({sizes[higher]}rem) must be at least 1.2× {lower.upper()} size ({sizes[lower]}rem). "
+                        f"{higher.upper()} size ({sizes[higher]}rem) must be at least "
+                        f"1.2× {lower.upper()} size ({sizes[lower]}rem). "
                         f"Minimum required: {min_required:.3f}rem"
                     )
 
@@ -256,7 +257,7 @@ class ThemeBase(BaseModel):
     """Base theme schema."""
 
     name: str = Field(..., max_length=100, description="Theme name")
-    description: Optional[str] = Field(None, description="Theme description")
+    description: str | None = Field(None, description="Theme description")
     type: Literal["preset", "custom"] = Field(default="custom", description="Theme type")
 
 
@@ -271,11 +272,11 @@ class ThemeCreate(ThemeBase):
 class ThemeUpdate(BaseModel):
     """Schema for updating a theme."""
 
-    name: Optional[str] = Field(None, max_length=100)
-    description: Optional[str] = None
-    config: Optional[ThemeConfig] = None
-    is_active: Optional[bool] = None
-    is_default: Optional[bool] = None
+    name: str | None = Field(None, max_length=100)
+    description: str | None = None
+    config: ThemeConfig | None = None
+    is_active: bool | None = None
+    is_default: bool | None = None
 
 
 class ThemeResponse(BaseModel):
@@ -289,12 +290,12 @@ class ThemeResponse(BaseModel):
 
     id: UUID
     name: str
-    description: Optional[str] = None
+    description: str | None = None
     type: str
     config: ThemeConfig
     is_active: bool
     is_default: bool
-    created_by: Optional[UUID] = None
+    created_by: UUID | None = None
     created_at: datetime
     updated_at: datetime
 
@@ -327,7 +328,7 @@ class FontUsageResponse(BaseModel):
     font_id: UUID
     font_name: str
     usage_count: int
-    usages: List[FontUsageEntry]
+    usages: list[FontUsageEntry]
 
 
 # ==================== Validation Schemas ====================
@@ -343,5 +344,5 @@ class ThemeValidationResponse(BaseModel):
     """Response from theme validation."""
 
     valid: bool
-    errors: List[str] = []
-    warnings: List[str] = []
+    errors: list[str] = []
+    warnings: list[str] = []

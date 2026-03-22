@@ -1,7 +1,6 @@
 import os
 import shutil
 import uuid
-from typing import List, Optional
 
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 from sqlalchemy import select
@@ -13,7 +12,7 @@ from app.models.font import Font
 from app.models.theme import Theme
 from app.models.user import User
 from app.schemas.font import FontResponse, FontWithUsage
-from app.services.theme_service import FontInUseError, ThemeService
+from app.services.theme_service import ThemeService
 
 try:
     from fontTools.ttLib import TTFont
@@ -30,7 +29,7 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 ALLOWED_EXTENSIONS = {".ttf", ".otf", ".woff", ".woff2"}
 
 
-def extract_font_metadata(filepath: str) -> Optional[str]:
+def extract_font_metadata(filepath: str) -> str | None:
     """Extract font family name from font file using fonttools.
 
     Args:
@@ -62,7 +61,7 @@ def extract_font_metadata(filepath: str) -> Optional[str]:
     return None
 
 
-@router.get("", response_model=List[FontResponse])
+@router.get("", response_model=list[FontResponse])
 async def list_fonts(db: AsyncSession = Depends(get_db)):
     """Get all installed custom fonts."""
     result = await db.execute(select(Font).order_by(Font.name))
@@ -127,7 +126,6 @@ async def get_font_with_usage(
     usages = []
     font_usage = font.font_usage if font.font_usage else []
     if font_usage:
-        theme_service = ThemeService(db)
         for usage in font_usage:
             usages.append(
                 {
@@ -188,7 +186,7 @@ async def upload_font(
     try:
         with open(filepath, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
-    except Exception as e:
+    except Exception:
         raise HTTPException(status_code=500, detail="Failed to save file.")
 
     # Extract font metadata from file (font family name)
@@ -308,7 +306,7 @@ async def rebuild_font_usage(
     await db.commit()
 
     return {
-        "message": f"Font usage rebuilt successfully",
+        "message": "Font usage rebuilt successfully",
         "themes_processed": len(themes),
         "fonts_updated": len(updated_fonts),
     }

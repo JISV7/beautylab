@@ -1,7 +1,7 @@
 """Audit log schemas."""
 
 from datetime import datetime
-from typing import Any, Optional
+from typing import Any
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict
@@ -12,15 +12,15 @@ class AuditLogBase(BaseModel):
 
     action: str
     resource_type: str
-    resource_id: Optional[UUID] = None
-    changes: Optional[dict[str, Any]] = None
-    ip_address: Optional[str] = None
+    resource_id: UUID | None = None
+    changes: dict[str, Any] | None = None
+    ip_address: str | None = None
 
 
 class AuditLogCreate(AuditLogBase):
     """Schema for creating an audit log entry."""
 
-    user_id: Optional[UUID] = None
+    user_id: UUID | None = None
 
 
 class AuditLogResponse(BaseModel):
@@ -29,12 +29,12 @@ class AuditLogResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
-    user_id: Optional[UUID] = None
+    user_id: UUID | None = None
     action: str
     resource_type: str
-    resource_id: Optional[UUID] = None
-    changes: Optional[dict[str, Any]] = None
-    ip_address: Optional[str] = None
+    resource_id: UUID | None = None
+    changes: dict[str, Any] | None = None
+    ip_address: str | None = None
     created_at: datetime
 
 

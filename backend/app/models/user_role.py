@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING, Optional
 from uuid import UUID
 
-from sqlalchemy import DateTime, ForeignKey, String, Uuid
+from sqlalchemy import DateTime, ForeignKey, Uuid
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.base import Base
@@ -28,7 +28,7 @@ class UserRole(Base):
         ForeignKey("roles.id", ondelete="CASCADE"),
         primary_key=True,
     )
-    assigned_by: Mapped[Optional[UUID]] = mapped_column(
+    assigned_by: Mapped[UUID | None] = mapped_column(
         Uuid(as_uuid=True),
         ForeignKey("users.id"),
         nullable=True,

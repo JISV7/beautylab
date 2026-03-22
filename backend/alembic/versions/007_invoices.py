@@ -6,7 +6,7 @@ Create Date: 2026-03-20
 
 """
 
-from typing import Sequence, Union
+from collections.abc import Sequence
 
 import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
@@ -14,9 +14,9 @@ from sqlalchemy.dialects import postgresql
 from alembic import op
 
 revision: str = "007_invoices"
-down_revision: Union[str, None] = "006_products"
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+down_revision: str | None = "006_products"
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
 
 def upgrade() -> None:
@@ -177,19 +177,25 @@ def upgrade() -> None:
 
     # Comments for compliance (separados en ejecuciones individuales)
     op.execute(
-        "COMMENT ON TABLE invoices IS 'Facturas emitidas, cumple con los requisitos de la Providencia Administrativa venezolana.';"
+        "COMMENT ON TABLE invoices IS "
+        "'Facturas emitidas, cumple con los requisitos de la "
+        "Providencia Administrativa venezolana.';"
     )
     op.execute(
         "COMMENT ON COLUMN invoices.invoice_number IS 'Numeración consecutiva y única (Art. 7.2)';"
     )
     op.execute(
-        "COMMENT ON COLUMN invoices.control_number IS 'Número de control asignado por imprenta digital autorizada (Art. 7.4)';"
+        "COMMENT ON COLUMN invoices.control_number IS "
+        "'Número de control asignado por imprenta digital "
+        "autorizada (Art. 7.4)';"
     )
     op.execute(
-        "COMMENT ON COLUMN invoices.issue_date IS 'Fecha de emisión en formato DDMMAAAA (Art. 7.6)';"
+        "COMMENT ON COLUMN invoices.issue_date IS "
+        "'Fecha de emisión en formato DDMMAAAA (Art. 7.6)';"
     )
     op.execute(
-        "COMMENT ON COLUMN invoices.issue_time IS 'Hora de emisión en formato HH.MM.SS con AM/PM (Art. 7.6)';"
+        "COMMENT ON COLUMN invoices.issue_time IS "
+        "'Hora de emisión en formato HH.MM.SS con AM/PM (Art. 7.6)';"
     )
     op.execute("COMMENT ON COLUMN invoices.client_rif IS 'RIF del adquirente (Art. 7.7)';")
     op.execute("COMMENT ON COLUMN invoices.subtotal IS 'Base imponible total (Art. 7.11)';")

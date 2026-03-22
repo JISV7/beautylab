@@ -1,5 +1,4 @@
 import uuid
-from typing import Any, List
 
 from sqlalchemy import Column, DateTime, ForeignKey, String
 from sqlalchemy.dialects.postgresql import JSONB, UUID

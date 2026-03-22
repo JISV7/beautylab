@@ -1,6 +1,6 @@
 """Theme service with validation for theme and font management."""
 
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 from uuid import UUID
 
 from sqlalchemy import func, select, update
@@ -55,20 +55,20 @@ class ThemeService:
         self,
         page: int = 1,
         page_size: int = 10,
-    ) -> Tuple[List[Theme], int]:
+    ) -> tuple[list[Theme], int]:
         """Get all active themes with pagination."""
         offset = (page - 1) * page_size
 
         # Get total count
         count_result = await self.db.execute(
-            select(func.count()).select_from(Theme).where(Theme.is_active == True)
+            select(func.count()).select_from(Theme).where(Theme.is_active)
         )
         total = count_result.scalar() or 0
 
         # Get themes
         result = await self.db.execute(
             select(Theme)
-            .where(Theme.is_active == True)
+            .where(Theme.is_active)
             .order_by(Theme.name)
             .offset(offset)
             .limit(page_size)
@@ -81,14 +81,15 @@ class ThemeService:
         self,
         page: int = 1,
         page_size: int = 10,
-        is_active: Optional[bool] = None,
-    ) -> Tuple[List[Theme], int]:
+        is_active: bool | None = None,
+    ) -> tuple[list[Theme], int]:
         """Get all themes with pagination (admin only).
 
         Args:
             page: Page number
             page_size: Number of items per page
-            is_active: Filter by active status (None = all, True = active only, False = inactive only)
+            is_active: Filter by active status
+                (None = all, True = active only, False = inactive only)
         """
         offset = (page - 1) * page_size
 
@@ -113,27 +114,25 @@ class ThemeService:
 
         return list(themes), total
 
-    async def get_theme_by_id(self, theme_id: UUID) -> Optional[Theme]:
+    async def get_theme_by_id(self, theme_id: UUID) -> Theme | None:
         """Get a theme by ID."""
         result = await self.db.execute(select(Theme).where(Theme.id == theme_id))
         return result.scalar_one_or_none()
 
-    async def get_default_theme(self) -> Optional[Theme]:
+    async def get_default_theme(self) -> Theme | None:
         """Get the default theme."""
-        result = await self.db.execute(
-            select(Theme).where(Theme.is_default == True).where(Theme.is_active == True)
-        )
+        result = await self.db.execute(select(Theme).where(Theme.is_default).where(Theme.is_active))
         return result.scalar_one_or_none()
 
     async def create_theme(
         self,
         name: str,
-        config: Dict[str, Any],
-        description: Optional[str] = None,
+        config: dict[str, Any],
+        description: str | None = None,
         theme_type: str = "custom",
         is_active: bool = False,
         is_default: bool = False,
-        created_by: Optional[UUID] = None,
+        created_by: UUID | None = None,
     ) -> Theme:
         """Create a new theme with validation."""
         # Validate config structure
@@ -165,12 +164,12 @@ class ThemeService:
     async def update_theme(
         self,
         theme_id: UUID,
-        name: Optional[str] = None,
-        description: Optional[str] = None,
-        config: Optional[Dict[str, Any]] = None,
-        is_active: Optional[bool] = None,
-        is_default: Optional[bool] = None,
-    ) -> Optional[Theme]:
+        name: str | None = None,
+        description: str | None = None,
+        config: dict[str, Any] | None = None,
+        is_active: bool | None = None,
+        is_default: bool | None = None,
+    ) -> Theme | None:
         """Update an existing theme with validation."""
         theme = await self.get_theme_by_id(theme_id)
 
@@ -219,14 +218,16 @@ class ThemeService:
         # Cannot delete active theme
         if theme.is_active:
             raise ThemeActiveError(
-                f"Cannot delete active theme '{theme.name}'. Please activate a different theme first, then try deleting this one."
+                f"Cannot delete active theme '{theme.name}'. "
+                "Please activate a different theme first, then try deleting this one."
             )
 
         # Check if any users have this as preferred theme
         user_count = await self._count_users_with_preferred_theme(theme_id)
         if user_count > 0:
             raise ThemeInUseError(
-                f"Cannot delete theme '{theme.name}' - {user_count} user(s) have it as preferred theme."
+                f"Cannot delete theme '{theme.name}' - "
+                f"{user_count} user(s) have it as preferred theme."
             )
 
         # Note: Default themes CAN be deleted if they are not active and not in use by users
@@ -240,7 +241,7 @@ class ThemeService:
 
         return True
 
-    async def activate_theme(self, theme_id: UUID) -> Optional[Theme]:
+    async def activate_theme(self, theme_id: UUID) -> Theme | None:
         """Activate a theme (deactivates all others)."""
         theme = await self.get_theme_by_id(theme_id)
 
@@ -257,7 +258,7 @@ class ThemeService:
 
         return theme
 
-    async def get_user_preferred_theme(self, user_id: UUID) -> Optional[Theme]:
+    async def get_user_preferred_theme(self, user_id: UUID) -> Theme | None:
         """Get a user's preferred theme."""
         result = await self.db.execute(
             select(Theme).join(User, User.preferred_theme_id == Theme.id).where(User.id == user_id)
@@ -267,8 +268,8 @@ class ThemeService:
     async def set_user_preferred_theme(
         self,
         user_id: UUID,
-        theme_id: Optional[UUID],
-    ) -> Optional[User]:
+        theme_id: UUID | None,
+    ) -> User | None:
         """Set a user's preferred theme."""
         result = await self.db.execute(select(User).where(User.id == user_id))
         user = result.scalar_one_or_none()
@@ -292,7 +293,7 @@ class ThemeService:
 
     # ==================== Font Usage Tracking ====================
 
-    async def get_font_usage(self, font_id: UUID) -> List[Dict[str, Any]]:
+    async def get_font_usage(self, font_id: UUID) -> list[dict[str, Any]]:
         """Get all usages of a font across themes."""
         result = await self.db.execute(select(Font).where(Font.id == font_id))
         font = result.scalar_one_or_none()
@@ -318,7 +319,7 @@ class ThemeService:
 
         return usages
 
-    async def can_delete_font(self, font_id: UUID) -> Tuple[bool, str]:
+    async def can_delete_font(self, font_id: UUID) -> tuple[bool, str]:
         """Check if a font can be safely deleted.
 
         Returns:
@@ -363,7 +364,7 @@ class ThemeService:
 
     # ==================== Validation Helpers ====================
 
-    def _validate_theme_config(self, config: Dict[str, Any]) -> None:
+    def _validate_theme_config(self, config: dict[str, Any]) -> None:
         """Validate theme configuration using Pydantic schema.
 
         This leverages Pydantic's built-in validation instead of manual checks.
@@ -391,7 +392,7 @@ class ThemeService:
                 raise ThemeValidationError(f"Theme config validation failed: {error_msg}")
             raise ThemeValidationError(f"Theme config validation failed: {error_msg}")
 
-    def validate_typography_sizes(self, config: Dict[str, Any]) -> Tuple[bool, List[str]]:
+    def validate_typography_sizes(self, config: dict[str, Any]) -> tuple[bool, list[str]]:
         """Validate typography size hierarchy without raising exceptions.
 
         This is a convenience method for frontend validation feedback.
@@ -416,9 +417,9 @@ class ThemeService:
                 return False, error_list
             return False, [error_msg]
 
-    async def _unset_default_themes(self, exclude_id: Optional[UUID] = None) -> None:
+    async def _unset_default_themes(self, exclude_id: UUID | None = None) -> None:
         """Unset all default themes, optionally excluding one."""
-        query = select(Theme).where(Theme.is_default == True)
+        query = select(Theme).where(Theme.is_default)
         if exclude_id:
             query = query.where(Theme.id != exclude_id)
 
@@ -447,7 +448,7 @@ class ThemeService:
         All operations are done in a single transaction.
         """
         config = theme.config
-        theme_id_str = str(theme.id)
+        str(theme.id)
 
         print(f"[FontUsage] Updating font usage for theme '{theme.name}' ({theme.id})")
 
@@ -473,14 +474,13 @@ class ThemeService:
             for element_name, element_config in typography.items():
                 # Support both camelCase (from frontend) and snake_case formats
                 font_id = element_config.get("font_id") or element_config.get("fontId")
-                font_name = element_config.get("font_name") or element_config.get(
-                    "fontName", "Unknown"
-                )
+                element_config.get("font_name") or element_config.get("fontName", "Unknown")
 
                 # font_id is now mandatory - skip if missing
                 if not font_id:
                     print(
-                        f"[FontUsage]   Warning: Element {element_name} in {palette_name} missing font_id"
+                        f"[FontUsage]   Warning: Element {element_name} "
+                        f"in {palette_name} missing font_id"
                     )
                     continue
 
@@ -490,7 +490,8 @@ class ThemeService:
                         font_uuid = UUID(font_id)
                     except ValueError:
                         print(
-                            f"[FontUsage]   Warning: Invalid font_id '{font_id}' for element {element_name}"
+                            f"[FontUsage]   Warning: Invalid font_id '{font_id}' "
+                            f"for element {element_name}"
                         )
                         continue
                 else:
@@ -567,10 +568,11 @@ class ThemeService:
 
         if removed_count > 0:
             print(
-                f"[FontUsage]     Total removed {removed_count} old usage(s) for theme {theme_id_str}"
+                f"[FontUsage]     Total removed {removed_count} "
+                f"old usage(s) for theme {theme_id_str}"
             )
 
-    async def _get_all_fonts(self) -> Dict[UUID, Font]:
+    async def _get_all_fonts(self) -> dict[UUID, Font]:
         """Get all fonts as a dict."""
         result = await self.db.execute(select(Font))
         fonts = result.scalars().all()

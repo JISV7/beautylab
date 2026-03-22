@@ -6,7 +6,7 @@ Create Date: 2026-03-21
 
 """
 
-from typing import Sequence, Union
+from collections.abc import Sequence
 
 import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
@@ -14,9 +14,9 @@ from sqlalchemy.dialects import postgresql
 from alembic import op
 
 revision: str = "013_add_coupons"
-down_revision: Union[str, None] = "012_license_system"
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+down_revision: str | None = "012_license_system"
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
 
 def upgrade() -> None:
@@ -104,19 +104,21 @@ def upgrade() -> None:
     op.execute("COMMENT ON TABLE coupons IS 'Discount coupons for promotions';")
     op.execute("COMMENT ON COLUMN coupons.discount_type IS 'percentage or fixed amount';")
     op.execute(
-        "COMMENT ON COLUMN coupons.min_purchase IS 'Minimum purchase amount required to use coupon';"
+        "COMMENT ON COLUMN coupons.min_purchase IS "
+        "'Minimum purchase amount required to use coupon';"
     )
     op.execute("COMMENT ON COLUMN coupons.max_uses IS 'Maximum total uses (NULL = unlimited)';")
     op.execute("COMMENT ON TABLE coupon_usages IS 'Track which users have used which coupons';")
 
     # Insert sample coupons
-    op.execute("""
-        INSERT INTO coupons (code, discount_type, discount_value, min_purchase, max_uses, expires_at)
-        VALUES
-            ('WELCOME10', 'percentage', 10.00, 50.00, 100, NOW() + INTERVAL '30 days'),
-            ('SAVE20', 'fixed', 20.00, 100.00, 50, NOW() + INTERVAL '60 days'),
-            ('HALFOFF', 'percentage', 50.00, 200.00, 10, NOW() + INTERVAL '14 days')
-    """)
+    op.execute(
+        "INSERT INTO coupons "
+        "(code, discount_type, discount_value, min_purchase, max_uses, expires_at) "
+        "VALUES "
+        "('WELCOME10', 'percentage', 10.00, 50.00, 100, NOW() + INTERVAL '30 days'), "
+        "('SAVE20', 'fixed', 20.00, 100.00, 50, NOW() + INTERVAL '60 days'), "
+        "('HALFOFF', 'percentage', 50.00, 200.00, 10, NOW() + INTERVAL '14 days')"
+    )
 
 
 def downgrade() -> None:

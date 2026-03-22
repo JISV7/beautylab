@@ -1,7 +1,6 @@
 """Authentication and authorization dependencies."""
 
-from collections.abc import AsyncGenerator
-from typing import Annotated, Optional
+from typing import Annotated
 from uuid import UUID
 
 from fastapi import Depends, HTTPException, status
@@ -10,7 +9,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import get_settings
-from app.core.security import decode_token, verify_token
+from app.core.security import verify_token
 from app.database import get_db
 from app.models.permission import Permission
 from app.models.role import Role
@@ -25,7 +24,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login", auto_error=False)
 
 
 async def get_current_user(
-    token: Annotated[Optional[str], Depends(oauth2_scheme)],
+    token: Annotated[str | None, Depends(oauth2_scheme)],
     db: Annotated[AsyncSession, Depends(get_db)],
 ) -> User:
     """Get the current authenticated user from JWT token."""
@@ -46,7 +45,7 @@ async def get_current_user(
             headers={"WWW-Authenticate": "Bearer"},
         ) from e
 
-    result = await db.execute(select(User).where(User.id == user_id).where(User.is_active == True))
+    result = await db.execute(select(User).where(User.id == user_id).where(User.is_active))
     user = result.scalar_one_or_none()
 
     if not user:
@@ -60,9 +59,9 @@ async def get_current_user(
 
 
 async def get_current_user_optional(
-    token: Annotated[Optional[str], Depends(oauth2_scheme)],
+    token: Annotated[str | None, Depends(oauth2_scheme)],
     db: Annotated[AsyncSession, Depends(get_db)],
-) -> Optional[User]:
+) -> User | None:
     """Get the current user if authenticated, otherwise return None."""
     if not token:
         return None
@@ -73,11 +72,14 @@ async def get_current_user_optional(
     except (ValueError, KeyError):
         return None
 
-    result = await db.execute(select(User).where(User.id == user_id).where(User.is_active == True))
+    result = await db.execute(select(User).where(User.id == user_id).where(User.is_active))
     return result.scalar_one_or_none()
 
 
-async def get_user_roles(user: Annotated[User, Depends(get_current_user)]) -> list[str]:
+async def get_user_roles(
+    user: Annotated[User, Depends(get_current_user)],
+    db: Annotated[AsyncSession, Depends(get_db)],
+) -> list[str]:
     """Get the list of role names for the current user."""
     result = await db.execute(
         select(Role.name)
@@ -130,7 +132,9 @@ def check_permission(*required_permissions: str):
         if not any(perm in user_permissions for perm in required_permissions):
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail=f"Insufficient permissions. Required one of: {', '.join(required_permissions)}",
+                detail=(
+                    f"Insufficient permissions. Required one of: {', '.join(required_permissions)}"
+                ),
             )
 
         return user
@@ -140,7 +144,7 @@ def check_permission(*required_permissions: str):
 
 # Type aliases for dependency injection
 CurrentUser = Annotated[User, Depends(get_current_user)]
-OptionalUser = Annotated[Optional[User], Depends(get_current_user_optional)]
+OptionalUser = Annotated[User | None, Depends(get_current_user_optional)]
 UserRoles = Annotated[list[str], Depends(get_user_roles)]
 
 # Pre-configured role checkers

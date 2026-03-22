@@ -255,7 +255,7 @@ async def seed_fonts(db: AsyncSession, root_user: User) -> Font | None:
 
     if not source_path.exists():
         print(f"  Warning: Font file not found at {source_path}")
-        print(f"  Skipping font seeding - themes will need font assignment later")
+        print("  Skipping font seeding - themes will need font assignment later")
         return None
 
     # Setup upload directory
@@ -397,7 +397,9 @@ async def seed_default_theme(
 
         theme = Theme(
             name=theme_name,
-            description="Default placeholder theme. Customize or create new themes in the admin panel.",
+            description=(
+                "Default placeholder theme. Customize or create new themes in the admin panel."
+            ),
             type="preset",
             config=default_config,
             is_active=True,

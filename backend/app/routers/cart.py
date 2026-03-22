@@ -16,8 +16,8 @@ from app.schemas.cart_item import (
     CheckoutRequest,
     CheckoutResponse,
 )
-from app.schemas.invoice import InvoiceCreate, InvoiceLineCreate, InvoiceResponse
-from app.schemas.license import LicensePurchaseItem, LicensePurchaseRequest, LicenseResponse
+from app.schemas.invoice import InvoiceCreate, InvoiceLineCreate
+from app.schemas.license import LicensePurchaseItem, LicensePurchaseRequest
 from app.services.cart_service import CartItemNotFoundError, CartService, ProductNotFoundError
 from app.services.invoice_service import InvoiceService
 from app.services.license_service import LicenseService
@@ -284,7 +284,6 @@ async def checkout(
     await cart_service.clear_cart(user_id=current_user.id)
 
     # Send invoice email (async - non-blocking)
-    from fastapi import BackgroundTasks
 
     # Note: For true async, use BackgroundTasks or a task queue
     # For now, we'll send synchronously but this could be moved to background
@@ -323,5 +322,7 @@ async def checkout(
     return CheckoutResponse(
         invoice_id=invoice.id,
         licenses=[lic.license_code for lic in licenses],
-        message=f"Checkout complete! Generated {len(licenses)} license(s). Invoice sent to {user_email}",
+        message=(
+            f"Checkout complete! Generated {len(licenses)} license(s). Invoice sent to {user_email}"
+        ),
     )

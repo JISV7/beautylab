@@ -6,16 +6,16 @@ Create Date: 2026-03-20
 
 """
 
-from typing import Sequence, Union
+from collections.abc import Sequence
 
 import sqlalchemy as sa
 
 from alembic import op
 
 revision: str = "004_fiscal_fields"
-down_revision: Union[str, None] = "003_make_font_id_mandatory"
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+down_revision: str | None = "003_make_font_id_mandatory"
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
 
 def upgrade() -> None:
@@ -47,7 +47,8 @@ def upgrade() -> None:
     op.execute("COMMENT ON COLUMN users.fiscal_address IS 'Domicilio fiscal del cliente';")
     op.execute("COMMENT ON COLUMN users.phone IS 'Teléfono de contacto';")
     op.execute(
-        "COMMENT ON COLUMN users.is_contributor IS 'Indica si el cliente requiere factura con RIF a efectos tributarios';"
+        "COMMENT ON COLUMN users.is_contributor IS "
+        "'Indica si el cliente requiere factura con RIF a efectos tributarios';"
     )
 
 

@@ -6,7 +6,7 @@ Create Date: 2026-03-20
 
 """
 
-from typing import Sequence, Union
+from collections.abc import Sequence
 
 import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
@@ -15,9 +15,9 @@ from alembic import op
 
 # revision identifiers, used by Alembic.
 revision: str = "006_products"
-down_revision: Union[str, None] = "005_company_billing"
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+down_revision: str | None = "005_company_billing"
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
 
 def upgrade() -> None:
@@ -57,14 +57,34 @@ def upgrade() -> None:
     op.create_index("idx_products_active", "products", ["is_active"], unique=False)
 
     # Insert sample products
-    op.execute("""
-        INSERT INTO products (name, description, sku, price, tax_rate, tax_type)
-        VALUES
-            ('Curso de Python', 'Curso básico de programación en Python', 'PY-101', 150.00, 16.00, 'gravado'),
-            ('Curso de IA', 'Introducción a la Inteligencia Artificial', 'AI-101', 200.00, 16.00, 'gravado'),
-            ('Suscripción mensual', 'Acceso a toda la plataforma', 'SUB-MONTH', 50.00, 16.00, 'gravado'),
-            ('Material de estudio (libro)', 'Libro electrónico de fundamentos', 'BOOK-001', 30.00, 0.00, 'exento')
-    """)
+    op.execute(
+        "INSERT INTO products "
+        "(name, description, sku, price, tax_rate, tax_type) "
+        "VALUES "
+        "('Curso de Python', 'Curso básico de programación en Python', "
+        "'PY-101', 150.00, 16.00, 'gravado')"
+    )
+    op.execute(
+        "INSERT INTO products "
+        "(name, description, sku, price, tax_rate, tax_type) "
+        "VALUES "
+        "('Curso de IA', 'Introducción a la Inteligencia Artificial', "
+        "'AI-101', 200.00, 16.00, 'gravado')"
+    )
+    op.execute(
+        "INSERT INTO products "
+        "(name, description, sku, price, tax_rate, tax_type) "
+        "VALUES "
+        "('Suscripción mensual', 'Acceso a toda la plataforma', "
+        "'SUB-MONTH', 50.00, 16.00, 'gravado')"
+    )
+    op.execute(
+        "INSERT INTO products "
+        "(name, description, sku, price, tax_rate, tax_type) "
+        "VALUES "
+        "('Material de estudio (libro)', 'Libro electrónico de fundamentos', "
+        "'BOOK-001', 30.00, 0.00, 'exento')"
+    )
 
     # Triggers
     op.execute("""
@@ -76,7 +96,9 @@ def upgrade() -> None:
     # Comments
     op.execute("COMMENT ON TABLE products IS 'Productos y servicios facturables';")
     op.execute(
-        "COMMENT ON COLUMN products.tax_type IS 'Tipo de tratamiento fiscal: gravado (con IVA), exento (sin IVA), exonerado (sin IVA pero con justificación)';"
+        "COMMENT ON COLUMN products.tax_type IS "
+        "'Tipo de tratamiento fiscal: gravado (con IVA), exento (sin IVA), "
+        "exonerado (sin IVA pero con justificación)';"
     )
 
 

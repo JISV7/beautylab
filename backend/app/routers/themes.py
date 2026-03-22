@@ -1,15 +1,12 @@
 """Themes router with validation and activation endpoints."""
 
-from typing import Optional
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.dependencies import CurrentUser, RequireAdmin, check_role
+from app.core.dependencies import CurrentUser, RequireAdmin
 from app.database import get_db
-from app.models.theme import Theme
 from app.models.user import User
 from app.schemas.theme import (
     ThemeCreate,
@@ -33,7 +30,7 @@ router = APIRouter(prefix="/themes", tags=["Themes"])
 async def list_all_themes(
     page: int = Query(1, ge=1),
     page_size: int = Query(10, ge=1, le=100),
-    is_active: Optional[bool] = None,
+    is_active: bool | None = None,
     _: User = Depends(RequireAdmin),
     db: AsyncSession = Depends(get_db),
 ) -> ThemeListResponse:
@@ -292,7 +289,7 @@ async def get_user_preferred_theme(
 
 @router.put("/user/preferred", response_model=ThemeResponse)
 async def set_user_preferred_theme(
-    theme_id: Optional[UUID],
+    theme_id: UUID | None,
     current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> ThemeResponse:

@@ -1,9 +1,7 @@
 """Application configuration."""
 
 from functools import lru_cache
-from typing import Any
 
-from pydantic import PostgresDsn, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 

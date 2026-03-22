@@ -41,6 +41,13 @@ class Settings(BaseSettings):
     argon2_time_cost: int = 3
     argon2_parallelism: int = 4
 
+    # Email (SMTP)
+    smtp_host: str = "localhost"
+    smtp_port: int = 587
+    smtp_user: str = ""
+    smtp_password: str = ""
+    from_email: str = "noreply@beautylab.com"
+
     @property
     def async_database_url(self) -> str:
         """Convert database URL to async version if needed."""

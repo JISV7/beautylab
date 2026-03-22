@@ -4,6 +4,7 @@ from app.models.audit_log import AuditLog
 from app.models.base import Base
 from app.models.cart_item import CartItem
 from app.models.category import Category
+from app.models.coupon import Coupon, CouponUsage
 from app.models.course import Course
 from app.models.enrollment import Enrollment
 from app.models.font import Font
@@ -47,4 +48,6 @@ __all__ = [
     "PaymentMethod",
     "Payment",
     "PaymentDetail",
+    "Coupon",
+    "CouponUsage",
 ]

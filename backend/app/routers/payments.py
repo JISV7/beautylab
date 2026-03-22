@@ -229,3 +229,20 @@ async def get_payment_summary(
     summary = await payment_service.get_payment_statistics(invoice_id=invoice_id)
 
     return summary
+
+
+@router.get("/statistics/methods")
+async def get_payment_method_statistics(
+    current_user: User = Depends(CurrentUser),
+    db: AsyncSession = Depends(get_db),
+) -> dict:
+    """
+    Get payment method usage statistics.
+
+    Returns percentage breakdown of payment methods used.
+    Example: 50% bank_transfer, 40% credit_card, 10% debit_card
+
+    Admin only endpoint.
+    """
+    payment_service = PaymentService(db)
+    return await payment_service.get_payment_method_statistics()

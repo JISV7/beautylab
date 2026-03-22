@@ -3,6 +3,8 @@
 from app.services.auth_service import AuthService
 from app.services.cart_service import CartService
 from app.services.catalog_service import CatalogService
+from app.services.coupon_service import CouponService
+from app.services.email_service import EmailService, get_email_service
 from app.services.enrollment_service import EnrollmentService
 from app.services.invoice_service import InvoiceService
 from app.services.license_service import LicenseService
@@ -20,4 +22,7 @@ __all__ = [
     "InvoiceService",
     "CartService",
     "EnrollmentService",
+    "CouponService",
+    "EmailService",
+    "get_email_service",
 ]

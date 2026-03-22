@@ -77,6 +77,8 @@ class ProductResponse(BaseModel):
     is_active: bool
     created_at: datetime
     updated_at: datetime
+    # Frontend-only badge (calculated from created_at or sales)
+    badge: str | None = None  # "new", "hot", or None
 
 
 class ProductWithDetails(ProductResponse):

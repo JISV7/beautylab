@@ -4,7 +4,7 @@ import hashlib
 from decimal import Decimal
 from uuid import UUID
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.invoice import Invoice
@@ -281,4 +281,47 @@ class PaymentService:
             "completed_payments": completed_payments,
             "pending_payments": pending_payments,
             "total_payments": len(payments),
+        }
+
+    async def get_payment_method_statistics(self) -> dict:
+        """
+        Get payment method usage statistics.
+
+        Returns percentage breakdown of payment methods used.
+        Example: 50% bank_transfer, 40% credit_card, 10% debit_card
+        """
+        result = await self.db.execute(
+            select(
+                PaymentMethod.method_type,
+                func.count(Payment.id).label("count"),
+            )
+            .join(Payment, Payment.payment_method_id == PaymentMethod.id)
+            .group_by(PaymentMethod.method_type)
+        )
+        rows = result.all()
+
+        total = sum(row[1] for row in rows)
+        if total == 0:
+            return {
+                "total_payments": 0,
+                "methods": [],
+            }
+
+        methods = []
+        for method_type, count in rows:
+            percentage = (count / total) * 100
+            methods.append(
+                {
+                    "method_type": method_type,
+                    "count": count,
+                    "percentage": round(percentage, 1),
+                }
+            )
+
+        # Sort by percentage descending
+        methods.sort(key=lambda x: x["percentage"], reverse=True)
+
+        return {
+            "total_payments": total,
+            "methods": methods,
         }

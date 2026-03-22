@@ -15,6 +15,7 @@ from app.routers import (
     auth,
     cart,
     catalog,
+    coupons,
     enrollments,
     fonts,
     invoices,
@@ -63,6 +64,7 @@ app.include_router(users.router)
 app.include_router(products.router)
 app.include_router(catalog.router)
 app.include_router(cart.router)
+app.include_router(coupons.router)
 app.include_router(invoices.router)
 app.include_router(payments.router)
 app.include_router(licenses.router)

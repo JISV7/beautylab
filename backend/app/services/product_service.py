@@ -1,5 +1,6 @@
 """Product service for business logic operations."""
 
+from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 from uuid import UUID
 
@@ -216,3 +217,34 @@ class ProductService:
             "inactive_products": total_products - active_products,
             "total_value": total_value,
         }
+
+    @staticmethod
+    def calculate_badge(product: Product) -> str | None:
+        """
+        Calculate product badge based on creation date.
+
+        Badges:
+        - "new": Created within last 7 days
+        - "hot": Created within last 30 days
+        - None: Older than 30 days
+
+        This is a frontend-only calculation - no database changes needed.
+        """
+        now = datetime.now(timezone.utc)
+        created_at = product.created_at
+
+        if not created_at:
+            return None
+
+        # Make created_at timezone aware if it isn't
+        if created_at.tzinfo is None:
+            created_at = created_at.replace(tzinfo=timezone.utc)
+
+        age = now - created_at
+
+        if age < timedelta(days=7):
+            return "new"
+        elif age < timedelta(days=30):
+            return "hot"
+
+        return None

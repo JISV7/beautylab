@@ -10,6 +10,7 @@ from app.models.base import Base, TimestampMixin
 
 if TYPE_CHECKING:
     from app.models.learning_path_course import LearningPathCourse
+    from app.models.license import License
     from app.models.product import Product
 
 
@@ -43,6 +44,7 @@ class LearningPath(Base, TimestampMixin):
         back_populates="learning_path",
         cascade="all, delete-orphan",
     )
+    licenses: Mapped[list["License"]] = relationship("License", back_populates="learning_path")
 
     def __repr__(self) -> str:
         return f"<LearningPath(id={self.id}, title={self.title}, slug={self.slug})>"

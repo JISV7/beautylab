@@ -11,8 +11,11 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.models.base import Base, TimestampMixin
 
 if TYPE_CHECKING:
+    from app.models.cart_item import CartItem
     from app.models.course import Course
+    from app.models.invoice import InvoiceLine
     from app.models.learning_path import LearningPath
+    from app.models.license import License
 
 
 class Product(Base, TimestampMixin):
@@ -42,6 +45,11 @@ class Product(Base, TimestampMixin):
     learning_path: Mapped[Optional["LearningPath"]] = relationship(
         "LearningPath", back_populates="product", uselist=False
     )
+    cart_items: Mapped[list["CartItem"]] = relationship("CartItem", back_populates="product")
+    invoice_lines: Mapped[list["InvoiceLine"]] = relationship(
+        "InvoiceLine", back_populates="product"
+    )
+    licenses: Mapped[list["License"]] = relationship("License", back_populates="product")
 
     def __repr__(self) -> str:
         return f"<Product(id={self.id}, name={self.name}, sku={self.sku})>"

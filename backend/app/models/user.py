@@ -10,6 +10,11 @@ from app.models.base import Base, TimestampMixin
 
 if TYPE_CHECKING:
     from app.models.audit_log import AuditLog
+    from app.models.cart_item import CartItem
+    from app.models.enrollment import Enrollment
+    from app.models.invoice import Invoice
+    from app.models.license import License, LicenseAssignment
+    from app.models.payment import PaymentMethod
     from app.models.theme import Theme
     from app.models.user_role import UserRole
 
@@ -63,6 +68,29 @@ class User(Base, TimestampMixin):
         "UserRole",
         back_populates="assigned_by_user",
         foreign_keys="[UserRole.assigned_by]",
+    )
+    # New relationships for license/billing system
+    invoices: Mapped[list["Invoice"]] = relationship("Invoice", back_populates="client")
+    cart_items: Mapped[list["CartItem"]] = relationship("CartItem", back_populates="user")
+    enrollments: Mapped[list["Enrollment"]] = relationship("Enrollment", back_populates="user")
+    purchased_licenses: Mapped[list["License"]] = relationship(
+        "License", foreign_keys="License.purchased_by_user_id", back_populates="purchased_by"
+    )
+    redeemed_licenses: Mapped[list["License"]] = relationship(
+        "License", foreign_keys="License.redeemed_by_user_id", back_populates="redeemed_by"
+    )
+    assigned_licenses: Mapped[list["LicenseAssignment"]] = relationship(
+        "LicenseAssignment",
+        foreign_keys="LicenseAssignment.assigned_to_user_id",
+        back_populates="assigned_to",
+    )
+    assigned_licenses_made: Mapped[list["LicenseAssignment"]] = relationship(
+        "LicenseAssignment",
+        foreign_keys="LicenseAssignment.assigned_by_user_id",
+        back_populates="assigned_by",
+    )
+    payment_methods: Mapped[list["PaymentMethod"]] = relationship(
+        "PaymentMethod", back_populates="user"
     )
 
     def __repr__(self) -> str:

@@ -10,7 +10,20 @@ from fastapi.staticfiles import StaticFiles
 
 from app.config import get_settings
 from app.database import close_db, init_db
-from app.routers import admin, auth, catalog, fonts, products, themes, users
+from app.routers import (
+    admin,
+    auth,
+    cart,
+    catalog,
+    enrollments,
+    fonts,
+    invoices,
+    licenses,
+    payments,
+    products,
+    themes,
+    users,
+)
 
 settings = get_settings()
 
@@ -49,6 +62,11 @@ app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(products.router)
 app.include_router(catalog.router)
+app.include_router(cart.router)
+app.include_router(invoices.router)
+app.include_router(payments.router)
+app.include_router(licenses.router)
+app.include_router(enrollments.router)
 app.include_router(themes.router)
 app.include_router(admin.router)
 app.include_router(fonts.router)

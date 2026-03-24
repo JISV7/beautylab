@@ -5,8 +5,9 @@ import { UnifiedThemeConfig } from '../components/admin/UnifiedThemeConfig';
 import { CourseList } from '../components/admin/CourseList';
 import { CourseManagement } from '../components/admin/CourseManagement';
 import { CategoryManagementPage } from '../pages/CategoryManagementPage';
+import InvoicesPage from '../pages/InvoicesPage';
 
-type AdminTab = 'dashboard' | 'themes' | 'categories' | 'users' | 'content';
+type AdminTab = 'dashboard' | 'themes' | 'categories' | 'users' | 'content' | 'invoices';
 
 type ContentView = 'list' | 'create' | 'edit';
 
@@ -113,6 +114,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToDash
                                     onBack={handleBackToContentList}
                                 />
                             )}
+                        </div>
+                    )}
+                    {activeTab === 'invoices' && (
+                        <div>
+                            <InvoicesPage />
                         </div>
                     )}
                 </main>

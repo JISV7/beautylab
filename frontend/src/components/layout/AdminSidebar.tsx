@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Palette, Users, Sparkles, FileText, FolderOpen } from 'lucide-react';
+import { X, Palette, Users, Sparkles, FileText, FolderOpen, Receipt } from 'lucide-react';
 
 interface AdminSidebarProps {
     activeItem?: string;
@@ -21,6 +21,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
         { id: 'categories', label: 'Categories', icon: FolderOpen },
         { id: 'users', label: 'Users', icon: Users },
         { id: 'content', label: 'Courses', icon: FileText },
+        { id: 'invoices', label: 'Invoices', icon: Receipt },
     ];
 
     const handleClick = (itemId: string) => {

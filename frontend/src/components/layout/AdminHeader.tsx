@@ -27,7 +27,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({ onBack, onMenuToggle, 
     }, []);
 
     return (
-        <header className="dashboard-header z-40 px-4 lg:px-6 py-4 flex items-center justify-between gap-4 border-b border-[var(--palette-border)] bg-[var(--palette-surface)]">
+        <header className="dashboard-header z-40 px-4 lg:px-6 py-4 flex items-center justify-between gap-4 border-b border-[var(--palette-border)] bg-[var(--palette-surface)] print:hidden">
             {/* Left Side: Hamburger + Logo + Search */}
             <div className="flex items-center gap-2 lg:gap-4 flex-1 min-w-0">
                 {/* Mobile Hamburger Menu */}

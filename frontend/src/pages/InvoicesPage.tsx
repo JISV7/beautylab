@@ -5,7 +5,8 @@ import { Printer, ArrowLeft } from 'lucide-react';
 const mockInvoices = Array.from({ length: 12 }).map((_, i) => ({
   id: `INV 001-0000021${4 + i}`,
   controlNo: `00-0123456${7 + i}`,
-  date: '26 OCT 2023, 10:15:30 A.M.',
+  date: '26102023',
+  time: '10:15:30 A.M.',
   client: {
     name: i % 2 === 0 ? 'Apex Solutions' : 'Tech Corp C.A.',
     rif: `J-98765432-${i % 9}`,
@@ -22,7 +23,7 @@ const mockInvoices = Array.from({ length: 12 }).map((_, i) => ({
   tax: 'Bs. 24.54',
   total: 'Bs. 3,313.44',
   paymentMethod: 'Bank Transfer',
-  paymentDate: '10 Nov 2023'
+  paymentDate: '10112023'
 }));
 
 // --- COMPONENTE PRINCIPAL ---
@@ -88,7 +89,7 @@ function InvoiceList({ invoices, onSelect }: { invoices: typeof mockInvoices; on
               >
                 <td className="p-4 font-medium text-gray-800">{inv.id}</td>
                 <td className="p-4 text-gray-600">{inv.client.name}</td>
-                <td className="p-4 text-gray-500 text-sm">{inv.date.split(',')[0]}</td>
+                <td className="p-4 text-gray-500 text-sm">{inv.date}</td>
                 <td className="p-4 text-right font-medium text-gray-800">{inv.total}</td>
               </tr>
             ))}
@@ -154,15 +155,15 @@ function InvoiceDetail({ invoice, onBack }: { invoice: typeof mockInvoices[0]; o
         {/* Cabecera */}
         <div className="flex justify-between items-start mb-8 border-b pb-6 border-gray-200">
           <div>
-            <h1 className="text-4xl font-bold tracking-tight text-gray-900 mb-4">INVOICE</h1>
-            <p className="text-sm text-gray-600 font-semibold">DATE OF ISSUE</p>
-            <p className="text-md text-gray-800">{invoice.date}</p>
+            <h1 className="text-4xl font-bold tracking-tight text-gray-900 mb-4">FACTURA</h1>
+            <p className="text-sm text-gray-600 font-semibold">FECHA DE EMISIÓN</p>
+            <p className="text-md text-gray-800">{invoice.date}, {invoice.time}</p>
           </div>
           <div className="text-right">
             <h2 className="text-2xl font-medium text-gray-900 mb-2">{invoice.id}</h2>
-            <p className="text-sm text-gray-600">CONTROL No.: {invoice.controlNo}</p>
-            <p className="text-sm text-gray-600">TOTAL CONTROL Nos.: FROM No.</p>
-            <p className="text-sm text-gray-600">00-01000001 TO No. 00-01500000</p>
+            <p className="text-sm text-gray-600">Nro. de Control: {invoice.controlNo}</p>
+            <p className="text-sm text-gray-600">Total de Nros. de Control: Desde Nro.</p>
+            <p className="text-sm text-gray-600">00-01000001 Hasta Nro. 00-01500000</p>
           </div>
         </div>
 
@@ -171,14 +172,13 @@ function InvoiceDetail({ invoice, onBack }: { invoice: typeof mockInvoices[0]; o
           <div>
             <h3 className="font-bold text-gray-900 text-lg">codyn</h3>
             <p className="text-sm text-gray-700 mt-1">R.I.F.: J-12345678-0</p>
-            <p className="text-sm text-gray-700 mt-1">Fiscal Address: Codyn Tower, 1st Floor,</p>
-            <p className="text-sm text-gray-700">Tech District, Caracas, Miranda</p>
-            <p className="text-sm text-gray-700 mt-1">Authorized Digital Printer:</p>
+            <p className="text-sm text-gray-700 mt-1">Dirección Fiscal: Codyn Tower, 1er Piso,</p>
+            <p className="text-sm text-gray-700">Distrito Tecnológico, Caracas, Miranda</p>
           </div>
           <div>
             <h3 className="font-bold text-gray-900 text-lg">{invoice.client.name}</h3>
             <p className="text-sm text-gray-700 mt-1">R.I.F.: {invoice.client.rif}</p>
-            <p className="text-sm text-gray-700 mt-1 w-3/4">Fiscal Address: {invoice.client.address}</p>
+            <p className="text-sm text-gray-700 mt-1 w-3/4">Dirección Fiscal: {invoice.client.address}</p>
           </div>
         </div>
 
@@ -186,10 +186,10 @@ function InvoiceDetail({ invoice, onBack }: { invoice: typeof mockInvoices[0]; o
         <table className="w-full text-left mb-8">
           <thead>
             <tr className="bg-gray-100 text-gray-700 uppercase text-sm">
-              <th className="py-2 px-3 font-semibold w-12">No.</th>
-              <th className="py-2 px-3 font-semibold">DESCRIPTION</th>
-              <th className="py-2 px-3 font-semibold text-center">QUANTITY</th>
-              <th className="py-2 px-3 font-semibold text-right">UNIT PRICE</th>
+              <th className="py-2 px-3 font-semibold w-12">Nro.</th>
+              <th className="py-2 px-3 font-semibold">DESCRIPCIÓN</th>
+              <th className="py-2 px-3 font-semibold text-center">CANTIDAD</th>
+              <th className="py-2 px-3 font-semibold text-right">PRECIO UNITARIO</th>
               <th className="py-2 px-3 font-semibold text-right">TOTAL</th>
             </tr>
           </thead>
@@ -210,33 +210,38 @@ function InvoiceDetail({ invoice, onBack }: { invoice: typeof mockInvoices[0]; o
         <div className="flex justify-end border-t border-gray-200 pt-4 mb-8">
           <div className="w-80 space-y-2">
             <div className="flex justify-between text-gray-700">
-              <span>TAXABLE BASE (RATE 8%)</span>
+              <span>BASE IMPONIBLE (ALÍCUOTA 8%)</span>
               <span>{invoice.taxableBase}</span>
             </div>
             <div className="flex justify-between text-gray-700">
-              <span>EXEMPT/EXONERATED</span>
+              <span>EXENTO/EXONERADO</span>
               <span>{invoice.exempt}</span>
             </div>
             <div className="flex justify-between text-gray-700">
-              <span>TAX 8%</span>
+              <span>IMPUESTO 8%</span>
               <span>{invoice.tax}</span>
             </div>
             <div className="flex justify-between text-lg font-bold text-gray-900 pt-3 border-t border-gray-200 mt-3">
-              <span>TOTAL TO PAY</span>
+              <span>TOTAL A PAGAR</span>
               <span>{invoice.total}</span>
             </div>
           </div>
         </div>
 
-        {/* Footer (Método de Pago) */}
+        {/* Footer (Método de Pago e Imprenta) */}
         <div className="grid grid-cols-2 gap-8 border-t border-gray-200 pt-6">
           <div>
-            <p className="text-gray-600 text-sm mb-1 uppercase">PAYMENT METHOD</p>
+            <p className="text-gray-600 text-sm mb-1 uppercase">MÉTODO DE PAGO</p>
             <p className="font-medium text-gray-900">{invoice.paymentMethod}</p>
+            <p className="text-gray-600 text-sm mt-3 mb-1 uppercase">FECHA DE PAGO</p>
+            <p className="font-medium text-gray-900">{invoice.paymentDate}</p>
           </div>
           <div>
-            <p className="text-gray-600 text-sm mb-1 uppercase">PAYMENT DATE</p>
-            <p className="font-medium text-gray-900">{invoice.paymentDate}</p>
+            <p className="text-gray-600 text-sm mb-1 uppercase">IMPRESORA DIGITAL AUTORIZADA</p>
+            <p className="font-medium text-gray-900">Imprentos C.A.</p>
+            <p className="text-sm text-gray-700">R.I.F.: J-00123456-7</p>
+            <p className="text-sm text-gray-700">Providencia Administrativa Nro. SNAT/2023/001234</p>
+            <p className="text-sm text-gray-700">Fecha de Asignación: 15012023</p>
           </div>
         </div>
 

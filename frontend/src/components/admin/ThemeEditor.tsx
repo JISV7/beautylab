@@ -101,7 +101,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
         h1: {
             fontFamily: theme.config[activeMode].typography.h1?.fontName || 'Roboto',
             fontId: theme.config[activeMode].typography.h1?.fontId || '',
-            size: parseFloat(theme.config[activeMode].typography.h1?.fontSize || '2.488'),
+            size: parseFloat(theme.config[activeMode].typography.h1?.fontSize || '2.492'),
             color: theme.config[activeMode].typography.h1?.color || '#000000',
             fontWeight: theme.config[activeMode].typography.h1?.fontWeight || 400,
             lineHeight: theme.config[activeMode].typography.h1?.lineHeight || '1.2'
@@ -173,7 +173,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
             h1: {
                 fontFamily: modeData.typography.h1?.fontName || 'Roboto',
                 fontId: modeData.typography.h1?.fontId || '',
-                size: parseFloat(modeData.typography.h1?.fontSize || '2.488'),
+                size: parseFloat(modeData.typography.h1?.fontSize || '2.492'),
                 color: modeData.typography.h1?.color || '#000000',
                 fontWeight: modeData.typography.h1?.fontWeight || 400,
                 lineHeight: modeData.typography.h1?.lineHeight || '1.2'
@@ -315,7 +315,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
             h1: {
                 fontFamily: modeData.typography.h1?.fontName || 'Roboto',
                 fontId: modeData.typography.h1?.fontId || '',
-                size: parseFloat(modeData.typography.h1?.fontSize || '2.488'),
+                size: parseFloat(modeData.typography.h1?.fontSize || '2.492'),
                 color: modeData.typography.h1?.color || '#000000',
                 fontWeight: modeData.typography.h1?.fontWeight || 400,
                 lineHeight: modeData.typography.h1?.lineHeight || '1.2'

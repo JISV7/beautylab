@@ -145,3 +145,69 @@ export interface CourseListProps {
 export interface CourseManagementProps {
     onBack?: () => void;
 }
+
+// ==================== Course Sub-components Types ====================
+
+export interface CourseFiltersProps {
+    searchQuery: string;
+    categoryFilter: string;
+    levelFilter: string;
+    publishedFilter: string;
+    categories: Category[];
+    levels: Level[];
+    onSearchChange: (value: string) => void;
+    onCategoryChange: (value: string) => void;
+    onLevelChange: (value: string) => void;
+    onPublishedFilterChange: (value: string) => void;
+}
+
+export interface CourseTableProps {
+    courses: Course[];
+    categories: Category[];
+    levels: Level[];
+    onEdit: (courseId: string) => void;
+    onDelete: (courseId: string, courseTitle: string) => void;
+    onTogglePublish: (courseId: string, published: boolean, courseTitle: string) => void;
+}
+
+export interface CoursePaginationProps {
+    currentPage: number;
+    totalItems: number;
+    pageSize: number;
+    onPageChange: (page: number) => void;
+}
+
+export interface CourseStepperProps {
+    currentStep: number;
+}
+
+export interface CourseFormStep1Props {
+    formData: CourseFormData;
+    categories: Category[];
+    levels: Level[];
+    onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
+    onNext: () => void;
+}
+
+export interface CourseFormStep2Props {
+    formData: CourseFormData;
+    onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
+    onBack: () => void;
+    onNext: () => void;
+}
+
+export interface CourseFormStep3Props {
+    formData: CourseFormData;
+    categoryName: string;
+    levelName: string;
+    onBack: () => void;
+    onSave: () => void;
+    saving: boolean;
+    onFormDataChange: (field: keyof CourseFormData, value: any) => void;
+}
+
+export interface CoursePreviewCardProps {
+    formData: CourseFormData;
+    categoryName: string;
+    levelName: string;
+}

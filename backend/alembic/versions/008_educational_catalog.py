@@ -108,18 +108,18 @@ def upgrade() -> None:
     # Insert default levels
     op.execute("""
         INSERT INTO levels (name, slug, description, "order") VALUES
-        ('Básico', 'basico', 'Conocimientos fundamentales', 1),
-        ('Intermedio', 'intermedio', 'Conocimientos prácticos y aplicados', 2),
-        ('Avanzado', 'avanzado', 'Especialización y temas complejos', 3);
+        ('Basic', 'basic', 'Fundamental knowledge', 1),
+        ('Intermediate', 'intermediate', 'Practical and applied knowledge', 2),
+        ('Advanced', 'advanced', 'Specialization and complex topics', 3);
     """)
 
     # Insert some sample categories
     op.execute("""
         INSERT INTO categories (name, slug, "order") VALUES
-        ('Programación', 'programacion', 1),
-        ('Inteligencia Artificial', 'inteligencia-artificial', 2),
+        ('Programming', 'programming', 1),
+        ('Artificial Intelligence', 'artificial-intelligence', 2),
         ('Data Science', 'data-science', 3),
-        ('Desarrollo Web', 'desarrollo-web', 4);
+        ('Web Development', 'web-development', 4);
     """)
 
 

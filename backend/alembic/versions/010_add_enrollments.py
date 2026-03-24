@@ -44,10 +44,10 @@ def upgrade() -> None:
     op.create_index("idx_enrollments_course", "enrollments", ["course_id"], unique=False)
     op.create_index("idx_enrollments_status", "enrollments", ["status"], unique=False)
 
-    # Comments separados
-    op.execute("COMMENT ON TABLE enrollments IS 'Inscripciones de usuarios a cursos';")
+    # Comments separated
+    op.execute("COMMENT ON TABLE enrollments IS 'User course enrollments';")
     op.execute("COMMENT ON COLUMN enrollments.status IS 'active, completed, cancelled';")
-    op.execute("COMMENT ON COLUMN enrollments.progress IS 'Porcentaje completado (0-100)';")
+    op.execute("COMMENT ON COLUMN enrollments.progress IS 'Completion percentage (0-100)';")
 
 
 def downgrade() -> None:

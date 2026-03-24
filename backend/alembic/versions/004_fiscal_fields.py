@@ -39,16 +39,16 @@ def upgrade() -> None:
 
     # Add comments one by one
     op.execute(
-        "COMMENT ON COLUMN users.rif IS 'Registro Único de Información Fiscal (RIF) del cliente';"
+        "COMMENT ON COLUMN users.rif IS 'Unique Tax Information Registry (RIF) of the client';"
     )
-    op.execute("COMMENT ON COLUMN users.document_type IS 'Tipo de documento: V, E, J, etc.';")
-    op.execute("COMMENT ON COLUMN users.document_number IS 'Número de cédula, pasaporte, etc.';")
-    op.execute("COMMENT ON COLUMN users.business_name IS 'Razón social si es persona jurídica';")
-    op.execute("COMMENT ON COLUMN users.fiscal_address IS 'Domicilio fiscal del cliente';")
-    op.execute("COMMENT ON COLUMN users.phone IS 'Teléfono de contacto';")
+    op.execute("COMMENT ON COLUMN users.document_type IS 'Document type: V, E, J, etc.';")
+    op.execute("COMMENT ON COLUMN users.document_number IS 'ID card, passport, etc. number';")
+    op.execute("COMMENT ON COLUMN users.business_name IS 'Business name for legal entities';")
+    op.execute("COMMENT ON COLUMN users.fiscal_address IS 'Client fiscal address';")
+    op.execute("COMMENT ON COLUMN users.phone IS 'Contact phone';")
     op.execute(
         "COMMENT ON COLUMN users.is_contributor IS "
-        "'Indica si el cliente requiere factura con RIF a efectos tributarios';"
+        "'Indicates if the client requires invoice with RIF for tax purposes';"
     )
 
 

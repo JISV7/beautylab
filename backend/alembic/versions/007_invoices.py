@@ -175,32 +175,30 @@ def upgrade() -> None:
         FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
     """)
 
-    # Comments for compliance (separados en ejecuciones individuales)
+    # Comments for compliance (separated into individual executions)
     op.execute(
         "COMMENT ON TABLE invoices IS "
-        "'Facturas emitidas, cumple con los requisitos de la "
-        "Providencia Administrativa venezolana.';"
+        "'Issued invoices, complies with the requirements of the Venezuelan "
+        "Administrative Providence.';"
     )
     op.execute(
-        "COMMENT ON COLUMN invoices.invoice_number IS 'Numeración consecutiva y única (Art. 7.2)';"
+        "COMMENT ON COLUMN invoices.invoice_number IS 'Consecutive + unique numbering (Art. 7.2)';"
     )
     op.execute(
         "COMMENT ON COLUMN invoices.control_number IS "
-        "'Número de control asignado por imprenta digital "
-        "autorizada (Art. 7.4)';"
+        "'Control number assigned by authorized digital printer "
+        "(Art. 7.4)';"
     )
     op.execute(
-        "COMMENT ON COLUMN invoices.issue_date IS "
-        "'Fecha de emisión en formato DDMMAAAA (Art. 7.6)';"
+        "COMMENT ON COLUMN invoices.issue_date IS 'Issue date in DDMMYYYY format (Art. 7.6)';"
     )
     op.execute(
-        "COMMENT ON COLUMN invoices.issue_time IS "
-        "'Hora de emisión en formato HH.MM.SS con AM/PM (Art. 7.6)';"
+        "COMMENT ON COLUMN invoices.issue_time IS 'Issue time in HH.MM.SS AM/PM format (Art. 7.6)';"
     )
-    op.execute("COMMENT ON COLUMN invoices.client_rif IS 'RIF del adquirente (Art. 7.7)';")
-    op.execute("COMMENT ON COLUMN invoices.subtotal IS 'Base imponible total (Art. 7.11)';")
-    op.execute("COMMENT ON COLUMN invoices.tax_total IS 'Monto total del IVA (Art. 7.12)';")
-    op.execute("COMMENT ON COLUMN invoices.total IS 'Valor total de las operaciones (Art. 7.13)';")
+    op.execute("COMMENT ON COLUMN invoices.client_rif IS 'Client RIF (Art. 7.7)';")
+    op.execute("COMMENT ON COLUMN invoices.subtotal IS 'Total taxable base (Art. 7.11)';")
+    op.execute("COMMENT ON COLUMN invoices.tax_total IS 'Total IVA amount (Art. 7.12)';")
+    op.execute("COMMENT ON COLUMN invoices.total IS 'Total value of operations (Art. 7.13)';")
 
 
 def downgrade() -> None:

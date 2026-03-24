@@ -23,7 +23,7 @@ class ProductBase(BaseModel):
     )
     tax_type: Literal["gravado", "exento", "exonerado"] = Field(
         default="gravado",
-        description="Tax type: gravado (with VAT), exento (without VAT), exonerado (exempt)",
+        description="Tax type: gravado (with IVA), exento (without IVA), exonerado (exempt)",
     )
     is_active: bool = Field(default=True, description="Whether product is active")
 

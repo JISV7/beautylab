@@ -34,14 +34,14 @@ def upgrade() -> None:
         sa.Column("sku", sa.String(length=100), nullable=False),
         sa.Column("price", sa.Numeric(10, 2), nullable=False),
         sa.Column(
-            "tax_rate", sa.Numeric(5, 2), nullable=False, comment="Porcentaje de IVA (ej: 16.00)"
+            "tax_rate", sa.Numeric(5, 2), nullable=False, comment="IVA percentage (e.g., 16.00)"
         ),
         sa.Column(
             "tax_type",
             sa.String(length=20),
             nullable=False,
-            server_default="gravado",
-            comment="gravado, exento, exonerado",
+            server_default="taxed",
+            comment="taxed, exempt, exonerated",
         ),
         sa.Column("is_active", sa.Boolean(), nullable=False, server_default=sa.text("true")),
         sa.Column(
@@ -61,29 +61,29 @@ def upgrade() -> None:
         "INSERT INTO products "
         "(name, description, sku, price, tax_rate, tax_type) "
         "VALUES "
-        "('Curso de Python', 'Curso básico de programación en Python', "
-        "'PY-101', 150.00, 16.00, 'gravado')"
+        "('Python Course', 'Basic Python programming course', "
+        "'PY-101', 150.00, 16.00, 'taxed')"
     )
     op.execute(
         "INSERT INTO products "
         "(name, description, sku, price, tax_rate, tax_type) "
         "VALUES "
-        "('Curso de IA', 'Introducción a la Inteligencia Artificial', "
-        "'AI-101', 200.00, 16.00, 'gravado')"
+        "('AI Course', 'Introduction to Artificial Intelligence', "
+        "'AI-101', 200.00, 16.00, 'taxed')"
     )
     op.execute(
         "INSERT INTO products "
         "(name, description, sku, price, tax_rate, tax_type) "
         "VALUES "
-        "('Suscripción mensual', 'Acceso a toda la plataforma', "
-        "'SUB-MONTH', 50.00, 16.00, 'gravado')"
+        "('Monthly Subscription', 'Access to the entire platform', "
+        "'SUB-MONTH', 50.00, 16.00, 'taxed')"
     )
     op.execute(
         "INSERT INTO products "
         "(name, description, sku, price, tax_rate, tax_type) "
         "VALUES "
-        "('Material de estudio (libro)', 'Libro electrónico de fundamentos', "
-        "'BOOK-001', 30.00, 0.00, 'exento')"
+        "('Study Material (Book)', 'Electronic fundamentals book', "
+        "'BOOK-001', 30.00, 0.00, 'exempt')"
     )
 
     # Triggers
@@ -94,11 +94,11 @@ def upgrade() -> None:
     """)
 
     # Comments
-    op.execute("COMMENT ON TABLE products IS 'Productos y servicios facturables';")
+    op.execute("COMMENT ON TABLE products IS 'Billable products and services';")
     op.execute(
         "COMMENT ON COLUMN products.tax_type IS "
-        "'Tipo de tratamiento fiscal: gravado (con IVA), exento (sin IVA), "
-        "exonerado (sin IVA pero con justificación)';"
+        "'Tax treatment type: taxed (with IVA), exempt (without IVA), "
+        "exonerated (without IVA but with justification)';"
     )
 
 

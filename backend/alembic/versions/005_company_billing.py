@@ -39,7 +39,7 @@ def upgrade() -> None:
     )
     op.create_index("idx_company_info_rif", "company_info", ["rif"], unique=True)
 
-    # Printers (imprentas digitales autorizadas)
+    # Printers (authorized digital printers)
     op.create_table(
         "printers",
         sa.Column("id", sa.Integer(), nullable=False),
@@ -102,11 +102,11 @@ def upgrade() -> None:
     op.execute("""
         INSERT INTO company_info (business_name, rif, fiscal_address, phone, email)
         VALUES (
-            'Academia Online de Programación e IA',
+            'Online Programming and AI Academy',
             'J-123456789',
-            'Av. Principal, Caracas, Venezuela',
+            'Main Avenue, Caracas, Venezuela',
             '0212-1234567',
-            'info@academia.com'
+            'info@academy.com'
         )
     """)
 

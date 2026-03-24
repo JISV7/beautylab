@@ -50,14 +50,12 @@ def upgrade() -> None:
         FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
     """)
 
-    # Comentarios separados
-    op.execute(
-        "COMMENT ON TABLE cart_items IS 'Productos en el carrito de compras de cada usuario';"
-    )
+    # Comments separated
+    op.execute("COMMENT ON TABLE cart_items IS 'Shopping cart items for each user';")
     op.execute(
         "COMMENT ON COLUMN cart_items.quantity IS "
-        "'Cantidad del producto (normalmente 1 para cursos, "
-        "pero se permite mayor para otros productos)';"
+        "'Product quantity (normally 1 for courses, "
+        "but allowed for other products)';"
     )
 
 

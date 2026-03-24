@@ -2,8 +2,12 @@ import React, { useState } from 'react';
 import { AdminHeader } from '../components/layout/AdminHeader';
 import { AdminLayout } from '../components/layout/AdminLayout';
 import { UnifiedThemeConfig } from '../components/admin/UnifiedThemeConfig';
+import { CourseList } from '../components/admin/CourseList';
+import { CourseManagement } from '../components/admin/CourseManagement';
 
 type AdminTab = 'dashboard' | 'themes' | 'users' | 'content';
+
+type ContentView = 'list' | 'create' | 'edit';
 
 interface AdminDashboardProps {
     onNavigateToDashboard?: () => void;
@@ -13,6 +17,8 @@ interface AdminDashboardProps {
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToDashboard, onLogout }) => {
     const [activeTab, setActiveTab] = useState<AdminTab>('dashboard');
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [contentView, setContentView] = useState<ContentView>('list');
+    const [editingCourseId, setEditingCourseId] = useState<string | undefined>(undefined);
 
     const handleNavigate = (item: string) => {
         setActiveTab(item as AdminTab);
@@ -21,6 +27,22 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToDash
     const handleBack = () => {
         // Navigate back to dashboard
         onNavigateToDashboard?.();
+    };
+
+    // Content tab navigation handlers
+    const handleNavigateToCreate = () => {
+        setContentView('create');
+        setEditingCourseId(undefined);
+    };
+
+    const handleNavigateToEdit = (courseId: string) => {
+        setEditingCourseId(courseId);
+        setContentView('edit');
+    };
+
+    const handleBackToContentList = () => {
+        setContentView('list');
+        setEditingCourseId(undefined);
     };
 
     return (
@@ -63,10 +85,23 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToDash
                     )}
                     {activeTab === 'content' && (
                         <div>
-                            <h1 className="text-2xl font-bold text-[var(--text-h2-color)] mb-2">Content Management</h1>
-                            <p className="text-[var(--text-p-color)]">
-                                Manage your site's content (Coming soon)...
-                            </p>
+                            {contentView === 'list' && (
+                                <CourseList
+                                    onNavigateToCreate={handleNavigateToCreate}
+                                    onNavigateToEdit={handleNavigateToEdit}
+                                />
+                            )}
+                            {contentView === 'create' && (
+                                <CourseManagement
+                                    onBack={handleBackToContentList}
+                                />
+                            )}
+                            {contentView === 'edit' && editingCourseId && (
+                                <CourseManagement
+                                    courseId={editingCourseId}
+                                    onBack={handleBackToContentList}
+                                />
+                            )}
                         </div>
                     )}
                 </main>
@@ -74,7 +109,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToDash
 
             {/* Mobile Overlay */}
             {sidebarOpen && (
-                <div 
+                <div
                     className="fixed inset-0 bg-black/50 z-30 lg:hidden"
                     onClick={() => setSidebarOpen(false)}
                 />

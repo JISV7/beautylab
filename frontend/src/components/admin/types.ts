@@ -80,3 +80,68 @@ export interface FontManagerProps {
     onFileUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
     onFontDelete: (font: Font) => void;
 }
+
+// ==================== Course Management Types ====================
+
+export interface Category {
+    id: number;
+    name: string;
+    slug: string;
+    description?: string;
+    parent_id?: number;
+    order: number;
+}
+
+export interface Level {
+    id: number;
+    name: string;
+    slug: string;
+    description?: string;
+    order: number;
+}
+
+export interface Course {
+    id: string;
+    title: string;
+    slug: string;
+    description?: string;
+    image_url?: string;
+    duration_hours?: number;
+    level_id?: number;
+    category_id?: number;
+    product_id: string;
+    published: boolean;
+    created_at: string;
+    updated_at: string;
+    level_name?: string;
+    category_name?: string;
+    product_name?: string;
+    product_price?: string;
+}
+
+export interface CourseFormData {
+    // Course fields
+    title: string;
+    slug: string;
+    description: string;
+    image_url: string;
+    duration_hours: string;
+    level_id: string;
+    category_id: string;
+    published: boolean;
+    // Product fields
+    product_name: string;
+    sku: string;
+    price: string;
+    tax_rate: string;
+    tax_type: 'taxed' | 'exempt' | 'exonerated';
+}
+
+export interface CourseListProps {
+    onNavigateToCreate: () => void;
+    onNavigateToEdit: (courseId: string) => void;
+}
+
+export interface CourseManagementProps {
+    onBack?: () => void;
+}

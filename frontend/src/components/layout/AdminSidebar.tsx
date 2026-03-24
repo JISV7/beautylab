@@ -19,7 +19,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
         { id: 'dashboard', label: 'Dashboard', icon: Sparkles },
         { id: 'themes', label: 'Theme Config', icon: Palette },
         { id: 'users', label: 'Users', icon: Users },
-        { id: 'content', label: 'Content', icon: FileText },
+        { id: 'content', label: 'Courses', icon: FileText },
     ];
 
     const handleClick = (itemId: string) => {

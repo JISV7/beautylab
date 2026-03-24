@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Save } from 'lucide-react';
-import type { Course, Category, Level, CourseFormData } from '../types';
+import type { Course, Category, Level, CourseFormData } from './types';
 import { MessageModal } from './MessageModal';
 import { ConfirmModal } from './ConfirmModal';
 import { CourseStepper } from './courses/CourseStepper';
@@ -91,15 +91,15 @@ export const CourseManagement: React.FC<CourseManagementProps> = ({ courseId, on
             try {
                 setLoading(true);
                 const [categoriesRes, levelsRes] = await Promise.all([
-                    api.get('/api/catalog/categories'),
-                    api.get('/api/catalog/levels'),
+                    api.get('/catalog/categories'),
+                    api.get('/catalog/levels'),
                 ]);
 
                 setCategories(categoriesRes.data.categories || []);
                 setLevels(levelsRes.data.levels || []);
 
                 if (courseId) {
-                    const courseRes = await api.get(`/api/catalog/courses/${courseId}`);
+                    const courseRes = await api.get(`/catalog/courses/${courseId}`);
                     const course: Course = courseRes.data;
 
                     setFormData({
@@ -140,7 +140,7 @@ export const CourseManagement: React.FC<CourseManagementProps> = ({ courseId, on
                 .toLowerCase()
                 .replace(/[^a-z0-9]+/g, '-')
                 .replace(/(^-|-$)/g, '');
-            setFormData(prev => ({ ...prev, slug }));
+            setFormData((prev: CourseFormData) => ({ ...prev, slug }));
         }
     }, [formData.title, courseId]);
 
@@ -148,14 +148,14 @@ export const CourseManagement: React.FC<CourseManagementProps> = ({ courseId, on
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
     ) => {
         const { name, value, type } = e.target;
-        setFormData(prev => ({
+        setFormData((prev: CourseFormData) => ({
             ...prev,
             [name]: type === 'number' ? parseFloat(value) || '' : value,
         }));
     };
 
     const handleFormDataChange = (field: keyof CourseFormData, value: any) => {
-        setFormData(prev => ({ ...prev, [field]: value }));
+        setFormData((prev: CourseFormData) => ({ ...prev, [field]: value }));
     };
 
     const handleNextStep = () => {
@@ -241,7 +241,7 @@ export const CourseManagement: React.FC<CourseManagementProps> = ({ courseId, on
             let productId: string;
 
             if (courseId) {
-                const productRes = await api.post('/api/products', productData);
+                const productRes = await api.post('/products', productData);
                 productId = productRes.data.id;
 
                 const courseData = {
@@ -256,9 +256,9 @@ export const CourseManagement: React.FC<CourseManagementProps> = ({ courseId, on
                     published: formData.published,
                 };
 
-                await api.put(`/api/catalog/courses/${courseId}`, courseData);
+                await api.put(`/catalog/courses/${courseId}`, courseData);
             } else {
-                const productRes = await api.post('/api/products', productData);
+                const productRes = await api.post('/products', productData);
                 productId = productRes.data.id;
 
                 const courseData = {
@@ -273,7 +273,7 @@ export const CourseManagement: React.FC<CourseManagementProps> = ({ courseId, on
                     published: formData.published,
                 };
 
-                await api.post('/api/catalog/courses', courseData);
+                await api.post('/catalog/courses', courseData);
             }
 
             setMessageModal({

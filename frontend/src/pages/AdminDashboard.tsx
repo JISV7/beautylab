@@ -4,8 +4,9 @@ import { AdminLayout } from '../components/layout/AdminLayout';
 import { UnifiedThemeConfig } from '../components/admin/UnifiedThemeConfig';
 import { CourseList } from '../components/admin/CourseList';
 import { CourseManagement } from '../components/admin/CourseManagement';
+import { CategoryManagementPage } from '../pages/CategoryManagementPage';
 
-type AdminTab = 'dashboard' | 'themes' | 'users' | 'content';
+type AdminTab = 'dashboard' | 'themes' | 'categories' | 'users' | 'content';
 
 type ContentView = 'list' | 'create' | 'edit';
 
@@ -45,6 +46,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToDash
         setEditingCourseId(undefined);
     };
 
+    const handleNavigateToCategories = () => {
+        setActiveTab('categories');
+    };
+
     return (
         <div className="min-h-screen flex flex-col theme-background">
             {/* Admin Header */}
@@ -75,6 +80,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToDash
                             <UnifiedThemeConfig />
                         </div>
                     )}
+                    {activeTab === 'categories' && (
+                        <div>
+                            <CategoryManagementPage />
+                        </div>
+                    )}
                     {activeTab === 'users' && (
                         <div>
                             <h1 className="text-2xl font-bold text-[var(--text-h2-color)] mb-2">User Management</h1>
@@ -89,6 +99,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToDash
                                 <CourseList
                                     onNavigateToCreate={handleNavigateToCreate}
                                     onNavigateToEdit={handleNavigateToEdit}
+                                    onNavigateToCategories={handleNavigateToCategories}
                                 />
                             )}
                             {contentView === 'create' && (

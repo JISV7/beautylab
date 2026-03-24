@@ -140,6 +140,7 @@ export interface CourseFormData {
 export interface CourseListProps {
     onNavigateToCreate: () => void;
     onNavigateToEdit: (courseId: string) => void;
+    onNavigateToCategories?: () => void;
 }
 
 export interface CourseManagementProps {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Palette, Users, Sparkles, FileText } from 'lucide-react';
+import { X, Palette, Users, Sparkles, FileText, FolderOpen } from 'lucide-react';
 
 interface AdminSidebarProps {
     activeItem?: string;
@@ -18,6 +18,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
     const navItems = [
         { id: 'dashboard', label: 'Dashboard', icon: Sparkles },
         { id: 'themes', label: 'Theme Config', icon: Palette },
+        { id: 'categories', label: 'Categories', icon: FolderOpen },
         { id: 'users', label: 'Users', icon: Users },
         { id: 'content', label: 'Courses', icon: FileText },
     ];

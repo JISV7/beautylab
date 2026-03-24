@@ -38,13 +38,12 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
         try {
             setUploading(true);
             // Upload all files in parallel
-            const uploadPromises = Array.from(files).map(file => uploadFont(file));
-            const uploadedFonts = await Promise.all(uploadPromises);
-            
+            await Promise.all(Array.from(files).map(file => uploadFont(file)));
+
             // Refresh fonts from context to inject @font-face rules
             const allFonts = await fetchFonts();
             setFonts(allFonts);
-            
+
             // Clear the input
             if (event.target) {
                 event.target.value = '';

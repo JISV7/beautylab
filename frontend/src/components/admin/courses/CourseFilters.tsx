@@ -77,7 +77,7 @@ export const CourseFilters: React.FC<CourseFiltersProps> = ({
                 >
                     <option value="all">All</option>
                     <option value="published">Published</option>
-                    <option value="false">Unpublished</option>
+                    <option value="unpublished">Unpublished</option>
                 </select>
             </div>
         </div>

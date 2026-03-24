@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Plus } from 'lucide-react';
-import type { Course, Category, Level, CourseListProps } from '../types';
+import { Plus, Settings } from 'lucide-react';
+import type { Course, Category, Level, CourseListProps } from './types';
 import { MessageModal } from './MessageModal';
 import { ConfirmModal } from './ConfirmModal';
 import { CourseFilters } from './courses/CourseFilters';
@@ -32,7 +32,7 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
-export const CourseList: React.FC<CourseListProps> = ({ onNavigateToCreate, onNavigateToEdit }) => {
+export const CourseList: React.FC<CourseListProps> = ({ onNavigateToCreate, onNavigateToEdit, onNavigateToCategories }) => {
     const [courses, setCourses] = useState<Course[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
     const [levels, setLevels] = useState<Level[]>([]);
@@ -74,7 +74,7 @@ export const CourseList: React.FC<CourseListProps> = ({ onNavigateToCreate, onNa
         try {
             setLoading(true);
             const [coursesRes, categoriesRes, levelsRes] = await Promise.all([
-                api.get('/api/catalog/courses', {
+                api.get('/catalog/courses', {
                     params: {
                         page: currentPage,
                         page_size: pageSize,
@@ -84,8 +84,8 @@ export const CourseList: React.FC<CourseListProps> = ({ onNavigateToCreate, onNa
                         level_id: levelFilter || undefined,
                     },
                 }),
-                api.get('/api/catalog/categories'),
-                api.get('/api/catalog/levels'),
+                api.get('/catalog/categories'),
+                api.get('/catalog/levels'),
             ]);
 
             setCourses(coursesRes.data.courses || []);
@@ -141,7 +141,7 @@ export const CourseList: React.FC<CourseListProps> = ({ onNavigateToCreate, onNa
 
     const updateCourseStatus = async (courseId: string, published: boolean) => {
         try {
-            await api.put(`/api/catalog/courses/${courseId}`, { published });
+            await api.put(`/catalog/courses/${courseId}`, { published });
             setMessageModal({
                 isOpen: true,
                 type: 'success',
@@ -182,7 +182,7 @@ export const CourseList: React.FC<CourseListProps> = ({ onNavigateToCreate, onNa
 
     const deleteCourseAction = async (courseId: string, courseTitle: string) => {
         try {
-            await api.delete(`/api/catalog/courses/${courseId}`);
+            await api.delete(`/catalog/courses/${courseId}`);
             setMessageModal({
                 isOpen: true,
                 type: 'success',
@@ -229,18 +229,33 @@ export const CourseList: React.FC<CourseListProps> = ({ onNavigateToCreate, onNa
                 </div>
 
                 {/* Filters */}
-                <CourseFilters
-                    searchQuery={searchQuery}
-                    categoryFilter={categoryFilter}
-                    levelFilter={levelFilter}
-                    publishedFilter={publishedFilter}
-                    categories={categories}
-                    levels={levels}
-                    onSearchChange={handleSearchChange}
-                    onCategoryChange={handleCategoryChange}
-                    onLevelChange={handleLevelChange}
-                    onPublishedFilterChange={setPublishedFilter}
-                />
+                <div className="flex items-center justify-between gap-4 mb-4">
+                    <CourseFilters
+                        searchQuery={searchQuery}
+                        categoryFilter={categoryFilter}
+                        levelFilter={levelFilter}
+                        publishedFilter={publishedFilter}
+                        categories={categories}
+                        levels={levels}
+                        onSearchChange={handleSearchChange}
+                        onCategoryChange={handleCategoryChange}
+                        onLevelChange={handleLevelChange}
+                        onPublishedFilterChange={setPublishedFilter}
+                    />
+                    <button
+                        onClick={onNavigateToCategories}
+                        className="theme-button flex-shrink-0"
+                        style={{
+                            backgroundColor: 'transparent',
+                            color: 'var(--text-p-color)',
+                            border: '1px solid var(--palette-border)',
+                        }}
+                        title="Manage Categories"
+                    >
+                        <Settings size={18} />
+                        <span className="hidden sm:inline">Manage Categories</span>
+                    </button>
+                </div>
 
                 {/* Table */}
                 <div className="theme-card overflow-hidden p-0">

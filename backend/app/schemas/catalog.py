@@ -140,7 +140,7 @@ class LevelResponse(BaseModel):
     slug: str
     description: str | None = None
     order: int
-    created_at: datetime
+    created_at: datetime | None = None
 
 
 class LevelListResponse(BaseModel):

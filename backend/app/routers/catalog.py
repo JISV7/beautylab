@@ -162,7 +162,7 @@ async def update_category(
 @router.delete("/categories/{category_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_category(
     category_id: int,
-    current_user: User = Depends(CurrentUser),
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> None:
     """Delete a category (admin only).
@@ -273,7 +273,7 @@ async def update_level(
 @router.delete("/levels/{level_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_level(
     level_id: int,
-    current_user: User = Depends(CurrentUser),
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> None:
     """Delete a level (admin only).
@@ -443,7 +443,7 @@ async def update_course(
 @router.delete("/courses/{course_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_course(
     course_id: UUID,
-    current_user: User = Depends(CurrentUser),
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> None:
     """Delete a course (admin only).
@@ -679,7 +679,7 @@ async def remove_course_from_learning_path(
 @router.delete("/learning-paths/{path_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_learning_path(
     path_id: UUID,
-    current_user: User = Depends(CurrentUser),
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> None:
     """Delete a learning path (admin only).

@@ -104,8 +104,12 @@ export const CategoryManagement: React.FC = () => {
         if (formData.name && !editingCategory) {
             const slug = formData.name
                 .toLowerCase()
-                .replace(/[^a-z0-9]+/g, '-')
-                .replace(/(^-|-$)/g, '');
+                .trim()
+                .replace(/[^a-z0-9\s-]/g, '')
+                .replace(/\s+/g, '-')
+                .replace(/-+/g, '-')
+                .replace(/^-|-$/g, '')
+                .slice(0, 120);
             setFormData(prev => ({ ...prev, slug }));
         }
     }, [formData.name, editingCategory]);
@@ -148,9 +152,23 @@ export const CategoryManagement: React.FC = () => {
         try {
             setSaving(true);
 
+            // Always regenerate slug from name when creating (not editing)
+            // This ensures the slug is always valid
+            const slug = !editingCategory 
+                ? formData.name
+                    .toLowerCase()
+                    .trim()
+                    .replace(/[^a-z0-9]+/g, '-')  // Replace ANY non-alphanumeric with hyphen
+                    .replace(/-+/g, '-')           // Collapse multiple hyphens
+                    .replace(/^-|-$/g, '')         // Remove leading/trailing hyphens
+                    .slice(0, 120)
+                : (formData.slug?.trim() || formData.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'));
+
+            console.log('Sending category:', { name: formData.name, slug: slug });
+
             const categoryData = {
                 name: formData.name,
-                slug: formData.slug,
+                slug: slug,
                 description: formData.description || null,
                 parent_id: formData.parent_id && formData.parent_id.trim() !== '' ? parseInt(formData.parent_id) : null,
                 order: parseInt(formData.order) || 0,

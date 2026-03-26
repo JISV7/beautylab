@@ -22,7 +22,8 @@ class CategoryBase(BaseModel):
     @classmethod
     def validate_slug(cls, v: str) -> str:
         """Validate slug is URL-safe."""
-        if not v.replace("-", "_").isalnum():
+        # Remove hyphens and underscores, then check if rest is alphanumeric
+        if not v.replace("-", "").replace("_", "").isalnum():
             raise ValueError(
                 "Slug must contain only alphanumeric characters, hyphens, and underscores"
             )
@@ -48,7 +49,8 @@ class CategoryUpdate(BaseModel):
     @classmethod
     def validate_slug(cls, v: str) -> str:
         """Validate slug is URL-safe."""
-        if not v.replace("-", "_").isalnum():
+        # Remove hyphens and underscores, then check if rest is alphanumeric
+        if not v.replace("-", "").replace("_", "").isalnum():
             raise ValueError(
                 "Slug must contain only alphanumeric characters, hyphens, and underscores"
             )
@@ -98,7 +100,8 @@ class LevelBase(BaseModel):
     @classmethod
     def validate_slug(cls, v: str) -> str:
         """Validate slug is URL-safe."""
-        if not v.replace("-", "_").isalnum():
+        # Remove hyphens and underscores, then check if rest is alphanumeric
+        if not v.replace("-", "").replace("_", "").isalnum():
             raise ValueError(
                 "Slug must contain only alphanumeric characters, hyphens, and underscores"
             )
@@ -123,7 +126,8 @@ class LevelUpdate(BaseModel):
     @classmethod
     def validate_slug(cls, v: str) -> str:
         """Validate slug is URL-safe."""
-        if not v.replace("-", "_").isalnum():
+        # Remove hyphens and underscores, then check if rest is alphanumeric
+        if not v.replace("-", "").replace("_", "").isalnum():
             raise ValueError(
                 "Slug must contain only alphanumeric characters, hyphens, and underscores"
             )
@@ -170,7 +174,8 @@ class CourseBase(BaseModel):
     @classmethod
     def validate_slug(cls, v: str) -> str:
         """Validate slug is URL-safe."""
-        if not v.replace("-", "_").isalnum():
+        # Remove hyphens and underscores, then check if rest is alphanumeric
+        if not v.replace("-", "").replace("_", "").isalnum():
             raise ValueError(
                 "Slug must contain only alphanumeric characters, hyphens, and underscores"
             )
@@ -200,7 +205,8 @@ class CourseUpdate(BaseModel):
     @classmethod
     def validate_slug(cls, v: str) -> str:
         """Validate slug is URL-safe."""
-        if not v.replace("-", "_").isalnum():
+        # Remove hyphens and underscores, then check if rest is alphanumeric
+        if not v.replace("-", "").replace("_", "").isalnum():
             raise ValueError(
                 "Slug must contain only alphanumeric characters, hyphens, and underscores"
             )
@@ -291,7 +297,8 @@ class LearningPathBase(BaseModel):
     @classmethod
     def validate_slug(cls, v: str) -> str:
         """Validate slug is URL-safe."""
-        if not v.replace("-", "_").isalnum():
+        # Remove hyphens and underscores, then check if rest is alphanumeric
+        if not v.replace("-", "").replace("_", "").isalnum():
             raise ValueError(
                 "Slug must contain only alphanumeric characters, hyphens, and underscores"
             )
@@ -321,7 +328,8 @@ class LearningPathUpdate(BaseModel):
     @classmethod
     def validate_slug(cls, v: str) -> str:
         """Validate slug is URL-safe."""
-        if not v.replace("-", "_").isalnum():
+        # Remove hyphens and underscores, then check if rest is alphanumeric
+        if not v.replace("-", "").replace("_", "").isalnum():
             raise ValueError(
                 "Slug must contain only alphanumeric characters, hyphens, and underscores"
             )

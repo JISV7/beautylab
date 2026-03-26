@@ -152,7 +152,7 @@ export const CategoryManagement: React.FC = () => {
                 name: formData.name,
                 slug: formData.slug,
                 description: formData.description || null,
-                parent_id: formData.parent_id ? parseInt(formData.parent_id) : null,
+                parent_id: formData.parent_id && formData.parent_id.trim() !== '' ? parseInt(formData.parent_id) : null,
                 order: parseInt(formData.order) || 0,
             };
 
@@ -176,10 +176,27 @@ export const CategoryManagement: React.FC = () => {
             fetchCategories();
         } catch (error: any) {
             console.error('Failed to save category:', error);
+            
+            // Extract error message from validation errors
+            let errorMessage = 'Failed to save category.';
+            const detail = error.response?.data?.detail;
+            if (detail) {
+                if (Array.isArray(detail)) {
+                    // Pydantic validation errors array
+                    errorMessage = detail
+                        .map((err: any) => `${err.loc?.join('.')}: ${err.msg}`)
+                        .join('; ');
+                } else if (typeof detail === 'string') {
+                    errorMessage = detail;
+                } else if (typeof detail === 'object') {
+                    errorMessage = JSON.stringify(detail);
+                }
+            }
+            
             setMessageModal({
                 isOpen: true,
                 type: 'error',
-                message: error.response?.data?.detail || 'Failed to save category.',
+                message: errorMessage,
             });
         } finally {
             setSaving(false);

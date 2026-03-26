@@ -57,7 +57,9 @@ export const MessageModal: React.FC<MessageModalProps> = ({
                         <XCircle className="w-12 h-12" />
                     )}
                 </div>
-                <p className="text-p-color text-p-font text-p-size">{message}</p>
+                <p className="text-p-color text-p-font text-p-size">
+                    {typeof message === 'string' ? message : JSON.stringify(message)}
+                </p>
             </div>
         </Modal>
     );

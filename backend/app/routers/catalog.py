@@ -1,8 +1,9 @@
 """Catalog router for categories, levels, courses, and learning paths."""
 
+from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Body, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.dependencies import CurrentUser
@@ -104,8 +105,8 @@ async def get_category(
     status_code=status.HTTP_201_CREATED,
 )
 async def create_category(
-    category_data: CategoryCreate,
-    current_user: User = Depends(CurrentUser),
+    category_data: Annotated[CategoryCreate, Body(...)],
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> CategoryResponse:
     """Create a new category (admin only)."""
@@ -130,8 +131,8 @@ async def create_category(
 @router.put("/categories/{category_id}", response_model=CategoryResponse)
 async def update_category(
     category_id: int,
-    category_data: CategoryUpdate,
-    current_user: User = Depends(CurrentUser),
+    category_data: Annotated[CategoryUpdate, Body(...)],
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> CategoryResponse:
     """Update an existing category (admin only)."""
@@ -225,8 +226,8 @@ async def get_level(
     status_code=status.HTTP_201_CREATED,
 )
 async def create_level(
-    level_data: LevelCreate,
-    current_user: User = Depends(CurrentUser),
+    level_data: Annotated[LevelCreate, Body(...)],
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> LevelResponse:
     """Create a new level (admin only)."""
@@ -246,8 +247,8 @@ async def create_level(
 @router.put("/levels/{level_id}", response_model=LevelResponse)
 async def update_level(
     level_id: int,
-    level_data: LevelUpdate,
-    current_user: User = Depends(CurrentUser),
+    level_data: Annotated[LevelUpdate, Body(...)],
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> LevelResponse:
     """Update an existing level (admin only)."""
@@ -387,8 +388,8 @@ async def get_course(
     status_code=status.HTTP_201_CREATED,
 )
 async def create_course(
-    course_data: CourseCreate,
-    current_user: User = Depends(CurrentUser),
+    course_data: Annotated[CourseCreate, Body(...)],
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> CourseResponse:
     """Create a new course (admin only).
@@ -416,8 +417,8 @@ async def create_course(
 @router.put("/courses/{course_id}", response_model=CourseResponse)
 async def update_course(
     course_id: UUID,
-    course_data: CourseUpdate,
-    current_user: User = Depends(CurrentUser),
+    course_data: Annotated[CourseUpdate, Body(...)],
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> CourseResponse:
     """Update an existing course (admin only)."""
@@ -551,8 +552,8 @@ async def get_learning_path(
     status_code=status.HTTP_201_CREATED,
 )
 async def create_learning_path(
-    path_data: LearningPathCreate,
-    current_user: User = Depends(CurrentUser),
+    path_data: Annotated[LearningPathCreate, Body(...)],
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> LearningPathResponse:
     """Create a new learning path with optional initial courses (admin only).
@@ -580,8 +581,8 @@ async def create_learning_path(
 @router.put("/learning-paths/{path_id}", response_model=LearningPathResponse)
 async def update_learning_path(
     path_id: UUID,
-    path_data: LearningPathUpdate,
-    current_user: User = Depends(CurrentUser),
+    path_data: Annotated[LearningPathUpdate, Body(...)],
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> LearningPathResponse:
     """Update an existing learning path (admin only)."""
@@ -610,8 +611,8 @@ async def update_learning_path(
 )
 async def add_course_to_learning_path(
     path_id: UUID,
-    course_data: LearningPathCourseCreate,
-    current_user: User = Depends(CurrentUser),
+    course_data: Annotated[LearningPathCourseCreate, Body(...)],
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> LearningPathCourseResponse:
     """Add a course to a learning path (admin only).

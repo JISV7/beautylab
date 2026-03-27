@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Plus, Edit, Trash2 } from 'lucide-react';
+import { Plus, Edit, Trash2, Search } from 'lucide-react';
 import type { Category } from './types';
 import { MessageModal } from './MessageModal';
 import { ConfirmModal } from './ConfirmModal';
@@ -50,6 +50,7 @@ export const CategoryManagement: React.FC = () => {
     const [categories, setCategories] = useState<Category[]>([]);
     const [loading, setLoading] = useState(false);
     const [saving, setSaving] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
 
     const [messageModal, setMessageModal] = useState<{
         isOpen: boolean;
@@ -98,6 +99,13 @@ export const CategoryManagement: React.FC = () => {
     useEffect(() => {
         fetchCategories();
     }, []);
+
+    // Filter categories based on search query
+    const filteredCategories = categories.filter(category =>
+        category.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        category.slug.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (category.description && category.description.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
 
     // Auto-generate slug from name
     useEffect(() => {
@@ -289,16 +297,36 @@ export const CategoryManagement: React.FC = () => {
                     </button>
                 </div>
 
+                {/* Search Bar */}
+                <div className="p-4 border-b border-[var(--palette-border)] flex items-center gap-3">
+                    <div className="relative flex-1">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-p-color" />
+                        <input
+                            type="text"
+                            placeholder="Search categories by name, slug, or description..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full pl-10 pr-4 py-2 rounded-lg bg-[var(--palette-surface)] border border-[var(--palette-border)] text-p-font text-p-size text-p-color placeholder-[var(--palette-text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
+                        />
+                    </div>
+                </div>
+
                 {/* Table */}
                 <div className="theme-card overflow-hidden p-0">
                     {loading ? (
                         <div className="flex items-center justify-center py-12">
                             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--palette-primary)]"></div>
                         </div>
-                    ) : categories.length === 0 ? (
+                    ) : filteredCategories.length === 0 ? (
                         <div className="text-center py-12 text-p-color">
-                            <p>No categories found.</p>
-                            <p className="text-sm mt-2">Create your first category to get started!</p>
+                            {searchQuery ? (
+                                <p>No categories found matching "{searchQuery}".</p>
+                            ) : (
+                                <>
+                                    <p>No categories found.</p>
+                                    <p className="text-sm mt-2">Create your first category to get started!</p>
+                                </>
+                            )}
                         </div>
                     ) : (
                         <div className="overflow-x-auto">
@@ -314,7 +342,7 @@ export const CategoryManagement: React.FC = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {categories.map((category) => (
+                                    {filteredCategories.map((category) => (
                                         <tr
                                             key={category.id}
                                             className="border-b border-[var(--palette-border)] hover:bg-[var(--palette-surface)] transition-colors group"

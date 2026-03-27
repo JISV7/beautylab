@@ -52,7 +52,7 @@ const emptyFormData: CourseFormData = {
     sku: '',
     price: '',
     tax_rate: '16.00',
-    tax_type: 'taxed',
+    tax_type: 'gravado',
 };
 
 export const CourseManagement: React.FC<CourseManagementProps> = ({ courseId, onBack }) => {
@@ -115,7 +115,7 @@ export const CourseManagement: React.FC<CourseManagementProps> = ({ courseId, on
                         sku: '',
                         price: course.product_price || '',
                         tax_rate: '16.00',
-                        tax_type: 'taxed',
+                        tax_type: 'gravado',
                     });
                 }
             } catch (error: any) {
@@ -234,7 +234,7 @@ export const CourseManagement: React.FC<CourseManagementProps> = ({ courseId, on
                 sku: formData.sku.toUpperCase(),
                 price: parseFloat(formData.price),
                 tax_rate: 16.00,
-                tax_type: 'taxed',
+                tax_type: 'gravado',
                 is_active: true,
             };
 

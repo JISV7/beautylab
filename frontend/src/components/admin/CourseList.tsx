@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Plus, Settings } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import type { Course, Category, Level, CourseListProps } from './types';
 import { MessageModal } from './MessageModal';
 import { ConfirmModal } from './ConfirmModal';
@@ -32,7 +32,7 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
-export const CourseList: React.FC<CourseListProps> = ({ onNavigateToCreate, onNavigateToEdit, onNavigateToCategories }) => {
+export const CourseList: React.FC<CourseListProps> = ({ onNavigateToCreate, onNavigateToEdit }) => {
     const [courses, setCourses] = useState<Course[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
     const [levels, setLevels] = useState<Level[]>([]);
@@ -229,33 +229,18 @@ export const CourseList: React.FC<CourseListProps> = ({ onNavigateToCreate, onNa
                 </div>
 
                 {/* Filters */}
-                <div className="flex items-center justify-between gap-4 mb-4">
-                    <CourseFilters
-                        searchQuery={searchQuery}
-                        categoryFilter={categoryFilter}
-                        levelFilter={levelFilter}
-                        publishedFilter={publishedFilter}
-                        categories={categories}
-                        levels={levels}
-                        onSearchChange={handleSearchChange}
-                        onCategoryChange={handleCategoryChange}
-                        onLevelChange={handleLevelChange}
-                        onPublishedFilterChange={setPublishedFilter}
-                    />
-                    <button
-                        onClick={onNavigateToCategories}
-                        className="theme-button flex-shrink-0"
-                        style={{
-                            backgroundColor: 'transparent',
-                            color: 'var(--text-p-color)',
-                            border: '1px solid var(--palette-border)',
-                        }}
-                        title="Manage Categories"
-                    >
-                        <Settings size={18} />
-                        <span className="hidden sm:inline">Manage Categories</span>
-                    </button>
-                </div>
+                <CourseFilters
+                    searchQuery={searchQuery}
+                    categoryFilter={categoryFilter}
+                    levelFilter={levelFilter}
+                    publishedFilter={publishedFilter}
+                    categories={categories}
+                    levels={levels}
+                    onSearchChange={handleSearchChange}
+                    onCategoryChange={handleCategoryChange}
+                    onLevelChange={handleLevelChange}
+                    onPublishedFilterChange={setPublishedFilter}
+                />
 
                 {/* Table */}
                 <div className="theme-card overflow-hidden p-0">

@@ -3,7 +3,9 @@
 from datetime import datetime
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, EmailStr, Field
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
+
+from app.utils.rif import validate_rif
 
 
 class UserFiscalMixin(BaseModel):
@@ -31,6 +33,37 @@ class UserCreate(BaseModel):
     email: EmailStr
     password: str = Field(..., min_length=8, max_length=100)
     full_name: str | None = Field(None, max_length=100)
+    # Fiscal fields for Venezuelan compliance
+    document_type: str = Field(..., max_length=10, description="Document type: V, E, J, P")
+    document_number: str = Field(..., max_length=20, description="ID card, passport, or RIF number")
+    rif: str = Field(..., max_length=20, description="Tax Information Registry (RIF)")
+    business_name: str | None = Field(
+        None, max_length=255, description="Business name for legal entities"
+    )
+    fiscal_address: str = Field(..., max_length=500, description="Fiscal address for invoices")
+    phone: str = Field(..., max_length=20, description="Contact phone number")
+    is_contributor: bool = Field(
+        default=False, description="Indicates if client requires invoice with RIF"
+    )
+
+    @field_validator("document_type")
+    @classmethod
+    def validate_document_type(cls, v: str) -> str:
+        """Validate document type is one of the allowed values."""
+        valid_types = ["V", "E", "J", "P", "G"]
+        v_upper = v.upper().strip()
+        if v_upper not in valid_types:
+            raise ValueError(f"Document type must be one of: {', '.join(valid_types)}")
+        return v_upper
+
+    @field_validator("rif")
+    @classmethod
+    def validate_rif(cls, v: str) -> str:
+        """Validate RIF format and check digit."""
+        is_valid, error_msg = validate_rif(v)
+        if not is_valid:
+            raise ValueError(error_msg)
+        return v.upper().strip()
 
 
 class UserUpdate(BaseModel):

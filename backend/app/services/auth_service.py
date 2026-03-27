@@ -42,6 +42,13 @@ class AuthService:
         email: str,
         password: str,
         full_name: str | None = None,
+        document_type: str | None = None,
+        document_number: str | None = None,
+        rif: str | None = None,
+        business_name: str | None = None,
+        fiscal_address: str | None = None,
+        phone: str | None = None,
+        is_contributor: bool = False,
     ) -> User:
         """Create a new user with the 'user' role."""
         password_hash = hash_password(password)
@@ -50,6 +57,13 @@ class AuthService:
             email=email,
             password_hash=password_hash,
             full_name=full_name,
+            document_type=document_type,
+            document_number=document_number,
+            rif=rif,
+            business_name=business_name,
+            fiscal_address=fiscal_address,
+            phone=phone,
+            is_contributor=is_contributor,
         )
 
         self.db.add(user)

@@ -26,7 +26,10 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateToDashboard, onNavigat
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <a href="/" className="flex items-center gap-2">
-            <div className="rounded-lg p-2 logo-brand-bg">
+            <div
+              className="rounded-lg p-2"
+              style={{ backgroundColor: '#F83A3A' }}
+            >
               <Code2 className="w-6 h-6 text-white" />
             </div>
             <span className="text-h4-font text-h4-size text-h4-color text-h4-weight font-bold">Codyn</span>

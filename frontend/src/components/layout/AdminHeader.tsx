@@ -40,7 +40,10 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({ onBack, onMenuToggle, 
 
                 {/* Logo */}
                 <a href="/" className="flex items-center gap-2 flex-shrink-0">
-                    <div className="rounded-lg p-2 logo-brand-bg">
+                    <div
+                        className="rounded-lg p-2"
+                        style={{ backgroundColor: '#F83A3A' }}
+                    >
                         <Code2 className="w-5 h-5 text-white" />
                     </div>
                     <span className="text-h4-font text-h4-size text-h4-color text-h4-weight font-bold hidden sm:inline">Codyn</span>

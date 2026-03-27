@@ -54,7 +54,10 @@ export const Footer: React.FC = () => {
                     {/* Brand Column */}
                     <div className="lg:col-span-2">
                         <a href="/" className="flex items-center gap-2 mb-4">
-                            <div className="rounded-lg p-2" style={{ backgroundColor: '#F83A3A' }}>
+                            <div
+                                className="rounded-lg p-2"
+                                style={{ backgroundColor: 'var(--palette-primary)' }}
+                            >
                                 <Code2 className="w-6 h-6 text-white" />
                             </div>
                             <span className="text-h4-font text-h4-size text-h4-color text-h4-weight font-bold">Codyn</span>
@@ -72,10 +75,10 @@ export const Footer: React.FC = () => {
                                     <a
                                         key={item.id}
                                         href={item.href}
-                                        className="flex items-center gap-3 text-p-font text-p-size palette-text-secondary hover:palette-primary transition-colors"
+                                        className="flex items-center gap-3 text-p-font text-p-size text-p-color hover:palette-primary transition-colors"
                                     >
-                                        <Icon className="w-4 h-4 text-p-color flex-shrink-0" />
-                                        <span className="text-sm text-p-color">{item.text}</span>
+                                        <Icon className="w-5 h-5 text-p-color flex-shrink-0" />
+                                        <span className="text-p-font text-p-size text-p-color">{item.text}</span>
                                     </a>
                                 );
                             })}

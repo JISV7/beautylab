@@ -10,6 +10,14 @@ export interface User {
     name?: string;
     isAdmin?: boolean;
     roles?: string[];
+    // Fiscal fields
+    document_type?: string;
+    document_number?: string;
+    rif?: string;
+    business_name?: string;
+    fiscal_address?: string;
+    phone?: string;
+    is_contributor?: boolean;
 }
 
 interface AuthContextType {
@@ -17,7 +25,18 @@ interface AuthContextType {
     user: User | null;
     isLoading: boolean;
     login: (email: string, password: string) => Promise<void>;
-    register: (name: string, email: string, password: string) => Promise<void>;
+    register: (
+        name: string,
+        email: string,
+        password: string,
+        document_type: string,
+        document_number: string,
+        rif: string,
+        fiscal_address: string,
+        phone: string,
+        business_name?: string,
+        is_contributor?: boolean,
+    ) => Promise<void>;
     logout: () => void;
     resetPassword: (email: string) => Promise<void>;
 }
@@ -175,12 +194,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     };
 
-    const register = async (name: string, email: string, password: string) => {
+    const register = async (
+        name: string,
+        email: string,
+        password: string,
+        document_type: string,
+        document_number: string,
+        rif: string,
+        fiscal_address: string,
+        phone: string,
+        business_name?: string,
+        is_contributor?: boolean,
+    ) => {
         try {
             await axios.post(`${API_URL}/auth/register`, {
                 full_name: name,
                 email,
-                password
+                password,
+                document_type,
+                document_number,
+                rif,
+                fiscal_address,
+                phone,
+                business_name,
+                is_contributor: is_contributor || false,
             });
             // Auto login after successful registration
             await login(email, password);

@@ -31,11 +31,18 @@ async def register(
             detail="Email already registered",
         )
 
-    # Create user
+    # Create user with fiscal information
     user = await auth_service.create_user(
         email=user_data.email,
         password=user_data.password,
         full_name=user_data.full_name,
+        document_type=user_data.document_type,
+        document_number=user_data.document_number,
+        rif=user_data.rif,
+        business_name=user_data.business_name,
+        fiscal_address=user_data.fiscal_address,
+        phone=user_data.phone,
+        is_contributor=user_data.is_contributor,
     )
 
     return UserResponse.model_validate(user)

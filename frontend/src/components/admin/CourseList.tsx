@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Plus } from 'lucide-react';
 import type { Course, Category, Level, CourseListProps } from './types';
 import { MessageModal } from './MessageModal';
 import { ConfirmModal } from './ConfirmModal';
@@ -41,7 +40,7 @@ export const CourseList: React.FC<CourseListProps> = ({ onNavigateToCreate, onNa
     const [categoryFilter, setCategoryFilter] = useState<string>('');
     const [levelFilter, setLevelFilter] = useState<string>('');
     const [publishedFilter, setPublishedFilter] = useState<string>('all');
-    
+
     // Pagination state
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize] = useState(10);
@@ -223,8 +222,7 @@ export const CourseList: React.FC<CourseListProps> = ({ onNavigateToCreate, onNa
                         onClick={onNavigateToCreate}
                         className="theme-button theme-button-primary"
                     >
-                        <Plus size={20} />
-                        Create Course
+                        + Create Course
                     </button>
                 </div>
 
@@ -284,7 +282,7 @@ export const CourseList: React.FC<CourseListProps> = ({ onNavigateToCreate, onNa
             <ConfirmModal
                 isOpen={confirmModal.isOpen}
                 onClose={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))}
-                onConfirm={confirmModal.onConfirm || (() => {})}
+                onConfirm={confirmModal.onConfirm || (() => { })}
                 title={confirmModal.title}
                 message={confirmModal.message}
                 confirmText={confirmModal.confirmText}

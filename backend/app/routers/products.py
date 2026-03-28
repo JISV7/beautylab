@@ -1,8 +1,11 @@
 """Products router."""
 
+import os
+import shutil
+import uuid
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.dependencies import CurrentUser
@@ -24,6 +27,11 @@ from app.services.product_service import (
 )
 
 router = APIRouter(prefix="/products", tags=["Products"])
+
+UPLOAD_DIR = "uploads/courses"
+os.makedirs(UPLOAD_DIR, exist_ok=True)
+
+ALLOWED_IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp", ".gif"}
 
 
 @router.get("/", response_model=ProductListResponse)
@@ -194,4 +202,52 @@ async def check_can_delete_product(
         "can_delete": can_delete,
         "message": message,
         "product_id": str(product_id),
+    }
+
+
+@router.post("/upload-image", response_model=dict, status_code=status.HTTP_201_CREATED)
+async def upload_course_image(
+    file: UploadFile = File(..., description="Image file to upload"),
+):
+    """Upload a course image.
+
+    Returns the URL where the image can be accessed.
+    """
+    # Validate that file has a filename
+    if not file.filename:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="No file provided",
+        )
+
+    # Validate extension
+    ext = os.path.splitext(file.filename)[1].lower()
+    if ext not in ALLOWED_IMAGE_EXTENSIONS:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Invalid file extension. Allowed: {', '.join(ALLOWED_IMAGE_EXTENSIONS)}",
+        )
+
+    # Generate unique filename to avoid collisions
+    unique_filename = f"{uuid.uuid4()}{ext}"
+    filepath = os.path.join(UPLOAD_DIR, unique_filename)
+
+    # Save file
+    try:
+        with open(filepath, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to save file: {str(e)}",
+        )
+
+    # The URL that the frontend will load it from
+    image_url = f"/static/courses/{unique_filename}"
+
+    return {
+        "url": image_url,
+        "filename": unique_filename,
+        "original_filename": file.filename,
+        "content_type": file.content_type,
     }

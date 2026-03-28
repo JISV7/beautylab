@@ -76,8 +76,9 @@ app.include_router(fonts.router)
 app.include_router(company_info.router)
 app.include_router(printers.router)
 
-# Mount static files for fonts
+# Mount static files for fonts and courses
 app.mount("/static/fonts", StaticFiles(directory="uploads/fonts"), name="fonts")
+app.mount("/static/courses", StaticFiles(directory="uploads/courses"), name="courses")
 
 
 @app.get("/", tags=["Health"])

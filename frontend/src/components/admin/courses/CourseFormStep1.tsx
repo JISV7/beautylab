@@ -1,6 +1,31 @@
-import React from 'react';
-import { HelpCircle, Upload } from 'lucide-react';
+import React, { useRef, useState } from 'react';
+import axios from 'axios';
+import { HelpCircle, Upload, X, CheckCircle } from 'lucide-react';
 import type { Category, Level, CourseFormData } from '../types';
+
+const API_URL = 'http://localhost:8000';
+
+// Get auth token from localStorage
+const getAuthToken = (): string | null => {
+    return localStorage.getItem('access_token');
+};
+
+// Axios instance with auth
+const api = axios.create({
+    baseURL: API_URL,
+    headers: {
+        'Content-Type': 'application/json',
+    },
+});
+
+// Add auth token to requests
+api.interceptors.request.use((config) => {
+    const token = getAuthToken();
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+});
 
 export interface CourseFormStep1Props {
     formData: CourseFormData;
@@ -17,6 +42,85 @@ export const CourseFormStep1: React.FC<CourseFormStep1Props> = ({
     onChange,
     onNext,
 }) => {
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [uploading, setUploading] = useState(false);
+    const [uploadError, setUploadError] = useState('');
+    const [uploadSuccess, setUploadSuccess] = useState(false);
+
+    const handleBrowseClick = () => {
+        fileInputRef.current?.click();
+    };
+
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        // Validate file type
+        const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
+        if (!validTypes.includes(file.type)) {
+            setUploadError('Please select a valid image file (JPG, PNG, WebP, or GIF)');
+            return;
+        }
+
+        // Validate file size (max 5MB)
+        const maxSize = 5 * 1024 * 1024;
+        if (file.size > maxSize) {
+            setUploadError('Image size must be less than 5MB');
+            return;
+        }
+
+        try {
+            setUploading(true);
+            setUploadError('');
+            setUploadSuccess(false);
+
+            // Upload file using axios (same pattern as font upload)
+            const formDataUpload = new FormData();
+            formDataUpload.append('file', file);
+
+            const response = await api.post('/products/upload-image', formDataUpload, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+
+            const data = response.data;
+
+            // Update the image_url in the parent form with full backend URL
+            const syntheticEvent = {
+                target: { name: 'image_url', value: `${API_URL}${data.url}` }
+            } as React.ChangeEvent<HTMLInputElement>;
+            onChange(syntheticEvent);
+
+            setUploadSuccess(true);
+            setTimeout(() => setUploadSuccess(false), 3000);
+
+            // Reset file input
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+            }
+        } catch (error: any) {
+            console.error('Upload error:', error);
+            // Extract error message from axios response
+            const errorMessage = error.response?.data?.detail
+                ? (typeof error.response.data.detail === 'string'
+                    ? error.response.data.detail
+                    : JSON.stringify(error.response.data.detail))
+                : error.message || 'Failed to upload image';
+            setUploadError(errorMessage);
+        } finally {
+            setUploading(false);
+        }
+    };
+
+    const handleClearImage = () => {
+        const syntheticEvent = {
+            target: { name: 'image_url', value: '' }
+        } as React.ChangeEvent<HTMLInputElement>;
+        onChange(syntheticEvent);
+        setUploadError('');
+        setUploadSuccess(false);
+    };
     return (
         <div className="theme-card p-6 space-y-6">
             <div className="flex items-center gap-2 mb-4">
@@ -129,24 +233,74 @@ export const CourseFormStep1: React.FC<CourseFormStep1Props> = ({
 
                 <div className="md:col-span-2">
                     <label className="block text-sm font-bold mb-2 text-p-color">
-                        Image URL Input
+                        Course Image
                     </label>
-                    <div className="flex gap-3">
-                        <input
-                            type="url"
-                            name="image_url"
-                            className="theme-input flex-1"
-                            placeholder="https://cdn.beautylab.com/images/..."
-                            value={formData.image_url}
-                            onChange={onChange}
-                        />
-                        <button
-                            type="button"
-                            className="px-4 border border-[var(--palette-border)] rounded-lg hover:bg-[var(--palette-surface)] transition-colors flex items-center gap-2"
-                        >
-                            <Upload size={18} className="text-p-color opacity-60" />
-                            <span className="text-sm font-bold text-p-color">Browse</span>
-                        </button>
+                    <div className="space-y-3">
+                        <div className="flex gap-3">
+                            <input
+                                type="url"
+                                name="image_url"
+                                className="theme-input flex-1"
+                                placeholder="https://cdn.beautylab.com/images/... or upload below"
+                                value={formData.image_url}
+                                onChange={onChange}
+                            />
+                            <button
+                                type="button"
+                                onClick={handleBrowseClick}
+                                disabled={uploading}
+                                className="px-4 border border-[var(--palette-border)] rounded-lg hover:bg-[var(--palette-surface)] transition-colors flex items-center gap-2 disabled:opacity-50"
+                            >
+                                <Upload size={18} className="text-p-color opacity-60" />
+                                <span className="text-sm font-bold text-p-color">
+                                    {uploading ? 'Uploading...' : 'Browse'}
+                                </span>
+                            </button>
+                            <input
+                                type="file"
+                                ref={fileInputRef}
+                                onChange={handleFileChange}
+                                accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
+                                className="hidden"
+                                disabled={uploading}
+                            />
+                        </div>
+
+                        {/* Upload status messages */}
+                        {uploadError && (
+                            <p className="text-sm text-red-600 dark:text-red-400 flex items-center gap-2">
+                                <X size={16} />
+                                {uploadError}
+                            </p>
+                        )}
+                        {uploadSuccess && (
+                            <p className="text-sm text-green-600 dark:text-green-400 flex items-center gap-2">
+                                <CheckCircle size={16} />
+                                Image uploaded successfully!
+                            </p>
+                        )}
+
+                        {/* Image preview */}
+                        {formData.image_url && (
+                            <div className="relative mt-3">
+                                <img
+                                    src={formData.image_url}
+                                    alt="Course preview"
+                                    className="w-full max-w-md h-48 object-cover rounded-lg border border-[var(--palette-border)]"
+                                    onError={(e) => {
+                                        (e.target as HTMLImageElement).style.display = 'none';
+                                    }}
+                                />
+                                <button
+                                    type="button"
+                                    onClick={handleClearImage}
+                                    className="absolute top-2 right-2 p-1.5 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors"
+                                    title="Remove image"
+                                >
+                                    <X size={16} />
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

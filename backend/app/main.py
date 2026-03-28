@@ -14,12 +14,14 @@ from app.routers import (
     auth,
     cart,
     catalog,
+    company_info,
     coupons,
     enrollments,
     fonts,
     invoices,
     licenses,
     payments,
+    printers,
     products,
     themes,
     users,
@@ -71,6 +73,8 @@ app.include_router(enrollments.router)
 app.include_router(themes.router)
 app.include_router(admin.router)
 app.include_router(fonts.router)
+app.include_router(company_info.router)
+app.include_router(printers.router)
 
 # Mount static files for fonts
 app.mount("/static/fonts", StaticFiles(directory="uploads/fonts"), name="fonts")

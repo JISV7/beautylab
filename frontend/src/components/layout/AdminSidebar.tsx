@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Palette, Users, Sparkles, FileText, FolderOpen, Receipt } from 'lucide-react';
+import { X, Palette, Users, Sparkles, FileText, FolderOpen, Receipt, Building2, Printer } from 'lucide-react';
 
 interface AdminSidebarProps {
     activeItem?: string;
@@ -22,6 +22,8 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
         { id: 'users', label: 'Users', icon: Users },
         { id: 'content', label: 'Courses', icon: FileText },
         { id: 'invoices', label: 'Invoices', icon: Receipt },
+        { id: 'company-info', label: 'Company Info', icon: Building2 },
+        { id: 'printer-info', label: 'Printer Info', icon: Printer },
     ];
 
     const handleClick = (itemId: string) => {
@@ -72,16 +74,6 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                         );
                     })}
                 </nav>
-
-                {/* Admin Badge */}
-                <div className="p-4 border-t border-[var(--palette-border)]">
-                    <div className="bg-[var(--palette-surface)] border border-[var(--palette-border)] p-4 rounded-lg">
-                        <p className="text-xs text-p-font text-[var(--text-p-color)] opacity-70 mb-2">Admin Mode</p>
-                        <p className="text-xs text-p-font text-[var(--text-p-color)]">
-                            You have full access to customize the site appearance.
-                        </p>
-                    </div>
-                </div>
             </aside>
         </>
     );

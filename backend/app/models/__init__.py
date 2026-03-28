@@ -4,6 +4,7 @@ from app.models.audit_log import AuditLog
 from app.models.base import Base
 from app.models.cart_item import CartItem
 from app.models.category import Category
+from app.models.company_info import CompanyInfo
 from app.models.coupon import Coupon, CouponUsage
 from app.models.course import Course
 from app.models.enrollment import Enrollment
@@ -15,6 +16,7 @@ from app.models.level import Level
 from app.models.license import License, LicenseAssignment
 from app.models.payment import Payment, PaymentDetail, PaymentMethod
 from app.models.permission import Permission
+from app.models.printer import Printer
 from app.models.product import Product
 from app.models.role import Role
 from app.models.role_permission import RolePermission
@@ -50,4 +52,6 @@ __all__ = [
     "PaymentDetail",
     "Coupon",
     "CouponUsage",
+    "CompanyInfo",
+    "Printer",
 ]

@@ -6,8 +6,10 @@ import { CourseList } from '../components/admin/CourseList';
 import { CourseManagement } from '../components/admin/CourseManagement';
 import { CategoryManagementPage } from '../pages/CategoryManagementPage';
 import InvoicesPage from '../pages/InvoicesPage';
+import CompanyInfoPage from '../pages/CompanyInfoPage';
+import PrinterInfoPage from '../pages/PrinterInfoPage';
 
-type AdminTab = 'dashboard' | 'themes' | 'categories' | 'users' | 'content' | 'invoices';
+type AdminTab = 'dashboard' | 'themes' | 'categories' | 'users' | 'content' | 'invoices' | 'company-info' | 'printer-info';
 
 type ContentView = 'list' | 'create' | 'edit';
 
@@ -119,6 +121,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToDash
                     {activeTab === 'invoices' && (
                         <div>
                             <InvoicesPage />
+                        </div>
+                    )}
+                    {activeTab === 'company-info' && (
+                        <div>
+                            <CompanyInfoPage />
+                        </div>
+                    )}
+                    {activeTab === 'printer-info' && (
+                        <div>
+                            <PrinterInfoPage />
                         </div>
                     )}
                 </main>

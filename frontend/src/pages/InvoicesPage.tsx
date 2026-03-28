@@ -51,7 +51,13 @@ export default function InvoicesPage() {
 }
 
 // --- VISTA DE LISTA CON PAGINACIÓN ---
-function InvoiceList({ invoices, onSelect }: { invoices: typeof mockInvoices; onSelect: (inv: typeof mockInvoices[0]) => void }) {
+function InvoiceList({
+  invoices,
+  onSelect,
+}: {
+  invoices: typeof mockInvoices;
+  onSelect: (inv: typeof mockInvoices[0]) => void;
+}) {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
@@ -63,12 +69,7 @@ function InvoiceList({ invoices, onSelect }: { invoices: typeof mockInvoices; on
 
   return (
     <div className="max-w-5xl mx-auto">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-3xl font-bold text-primary">Invoices</h2>
-        <button className="theme-button theme-button-primary">
-          + Create New
-        </button>
-      </div>
+      <h2 className="text-3xl font-bold text-primary mb-6">Invoices</h2>
 
       <div className="palette-surface rounded-lg shadow-sm palette-border overflow-hidden">
         <table className="w-full text-left border-collapse">

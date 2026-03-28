@@ -1,5 +1,7 @@
-import { X } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { X, Building, FileText, MapPin, Phone, Mail, Image, CheckCircle, AlertCircle } from 'lucide-react';
 import type { CompanyInfo, CompanyInfoCreate } from '../../../data/company.types';
+import { validateRif, getExpectedRif } from '../../../utils/rif';
 
 interface CompanyFormProps {
   company?: CompanyInfo | null;
@@ -18,17 +20,80 @@ export const CompanyForm: React.FC<CompanyFormProps> = ({
   onCancel,
   saving = false,
 }) => {
+  const [rifError, setRifError] = useState('');
+  const [rifValid, setRifValid] = useState(false);
+  const [expectedRif, setExpectedRif] = useState('');
+  const [documentType, setDocumentType] = useState('J');
+  const [documentNumber, setDocumentNumber] = useState('');
+
+  // Extract document number from RIF when editing
+  useEffect(() => {
+    if (company?.rif) {
+      const rifMatch = company.rif.match(/^([A-Z])(\d+)-?(\d)$/);
+      if (rifMatch) {
+        setDocumentType(rifMatch[1]);
+        setDocumentNumber(rifMatch[2]);
+      }
+    }
+  }, [company]);
+
+  // Validate RIF when document type, number, or RIF changes
+  useEffect(() => {
+    if (!documentNumber || !documentType) {
+      setRifError('');
+      setRifValid(false);
+      setExpectedRif('');
+      return;
+    }
+
+    // Calculate expected RIF based on document type and number
+    const expected = getExpectedRif(documentType, documentNumber);
+    setExpectedRif(expected);
+
+    // Validate the entered RIF
+    if (formData.rif) {
+      const validation = validateRif(formData.rif);
+      if (!validation.isValid) {
+        setRifError(validation.errorMessage);
+        setRifValid(false);
+      } else {
+        setRifError('');
+        setRifValid(true);
+      }
+    } else {
+      setRifError('');
+      setRifValid(false);
+    }
+  }, [documentType, documentNumber, formData.rif]);
+
+  const handleRifChange = (value: string) => {
+    onChange('rif', value.toUpperCase());
+  };
+
+  const handleDocumentNumberChange = (value: string) => {
+    const cleanValue = value.replace(/[^0-9]/g, '');
+    setDocumentNumber(cleanValue);
+    // Auto-generate RIF when document number changes
+    if (cleanValue.length >= 8) {
+      const expected = getExpectedRif(documentType, cleanValue);
+      onChange('rif', expected);
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validate RIF
+    const rifValidation = validateRif(formData.rif);
+    if (!rifValidation.isValid) {
+      alert(rifValidation.errorMessage);
+      return;
+    }
+
     onSave();
   };
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    onChange(name as keyof CompanyInfoCreate, value);
-  };
+  const isEditing = !!company;
 
   return (
     <div
@@ -42,103 +107,246 @@ export const CompanyForm: React.FC<CompanyFormProps> = ({
         <form onSubmit={handleSubmit}>
           {/* Header */}
           <div className="sticky top-0 bg-[var(--palette-surface)] border-b border-[var(--palette-border)] p-6 flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-[var(--text-h2-color)]">
-              {company ? 'Edit Company Info' : 'Add Company Info'}
-            </h2>
+            <div>
+              <h2 className="text-2xl font-bold text-[var(--text-h2-color)]">
+                {isEditing ? 'Edit Company Info' : 'Add Company Info'}
+              </h2>
+            </div>
             <button
               type="button"
               onClick={onCancel}
-              className="text-p-color hover:text-primary transition-colors"
+              className="text-[var(--text-p-color)] hover:text-primary transition-colors"
             >
               <X className="w-6 h-6" />
             </button>
           </div>
 
           {/* Form Fields */}
-          <div className="p-6 space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-p-color mb-1">
-                Business Name *
-              </label>
-              <input
-                type="text"
-                name="businessName"
-                value={formData.businessName}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-2 rounded-lg palette-surface palette-border border text-p-font text-p-size text-p-color focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
-              />
-            </div>
+          <div className="p-6 space-y-5">
+            {/* Company Information Section */}
+            <div className="space-y-3.5">
+              <h3
+                className="text-[var(--text-p-color)] font-semibold border-b pb-2"
+                style={{ borderColor: 'var(--palette-border)' }}
+              >
+                Company Information (Emisor)
+              </h3>
 
-            <div>
-              <label className="block text-sm font-medium text-p-color mb-1">
-                RIF (Tax ID) *
-              </label>
-              <input
-                type="text"
-                name="rif"
-                value={formData.rif}
-                onChange={handleChange}
-                required
-                placeholder="J-12345678-9"
-                className="w-full px-4 py-2 rounded-lg palette-surface palette-border border text-p-font text-p-size text-p-color focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-p-color mb-1">
-                Fiscal Address *
-              </label>
-              <textarea
-                name="fiscalAddress"
-                value={formData.fiscalAddress}
-                onChange={handleChange}
-                required
-                rows={3}
-                className="w-full px-4 py-2 rounded-lg palette-surface palette-border border text-p-font text-p-size text-p-color focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-p-color mb-1">
-                  Phone
+                <label className="text-[var(--text-p-color)] block mb-1.5">
+                  Business Name (Razón Social) *
                 </label>
-                <input
-                  type="text"
-                  name="phone"
-                  value={formData.phone || ''}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 rounded-lg palette-surface palette-border border text-p-font text-p-size text-p-color focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
-                />
+                <div className="relative">
+                  <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-p-color)] opacity-75" />
+                  <input
+                    type="text"
+                    name="businessName"
+                    value={formData.businessName}
+                    onChange={(e) => onChange('businessName', e.target.value)}
+                    required
+                    className="w-full py-2.5 px-4 pl-11 rounded-lg bg-[var(--palette-surface)] border border-[var(--palette-border)] text-[var(--text-p-color)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
+                    placeholder="Company Name C.A."
+                    disabled={saving}
+                  />
+                </div>
+              </div>
+
+              {/* RIF Section */}
+              <div>
+                <label className="text-[var(--text-p-color)] block mb-1.5">
+                  RIF (Registro Único de Información Fiscal) *
+                </label>
+
+                <div className="grid grid-cols-3 gap-3 mb-2">
+                  <div>
+                    <select
+                      value={documentType}
+                      onChange={(e) => {
+                        setDocumentType(e.target.value);
+                        if (documentNumber.length >= 8) {
+                          const expected = getExpectedRif(e.target.value, documentNumber);
+                          onChange('rif', expected);
+                        }
+                      }}
+                      className="w-full py-2.5 px-4 rounded-lg bg-[var(--palette-surface)] border border-[var(--palette-border)] text-[var(--text-p-color)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
+                      disabled={saving}
+                    >
+                      <option value="V">V</option>
+                      <option value="E">E</option>
+                      <option value="J">J</option>
+                      <option value="P">P</option>
+                      <option value="G">G</option>
+                    </select>
+                  </div>
+                  <div className="col-span-2">
+                    <input
+                      type="text"
+                      value={documentNumber}
+                      onChange={(e) => handleDocumentNumberChange(e.target.value)}
+                      className="w-full py-2.5 px-4 rounded-lg bg-[var(--palette-surface)] border border-[var(--palette-border)] text-[var(--text-p-color)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
+                      placeholder="12345678-9"
+                      disabled={saving}
+                      maxLength={10}
+                    />
+                  </div>
+                </div>
+
+                <div className="relative">
+                  <FileText className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-p-color)] opacity-75" />
+                  <input
+                    type="text"
+                    name="rif"
+                    value={formData.rif}
+                    onChange={(e) => handleRifChange(e.target.value)}
+                    required
+                    readOnly
+                    className={`w-full py-2.5 px-4 pl-11 pr-10 rounded-lg bg-[var(--palette-background)] border text-[var(--text-p-color)] focus:outline-none ${rifValid
+                        ? 'border-green-500 focus:border-green-500 focus:ring-green-500'
+                        : rifError
+                          ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
+                          : 'border-[var(--palette-border)]'
+                      }`}
+                    placeholder="J-12345678-9"
+                    disabled={saving}
+                  />
+                  {rifValid && (
+                    <CheckCircle className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-green-500" />
+                  )}
+                  {rifError && (
+                    <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-red-500" />
+                  )}
+                </div>
+
+                {/* RIF validation messages */}
+                {rifError && (
+                  <p className="text-red-600 dark:text-red-400 mt-1 text-sm">
+                    {rifError}
+                  </p>
+                )}
+
+                {/* Show expected RIF when user has typed document number but no RIF yet */}
+                {expectedRif && !formData.rif && (
+                  <div
+                    className="mt-2 p-3 rounded-lg border text-sm"
+                    style={{
+                      backgroundColor: 'var(--palette-surface)',
+                      borderColor: 'var(--palette-border)',
+                    }}
+                  >
+                    <p className="text-[var(--text-p-color)] opacity-80 mb-2">
+                      Expected RIF:
+                    </p>
+                    <div className="flex items-center justify-between gap-2">
+                      <code
+                        className="px-3 py-2 rounded font-mono font-bold"
+                        style={{
+                          backgroundColor: 'var(--palette-background)',
+                          color: 'var(--palette-primary)',
+                        }}
+                      >
+                        {expectedRif}
+                      </code>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          onChange('rif', expectedRif);
+                          setDocumentType(expectedRif.charAt(0));
+                          setDocumentNumber(expectedRif.slice(2, -2).replace('-', ''));
+                        }}
+                        className="px-3 py-2 rounded font-semibold transition-colors whitespace-nowrap"
+                        style={{
+                          backgroundColor: 'var(--palette-primary)',
+                          color: 'var(--decorator-color)',
+                        }}
+                        disabled={saving}
+                      >
+                        Auto-fill
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {!rifError && rifValid && formData.rif && (
+                  <p className="text-green-600 dark:text-green-400 mt-1 text-sm">
+                    RIF is valid
+                  </p>
+                )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-p-color mb-1">
-                  Email
+                <label className="text-[var(--text-p-color)] block mb-1.5">
+                  Fiscal Address (Domicilio Fiscal) *
                 </label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email || ''}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 rounded-lg palette-surface palette-border border text-p-font text-p-size text-p-color focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
-                />
+                <div className="relative">
+                  <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-p-color)] opacity-75" />
+                  <textarea
+                    name="fiscalAddress"
+                    value={formData.fiscalAddress}
+                    onChange={(e) => onChange('fiscalAddress', e.target.value)}
+                    required
+                    rows={3}
+                    className="w-full py-2.5 px-4 pl-11 rounded-lg bg-[var(--palette-surface)] border border-[var(--palette-border)] text-[var(--text-p-color)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
+                    placeholder="Complete address: Street, Building, City, State"
+                    disabled={saving}
+                  />
+                </div>
               </div>
-            </div>
 
-            <div>
-              <label className="block text-sm font-medium text-p-color mb-1">
-                Logo URL
-              </label>
-              <input
-                type="url"
-                name="logoUrl"
-                value={formData.logoUrl || ''}
-                onChange={handleChange}
-                placeholder="https://example.com/logo.png"
-                className="w-full px-4 py-2 rounded-lg palette-surface palette-border border text-p-font text-p-size text-p-color focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
-              />
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-[var(--text-p-color)] block mb-1.5">
+                    Phone *
+                  </label>
+                  <div className="relative">
+                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-p-color)] opacity-75" />
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={formData.phone || ''}
+                      onChange={(e) => onChange('phone', e.target.value)}
+                      className="w-full py-2.5 px-4 pl-11 rounded-lg bg-[var(--palette-surface)] border border-[var(--palette-border)] text-[var(--text-p-color)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
+                      placeholder="+58 412 1234567"
+                      disabled={saving}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-[var(--text-p-color)] block mb-1.5">
+                    Email
+                  </label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-p-color)] opacity-75" />
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email || ''}
+                      onChange={(e) => onChange('email', e.target.value)}
+                      className="w-full py-2.5 px-4 pl-11 rounded-lg bg-[var(--palette-surface)] border border-[var(--palette-border)] text-[var(--text-p-color)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
+                      placeholder="info@company.com"
+                      disabled={saving}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label className="text-[var(--text-p-color)] block mb-1.5">
+                  Logo URL (Optional)
+                </label>
+                <div className="relative">
+                  <Image className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-p-color)] opacity-75" />
+                  <input
+                    type="url"
+                    name="logoUrl"
+                    value={formData.logoUrl || ''}
+                    onChange={(e) => onChange('logoUrl', e.target.value)}
+                    className="w-full py-2.5 px-4 pl-11 rounded-lg bg-[var(--palette-surface)] border border-[var(--palette-border)] text-[var(--text-p-color)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
+                    placeholder="https://example.com/logo.png"
+                    disabled={saving}
+                  />
+                </div>
+              </div>
             </div>
           </div>
 
@@ -154,10 +362,14 @@ export const CompanyForm: React.FC<CompanyFormProps> = ({
             </button>
             <button
               type="submit"
-              disabled={saving}
-              className="flex-1 px-4 py-2 rounded-lg bg-primary text-white hover:opacity-90 transition-colors disabled:opacity-50"
+              disabled={saving || !rifValid}
+              className="flex-1 px-4 py-2 rounded-lg font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{
+                backgroundColor: 'var(--palette-primary)',
+                color: 'var(--decorator-color)',
+              }}
             >
-              {saving ? 'Saving...' : company ? 'Update' : 'Create'}
+              {saving ? 'Saving...' : isEditing ? 'Update' : 'Create'}
             </button>
           </div>
         </form>

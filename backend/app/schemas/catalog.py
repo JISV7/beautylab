@@ -241,6 +241,7 @@ class CourseWithDetails(CourseResponse):
     category_slug: str | None = None
     product_name: str | None = None
     product_price: Decimal | None = None
+    product_sku: str | None = None
 
 
 class CourseListResponse(BaseModel):

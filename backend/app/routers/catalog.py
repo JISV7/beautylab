@@ -359,6 +359,7 @@ async def get_course(
     category_slug = course.category.slug if course.category else None
     product_name = course.product.name if course.product else None
     product_price = course.product.price if course.product else None
+    product_sku = course.product.sku if course.product else None
 
     return CourseWithDetails(
         id=course.id,
@@ -379,6 +380,7 @@ async def get_course(
         category_slug=category_slug,
         product_name=product_name,
         product_price=product_price,
+        product_sku=product_sku,
     )
 
 

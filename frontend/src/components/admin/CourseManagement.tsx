@@ -113,12 +113,12 @@ export const CourseManagement: React.FC<CourseManagementProps> = ({ courseId, on
                         category_id: course.category_id?.toString() || '',
                         published: course.published,
                         product_name: course.product_name || '',
-                        sku: course.product_id ? '' : '', // Keep empty for updates, will use existing
+                        sku: course.product_sku || '', // Pre-fill existing SKU for updates
                         price: course.product_price?.toString() || '',
                         tax_rate: '16.00',
                         tax_type: 'gravado',
                     });
-                    
+
                     // Store existing product ID for updates
                     setExistingProductId(course.product_id || null);
                 }
@@ -435,7 +435,7 @@ export const CourseManagement: React.FC<CourseManagementProps> = ({ courseId, on
             <ConfirmModal
                 isOpen={confirmModal.isOpen}
                 onClose={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))}
-                onConfirm={confirmModal.onConfirm || (() => {})}
+                onConfirm={confirmModal.onConfirm || (() => { })}
                 title={confirmModal.title}
                 message={confirmModal.message}
                 confirmText={confirmModal.confirmText}

@@ -117,6 +117,7 @@ export interface Course {
     category_name?: string;
     product_name?: string;
     product_price?: string;
+    product_sku?: string;
 }
 
 export interface CourseFormData {

@@ -328,8 +328,30 @@ async def list_courses(
 
     total_pages = (total + page_size - 1) // page_size
 
+    # Build course list with product info
+    course_list = []
+    for course in courses:
+        course_dict = {
+            "id": course.id,
+            "title": course.title,
+            "slug": course.slug,
+            "description": course.description,
+            "image_url": course.image_url,
+            "duration_hours": course.duration_hours,
+            "level_id": course.level_id,
+            "category_id": course.category_id,
+            "product_id": course.product_id,
+            "published": course.published,
+            "created_at": course.created_at,
+            "updated_at": course.updated_at,
+            "product_name": course.product.name if course.product else None,
+            "product_price": str(course.product.price) if course.product else None,
+            "product_sku": course.product.sku if course.product else None,
+        }
+        course_list.append(CourseResponse(**course_dict))
+
     return CourseListResponse(
-        courses=[CourseResponse.model_validate(course) for course in courses],
+        courses=course_list,
         total=total,
         page=page,
         page_size=page_size,

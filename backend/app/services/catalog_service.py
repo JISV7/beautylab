@@ -302,8 +302,10 @@ class CatalogService:
         search: str | None = None,
     ) -> tuple[list[Course], int]:
         """Get all courses with pagination and filters."""
-        # Build base query
-        query = select(Course)
+        from sqlalchemy.orm import selectinload
+
+        # Build base query with eager loading of product relationship
+        query = select(Course).options(selectinload(Course.product))
 
         # Apply filters
         if category_id is not None:

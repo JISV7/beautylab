@@ -230,6 +230,9 @@ class CourseResponse(BaseModel):
     published: bool
     created_at: datetime
     updated_at: datetime
+    product_name: str | None = None
+    product_price: str | None = None
+    product_sku: str | None = None
 
 
 class CourseWithDetails(CourseResponse):

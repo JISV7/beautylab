@@ -77,6 +77,11 @@ export const CategoryManagement: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingCategory, setEditingCategory] = useState<Category | null>(null);
     const [formData, setFormData] = useState<CategoryFormData>(emptyFormData);
+    const [descriptionModal, setDescriptionModal] = useState<{
+        isOpen: boolean;
+        title: string;
+        content: string;
+    }>({ isOpen: false, title: '', content: '' });
 
     // Fetch categories
     const fetchCategories = async () => {
@@ -142,6 +147,15 @@ export const CategoryManagement: React.FC = () => {
         setIsModalOpen(true);
     };
 
+    const handleViewDescription = (category: Category) => {
+        if (!category.description) return;
+        setDescriptionModal({
+            isOpen: true,
+            title: category.name,
+            content: category.description,
+        });
+    };
+
     // Handle input change
     const handleInputChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -162,7 +176,7 @@ export const CategoryManagement: React.FC = () => {
 
             // Always regenerate slug from name when creating (not editing)
             // This ensures the slug is always valid
-            const slug = !editingCategory 
+            const slug = !editingCategory
                 ? formData.name
                     .toLowerCase()
                     .trim()
@@ -202,7 +216,7 @@ export const CategoryManagement: React.FC = () => {
             fetchCategories();
         } catch (error: any) {
             console.error('Failed to save category:', error);
-            
+
             // Extract error message from validation errors
             let errorMessage = 'Failed to save category.';
             const detail = error.response?.data?.detail;
@@ -218,7 +232,7 @@ export const CategoryManagement: React.FC = () => {
                     errorMessage = JSON.stringify(detail);
                 }
             }
-            
+
             setMessageModal({
                 isOpen: true,
                 type: 'error',
@@ -357,10 +371,27 @@ export const CategoryManagement: React.FC = () => {
                                                     {category.slug}
                                                 </span>
                                             </td>
-                                            <td className="py-3 px-4">
-                                                <span className="text-sm text-p-color">
-                                                    {category.description || '-'}
-                                                </span>
+                                            <td className="py-3 px-4 max-w-xs">
+                                                {category.description ? (
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-sm text-p-color line-clamp-2">
+                                                            {category.description.length > 100
+                                                                ? `${category.description.substring(0, 100)}...`
+                                                                : category.description
+                                                            }
+                                                        </span>
+                                                        {category.description.length > 100 && (
+                                                            <button
+                                                                onClick={() => handleViewDescription(category)}
+                                                                className="text-xs text-[var(--palette-primary)] hover:underline whitespace-nowrap font-medium"
+                                                            >
+                                                                Read more
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                ) : (
+                                                    <span className="text-sm text-p-color">-</span>
+                                                )}
                                             </td>
                                             <td className="py-3 px-4">
                                                 <span className="text-sm text-p-color">
@@ -520,12 +551,61 @@ export const CategoryManagement: React.FC = () => {
             <ConfirmModal
                 isOpen={confirmModal.isOpen}
                 onClose={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))}
-                onConfirm={confirmModal.onConfirm || (() => {})}
+                onConfirm={confirmModal.onConfirm || (() => { })}
                 title={confirmModal.title}
                 message={confirmModal.message}
                 confirmText={confirmModal.confirmText}
                 type={confirmModal.type}
             />
+
+            {/* Description Modal */}
+            {descriptionModal.isOpen && (
+                <div
+                    className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+                    onClick={() => setDescriptionModal(prev => ({ ...prev, isOpen: false }))}
+                >
+                    <div
+                        className="w-full max-w-lg relative max-h-[80vh] flex flex-col bg-[var(--palette-surface)] border border-[var(--palette-border)] rounded-2xl shadow-2xl"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        {/* Header */}
+                        <div className="p-6 border-b border-[var(--palette-border)] flex items-center justify-between">
+                            <h3 className="text-xl font-bold text-[var(--text-h2-color)]">
+                                {descriptionModal.title}
+                            </h3>
+                            <button
+                                onClick={() => setDescriptionModal(prev => ({ ...prev, isOpen: false }))}
+                                className="text-[var(--text-p-color)] hover:text-primary transition-colors"
+                            >
+                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        {/* Content */}
+                        <div className="p-6 overflow-y-auto flex-1">
+                            <p className="text-[var(--text-p-color)] whitespace-pre-wrap leading-relaxed">
+                                {descriptionModal.content}
+                            </p>
+                        </div>
+
+                        {/* Footer */}
+                        <div className="p-6 border-t border-[var(--palette-border)]">
+                            <button
+                                onClick={() => setDescriptionModal(prev => ({ ...prev, isOpen: false }))}
+                                className="w-full px-4 py-2 rounded-lg font-semibold transition-colors"
+                                style={{
+                                    backgroundColor: 'var(--palette-primary)',
+                                    color: 'var(--decorator-color)',
+                                }}
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </>
     );
 };

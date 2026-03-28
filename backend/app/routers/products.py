@@ -6,12 +6,10 @@ import uuid
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile, status
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.dependencies import RequireAdmin
 from app.database import get_db
-from app.models.product import Product
 from app.models.user import User
 from app.schemas.product import (
     ProductCreate,

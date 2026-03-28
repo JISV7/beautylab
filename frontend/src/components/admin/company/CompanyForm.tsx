@@ -106,7 +106,7 @@ export const CompanyForm: React.FC<CompanyFormProps> = ({
       >
         <form onSubmit={handleSubmit}>
           {/* Header */}
-          <div className="sticky top-0 bg-[var(--palette-surface)] border-b border-[var(--palette-border)] p-6 flex items-center justify-between">
+          <div className="bg-[var(--palette-surface)] border-b border-[var(--palette-border)] p-6 flex items-center justify-between">
             <div>
               <h2 className="text-2xl font-bold text-[var(--text-h2-color)]">
                 {isEditing ? 'Edit Company Info' : 'Add Company Info'}
@@ -201,10 +201,10 @@ export const CompanyForm: React.FC<CompanyFormProps> = ({
                     required
                     readOnly
                     className={`w-full py-2.5 px-4 pl-11 pr-10 rounded-lg bg-[var(--palette-background)] border text-[var(--text-p-color)] focus:outline-none ${rifValid
-                        ? 'border-green-500 focus:border-green-500 focus:ring-green-500'
-                        : rifError
-                          ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
-                          : 'border-[var(--palette-border)]'
+                      ? 'border-green-500 focus:border-green-500 focus:ring-green-500'
+                      : rifError
+                        ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
+                        : 'border-[var(--palette-border)]'
                       }`}
                     placeholder="J-12345678-9"
                     disabled={saving}

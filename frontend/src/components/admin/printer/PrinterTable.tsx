@@ -81,7 +81,7 @@ export const PrinterTable: React.FC<PrinterTableProps> = ({
       searchQuery={searchQuery}
       onSearchChange={onSearchChange}
       onAdd={onAdd}
-      addButtonText="Add Printer"
+      addButtonText="+ Add Printer"
       searchPlaceholder="Search by name, RIF..."
       rowsPerPage={10}
       getItemId={(item) => item.id}

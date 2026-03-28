@@ -1,4 +1,4 @@
-import { Search, Plus } from 'lucide-react';
+import { Search } from 'lucide-react';
 
 interface DataTableHeaderProps {
   title: string;
@@ -25,7 +25,6 @@ export const DataTableHeader: React.FC<DataTableHeaderProps> = ({
         <h2 className="text-3xl font-bold text-primary">{title}</h2>
         {onAdd && (
           <button onClick={onAdd} className="theme-button theme-button-primary">
-            <Plus className="w-4 h-4 mr-2" />
             {addButtonText}
           </button>
         )}

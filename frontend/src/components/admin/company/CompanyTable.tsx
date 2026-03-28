@@ -89,7 +89,7 @@ export const CompanyTable: React.FC<CompanyTableProps> = ({
       searchQuery={searchQuery}
       onSearchChange={onSearchChange}
       onAdd={onAdd}
-      addButtonText="Add Company"
+      addButtonText="+ Add Company"
       searchPlaceholder="Search by name, RIF, email..."
       rowsPerPage={10}
       getItemId={(item) => item.id}

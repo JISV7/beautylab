@@ -47,7 +47,6 @@ export default function CompanyInfoPage() {
       setCompanies(response.data || []);
     } catch (error: any) {
       console.error('Failed to fetch companies:', error);
-      alert(error.response?.data?.detail || 'Failed to load company information.');
     } finally {
       setLoading(false);
     }
@@ -94,7 +93,6 @@ export default function CompanyInfoPage() {
       fetchCompanies();
     } catch (error: any) {
       console.error('Failed to save company:', error);
-      alert(error.response?.data?.detail || 'Failed to save company information.');
     } finally {
       setSaving(false);
     }
@@ -106,7 +104,6 @@ export default function CompanyInfoPage() {
       fetchCompanies();
     } catch (error: any) {
       console.error('Failed to delete company:', error);
-      alert(error.response?.data?.detail || 'Failed to delete company information.');
     }
   };
 

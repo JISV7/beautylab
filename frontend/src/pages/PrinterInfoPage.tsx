@@ -44,7 +44,6 @@ export default function PrinterInfoPage() {
       setPrinters(response.data || []);
     } catch (error: any) {
       console.error('Failed to fetch printers:', error);
-      alert(error.response?.data?.detail || 'Failed to load printers.');
     } finally {
       setLoading(false);
     }
@@ -85,7 +84,6 @@ export default function PrinterInfoPage() {
       fetchPrinters();
     } catch (error: any) {
       console.error('Failed to save printer:', error);
-      alert(error.response?.data?.detail || 'Failed to save printer information.');
     } finally {
       setSaving(false);
     }
@@ -97,7 +95,6 @@ export default function PrinterInfoPage() {
       setPrinters(printers.filter((p) => p.id !== printer.id));
     } catch (error: any) {
       console.error('Failed to delete printer:', error);
-      alert(error.response?.data?.detail || 'Failed to delete printer.');
     }
   };
 

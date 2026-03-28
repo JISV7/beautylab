@@ -62,6 +62,7 @@ export const CourseManagement: React.FC<CourseManagementProps> = ({ courseId, on
     const [loading, setLoading] = useState(false);
     const [saving, setSaving] = useState(false);
     const [currentStep, setCurrentStep] = useState(1);
+    const [existingProductId, setExistingProductId] = useState<string | null>(null);
 
     const [messageModal, setMessageModal] = useState<{
         isOpen: boolean;
@@ -112,11 +113,14 @@ export const CourseManagement: React.FC<CourseManagementProps> = ({ courseId, on
                         category_id: course.category_id?.toString() || '',
                         published: course.published,
                         product_name: course.product_name || '',
-                        sku: '',
-                        price: course.product_price || '',
+                        sku: course.product_id ? '' : '', // Keep empty for updates, will use existing
+                        price: course.product_price?.toString() || '',
                         tax_rate: '16.00',
                         tax_type: 'gravado',
                     });
+                    
+                    // Store existing product ID for updates
+                    setExistingProductId(course.product_id || null);
                 }
             } catch (error: any) {
                 console.error('Failed to fetch data:', error);
@@ -240,8 +244,9 @@ export const CourseManagement: React.FC<CourseManagementProps> = ({ courseId, on
 
             let productId: string;
 
-            if (courseId) {
-                const productRes = await api.post('/products', productData);
+            if (courseId && existingProductId) {
+                // Update existing product
+                const productRes = await api.put(`/products/${existingProductId}`, productData);
                 productId = productRes.data.id;
 
                 const courseData = {
@@ -258,6 +263,7 @@ export const CourseManagement: React.FC<CourseManagementProps> = ({ courseId, on
 
                 await api.put(`/catalog/courses/${courseId}`, courseData);
             } else {
+                // Create new product and course
                 const productRes = await api.post('/products', productData);
                 productId = productRes.data.id;
 

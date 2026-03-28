@@ -1,4 +1,4 @@
-"""Products router."""
+"""Products router for managing products and course associations."""
 
 import os
 import shutil
@@ -6,10 +6,12 @@ import uuid
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile, status
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.dependencies import CurrentUser
+from app.core.dependencies import RequireAdmin
 from app.database import get_db
+from app.models.product import Product
 from app.models.user import User
 from app.schemas.product import (
     ProductCreate,
@@ -34,7 +36,7 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 ALLOWED_IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp", ".gif"}
 
 
-@router.get("/", response_model=ProductListResponse)
+@router.get("", response_model=ProductListResponse)
 async def list_products(
     page: int = Query(1, ge=1),
     page_size: int = Query(10, ge=1, le=100),
@@ -42,11 +44,7 @@ async def list_products(
     search: str | None = None,
     db: AsyncSession = Depends(get_db),
 ) -> ProductListResponse:
-    """List all products with pagination and filters.
-
-    Public endpoint - returns active products by default.
-    Use is_active=null to see all products (admin).
-    """
+    """List all products with pagination and filters."""
     product_service = ProductService(db)
     products, total = await product_service.get_all_products(
         page=page,
@@ -68,13 +66,53 @@ async def list_products(
 
 @router.get("/stats", response_model=ProductStats)
 async def get_product_statistics(
-    current_user: User = Depends(CurrentUser),
     db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(RequireAdmin),
 ) -> ProductStats:
     """Get product statistics (admin only)."""
     product_service = ProductService(db)
     stats = await product_service.get_product_statistics()
     return ProductStats(**stats)
+
+
+@router.post("/upload-image", response_model=dict, status_code=status.HTTP_201_CREATED)
+async def upload_course_image(
+    file: UploadFile = File(...),
+):
+    """Upload a course image."""
+    if not file.filename:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="No file provided",
+        )
+
+    ext = os.path.splitext(file.filename)[1].lower()
+    if ext not in ALLOWED_IMAGE_EXTENSIONS:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Invalid file extension. Allowed: {', '.join(ALLOWED_IMAGE_EXTENSIONS)}",
+        )
+
+    unique_filename = f"{uuid.uuid4()}{ext}"
+    filepath = os.path.join(UPLOAD_DIR, unique_filename)
+
+    try:
+        with open(filepath, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to save file: {str(e)}",
+        )
+
+    image_url = f"/static/courses/{unique_filename}"
+
+    return {
+        "url": image_url,
+        "filename": unique_filename,
+        "original_filename": file.filename,
+        "content_type": file.content_type,
+    }
 
 
 @router.get("/{product_id}", response_model=ProductWithDetails)
@@ -92,7 +130,6 @@ async def get_product(
             detail=f"Product with ID {product_id} not found",
         )
 
-    # Build response with associated course/learning path info
     course_title = product.course.title if product.course else None
     learning_path_title = product.learning_path.title if product.learning_path else None
 
@@ -112,15 +149,11 @@ async def get_product(
     )
 
 
-@router.post(
-    "/",
-    response_model=ProductResponse,
-    status_code=status.HTTP_201_CREATED,
-)
+@router.post("", response_model=ProductResponse, status_code=status.HTTP_201_CREATED)
 async def create_product(
     product_data: ProductCreate,
-    current_user: User = Depends(CurrentUser),
     db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(RequireAdmin),
 ) -> ProductResponse:
     """Create a new product (admin only)."""
     product_service = ProductService(db)
@@ -140,8 +173,8 @@ async def create_product(
 async def update_product(
     product_id: UUID,
     product_data: ProductUpdate,
-    current_user: User = Depends(CurrentUser),
     db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(RequireAdmin),
 ) -> ProductResponse:
     """Update an existing product (admin only)."""
     product_service = ProductService(db)
@@ -165,13 +198,10 @@ async def update_product(
 @router.delete("/{product_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_product(
     product_id: UUID,
-    current_user: User = Depends(CurrentUser),
     db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(RequireAdmin),
 ) -> None:
-    """Delete a product (admin only).
-
-    Only deletes if product is not linked to any course or learning path.
-    """
+    """Delete a product (admin only)."""
     product_service = ProductService(db)
 
     try:
@@ -191,8 +221,8 @@ async def delete_product(
 @router.get("/{product_id}/can-delete")
 async def check_can_delete_product(
     product_id: UUID,
-    current_user: User = Depends(CurrentUser),
     db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(RequireAdmin),
 ) -> dict:
     """Check if a product can be safely deleted (admin only)."""
     product_service = ProductService(db)
@@ -202,52 +232,4 @@ async def check_can_delete_product(
         "can_delete": can_delete,
         "message": message,
         "product_id": str(product_id),
-    }
-
-
-@router.post("/upload-image", response_model=dict, status_code=status.HTTP_201_CREATED)
-async def upload_course_image(
-    file: UploadFile = File(..., description="Image file to upload"),
-):
-    """Upload a course image.
-
-    Returns the URL where the image can be accessed.
-    """
-    # Validate that file has a filename
-    if not file.filename:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="No file provided",
-        )
-
-    # Validate extension
-    ext = os.path.splitext(file.filename)[1].lower()
-    if ext not in ALLOWED_IMAGE_EXTENSIONS:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Invalid file extension. Allowed: {', '.join(ALLOWED_IMAGE_EXTENSIONS)}",
-        )
-
-    # Generate unique filename to avoid collisions
-    unique_filename = f"{uuid.uuid4()}{ext}"
-    filepath = os.path.join(UPLOAD_DIR, unique_filename)
-
-    # Save file
-    try:
-        with open(filepath, "wb") as buffer:
-            shutil.copyfileobj(file.file, buffer)
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to save file: {str(e)}",
-        )
-
-    # The URL that the frontend will load it from
-    image_url = f"/static/courses/{unique_filename}"
-
-    return {
-        "url": image_url,
-        "filename": unique_filename,
-        "original_filename": file.filename,
-        "content_type": file.content_type,
     }

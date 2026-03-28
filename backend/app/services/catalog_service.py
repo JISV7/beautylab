@@ -273,8 +273,18 @@ class CatalogService:
     # ==================== Course Operations ====================
 
     async def get_course_by_id(self, course_id: UUID) -> Course | None:
-        """Get course by ID."""
-        result = await self.db.execute(select(Course).where(Course.id == course_id))
+        """Get course by ID with related relationships."""
+        from sqlalchemy.orm import selectinload
+
+        result = await self.db.execute(
+            select(Course)
+            .options(
+                selectinload(Course.level),
+                selectinload(Course.category),
+                selectinload(Course.product),
+            )
+            .where(Course.id == course_id)
+        )
         return result.scalar_one_or_none()
 
     async def get_course_by_slug(self, slug: str) -> Course | None:

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { X, Building, FileText, Calendar, CheckCircle, AlertCircle } from 'lucide-react';
 import type { Printer, PrinterCreate } from '../../../data/company.types';
 import { validateRif, getExpectedRif } from '../../../utils/rif';
+import { Modal } from '../Modal';
 
 interface PrinterFormProps {
   printer?: Printer | null;
@@ -27,6 +28,9 @@ export const PrinterForm: React.FC<PrinterFormProps> = ({
   const [documentNumber, setDocumentNumber] = useState('');
   const [authorizationDate, setAuthorizationDate] = useState('');
   const [authorizationDateError, setAuthorizationDateError] = useState('');
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+  const [modalTitle, setModalTitle] = useState('');
 
   // Extract document number from RIF when editing
   useEffect(() => {
@@ -137,13 +141,17 @@ export const PrinterForm: React.FC<PrinterFormProps> = ({
     // Validate RIF
     const rifValidation = validateRif(formData.rif);
     if (!rifValidation.isValid) {
-      alert(rifValidation.errorMessage);
+      setModalTitle('Validation Error');
+      setModalMessage(rifValidation.errorMessage);
+      setModalOpen(true);
       return;
     }
 
     // Validate authorization date
     if (authorizationDateError || authorizationDate.length !== 8) {
-      alert('Please enter a valid authorization date (DDMMAAAA format)');
+      setModalTitle('Validation Error');
+      setModalMessage('Please enter a valid authorization date (DDMMAAAA format)');
+      setModalOpen(true);
       return;
     }
 
@@ -418,6 +426,27 @@ export const PrinterForm: React.FC<PrinterFormProps> = ({
           </div>
         </form>
       </div>
+
+      {/* Validation Error Modal */}
+      <Modal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        title={modalTitle}
+        footer={
+          <button
+            onClick={() => setModalOpen(false)}
+            className="px-4 py-2 rounded-lg font-semibold transition-colors"
+            style={{
+              backgroundColor: 'var(--palette-primary)',
+              color: 'var(--decorator-color)',
+            }}
+          >
+            OK
+          </button>
+        }
+      >
+        <p className="text-p-color">{modalMessage}</p>
+      </Modal>
     </div>
   );
 };

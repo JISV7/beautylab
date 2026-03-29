@@ -3,6 +3,7 @@ import { X, Building, FileText, MapPin, Phone, Mail, Image, CheckCircle, AlertCi
 import type { CompanyInfo, CompanyInfoCreate } from '../../../data/company.types';
 import { validateRif, getExpectedRif } from '../../../utils/rif';
 import { validatePhone } from '../../../utils/phone';
+import { Modal } from '../Modal';
 
 interface CompanyFormProps {
   company?: CompanyInfo | null;
@@ -26,6 +27,9 @@ export const CompanyForm: React.FC<CompanyFormProps> = ({
   const [expectedRif, setExpectedRif] = useState('');
   const [documentType, setDocumentType] = useState('J');
   const [documentNumber, setDocumentNumber] = useState('');
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+  const [modalTitle, setModalTitle] = useState('');
 
   // Extract document number from RIF when editing
   useEffect(() => {
@@ -87,7 +91,9 @@ export const CompanyForm: React.FC<CompanyFormProps> = ({
     // Validate RIF
     const rifValidation = validateRif(formData.rif);
     if (!rifValidation.isValid) {
-      alert(rifValidation.errorMessage);
+      setModalTitle('Validation Error');
+      setModalMessage(rifValidation.errorMessage);
+      setModalOpen(true);
       return;
     }
 
@@ -98,7 +104,9 @@ export const CompanyForm: React.FC<CompanyFormProps> = ({
     if (formData.phone && formData.phone.trim() !== '') {
       const phoneValidation = validatePhone(formData.phone);
       if (!phoneValidation.isValid) {
-        alert(phoneValidation.errorMessage);
+        setModalTitle('Validation Error');
+        setModalMessage(phoneValidation.errorMessage);
+        setModalOpen(true);
         return;
       }
       onChange('phone', phoneValidation.normalizedPhone);
@@ -388,6 +396,27 @@ export const CompanyForm: React.FC<CompanyFormProps> = ({
           </div>
         </form>
       </div>
+
+      {/* Validation Error Modal */}
+      <Modal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        title={modalTitle}
+        footer={
+          <button
+            onClick={() => setModalOpen(false)}
+            className="px-4 py-2 rounded-lg font-semibold transition-colors"
+            style={{
+              backgroundColor: 'var(--palette-primary)',
+              color: 'var(--decorator-color)',
+            }}
+          >
+            OK
+          </button>
+        }
+      >
+        <p className="text-p-color">{modalMessage}</p>
+      </Modal>
     </div>
   );
 };

@@ -1,9 +1,25 @@
 /**
  * Venezuelan RIF (Registro de Información Fiscal) validation utilities.
- * 
+ *
  * The RIF validation uses modulo 11 algorithm with specific base values
  * for each document type and weighting multipliers.
  */
+
+/**
+ * Normalize a RIF to 10-character format without separators.
+ *
+ * @param rif - The RIF to normalize (any format: V-12345678-9, V123456789, etc.)
+ * @returns Normalized RIF: V123456789 (10 characters, uppercase, no separators)
+ *
+ * @example
+ * normalizeRif('V-30958324-4') // returns 'V309583244'
+ * normalizeRif('V309583244') // returns 'V309583244'
+ * normalizeRif('v-30958324-4') // returns 'V309583244'
+ */
+export function normalizeRif(rif: string): string {
+  // Remove separators and convert to uppercase
+  return rif.replace(/[-\s]/g, '').toUpperCase();
+}
 
 /**
  * Calculate the check digit for a Venezuelan RIF.
@@ -63,21 +79,21 @@ export function calculateRifCheckDigit(documentType: string, documentNumber: str
 
 /**
  * Validate a Venezuelan RIF format and check digit.
- * 
+ *
  * @param rif - The RIF to validate (formats: V-12345678-9, V123456789, V-123456789, etc.)
- * @returns Object with isValid boolean and errorMessage string
+ * @returns Object with isValid boolean, errorMessage string, and normalizedRif string
  */
-export function validateRif(rif: string): { isValid: boolean; errorMessage: string } {
+export function validateRif(rif: string): { isValid: boolean; errorMessage: string; normalizedRif: string } {
   if (!rif || rif.trim() === '') {
-    return { isValid: false, errorMessage: 'RIF is required' };
+    return { isValid: false, errorMessage: 'RIF is required', normalizedRif: '' };
   }
 
   // Remove common separators and convert to uppercase
-  const cleanRif = rif.replace(/[-\s]/g, '').toUpperCase();
+  const cleanRif = normalizeRif(rif);
 
   // Check basic format: 1 letter + 8-9 digits
   if (cleanRif.length < 9 || cleanRif.length > 10) {
-    return { isValid: false, errorMessage: 'RIF must have format: [VEJPG]-XXXXXXXX-X' };
+    return { isValid: false, errorMessage: 'RIF must have format: [VEJPG]-XXXXXXXX-X', normalizedRif: '' };
   }
 
   const documentType = cleanRif[0];
@@ -85,9 +101,10 @@ export function validateRif(rif: string): { isValid: boolean; errorMessage: stri
   // Validate document type
   const validTypes = ['V', 'E', 'J', 'P', 'G'];
   if (!validTypes.includes(documentType)) {
-    return { 
-      isValid: false, 
-      errorMessage: `Invalid document type. Must be one of: ${validTypes.join(', ')}` 
+    return {
+      isValid: false,
+      errorMessage: `Invalid document type. Must be one of: ${validTypes.join(', ')}`,
+      normalizedRif: ''
     };
   }
 
@@ -100,14 +117,15 @@ export function validateRif(rif: string): { isValid: boolean; errorMessage: stri
     const expectedCheck = calculateRifCheckDigit(documentType, docNumber);
 
     if (providedCheck !== expectedCheck) {
-      return { 
-        isValid: false, 
-        errorMessage: `Invalid RIF check digit. Expected: ${documentType}-${docNumber}-${expectedCheck}` 
+      return {
+        isValid: false,
+        errorMessage: `Invalid RIF check digit. Expected: ${documentType}-${docNumber}-${expectedCheck}`,
+        normalizedRif: ''
       };
     }
   }
 
-  return { isValid: true, errorMessage: '' };
+  return { isValid: true, errorMessage: '', normalizedRif: cleanRif };
 }
 
 /**

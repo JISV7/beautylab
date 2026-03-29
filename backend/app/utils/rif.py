@@ -5,6 +5,27 @@ for each document type and weighting multipliers.
 """
 
 
+def normalize_rif(rif: str) -> str:
+    """Normalize a RIF to 10-character format without separators.
+
+    Args:
+        rif: The RIF to normalize (any format: V-12345678-9, V123456789, etc.)
+
+    Returns:
+        Normalized RIF: V123456789 (10 characters, uppercase, no separators)
+
+    Examples:
+        >>> normalize_rif('V-30958324-4')
+        'V309583244'
+        >>> normalize_rif('V309583244')
+        'V309583244'
+        >>> normalize_rif('v-30958324-4')
+        'V309583244'
+    """
+    # Remove separators and convert to uppercase
+    return rif.replace("-", "").replace(" ", "").upper()
+
+
 def calculate_rif_check_digit(document_type: str, document_number: str) -> str:
     """Calculate the check digit for a Venezuelan RIF.
 
@@ -62,31 +83,31 @@ def calculate_rif_check_digit(document_type: str, document_number: str) -> str:
     return str(check_digit)
 
 
-def validate_rif(rif: str) -> tuple[bool, str]:
+def validate_rif(rif: str) -> tuple[bool, str, str]:
     """Validate a Venezuelan RIF format and check digit.
 
     Args:
         rif: The RIF to validate (formats: V-12345678-9, V123456789, etc.)
 
     Returns:
-        Tuple of (is_valid, error_message)
+        Tuple of (is_valid, error_message, normalized_rif)
     """
     if not rif:
-        return False, "RIF is required"
+        return False, "RIF is required", ""
 
     # Remove common separators and convert to uppercase
-    clean_rif = rif.replace("-", "").replace(" ", "").upper()
+    clean_rif = normalize_rif(rif)
 
     # Check basic format: 1 letter + 8-9 digits
     if len(clean_rif) < 9 or len(clean_rif) > 10:
-        return False, "RIF must have format: [VEJPG]-XXXXXXXX-X"
+        return False, "RIF must have format: [VEJPG]-XXXXXXXX-X", ""
 
     document_type = clean_rif[0]
 
     # Validate document type
     valid_types = ["V", "E", "J", "P", "G"]
     if document_type not in valid_types:
-        return False, f"Invalid document type: {', '.join(valid_types)}"
+        return False, f"Invalid document type: {', '.join(valid_types)}", ""
 
     # Extract document number (positions 1-8, padded if needed)
     doc_number = clean_rif[1:9]
@@ -97,9 +118,9 @@ def validate_rif(rif: str) -> tuple[bool, str]:
         expected_check = calculate_rif_check_digit(document_type, doc_number)
 
         if provided_check != expected_check:
-            return False, f"Invalid check digit. Expected: {expected_check}"
+            return False, f"Invalid check digit. Expected: {expected_check}", ""
 
-    return True, ""
+    return True, "", clean_rif
 
 
 def format_rif(document_type: str, document_number: str, check_digit: str | None = None) -> str:

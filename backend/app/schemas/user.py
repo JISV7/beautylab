@@ -5,6 +5,7 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
 
+from app.utils.phone import validate_phone
 from app.utils.rif import validate_rif
 
 
@@ -59,11 +60,20 @@ class UserCreate(BaseModel):
     @field_validator("rif")
     @classmethod
     def validate_rif(cls, v: str) -> str:
-        """Validate RIF format and check digit."""
-        is_valid, error_msg = validate_rif(v)
+        """Validate RIF format and check digit, return normalized format."""
+        is_valid, error_msg, normalized_rif = validate_rif(v)
         if not is_valid:
             raise ValueError(error_msg)
-        return v.upper().strip()
+        return normalized_rif
+
+    @field_validator("phone")
+    @classmethod
+    def validate_phone(cls, v: str) -> str:
+        """Validate phone number format, return normalized format."""
+        is_valid, error_msg, normalized_phone = validate_phone(v)
+        if not is_valid:
+            raise ValueError(error_msg)
+        return normalized_phone
 
 
 class UserUpdate(BaseModel):
@@ -77,7 +87,27 @@ class UserUpdate(BaseModel):
 class UserUpdateFiscal(UserFiscalMixin):
     """Schema for updating user fiscal information."""
 
-    pass
+    @field_validator("rif")
+    @classmethod
+    def validate_rif(cls, v: str | None) -> str | None:
+        """Validate RIF format and check digit, return normalized format."""
+        if v is None:
+            return None
+        is_valid, error_msg, normalized_rif = validate_rif(v)
+        if not is_valid:
+            raise ValueError(error_msg)
+        return normalized_rif
+
+    @field_validator("phone")
+    @classmethod
+    def validate_phone(cls, v: str | None) -> str | None:
+        """Validate phone number format, return normalized format."""
+        if v is None:
+            return None
+        is_valid, error_msg, normalized_phone = validate_phone(v)
+        if not is_valid:
+            raise ValueError(error_msg)
+        return normalized_phone
 
 
 class UserUpdateAdmin(BaseModel):

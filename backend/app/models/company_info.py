@@ -13,9 +13,9 @@ class CompanyInfo(Base, TimestampMixin):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     business_name: Mapped[str] = mapped_column(String(255), nullable=False)
-    rif: Mapped[str] = mapped_column(String(20), nullable=False, index=True)
+    rif: Mapped[str] = mapped_column(String(10), nullable=False, index=True)
     fiscal_address: Mapped[str] = mapped_column(String(500), nullable=False)
-    phone: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    phone: Mapped[str | None] = mapped_column(String(12), nullable=True)
     email: Mapped[str | None] = mapped_column(String(255), nullable=True)
     logo_url: Mapped[str | None] = mapped_column(String(255), nullable=True)
 

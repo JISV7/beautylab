@@ -13,7 +13,7 @@ class Printer(Base, TimestampMixin):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     business_name: Mapped[str] = mapped_column(String(255), nullable=False)
-    rif: Mapped[str] = mapped_column(String(20), nullable=False, index=True)
+    rif: Mapped[str] = mapped_column(String(10), nullable=False, index=True)
     authorization_providence: Mapped[str] = mapped_column(String(255), nullable=False)
 
     def __repr__(self) -> str:

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { Mail, Lock, User, ArrowRight, Eye, EyeOff, Phone, MapPin, FileText, Building, CheckCircle, AlertCircle } from 'lucide-react';
 import { validateRif, getExpectedRif } from '../../utils/rif';
+import { validatePhone } from '../../utils/phone';
 
 interface RegisterFormProps {
   onSwitchToLogin: () => void;
@@ -91,10 +92,10 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
       return;
     }
 
-    // Validate phone (basic validation for Venezuelan phones)
-    const phoneRegex = /^(\+58|58)?[4][0-9]{9}|[0][4][0-9]{9}|[0][2][0-9]{7}$/;
-    if (!phoneRegex.test(phone.replace(/\s|-/g, ''))) {
-      setError('Please enter a valid phone number');
+    // Validate phone (Venezuelan format)
+    const phoneValidation = validatePhone(phone);
+    if (!phoneValidation.isValid) {
+      setError(phoneValidation.errorMessage);
       return;
     }
 
@@ -106,9 +107,9 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         password,
         documentType,
         documentNumber,
-        rif.toUpperCase(),
+        rifValidation.normalizedRif,
         fiscalAddress,
-        phone,
+        phoneValidation.normalizedPhone,
         businessName || undefined,
         isContributor,
       );

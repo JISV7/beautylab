@@ -40,12 +40,12 @@ class User(Base, TimestampMixin):
         nullable=True,
     )
     # Fiscal fields (migration 004)
-    rif: Mapped[str | None] = mapped_column(String(20), nullable=True, index=True)
+    rif: Mapped[str | None] = mapped_column(String(10), nullable=True, index=True)
     document_type: Mapped[str | None] = mapped_column(String(10), nullable=True)
     document_number: Mapped[str | None] = mapped_column(String(20), nullable=True)
     business_name: Mapped[str | None] = mapped_column(String(255), nullable=True)
     fiscal_address: Mapped[str | None] = mapped_column(String(500), nullable=True)
-    phone: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    phone: Mapped[str | None] = mapped_column(String(12), nullable=True)
     is_contributor: Mapped[bool | None] = mapped_column(Boolean, default=False)
 
     # Relationships

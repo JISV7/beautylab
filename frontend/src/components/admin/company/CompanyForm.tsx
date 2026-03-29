@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { X, Building, FileText, MapPin, Phone, Mail, Image, CheckCircle, AlertCircle } from 'lucide-react';
 import type { CompanyInfo, CompanyInfoCreate } from '../../../data/company.types';
 import { validateRif, getExpectedRif } from '../../../utils/rif';
+import { validatePhone } from '../../../utils/phone';
 
 interface CompanyFormProps {
   company?: CompanyInfo | null;
@@ -88,6 +89,19 @@ export const CompanyForm: React.FC<CompanyFormProps> = ({
     if (!rifValidation.isValid) {
       alert(rifValidation.errorMessage);
       return;
+    }
+
+    // Normalize RIF before saving
+    onChange('rif', rifValidation.normalizedRif);
+
+    // Normalize phone before saving (if provided)
+    if (formData.phone && formData.phone.trim() !== '') {
+      const phoneValidation = validatePhone(formData.phone);
+      if (!phoneValidation.isValid) {
+        alert(phoneValidation.errorMessage);
+        return;
+      }
+      onChange('phone', phoneValidation.normalizedPhone);
     }
 
     onSave();

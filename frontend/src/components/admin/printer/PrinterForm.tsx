@@ -147,6 +147,8 @@ export const PrinterForm: React.FC<PrinterFormProps> = ({
       return;
     }
 
+    // Normalize RIF before saving
+    onChange('rif', rifValidation.normalizedRif);
     onSave();
   };
 

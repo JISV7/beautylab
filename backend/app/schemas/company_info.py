@@ -1,7 +1,10 @@
 """Company Info schemas."""
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 from pydantic.alias_generators import to_camel
+
+from app.utils.phone import validate_phone
+from app.utils.rif import validate_rif
 
 
 class CompanyInfoBase(BaseModel):
@@ -13,6 +16,26 @@ class CompanyInfoBase(BaseModel):
     phone: str | None = Field(None, max_length=20, description="Phone number")
     email: str | None = Field(None, max_length=255, description="Email address")
     logo_url: str | None = Field(None, max_length=255, description="Logo URL")
+
+    @field_validator("rif")
+    @classmethod
+    def validate_rif(cls, v: str) -> str:
+        """Validate RIF format and check digit, return normalized format."""
+        is_valid, error_msg, normalized_rif = validate_rif(v)
+        if not is_valid:
+            raise ValueError(error_msg)
+        return normalized_rif
+
+    @field_validator("phone")
+    @classmethod
+    def validate_phone(cls, v: str | None) -> str | None:
+        """Validate phone number format, return normalized format."""
+        if v is None or v == "":
+            return None
+        is_valid, error_msg, normalized_phone = validate_phone(v)
+        if not is_valid:
+            raise ValueError(error_msg)
+        return normalized_phone
 
 
 class CompanyInfoCreate(CompanyInfoBase):
@@ -30,6 +53,28 @@ class CompanyInfoUpdate(BaseModel):
     phone: str | None = Field(None, max_length=20)
     email: str | None = Field(None, max_length=255)
     logo_url: str | None = Field(None, max_length=255)
+
+    @field_validator("rif")
+    @classmethod
+    def validate_rif(cls, v: str | None) -> str | None:
+        """Validate RIF format and check digit, return normalized format."""
+        if v is None:
+            return None
+        is_valid, error_msg, normalized_rif = validate_rif(v)
+        if not is_valid:
+            raise ValueError(error_msg)
+        return normalized_rif
+
+    @field_validator("phone")
+    @classmethod
+    def validate_phone(cls, v: str | None) -> str | None:
+        """Validate phone number format, return normalized format."""
+        if v is None or v == "":
+            return None
+        is_valid, error_msg, normalized_phone = validate_phone(v)
+        if not is_valid:
+            raise ValueError(error_msg)
+        return normalized_phone
 
 
 class CompanyInfoResponse(CompanyInfoBase):

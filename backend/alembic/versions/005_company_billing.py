@@ -98,18 +98,6 @@ def upgrade() -> None:
     )
     op.create_index("idx_pos_prefix", "point_of_sale", ["prefix"], unique=True)
 
-    # Insert default company data
-    op.execute("""
-        INSERT INTO company_info (business_name, rif, fiscal_address, phone, email)
-        VALUES (
-            'Online Programming and AI Academy',
-            'J-123456789',
-            'Main Avenue, Caracas, Venezuela',
-            '0212-1234567',
-            'info@academy.com'
-        )
-    """)
-
     op.execute("""
         INSERT INTO point_of_sale (name, prefix, current_invoice_number)
         VALUES ('Principal', 'A', 0)

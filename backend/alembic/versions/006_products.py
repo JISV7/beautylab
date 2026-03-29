@@ -56,36 +56,6 @@ def upgrade() -> None:
     op.create_index("idx_products_name", "products", ["name"], unique=False)
     op.create_index("idx_products_active", "products", ["is_active"], unique=False)
 
-    # Insert sample products
-    op.execute(
-        "INSERT INTO products "
-        "(name, description, sku, price, tax_rate, tax_type) "
-        "VALUES "
-        "('Python Course', 'Basic Python programming course', "
-        "'PY-101', 150.00, 16.00, 'taxed')"
-    )
-    op.execute(
-        "INSERT INTO products "
-        "(name, description, sku, price, tax_rate, tax_type) "
-        "VALUES "
-        "('AI Course', 'Introduction to Artificial Intelligence', "
-        "'AI-101', 200.00, 16.00, 'taxed')"
-    )
-    op.execute(
-        "INSERT INTO products "
-        "(name, description, sku, price, tax_rate, tax_type) "
-        "VALUES "
-        "('Monthly Subscription', 'Access to the entire platform', "
-        "'SUB-MONTH', 50.00, 16.00, 'taxed')"
-    )
-    op.execute(
-        "INSERT INTO products "
-        "(name, description, sku, price, tax_rate, tax_type) "
-        "VALUES "
-        "('Study Material (Book)', 'Electronic fundamentals book', "
-        "'BOOK-001', 30.00, 0.00, 'exempt')"
-    )
-
     # Triggers
     op.execute("""
         CREATE TRIGGER update_products_updated_at

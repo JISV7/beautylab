@@ -113,15 +113,6 @@ def upgrade() -> None:
         ('Advanced', 'advanced', 'Specialization and complex topics', 3);
     """)
 
-    # Insert some sample categories
-    op.execute("""
-        INSERT INTO categories (name, slug, "order") VALUES
-        ('Programming', 'programming', 1),
-        ('Artificial Intelligence', 'artificial-intelligence', 2),
-        ('Data Science', 'data-science', 3),
-        ('Web Development', 'web-development', 4);
-    """)
-
 
 def downgrade() -> None:
     # Drop triggers

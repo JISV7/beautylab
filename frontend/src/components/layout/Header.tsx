@@ -13,11 +13,15 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({ onNavigateToDashboard, onNavigateToAdmin, onLogout }) => {
   const { currentMode, setPaletteMode } = useTheme();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
 
   const handleLoginSuccess = () => {
     onNavigateToDashboard?.();
+  };
+
+  const handleLogout = () => {
+    onLogout?.();
   };
 
   return (
@@ -89,7 +93,7 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateToDashboard, onNavigat
 
             {/* Authentication */}
             {isAuthenticated ? (
-              <UserMenu onNavigateToAdmin={onNavigateToAdmin} onLogout={onLogout} />
+              <UserMenu user={user} onNavigateToAdmin={onNavigateToAdmin} onLogout={handleLogout} />
             ) : (
               <button
                 onClick={() => setLoginDialogOpen(true)}

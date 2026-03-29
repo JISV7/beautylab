@@ -12,12 +12,17 @@ interface DashboardHeaderProps {
 }
 
 export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNavigate, onNavigateToAdmin, onLogout, onMenuToggle }) => {
-    const { user, logout } = useAuth();
+    const { user, logout: authLogout } = useAuth();
     const { currentMode, setPaletteMode } = useTheme();
     const [isNotificationOpen, setIsNotificationOpen] = useState(false);
 
+    const handleLogout = () => {
+        authLogout();  // Clear tokens
+        onLogout?.();  // Navigate to home
+    };
+
     return (
-        <header className="dashboard-header palette-surface palette-border z-40 px-4 lg:px-6 py-4 flex items-center justify-between gap-4">
+        <header className="dashboard-header palette-surface z-40 px-4 lg:px-6 py-4 flex items-center justify-between gap-4 border-b border-[var(--palette-border)]">
             {/* Left Side: Hamburger + Logo + Search */}
             <div className="flex items-center gap-2 lg:gap-4 flex-1 min-w-0">
                 {/* Mobile Hamburger Menu */}
@@ -122,7 +127,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNavigate, on
                     user={user}
                     onNavigate={onNavigate}
                     onNavigateToAdmin={onNavigateToAdmin}
-                    onLogout={logout}
+                    onLogout={handleLogout}
                 />
             </div>
         </header>

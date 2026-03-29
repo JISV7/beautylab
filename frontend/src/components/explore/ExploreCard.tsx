@@ -25,7 +25,7 @@ export interface ExploreCardProps {
 }
 
 export const ExploreCard: React.FC<ExploreCardProps> = ({ course }) => {
-    const formatPrice = (price: string, taxRate: string) => {
+    const formatPrice = (price: string) => {
         const numericPrice = parseFloat(price);
         if (isNaN(numericPrice)) return 'Bs. 0,00';
         
@@ -128,7 +128,7 @@ export const ExploreCard: React.FC<ExploreCardProps> = ({ course }) => {
                             Price
                         </p>
                         <p className="text-lg font-black text-p-color">
-                            {formatPrice(course.price, course.tax_rate)}
+                            {formatPrice(course.price)}
                         </p>
                     </div>
                 </div>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { CompanyTable, CompanyForm } from '../components/admin/company';
+import { ConfirmModal } from '../components/admin/ConfirmModal';
 import type { CompanyInfo, CompanyInfoCreate } from '../data/company.types';
 
 const API_URL = 'http://localhost:8000';
@@ -38,6 +39,22 @@ export default function CompanyInfoPage() {
     phone: '',
     email: '',
     logoUrl: '',
+  });
+  const [companyToDelete, setCompanyToDelete] = useState<CompanyInfo | null>(null);
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean;
+    type: 'danger' | 'primary' | 'success';
+    title: string;
+    message: string | React.ReactNode;
+    confirmText: string;
+    onConfirm: (() => void) | null;
+  }>({
+    isOpen: false,
+    type: 'primary',
+    title: '',
+    message: '',
+    confirmText: 'Confirm',
+    onConfirm: null,
   });
 
   const fetchCompanies = async () => {
@@ -98,10 +115,34 @@ export default function CompanyInfoPage() {
     }
   };
 
-  const handleDelete = async (company: CompanyInfo) => {
+  const handleDelete = (company: CompanyInfo) => {
+    setCompanyToDelete(company);
+    setConfirmModal({
+      isOpen: true,
+      type: 'danger',
+      title: 'Delete Company Info',
+      message: (
+        <>
+          Are you sure you want to delete <strong>"{company.businessName}"</strong>?
+          <br />
+          <span className="text-red-600 dark:text-red-400 mt-2 block">
+            This action cannot be undone.
+          </span>
+        </>
+      ),
+      confirmText: 'Delete',
+      onConfirm: () => {
+        executeDelete();
+      },
+    });
+  };
+
+  const executeDelete = async () => {
+    if (!companyToDelete) return;
     try {
-      await api.delete(`/company-info/${company.id}`);
+      await api.delete(`/company-info/${companyToDelete.id}`);
       fetchCompanies();
+      setCompanyToDelete(null);
     } catch (error: any) {
       console.error('Failed to delete company:', error);
     }
@@ -140,6 +181,16 @@ export default function CompanyInfoPage() {
           saving={saving}
         />
       )}
+
+      <ConfirmModal
+        isOpen={confirmModal.isOpen}
+        onClose={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))}
+        onConfirm={confirmModal.onConfirm || (() => {})}
+        title={confirmModal.title}
+        message={confirmModal.message}
+        confirmText={confirmModal.confirmText}
+        type={confirmModal.type}
+      />
     </div>
   );
 }

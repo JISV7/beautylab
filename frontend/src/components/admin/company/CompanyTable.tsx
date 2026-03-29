@@ -20,12 +20,6 @@ export const CompanyTable: React.FC<CompanyTableProps> = ({
   onDelete,
   onAdd,
 }) => {
-  const handleDelete = (company: CompanyInfo) => {
-    if (window.confirm(`Are you sure you want to delete "${company.businessName}"?`)) {
-      onDelete(company);
-    }
-  };
-
   const columns: Column<CompanyInfo>[] = [
     {
       key: 'businessName',
@@ -70,7 +64,7 @@ export const CompanyTable: React.FC<CompanyTableProps> = ({
             <Edit className="w-4 h-4" />
           </button>
           <button
-            onClick={() => handleDelete(item)}
+            onClick={() => onDelete(item)}
             className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400 transition-colors"
             title="Delete"
           >

@@ -1,5 +1,7 @@
 """Company Info schemas."""
 
+from datetime import datetime
+
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 from pydantic.alias_generators import to_camel
 
@@ -41,7 +43,10 @@ class CompanyInfoBase(BaseModel):
 class CompanyInfoCreate(CompanyInfoBase):
     """Schema for creating company info."""
 
-    pass
+    model_config = ConfigDict(
+        alias_generator=to_camel,
+        populate_by_name=True,
+    )
 
 
 class CompanyInfoUpdate(BaseModel):
@@ -53,6 +58,11 @@ class CompanyInfoUpdate(BaseModel):
     phone: str | None = Field(None, max_length=20)
     email: str | None = Field(None, max_length=255)
     logo_url: str | None = Field(None, max_length=255)
+
+    model_config = ConfigDict(
+        alias_generator=to_camel,
+        populate_by_name=True,
+    )
 
     @field_validator("rif")
     @classmethod
@@ -77,10 +87,16 @@ class CompanyInfoUpdate(BaseModel):
         return normalized_phone
 
 
-class CompanyInfoResponse(CompanyInfoBase):
+class CompanyInfoResponse(BaseModel):
     """Schema for company info response."""
 
     id: int
+    business_name: str
+    rif: str
+    fiscal_address: str
+    phone: str | None = None
+    email: str | None = None
+    logo_url: str | None = None
     created_at: str
     updated_at: str
 
@@ -89,3 +105,23 @@ class CompanyInfoResponse(CompanyInfoBase):
         alias_generator=to_camel,
         populate_by_name=True,
     )
+
+    @field_validator("created_at", "updated_at", mode="before")
+    @classmethod
+    def convert_datetime_to_str(cls, v):
+        """Convert datetime to ISO format string."""
+        if isinstance(v, datetime):
+            return v.isoformat()
+        return v
+
+    @field_validator("rif", mode="before")
+    @classmethod
+    def skip_rif_validation_for_response(cls, v):
+        """Skip RIF validation for responses (data already in DB)."""
+        return v
+
+    @field_validator("phone", mode="before")
+    @classmethod
+    def skip_phone_validation_for_response(cls, v):
+        """Skip phone validation for responses (data already in DB)."""
+        return v

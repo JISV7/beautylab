@@ -89,7 +89,7 @@ def validate_phone(phone: str) -> tuple[bool, str, str]:
 
     # Check if it's a valid Venezuelan number (starts with 2 or 4)
     if not local_part.startswith(("2", "4")):
-        return False, "Invalid Venezuelan phone number (must start with 2 or 4)", ""
+        return False, "Invalid phone number", ""
 
     # Additional check for mobile numbers (412, 414, 416, 424, 426, etc.)
     if local_part.startswith("4"):

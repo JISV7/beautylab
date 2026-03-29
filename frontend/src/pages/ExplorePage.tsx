@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ExploreFilters, ExploreGrid, type Course, type Category, type Level } from '../components/explore';
-import { Compass, GraduationCap } from 'lucide-react';
 
 const API_URL = 'http://localhost:8000';
 
@@ -61,49 +60,41 @@ export const ExplorePage: React.FC<ExplorePageProps> = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[var(--palette-background)]">
-            {/* Hero Section */}
-            <header className="bg-gradient-to-br from-[var(--palette-primary)] to-[var(--palette-accent)] text-white py-16 px-4">
-                <div className="max-w-7xl mx-auto">
-                    <div className="flex items-center gap-4 mb-6">
-                        <div className="p-3 bg-white/10 rounded-xl backdrop-blur-sm">
-                            <Compass size={40} strokeWidth={1.5} />
-                        </div>
-                        <div>
-                            <h1 className="text-4xl md:text-5xl font-black mb-2">
-                                Explore Our Academy
-                            </h1>
-                            <p className="text-white/80 text-lg flex items-center gap-2">
-                                <GraduationCap size={20} />
-                                Discover amazing courses to boost your skills
-                            </p>
-                        </div>
-                    </div>
+        <div className="p-6">
+            {/* Page Title */}
+            <div className="mb-8">
+                <h2 className="text-h2-size text-h2-color text-h2-font text-h2-weight mb-2">
+                    Explore Courses
+                </h2>
+                <p className="text-p-font text-p-size text-p-color">
+                    Discover amazing courses to boost your skills
+                </p>
+            </div>
 
-                    {/* Stats */}
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8 pt-8 border-t border-white/20">
-                        <div className="text-center">
-                            <p className="text-3xl font-black">{courses.length}</p>
-                            <p className="text-sm opacity-80">Courses</p>
-                        </div>
-                        <div className="text-center">
-                            <p className="text-3xl font-black">{categories.length}</p>
-                            <p className="text-sm opacity-80">Categories</p>
-                        </div>
-                        <div className="text-center">
-                            <p className="text-3xl font-black">{levels.length}</p>
-                            <p className="text-sm opacity-80">Levels</p>
-                        </div>
-                        <div className="text-center">
-                            <p className="text-3xl font-black">∞</p>
-                            <p className="text-sm opacity-80">Knowledge</p>
-                        </div>
+            {/* Stats Bar */}
+            <div className="palette-surface palette-border border rounded-xl p-6 mb-8">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="text-center">
+                        <p className="text-3xl font-black text-p-color">{courses.length}</p>
+                        <p className="text-sm text-p-color opacity-60">Courses</p>
+                    </div>
+                    <div className="text-center">
+                        <p className="text-3xl font-black text-p-color">{categories.length}</p>
+                        <p className="text-sm text-p-color opacity-60">Categories</p>
+                    </div>
+                    <div className="text-center">
+                        <p className="text-3xl font-black text-p-color">{levels.length}</p>
+                        <p className="text-sm text-p-color opacity-60">Levels</p>
+                    </div>
+                    <div className="text-center">
+                        <p className="text-3xl font-black text-p-color">∞</p>
+                        <p className="text-sm text-p-color opacity-60">Knowledge</p>
                     </div>
                 </div>
-            </header>
+            </div>
 
             {/* Main Content */}
-            <main className="max-w-7xl mx-auto px-4 py-8">
+            <main className="max-w-7xl mx-auto">
                 {/* Filters */}
                 <ExploreFilters
                     categories={categories}

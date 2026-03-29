@@ -1,6 +1,10 @@
 """Company Info router for managing company information."""
 
-from fastapi import APIRouter, Depends, HTTPException, status
+import os
+import shutil
+import uuid
+
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -16,6 +20,11 @@ from app.schemas.company_info import (
 
 router = APIRouter(prefix="/company-info", tags=["Company Info"])
 
+UPLOAD_DIR = "uploads/company_logos"
+os.makedirs(UPLOAD_DIR, exist_ok=True)
+
+ALLOWED_LOGO_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp", ".gif", ".svg"}
+
 
 @router.get("", response_model=list[CompanyInfoResponse])
 async def list_company_info(
@@ -26,6 +35,46 @@ async def list_company_info(
     result = await db.execute(select(CompanyInfo).order_by(CompanyInfo.id))
     companies = result.scalars().all()
     return [CompanyInfoResponse.model_validate(company) for company in companies]
+
+
+@router.post("/upload-logo", response_model=dict, status_code=status.HTTP_201_CREATED)
+async def upload_company_logo(
+    file: UploadFile = File(...),
+):
+    """Upload a company logo image."""
+    if not file.filename:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="No file provided",
+        )
+
+    ext = os.path.splitext(file.filename)[1].lower()
+    if ext not in ALLOWED_LOGO_EXTENSIONS:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Invalid file extension. Allowed: {', '.join(ALLOWED_LOGO_EXTENSIONS)}",
+        )
+
+    unique_filename = f"{uuid.uuid4()}{ext}"
+    filepath = os.path.join(UPLOAD_DIR, unique_filename)
+
+    try:
+        with open(filepath, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to save file: {str(e)}",
+        )
+
+    image_url = f"/static/company_logos/{unique_filename}"
+
+    return {
+        "url": image_url,
+        "filename": unique_filename,
+        "original_filename": file.filename,
+        "content_type": file.content_type,
+    }
 
 
 @router.get("/{company_id}", response_model=CompanyInfoResponse)

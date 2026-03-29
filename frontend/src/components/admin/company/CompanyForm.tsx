@@ -1,9 +1,34 @@
-import { useState, useEffect } from 'react';
-import { X, Building, FileText, MapPin, Phone, Mail, Image, CheckCircle, AlertCircle } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { X, Building, FileText, MapPin, Phone, Mail, Image as ImageIcon, CheckCircle, AlertCircle, Upload } from 'lucide-react';
 import type { CompanyInfo, CompanyInfoCreate } from '../../../data/company.types';
 import { validateRif, getExpectedRif } from '../../../utils/rif';
 import { validatePhone } from '../../../utils/phone';
 import { Modal } from '../Modal';
+import axios from 'axios';
+
+const API_URL = 'http://localhost:8000';
+
+// Get auth token from localStorage
+const getAuthToken = (): string | null => {
+  return localStorage.getItem('access_token');
+};
+
+// Axios instance with auth
+const api = axios.create({
+  baseURL: API_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// Add auth token to requests
+api.interceptors.request.use((config) => {
+  const token = getAuthToken();
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
 interface CompanyFormProps {
   company?: CompanyInfo | null;
@@ -22,6 +47,7 @@ export const CompanyForm: React.FC<CompanyFormProps> = ({
   onCancel,
   saving = false,
 }) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [rifError, setRifError] = useState('');
   const [rifValid, setRifValid] = useState(false);
   const [expectedRif, setExpectedRif] = useState('');
@@ -30,6 +56,9 @@ export const CompanyForm: React.FC<CompanyFormProps> = ({
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [modalTitle, setModalTitle] = useState('');
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState('');
+  const [uploadSuccess, setUploadSuccess] = useState(false);
 
   // Extract document number from RIF when editing
   useEffect(() => {
@@ -83,6 +112,73 @@ export const CompanyForm: React.FC<CompanyFormProps> = ({
       const expected = getExpectedRif(documentType, cleanValue);
       onChange('rif', expected);
     }
+  };
+
+  const handleBrowseClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml'];
+    if (!validTypes.includes(file.type)) {
+      setUploadError('Please select a valid image file (JPG, PNG, WebP, GIF, or SVG)');
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    const maxSize = 5 * 1024 * 1024;
+    if (file.size > maxSize) {
+      setUploadError('Image size must be less than 5MB');
+      return;
+    }
+
+    try {
+      setUploading(true);
+      setUploadError('');
+      setUploadSuccess(false);
+
+      const formDataUpload = new FormData();
+      formDataUpload.append('file', file);
+
+      const response = await api.post('/company-info/upload-logo', formDataUpload, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      const data = response.data;
+
+      // Update the logoUrl in the parent form with full backend URL
+      onChange('logoUrl', `${API_URL}${data.url}`);
+
+      setUploadSuccess(true);
+      setTimeout(() => setUploadSuccess(false), 3000);
+
+      // Reset file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    } catch (error: any) {
+      console.error('Upload error:', error);
+      const errorMessage = error.response?.data?.detail
+        ? (typeof error.response.data.detail === 'string'
+            ? error.response.data.detail
+            : JSON.stringify(error.response.data.detail))
+        : error.message || 'Failed to upload image';
+      setUploadError(errorMessage);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleClearLogo = () => {
+    onChange('logoUrl', '');
+    setUploadError('');
+    setUploadSuccess(false);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -354,20 +450,81 @@ export const CompanyForm: React.FC<CompanyFormProps> = ({
 
               <div>
                 <label className="text-[var(--text-p-color)] block mb-1.5">
-                  Logo URL (Optional)
+                  Company Logo (Optional)
                 </label>
-                <div className="relative">
-                  <Image className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-p-color)] opacity-75" />
-                  <input
-                    type="url"
-                    name="logoUrl"
-                    value={formData.logoUrl || ''}
-                    onChange={(e) => onChange('logoUrl', e.target.value)}
-                    className="w-full py-2.5 px-4 pl-11 rounded-lg bg-[var(--palette-surface)] border border-[var(--palette-border)] text-[var(--text-p-color)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
-                    placeholder="https://example.com/logo.png"
-                    disabled={saving}
-                  />
+                
+                {/* Logo Preview */}
+                {formData.logoUrl && (
+                  <div className="mb-3 relative inline-block">
+                    <img
+                      src={formData.logoUrl}
+                      alt="Company Logo Preview"
+                      className="h-24 w-auto rounded-lg border border-[var(--palette-border)] bg-[var(--palette-surface)] p-2"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = 'none';
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={handleClearLogo}
+                      className="absolute -top-2 -right-2 p-1 rounded-full bg-red-500 text-white hover:bg-red-600 transition-colors"
+                      title="Remove logo"
+                      disabled={saving}
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+
+                {/* Upload Section */}
+                <div className="flex items-start gap-3">
+                  <div className="relative flex-1">
+                    <ImageIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-p-color)] opacity-75" />
+                    <input
+                      type="url"
+                      name="logoUrl"
+                      value={formData.logoUrl || ''}
+                      onChange={(e) => onChange('logoUrl', e.target.value)}
+                      className="w-full py-2.5 px-4 pl-11 rounded-lg bg-[var(--palette-surface)] border border-[var(--palette-border)] text-[var(--text-p-color)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
+                      placeholder="https://example.com/logo.png or upload below"
+                      disabled={saving || uploading}
+                    />
+                  </div>
                 </div>
+
+                {/* File Upload */}
+                <div className="mt-3">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="hidden"
+                    disabled={saving || uploading}
+                  />
+                  <button
+                    type="button"
+                    onClick={handleBrowseClick}
+                    disabled={saving || uploading}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-[var(--palette-border)] text-[var(--text-p-color)] hover:bg-[var(--palette-surface)] transition-colors disabled:opacity-50 text-sm"
+                  >
+                    <Upload className="w-4 h-4" />
+                    {uploading ? 'Uploading...' : 'Upload Logo'}
+                  </button>
+                </div>
+
+                {/* Upload Status */}
+                {uploadSuccess && (
+                  <p className="text-green-600 dark:text-green-400 mt-2 text-sm flex items-center gap-1">
+                    <CheckCircle className="w-4 h-4" />
+                    Logo uploaded successfully!
+                  </p>
+                )}
+                {uploadError && (
+                  <p className="text-red-600 dark:text-red-400 mt-2 text-sm">
+                    {uploadError}
+                  </p>
+                )}
               </div>
             </div>
           </div>

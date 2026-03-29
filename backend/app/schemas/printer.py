@@ -1,5 +1,7 @@
 """Printer schemas."""
 
+from datetime import datetime
+
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 from pydantic.alias_generators import to_camel
 
@@ -28,7 +30,10 @@ class PrinterBase(BaseModel):
 class PrinterCreate(PrinterBase):
     """Schema for creating printer."""
 
-    pass
+    model_config = ConfigDict(
+        alias_generator=to_camel,
+        populate_by_name=True,
+    )
 
 
 class PrinterUpdate(BaseModel):
@@ -37,6 +42,11 @@ class PrinterUpdate(BaseModel):
     business_name: str | None = Field(None, max_length=255)
     rif: str | None = Field(None, max_length=20)
     authorization_providence: str | None = Field(None, max_length=255)
+
+    model_config = ConfigDict(
+        alias_generator=to_camel,
+        populate_by_name=True,
+    )
 
     @field_validator("rif")
     @classmethod
@@ -62,3 +72,17 @@ class PrinterResponse(PrinterBase):
         alias_generator=to_camel,
         populate_by_name=True,
     )
+
+    @field_validator("created_at", "updated_at", mode="before")
+    @classmethod
+    def convert_datetime_to_str(cls, v):
+        """Convert datetime to ISO format string."""
+        if isinstance(v, datetime):
+            return v.isoformat()
+        return v
+
+    @field_validator("rif", mode="before")
+    @classmethod
+    def skip_rif_validation_for_response(cls, v):
+        """Skip RIF validation for responses (data already in DB)."""
+        return v

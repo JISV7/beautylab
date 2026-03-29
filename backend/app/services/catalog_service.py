@@ -305,7 +305,9 @@ class CatalogService:
         from sqlalchemy.orm import selectinload
 
         # Build base query with eager loading of product relationship
-        query = select(Course).options(selectinload(Course.product))
+        query = select(Course).options(
+            selectinload(Course.product), selectinload(Course.category), selectinload(Course.level)
+        )
 
         # Apply filters
         if category_id is not None:
@@ -328,6 +330,50 @@ class CatalogService:
         # Apply pagination
         offset = (page - 1) * page_size
         query = query.offset(offset).limit(page_size).order_by(Course.title)
+
+        result = await self.db.execute(query)
+        courses = list(result.scalars().all())
+
+        return courses, total
+
+    async def get_public_courses(
+        self,
+        category_id: int | None = None,
+        level_id: int | None = None,
+        search: str | None = None,
+    ) -> tuple[list[Course], int]:
+        """Get published courses for public display (Explore page)."""
+        from sqlalchemy.orm import selectinload
+
+        # Build base query with eager loading
+        query = (
+            select(Course)
+            .options(
+                selectinload(Course.product),
+                selectinload(Course.category),
+                selectinload(Course.level),
+            )
+            .where(Course.published)
+        )
+
+        # Apply filters
+        if category_id is not None:
+            query = query.where(Course.category_id == category_id)
+        if level_id is not None:
+            query = query.where(Course.level_id == level_id)
+        if search:
+            search_filter = f"%{search}%"
+            query = query.where(
+                (Course.title.ilike(search_filter)) | (Course.description.ilike(search_filter))
+            )
+
+        # Get total count
+        count_query = select(func.count()).select_from(query.subquery())
+        total_result = await self.db.execute(count_query)
+        total = total_result.scalar() or 0
+
+        # Order by title
+        query = query.order_by(Course.title)
 
         result = await self.db.execute(query)
         courses = list(result.scalars().all())

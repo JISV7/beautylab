@@ -68,8 +68,8 @@ class CategoryResponse(BaseModel):
     description: str | None = None
     parent_id: int | None = None
     order: int
-    created_at: datetime
-    updated_at: datetime
+    created_at: datetime | None = None
+    updated_at: datetime | None = None
 
 
 class CategoryWithChildren(CategoryResponse):
@@ -255,6 +255,49 @@ class CourseListResponse(BaseModel):
     page: int = 1
     page_size: int = 10
     total_pages: int = 1
+
+
+# ==================== Public Course Schemas (Explore Page) ====================
+
+
+class CoursePublicResponse(BaseModel):
+    """Schema for public course display (Explore page)."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    title: str
+    slug: str
+    description: str | None = None
+    image_url: str | None = None
+    duration_hours: int | None = None
+    published: bool
+    price: Decimal = Field(default=Decimal("0.00"), description="Course price")
+    tax_rate: Decimal = Field(default=Decimal("16.00"), description="Tax rate")
+    category_id: int | None = None
+    category_name: str | None = None
+    category_slug: str | None = None
+    level_id: int | None = None
+    level_name: str | None = None
+    level_slug: str | None = None
+    created_at: datetime
+
+    @field_validator("price", "tax_rate", mode="before")
+    @classmethod
+    def convert_to_decimal(cls, v):
+        """Convert string or float to Decimal."""
+        if isinstance(v, (int, float)):
+            return Decimal(str(v))
+        return v
+
+
+class CoursePublicListResponse(BaseModel):
+    """Schema for public course list response."""
+
+    courses: list[CoursePublicResponse]
+    categories: list[CategoryResponse]
+    levels: list[LevelResponse]
+    total: int
 
 
 # ==================== Learning Path Schemas ====================

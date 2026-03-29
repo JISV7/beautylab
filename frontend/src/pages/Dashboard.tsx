@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { DashboardLayout } from '../components/layout/DashboardLayout';
+import { ExplorePage } from './ExplorePage';
 
 interface DashboardProps {
     onNavigateToAdmin?: () => void;
@@ -16,6 +17,11 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigateToAdmin, onLogou
     const handleAdminNavigate = () => {
         onNavigateToAdmin?.();
     };
+
+    // Render Explore page when activeItem is 'explore'
+    if (activeItem === 'explore') {
+        return <ExplorePage />;
+    }
 
     return (
         <DashboardLayout

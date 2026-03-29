@@ -1,0 +1,74 @@
+import React from 'react';
+import { BookOpen, Search } from 'lucide-react';
+import type { Course } from './ExploreCard';
+import { ExploreCard } from './ExploreCard';
+
+export interface ExploreGridProps {
+    courses: Course[];
+    isLoading: boolean;
+}
+
+export const ExploreGrid: React.FC<ExploreGridProps> = ({ courses, isLoading }) => {
+    // Loading Skeleton
+    if (isLoading) {
+        return (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {[...Array(8)].map((_, i) => (
+                    <div
+                        key={i}
+                        className="bg-[var(--palette-surface)] rounded-xl shadow-lg overflow-hidden border border-[var(--palette-border)] animate-pulse"
+                    >
+                        <div className="h-48 bg-[var(--palette-background)]" />
+                        <div className="p-5 space-y-3">
+                            <div className="flex justify-between">
+                                <div className="h-3 w-20 bg-[var(--palette-border)] rounded" />
+                                <div className="h-3 w-16 bg-[var(--palette-border)] rounded" />
+                            </div>
+                            <div className="h-5 w-full bg-[var(--palette-border)] rounded" />
+                            <div className="h-5 w-2/3 bg-[var(--palette-border)] rounded" />
+                            <div className="h-4 w-full bg-[var(--palette-border)] rounded" />
+                            <div className="h-4 w-3/4 bg-[var(--palette-border)] rounded" />
+                            <div className="h-6 w-24 bg-[var(--palette-border)] rounded" />
+                            <div className="flex justify-between items-center pt-4 border-t border-[var(--palette-border)]">
+                                <div className="h-8 w-20 bg-[var(--palette-border)] rounded" />
+                                <div className="h-8 w-24 bg-[var(--palette-border)] rounded" />
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        );
+    }
+
+    // Empty State
+    if (courses.length === 0) {
+        return (
+            <div className="text-center py-16 px-4">
+                <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-[var(--palette-primary)]/10 mb-6">
+                    <Search size={40} className="text-[var(--palette-primary)] opacity-60" />
+                </div>
+                <h3 className="text-2xl font-black text-p-color mb-3">
+                    No courses found
+                </h3>
+                <p className="text-p-color opacity-60 max-w-md mx-auto mb-8">
+                    We couldn't find any courses matching your current filters. Try adjusting your search or filter criteria.
+                </p>
+                <div className="flex flex-wrap justify-center gap-3">
+                    <div className="inline-flex items-center gap-2 bg-[var(--palette-surface)] border border-[var(--palette-border)] rounded-lg px-4 py-2">
+                        <BookOpen size={16} className="text-p-color opacity-40" />
+                        <span className="text-sm text-p-color opacity-60">Check back later for new courses</span>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    // Course Grid
+    return (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {courses.map((course) => (
+                <ExploreCard key={course.id} course={course} />
+            ))}
+        </div>
+    );
+};

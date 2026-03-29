@@ -1,5 +1,6 @@
 """Catalog router for categories, levels, courses, and learning paths."""
 
+from decimal import Decimal
 from typing import Annotated
 from uuid import UUID
 
@@ -17,6 +18,8 @@ from app.schemas.catalog import (
     CategoryWithChildren,
     CourseCreate,
     CourseListResponse,
+    CoursePublicListResponse,
+    CoursePublicResponse,
     CourseResponse,
     CourseUpdate,
     CourseWithDetails,
@@ -356,6 +359,63 @@ async def list_courses(
         page=page,
         page_size=page_size,
         total_pages=total_pages,
+    )
+
+
+@router.get("/courses/public")
+async def list_public_courses(
+    db: AsyncSession = Depends(get_db),
+    category_id: int | None = None,
+    level_id: int | None = None,
+    search: str | None = None,
+):
+    """Get all published courses for public display (Explore page)."""
+    catalog_service = CatalogService(db)
+
+    # Get published courses with filters
+    courses, total = await catalog_service.get_public_courses(
+        category_id=category_id,
+        level_id=level_id,
+        search=search,
+    )
+
+    # Get all categories and levels for filters
+    categories = await catalog_service.get_all_categories()
+    levels = await catalog_service.get_all_levels()
+
+    # Build response with category/level names
+    public_courses = []
+    for course in courses:
+        public_courses.append(
+            CoursePublicResponse(
+                id=course.id,
+                title=course.title,
+                slug=course.slug,
+                description=course.description,
+                image_url=course.image_url,
+                duration_hours=course.duration_hours,
+                published=course.published,
+                price=course.product.price if course.product else Decimal("0.00"),
+                tax_rate=course.product.tax_rate if course.product else Decimal("16.00"),
+                category_id=course.category_id,
+                category_name=course.category.name if course.category else None,
+                category_slug=course.category.slug if course.category else None,
+                level_id=course.level_id,
+                level_name=course.level.name if course.level else None,
+                level_slug=course.level.slug if course.level else None,
+                created_at=course.created_at,
+            )
+        )
+
+    # Validate categories and levels
+    validated_categories = [CategoryResponse.model_validate(cat) for cat in categories]
+    validated_levels = [LevelResponse.model_validate(lvl) for lvl in levels]
+
+    return CoursePublicListResponse(
+        courses=public_courses,
+        categories=validated_categories,
+        levels=validated_levels,
+        total=total,
     )
 
 

@@ -1,6 +1,7 @@
 """License schemas for gift and corporate licenses."""
 
 from datetime import datetime
+from decimal import Decimal
 from typing import Literal
 from uuid import UUID
 
@@ -105,6 +106,18 @@ class LicenseListResponse(BaseModel):
     page: int = 1
     page_size: int = 10
     total_pages: int = 1
+
+
+class LicenseWithCourseDetails(LicenseResponse):
+    """License with course and payment details for course details page."""
+
+    amount_paid: Decimal = Field(default=Decimal("0.00"), description="Amount paid so far")
+    amount_remaining: Decimal = Field(default=Decimal("0.00"), description="Amount remaining")
+    purchase_date: datetime
+    redemption_date: datetime | None = None
+    assigned_to_email: str | None = None
+    assigned_to_name: str | None = None
+    can_gift: bool = True
 
 
 class CorporateDashboardResponse(BaseModel):

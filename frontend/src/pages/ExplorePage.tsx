@@ -5,9 +5,10 @@ import { ExploreFilters, ExploreGrid, type Course, type Category, type Level } f
 const API_URL = 'http://localhost:8000';
 
 interface ExplorePageProps {
+    onViewCourse?: (courseId: string) => void;
 }
 
-export const ExplorePage: React.FC<ExplorePageProps> = () => {
+export const ExplorePage: React.FC<ExplorePageProps> = ({ onViewCourse }) => {
     const [courses, setCourses] = useState<Course[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
     const [levels, setLevels] = useState<Level[]>([]);
@@ -139,7 +140,7 @@ export const ExplorePage: React.FC<ExplorePageProps> = () => {
                 )}
 
                 {/* Course Grid */}
-                <ExploreGrid courses={courses} isLoading={isLoading} />
+                <ExploreGrid courses={courses} isLoading={isLoading} onViewDetails={onViewCourse} />
             </main>
         </div>
     );

@@ -56,7 +56,7 @@ export const Footer: React.FC = () => {
                         <a href="/" className="flex items-center gap-2 mb-4">
                             <div
                                 className="rounded-lg p-2"
-                                style={{ backgroundColor: 'var(--palette-primary)' }}
+                                style={{ backgroundColor: '#F83A3A' }}
                             >
                                 <Code2 className="w-6 h-6 text-white" />
                             </div>

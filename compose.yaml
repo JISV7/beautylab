@@ -39,7 +39,6 @@ services:
         condition: service_healthy
     volumes:
       - ./backend:/app
-      - /app/.venv
     # Overriding the default command since we'll use entrypoint.sh in Dockerfile
     # or just specify it here if we want to bypass Dockerfile CMD
     command: /app/entrypoint.sh

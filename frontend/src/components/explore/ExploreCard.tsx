@@ -22,9 +22,10 @@ export interface Course {
 
 export interface ExploreCardProps {
     course: Course;
+    onViewDetails?: (courseId: string) => void;
 }
 
-export const ExploreCard: React.FC<ExploreCardProps> = ({ course }) => {
+export const ExploreCard: React.FC<ExploreCardProps> = ({ course, onViewDetails }) => {
     const formatPrice = (price: string) => {
         const numericPrice = parseFloat(price);
         if (isNaN(numericPrice)) return 'Bs. 0,00';
@@ -134,7 +135,10 @@ export const ExploreCard: React.FC<ExploreCardProps> = ({ course }) => {
                 </div>
 
                 {/* CTA Button */}
-                <button className="theme-button theme-button-primary w-full">
+                <button
+                    onClick={() => onViewDetails?.(course.id)}
+                    className="theme-button theme-button-primary w-full"
+                >
                     View Details
                 </button>
             </div>

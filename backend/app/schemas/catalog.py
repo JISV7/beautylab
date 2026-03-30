@@ -6,6 +6,8 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
+from app.schemas.license import LicenseWithCourseDetails
+
 # ==================== Category Schemas ====================
 
 
@@ -245,6 +247,13 @@ class CourseWithDetails(CourseResponse):
     product_name: str | None = None
     product_price: Decimal | None = None
     product_sku: str | None = None
+    video_url: str | None = None
+
+
+class CourseDetailsWithLicenses(CourseWithDetails):
+    """Schema for course details with user's licenses."""
+
+    user_licenses: list["LicenseWithCourseDetails"] = []
 
 
 class CourseListResponse(BaseModel):

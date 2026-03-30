@@ -39,4 +39,8 @@ logs/
 Thumbs.db
 
 # Uploaded files (user-generated content)
-uploads/
+# Ignore everything in uploads/ by default
+uploads/*
+# But allow .gitkeep files to track folder structure
+!uploads/.gitkeep
+!uploads/**/.gitkeep

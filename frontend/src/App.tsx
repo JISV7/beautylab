@@ -2,10 +2,12 @@ import { useState, useEffect } from 'react';
 import { Home } from './pages/Home';
 import { Dashboard } from './pages/Dashboard';
 import { AdminDashboard } from './pages/AdminDashboard';
+import { ExplorePage } from './pages/ExplorePage';
+import { CourseDetailsPage } from './pages/CourseDetailsPage';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { AuthProvider } from './contexts/AuthContext';
 
-type Page = 'home' | 'dashboard' | 'admin';
+type Page = 'home' | 'dashboard' | 'admin' | 'explore' | 'course-details';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<Page>(() => {
@@ -13,6 +15,7 @@ function App() {
     console.log('[App] Initial currentPage from localStorage:', saved);
     return saved || 'home';
   });
+  const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
 
   const handleNavigateToDashboard = () => {
     console.log('[App] Navigating to dashboard');
@@ -24,8 +27,26 @@ function App() {
     setCurrentPage('admin');
   };
 
+  const handleNavigateToExplore = () => {
+    console.log('[App] Navigating to explore');
+    setCurrentPage('explore');
+  };
+
+  const handleViewCourse = (courseId: string) => {
+    console.log('[App] Viewing course:', courseId);
+    setSelectedCourseId(courseId);
+    setCurrentPage('course-details');
+  };
+
+  const handleBackToExplore = () => {
+    console.log('[App] Back to explore');
+    setSelectedCourseId(null);
+    setCurrentPage('explore');
+  };
+
   const handleLogout = () => {
     console.log('[App] Logging out, redirecting to home');
+    setSelectedCourseId(null);
     setCurrentPage('home');
   };
 
@@ -38,7 +59,11 @@ function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        {currentPage === 'dashboard' ? (
+        {currentPage === 'course-details' && selectedCourseId ? (
+          <CourseDetailsPage courseId={selectedCourseId} onBack={handleBackToExplore} />
+        ) : currentPage === 'explore' ? (
+          <ExplorePage onViewCourse={handleViewCourse} />
+        ) : currentPage === 'dashboard' ? (
           <Dashboard onNavigateToAdmin={handleNavigateToAdmin} onLogout={handleLogout} />
         ) : currentPage === 'admin' ? (
           <AdminDashboard onNavigateToDashboard={handleNavigateToDashboard} onLogout={handleLogout} />
@@ -46,6 +71,7 @@ function App() {
           <Home
             onNavigateToDashboard={handleNavigateToDashboard}
             onNavigateToAdmin={handleNavigateToAdmin}
+            onNavigateToExplore={handleNavigateToExplore}
             onLogout={handleLogout}
           />
         )}

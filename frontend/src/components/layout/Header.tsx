@@ -8,10 +8,11 @@ import { UserMenu } from './UserMenu';
 interface HeaderProps {
   onNavigateToDashboard?: () => void;
   onNavigateToAdmin?: () => void;
+  onNavigateToExplore?: () => void;
   onLogout?: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ onNavigateToDashboard, onNavigateToAdmin, onLogout }) => {
+export const Header: React.FC<HeaderProps> = ({ onNavigateToDashboard, onNavigateToAdmin, onNavigateToExplore, onLogout }) => {
   const { currentMode, setPaletteMode } = useTheme();
   const { isAuthenticated, user } = useAuth();
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
@@ -41,6 +42,12 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateToDashboard, onNavigat
 
           {/* Navigation */}
           <nav className="hidden md:flex items-center gap-6">
+            <button
+              onClick={onNavigateToExplore}
+              className="text-p-font text-p-size text-p-color hover:palette-primary transition-colors"
+            >
+              Explore
+            </button>
             <a href="#courses" className="text-p-font text-p-size text-p-color hover:palette-primary transition-colors">
               Courses
             </a>

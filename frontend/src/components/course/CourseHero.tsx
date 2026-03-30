@@ -37,18 +37,18 @@ export const CourseHero: React.FC<CourseHeroProps> = ({
     return (
         <div className="palette-surface palette-border border rounded-xl overflow-hidden mb-8">
             {/* Course Banner Image */}
-            <div className="relative h-48 md:h-64 lg:h-80 w-full overflow-hidden bg-[var(--palette-background)]">
+            <div className="w-full overflow-hidden bg-[var(--palette-background)]">
                 {image_url ? (
                     <img
                         src={image_url}
                         alt={title}
-                        className="w-full h-full object-cover"
+                        className="w-full h-auto object-contain max-h-64 md:max-h-80 lg:max-h-96 mx-auto"
                         onError={(e) => {
                             (e.target as HTMLImageElement).style.display = 'none';
                         }}
                     />
                 ) : (
-                    <div className="w-full h-full flex items-center justify-center text-p-color opacity-40">
+                    <div className="w-full h-48 flex items-center justify-center text-p-color opacity-40">
                         <span className="text-p-color">No image available</span>
                     </div>
                 )}

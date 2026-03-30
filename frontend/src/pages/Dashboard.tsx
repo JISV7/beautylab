@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { DashboardLayout } from '../components/layout/DashboardLayout';
 import { ExplorePage } from './ExplorePage';
+import { CourseDetailsPage } from './CourseDetailsPage';
 
 interface DashboardProps {
     onNavigateToAdmin?: () => void;
@@ -9,14 +10,38 @@ interface DashboardProps {
 
 export const Dashboard: React.FC<DashboardProps> = ({ onNavigateToAdmin, onLogout }) => {
     const [activeItem, setActiveItem] = useState('home');
+    const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
 
     const handleNavigate = (item: string) => {
         setActiveItem(item);
+        setSelectedCourseId(null);
+    };
+
+    const handleViewCourse = (courseId: string) => {
+        setSelectedCourseId(courseId);
+    };
+
+    const handleBackToExplore = () => {
+        setSelectedCourseId(null);
     };
 
     const handleAdminNavigate = () => {
         onNavigateToAdmin?.();
     };
+
+    // Show course details if a course is selected
+    if (selectedCourseId) {
+        return (
+            <DashboardLayout
+                activeItem={activeItem}
+                onNavigate={handleNavigate}
+                onAdminNavigate={handleAdminNavigate}
+                onLogout={onLogout}
+            >
+                <CourseDetailsPage courseId={selectedCourseId} onBack={handleBackToExplore} />
+            </DashboardLayout>
+        );
+    }
 
     return (
         <DashboardLayout
@@ -26,7 +51,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigateToAdmin, onLogou
             onLogout={onLogout}
         >
             {activeItem === 'explore' ? (
-                <ExplorePage />
+                <ExplorePage onViewCourse={handleViewCourse} />
             ) : (
                 <div className="mx-auto p-6">
                     <h1 className="text-h1-size text-h1-color text-h1-font text-h1-weight">Hello World</h1>

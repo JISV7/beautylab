@@ -383,7 +383,7 @@ class InvoiceService:
         """Get the first active control number range."""
         result = await self.db.execute(
             select(ControlNumberRange)
-            .where(ControlNumberRange.is_active == True)
+            .where(ControlNumberRange.is_active)
             .order_by(ControlNumberRange.id)
             .limit(1)
         )

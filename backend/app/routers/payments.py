@@ -288,7 +288,7 @@ async def purchase_course(
                 "details": {
                     "sender_name": "John Doe",
                     "sender_email": "john@example.com",
-                    "recipient_email": "payments@beautylab.com",
+                    "recipient_email": settings.payments_email,
                     "confirmation_code": "ZELLE123456"
                 }
             }
@@ -371,9 +371,9 @@ async def purchase_course(
     # Send confirmation email
     try:
         from app.services.email_service import get_email_service
-        
+
         email_service = get_email_service()
-        
+
         # Build items list for email
         items = [
             {
@@ -383,10 +383,10 @@ async def purchase_course(
                 "line_total": str(invoice.total),
             }
         ]
-        
+
         # Get payment breakdown for email
         payment_breakdown = await payment_service.get_payment_breakdown_for_email(invoice.id)
-        
+
         email_service.send_purchase_confirmation_email(
             to_email=current_user.email,
             invoice_number=invoice.invoice_number,

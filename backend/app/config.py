@@ -16,7 +16,7 @@ class Settings(BaseSettings):
     )
 
     # Application
-    app_name: str = "BeautyLab API"
+    app_name: str = "Codyn API"
     debug: bool = False
 
     # Database
@@ -44,8 +44,14 @@ class Settings(BaseSettings):
     smtp_port: int = 587
     smtp_user: str = ""
     smtp_password: str = ""
-    from_email: str = "noreply@beautylab.com"
-    from_name: str = "BeautyLab"
+    from_email: str = "noreply@codyn.com"
+    from_name: str = "Codyn Academy"
+
+    # Company Info
+    company_name: str = "Codyn - The Online Programming and AI Academy"
+    support_email: str = "support@codyn.com"
+    payments_email: str = "payments@codyn.com"
+    website_url: str = "http://localhost:5173"
 
     @property
     def async_database_url(self) -> str:

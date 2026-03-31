@@ -1,7 +1,6 @@
 """Printer service for business logic."""
 
-from datetime import date, datetime
-from decimal import Decimal
+from datetime import date
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -80,12 +79,14 @@ class PrinterService:
         result = await self.db.execute(query)
         return result.scalar_one_or_none() is not None
 
-    async def get_control_number_range_for_printer(self, printer_id: int) -> ControlNumberRange | None:
+    async def get_control_number_range_for_printer(
+        self, printer_id: int
+    ) -> ControlNumberRange | None:
         """Get the active control number range for a printer."""
         result = await self.db.execute(
             select(ControlNumberRange).where(
                 ControlNumberRange.printer_id == printer_id,
-                ControlNumberRange.is_active == True
+                ControlNumberRange.is_active,
             )
         )
         return result.scalar_one_or_none()

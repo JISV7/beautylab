@@ -142,17 +142,10 @@ class PaymentService:
         payments = []
 
         for item in request.payments:
-            # Create payment method for this transaction
-            payment_method = await self.create_payment_method(
-                user_id=invoice.client_id,
-                method_type=item.method_type,
-                is_default=False,
-            )
-
-            # Create payment
+            # Create payment directly with method_type
             payment = Payment(
                 invoice_id=request.invoice_id,
-                payment_method_id=payment_method.id,
+                method_type=item.method_type,
                 amount=item.amount,
                 status="completed",  # Simulated immediate completion
             )
@@ -179,17 +172,10 @@ class PaymentService:
         user_id: UUID,
     ) -> Payment:
         """Process a single payment for an invoice."""
-        # Create payment method
-        payment_method = await self.create_payment_method(
-            user_id=user_id,
-            method_type=payment_item.method_type,
-            is_default=False,
-        )
-
-        # Create payment
+        # Create payment directly with method_type
         payment = Payment(
             invoice_id=invoice_id,
-            payment_method_id=payment_method.id,
+            method_type=payment_item.method_type,
             amount=payment_item.amount,
             status="completed",
         )
@@ -313,11 +299,9 @@ class PaymentService:
         """
         result = await self.db.execute(
             select(
-                PaymentMethod.method_type,
+                Payment.method_type,
                 func.count(Payment.id).label("count"),
-            )
-            .join(Payment, Payment.payment_method_id == PaymentMethod.id)
-            .group_by(PaymentMethod.method_type)
+            ).group_by(Payment.method_type)
         )
         rows = result.all()
 
@@ -357,15 +341,19 @@ class PaymentService:
         Returns:
             List of payment info dicts with method and amount
         """
-        payments = await self.get_invoice_payments(invoice_id)
+        from sqlalchemy.orm import selectinload
+
+        result = await self.db.execute(
+            select(Payment)
+            .where(Payment.invoice_id == invoice_id)
+            .options(selectinload(Payment.details))
+        )
+        payments = list(result.scalars().all())
         breakdown = []
 
         for payment in payments:
-            method_type = "Unknown"
+            method_type = payment.method_type.replace("_", " ").title()
             reference = ""
-
-            if payment.payment_method:
-                method_type = payment.payment_method.method_type.replace("_", " ").title()
 
             # Get reference from payment details
             if payment.details:

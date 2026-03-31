@@ -88,7 +88,7 @@ class EmailService:
             items: List of line items
             download_url: Optional PDF download URL
         """
-        subject = f"Invoice {invoice_number} - BeautyLab"
+        subject = f"Invoice {invoice_number} - Codyn Academy"
 
         # Build items HTML
         items_html = ""
@@ -143,7 +143,7 @@ class EmailService:
         <body>
             <div class="container">
                 <div class="header">
-                    <h1>BeautyLab</h1>
+                    <h1>Codyn Academy</h1>
                     <p>Invoice {invoice_number}</p>
                 </div>
 
@@ -178,11 +178,11 @@ class EmailService:
 
                     <p>If you have any questions, please don't hesitate to contact us.</p>
 
-                    <p>Best regards,<br>The BeautyLab Team</p>
+                    <p>Best regards,<br>The Codyn Academy Team</p>
                 </div>
 
                 <div class="footer">
-                    <p>&copy; 2026 BeautyLab. All rights reserved.</p>
+                    <p>&copy; 2026 Codyn Academy. All rights reserved.</p>
                 </div>
             </div>
         </body>
@@ -202,7 +202,7 @@ class EmailService:
         Thank you for your purchase!
 
         Best regards,
-        The BeautyLab Team
+        The Codyn Academy Team
         """
 
         return self.send_email(
@@ -224,7 +224,7 @@ class EmailService:
 
     def send_welcome_email(self, to_email: str, user_name: str) -> bool:
         """Send welcome email to new user."""
-        subject = "Welcome to BeautyLab!"
+        subject = "Welcome to Codyn Academy!"
 
         html_content = f"""
         <!DOCTYPE html>
@@ -245,26 +245,25 @@ class EmailService:
         <body>
             <div class="container">
                 <div class="header">
-                    <h1>Welcome to BeautyLab!</h1>
+                    <h1>Welcome to Codyn Academy!</h1>
                 </div>
 
                 <div class="content">
                     <p>Hello {user_name},</p>
-                    <p>Thank you for joining BeautyLab - your dynamic theming platform
-                       for beauty salons.</p>
+                    <p>Thank you for joining Codyn Academy - your online programming and AI learning platform.</p>
                     <p>Get started by exploring our features:</p>
                     <ul>
-                        <li>Create custom themes</li>
+                        <li>Browse programming courses</li>
                         <li>Manage your profile</li>
                         <li>Purchase courses and learning paths</li>
                     </ul>
                     <p style="text-align: center; margin: 30px 0;">
-                        <a href="https://beautylab.com/dashboard" class="button">Go to Dashboard</a>
+                        <a href="{settings.website_url}/dashboard" class="button">Go to Dashboard</a>
                     </p>
                 </div>
 
                 <div class="footer">
-                    <p>&copy; 2026 BeautyLab. All rights reserved.</p>
+                    <p>&copy; 2026 Codyn Academy. All rights reserved.</p>
                 </div>
             </div>
         </body>
@@ -299,7 +298,7 @@ class EmailService:
             items: List of line items
             payment_breakdown: List of payment methods used (for split payments)
         """
-        subject = f"Purchase Confirmation - {course_name} - BeautyLab"
+        subject = f"Purchase Confirmation - {course_name} - Codyn Academy"
 
         # Build items HTML
         items_html = ""
@@ -387,7 +386,7 @@ class EmailService:
         <body>
             <div class="container">
                 <div class="header">
-                    <h1>BeautyLab</h1>
+                    <h1>Codyn Academy</h1>
                     <p>Purchase Confirmation</p>
                 </div>
 
@@ -431,7 +430,7 @@ class EmailService:
                         <p>You can now access your course materials
                            from your dashboard:</p>
                         <p style="text-align: center; margin: 15px 0;">
-                            <a href="http://localhost:5173"
+                            <a href="{settings.website_url}"
                                style="background-color: #4CAF50; color: white;
                                       padding: 12px 24px; text-decoration: none;
                                       border-radius: 4px; display: inline-block;">
@@ -444,14 +443,14 @@ class EmailService:
                     </div>
 
                     <p>If you have questions or need assistance,
-                       please contact our support team.</p>
+                       please contact our support team at {settings.support_email}.</p>
 
-                    <p>Best regards,<br><strong>The BeautyLab Team</strong></p>
+                    <p>Best regards,<br><strong>The Codyn Academy Team</strong></p>
                 </div>
 
                 <div class="footer">
-                    <p>&copy; 2026 BeautyLab. All rights reserved.</p>
-                    <p>Need help? Contact us at support@beautylab.com</p>
+                    <p>&copy; 2026 Codyn Academy. All rights reserved.</p>
+                    <p>Need help? Contact us at {settings.support_email}</p>
                 </div>
             </div>
         </body>
@@ -479,10 +478,10 @@ class EmailService:
         You can now access your course materials from your dashboard.
         Navigate to "My Courses" to start learning!
 
-        If you have any questions, please contact us at support@beautylab.com
+        If you have any questions, please contact us at {settings.support_email}
 
         Best regards,
-        The BeautyLab Team
+        The Codyn Academy Team
         """
 
         return self.send_email(

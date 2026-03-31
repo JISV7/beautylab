@@ -26,7 +26,7 @@ if TYPE_CHECKING:
 
 
 class PaymentMethod(Base, TimestampMixin):
-    """User saved payment method."""
+    """User saved payment method (optional, for future use)."""
 
     __tablename__ = "payment_methods"
 
@@ -46,7 +46,6 @@ class PaymentMethod(Base, TimestampMixin):
 
     # Relationships
     user: Mapped["User"] = relationship("User", back_populates="payment_methods")
-    payments: Mapped[list["Payment"]] = relationship("Payment", back_populates="payment_method")
 
     def __repr__(self) -> str:
         return f"<PaymentMethod(id={self.id}, user={self.user_id}, type={self.method_type})>"
@@ -68,20 +67,13 @@ class Payment(Base, TimestampMixin):
         nullable=False,
         index=True,
     )
-    payment_method_id: Mapped[UUID | None] = mapped_column(
-        Uuid(as_uuid=True),
-        ForeignKey("payment_methods.id", ondelete="SET NULL"),
-        nullable=True,
-    )
+    method_type: Mapped[str] = mapped_column(String(20), nullable=False)
     amount: Mapped[Decimal] = mapped_column(NUMERIC(10, 2), nullable=False)
     status: Mapped[str] = mapped_column(String(20), nullable=False, default="pending")
     transaction_reference: Mapped[str | None] = mapped_column(String(255), nullable=True)
 
     # Relationships
     invoice: Mapped["Invoice"] = relationship("Invoice", back_populates="payments")
-    payment_method: Mapped[Optional["PaymentMethod"]] = relationship(
-        "PaymentMethod", back_populates="payments"
-    )
     details: Mapped[Optional["PaymentDetail"]] = relationship(
         "PaymentDetail", back_populates="payment", uselist=False, cascade="all, delete-orphan"
     )

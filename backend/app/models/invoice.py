@@ -73,9 +73,7 @@ class Invoice(Base, TimestampMixin):
 
     # Relationships
     client: Mapped[Optional["User"]] = relationship("User", back_populates="invoices")
-    point_of_sale: Mapped["PointOfSale"] = relationship(
-        "PointOfSale", back_populates="invoices"
-    )
+    point_of_sale: Mapped["PointOfSale"] = relationship("PointOfSale", back_populates="invoices")
     lines: Mapped[list["InvoiceLine"]] = relationship(
         "InvoiceLine", back_populates="invoice", cascade="all, delete-orphan"
     )

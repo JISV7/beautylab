@@ -49,7 +49,7 @@ async def create_printer(
 ):
     """Create a new authorized printer."""
     service = PrinterService(db)
-    
+
     # Check if printer with same RIF already exists
     if await service.check_rif_exists(printer_data.rif):
         raise HTTPException(

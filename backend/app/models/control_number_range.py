@@ -1,6 +1,6 @@
 """Control Number Range model."""
 
-from datetime import date, datetime
+from datetime import date
 from typing import TYPE_CHECKING
 
 from sqlalchemy import Boolean, Date, ForeignKey, Integer, String
@@ -9,7 +9,6 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.models.base import Base, TimestampMixin
 
 if TYPE_CHECKING:
-    from app.models.invoice import Invoice
     from app.models.printer import Printer
 
 
@@ -33,4 +32,4 @@ class ControlNumberRange(Base, TimestampMixin):
     printer: Mapped["Printer"] = relationship("Printer", back_populates="control_number_ranges")
 
     def __repr__(self) -> str:
-        return f"<ControlNumberRange(id={self.id}, printer={self.printer_id}, range={self.start_number}-{self.end_number})>"
+        return f"<ControlNumberRange(id={self.id}, printer={self.printer_id})>"

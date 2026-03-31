@@ -34,8 +34,9 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
 
     const totalAllocated = payments.reduce((sum, p) => sum + p.amount, 0);
     const remaining = totalAmount - totalAllocated;
-    const isOverAllocated = remaining < 0;
-    const isFullyAllocated = Math.abs(remaining) < 0.01;
+    const isOverAllocated = remaining < -0.001;
+    // Use very small epsilon for floating-point comparison (0.1 cent)
+    const isFullyAllocated = Math.abs(remaining) < 0.001;
 
     // Notify parent of validity changes
     React.useEffect(() => {
@@ -168,7 +169,14 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
                 {isFullyAllocated && !isOverAllocated && (
                     <div className="mt-3 flex items-center gap-2 text-green-500 text-sm">
                         <AlertCircle size={16} />
-                        <span>Amount fully allocated - Ready to proceed</span>
+                        <span>✓ Full amount allocated - Ready to proceed</span>
+                    </div>
+                )}
+
+                {!isFullyAllocated && !isOverAllocated && remaining > 0.001 && (
+                    <div className="mt-3 flex items-center gap-2 text-amber-500 text-sm">
+                        <AlertCircle size={16} />
+                        <span>Still need to allocate {formatAmount(remaining)}</span>
                     </div>
                 )}
             </div>

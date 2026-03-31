@@ -108,6 +108,16 @@ class CashDepositDetails(BaseModel):
     deposit_bank: str = Field(..., max_length=255, description="Bank where deposit was made")
     deposit_date: date
 
+    @field_validator("deposit_date", mode="before")
+    @classmethod
+    def parse_deposit_date(cls, v):
+        """Parse date from ISO format string."""
+        if isinstance(v, date):
+            return v
+        if isinstance(v, str):
+            return date.fromisoformat(v)
+        return v
+
 
 class BankTransferDetails(BaseModel):
     """Bank transfer payment details."""
@@ -116,6 +126,16 @@ class BankTransferDetails(BaseModel):
     bank_name: str = Field(..., max_length=255)
     transfer_date: date
     account_holder: str = Field(..., max_length=255)
+
+    @field_validator("transfer_date", mode="before")
+    @classmethod
+    def parse_transfer_date(cls, v):
+        """Parse date from ISO format string."""
+        if isinstance(v, date):
+            return v
+        if isinstance(v, str):
+            return date.fromisoformat(v)
+        return v
 
 
 class ZelleDetails(BaseModel):
@@ -290,6 +310,18 @@ class SplitPaymentItem(BaseModel):
         | PagoMovilDetails
         | PaypalDetails
     )
+
+    @field_validator("amount", mode="before")
+    @classmethod
+    def parse_amount(cls, v):
+        """Parse amount from string or number to Decimal."""
+        if isinstance(v, Decimal):
+            return v
+        if isinstance(v, (int, float)):
+            return Decimal(str(v))
+        if isinstance(v, str):
+            return Decimal(v)
+        return v
 
 
 class SplitPaymentRequest(BaseModel):

@@ -2,10 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { CourseHero, LicenseTable, GiftLicenseModal, type License } from '../components/course';
 import {
-    PaymentMethodSelector,
     SplitPaymentManager,
     PurchaseConfirmation,
-    type PaymentMethodType,
     type SplitPaymentEntry,
     type PaymentBreakdown,
 } from '../components/payment';
@@ -59,7 +57,7 @@ interface ReceiptData {
     payment_breakdown?: PaymentBreakdown[];
 }
 
-type PaymentStep = 'idle' | 'method_selection' | 'payment_details' | 'processing' | 'confirmation';
+type PaymentStep = 'idle' | 'payment_details' | 'processing' | 'confirmation';
 
 export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, onBack }) => {
     const [course, setCourse] = useState<CourseDetails | null>(null);
@@ -70,7 +68,6 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
 
     // Payment state - starts as 'idle' until user clicks Buy
     const [paymentStep, setPaymentStep] = useState<PaymentStep>('idle');
-    const [selectedMethods, setSelectedMethods] = useState<PaymentMethodType[]>(['credit_card']);
     const [splitPayments, setSplitPayments] = useState<SplitPaymentEntry[]>([]);
     const [purchaseError, setPurchaseError] = useState<string | null>(null);
     const [receiptData, setReceiptData] = useState<ReceiptData | null>(null);
@@ -102,23 +99,8 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
     }, [courseId]);
 
     const handleBuy = () => {
-        setPaymentStep('method_selection');
-        setPurchaseError(null);
-    };
-
-    const handleMethodToggle = (method: PaymentMethodType) => {
-        if (selectedMethods.includes(method)) {
-            if (selectedMethods.length > 1) {
-                setSelectedMethods(selectedMethods.filter((m) => m !== method));
-            }
-        } else {
-            setSelectedMethods([...selectedMethods, method]);
-        }
-    };
-
-    const handleProceedToPayment = () => {
-        if (selectedMethods.length === 0) return;
         setPaymentStep('payment_details');
+        setPurchaseError(null);
     };
 
     const handlePaymentsChange = (payments: SplitPaymentEntry[]) => {
@@ -186,8 +168,75 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
         }
     };
 
+    const validatePaymentForm = (): string | null => {
+        for (const entry of splitPayments) {
+            const { method, values, amount } = entry;
+
+            // Check amount
+            if (!amount || amount <= 0) {
+                return `Payment method ${method}: Amount must be greater than 0`;
+            }
+
+            // Check required fields based on method
+            switch (method) {
+                case 'credit_card':
+                    if (!values.card_holder_name) return 'Credit Card: Cardholder name is required';
+                    if (!values.card_number || values.card_number.length < 13) return 'Credit Card: Valid card number is required';
+                    if (!values.expiry_month) return 'Credit Card: Expiry month is required';
+                    if (!values.expiry_year) return 'Credit Card: Expiry year is required';
+                    if (!values.cvv || values.cvv.length < 3) return 'Credit Card: CVV is required';
+                    if (!values.card_brand) return 'Credit Card: Card brand is required';
+                    break;
+                case 'debit_card':
+                    if (!values.card_holder_name) return 'Debit Card: Cardholder name is required';
+                    if (!values.card_number || values.card_number.length < 13) return 'Debit Card: Valid card number is required';
+                    if (!values.expiry_month) return 'Debit Card: Expiry month is required';
+                    if (!values.expiry_year) return 'Debit Card: Expiry year is required';
+                    if (!values.cvv || values.cvv.length < 3) return 'Debit Card: CVV is required';
+                    if (!values.bank_name) return 'Debit Card: Bank name is required';
+                    break;
+                case 'zelle':
+                    if (!values.sender_name) return 'Zelle: Sender name is required';
+                    if (!values.sender_email) return 'Zelle: Sender email is required';
+                    if (!values.recipient_email) return 'Zelle: Recipient email is required';
+                    if (!values.confirmation_code) return 'Zelle: Confirmation code is required';
+                    break;
+                case 'pago_movil':
+                    if (!values.bank_name) return 'Pago Móvil: Bank name is required';
+                    if (!values.phone_number) return 'Pago Móvil: Phone number is required';
+                    if (!values.rif_cedula) return 'Pago Móvil: RIF/Cédula is required';
+                    if (!values.reference_code) return 'Pago Móvil: Reference code is required';
+                    break;
+                case 'paypal':
+                    if (!values.paypal_email) return 'PayPal: PayPal email is required';
+                    if (!values.transaction_id) return 'PayPal: Transaction ID is required';
+                    if (!values.payer_name) return 'PayPal: Payer name is required';
+                    break;
+                case 'cash_deposit':
+                    if (!values.deposit_reference) return 'Cash Deposit: Reference number is required';
+                    if (!values.bank_name) return 'Cash Deposit: Bank name is required';
+                    if (!values.deposit_date) return 'Cash Deposit: Deposit date is required';
+                    break;
+                case 'bank_transfer':
+                    if (!values.transfer_reference) return 'Bank Transfer: Reference is required';
+                    if (!values.bank_name) return 'Bank Transfer: Bank name is required';
+                    if (!values.transfer_date) return 'Bank Transfer: Transfer date is required';
+                    if (!values.account_holder) return 'Bank Transfer: Account holder is required';
+                    break;
+            }
+        }
+        return null;
+    };
+
     const handleSubmitPayment = async () => {
         if (!isPaymentValid || !course) return;
+
+        // Validate form before submission
+        const validationError = validatePaymentForm();
+        if (validationError) {
+            setPurchaseError(validationError);
+            return;
+        }
 
         setPaymentStep('processing');
         setPurchaseError(null);
@@ -195,10 +244,10 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
         try {
             const token = localStorage.getItem('access_token');
 
-            // Format payments for API
+            // Format payments for API - send amount as number, not string
             const payments = splitPayments.map((entry) => ({
                 method_type: entry.method,
-                amount: entry.amount.toFixed(2),
+                amount: entry.amount, // Send as number, not string
                 details: formatPaymentDetails(entry),
             }));
 
@@ -347,7 +396,7 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
     return (
         <div className="p-6">
             {/* Back Button */}
-            {onBack && paymentStep !== 'method_selection' && paymentStep !== 'payment_details' && (
+            {onBack && paymentStep !== 'payment_details' && (
                 <button
                     onClick={onBack}
                     className="inline-flex items-center gap-2 text-p-font text-p-color hover:opacity-60 transition-opacity mb-6"
@@ -358,7 +407,7 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
             )}
 
             {/* Payment Modal Overlay */}
-            {(paymentStep === 'method_selection' || paymentStep === 'payment_details') && (
+            {paymentStep === 'payment_details' && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
                     <div className="palette-surface palette-border border rounded-xl max-w-4xl w-full my-8 max-h-[90vh] overflow-y-auto">
                         {/* Header */}
@@ -403,59 +452,27 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
                                 </div>
                             )}
 
-                            {/* Step 1: Method Selection */}
-                            {paymentStep === 'method_selection' && (
-                                <div className="space-y-4">
-                                    <h3 className="text-h4-font text-h4-size text-h4-color font-semibold">
-                                        Select Payment Method(s)
-                                    </h3>
-                                    <p className="text-p-font text-p-size text-p-color opacity-60 text-sm">
-                                        You can split your payment across multiple methods
-                                    </p>
-                                    <PaymentMethodSelector
-                                        selectedMethods={selectedMethods}
-                                        onToggleMethod={handleMethodToggle}
-                                        allowMultiple={true}
-                                    />
-                                    <button
-                                        onClick={handleProceedToPayment}
-                                        className="theme-button theme-button-primary w-full"
-                                    >
-                                        Continue to Payment Details
-                                    </button>
+                            {/* Payment Details */}
+                            <div className="space-y-4">
+                                <div className="flex items-center gap-2 text-p-font text-p-size text-p-color opacity-80">
+                                    <span>💡</span>
+                                    <span>You can split your payment across multiple methods. Just add another payment method and allocate the desired amount to each.</span>
                                 </div>
-                            )}
 
-                            {/* Step 2: Payment Details */}
-                            {paymentStep === 'payment_details' && (
-                                <div className="space-y-4">
-                                    <div className="flex items-center justify-between">
-                                        <button
-                                            onClick={() => setPaymentStep('method_selection')}
-                                            className="text-p-font text-p-size text-p-color hover:underline"
-                                        >
-                                            ← Back to Methods
-                                        </button>
-                                        <h3 className="text-h4-font text-h4-size text-h4-color font-semibold">
-                                            Payment Details
-                                        </h3>
-                                    </div>
+                                <SplitPaymentManager
+                                    totalAmount={coursePrice}
+                                    onPaymentsChange={handlePaymentsChange}
+                                    onValid={setIsPaymentValid}
+                                />
 
-                                    <SplitPaymentManager
-                                        totalAmount={coursePrice}
-                                        onPaymentsChange={handlePaymentsChange}
-                                        onValid={setIsPaymentValid}
-                                    />
-
-                                    <button
-                                        onClick={handleSubmitPayment}
-                                        disabled={!isPaymentValid}
-                                        className="theme-button theme-button-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
-                                    >
-                                        Complete Purchase - ${coursePrice.toFixed(2)}
-                                    </button>
-                                </div>
-                            )}
+                                <button
+                                    onClick={handleSubmitPayment}
+                                    disabled={!isPaymentValid}
+                                    className="theme-button theme-button-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    Complete Purchase - ${coursePrice.toFixed(2)}
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>

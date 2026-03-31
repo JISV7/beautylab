@@ -1,5 +1,7 @@
 """Authentication router."""
 
+import logging
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -8,6 +10,8 @@ from app.database import get_db
 from app.schemas.token import Token
 from app.schemas.user import UserCreate, UserResponse
 from app.services.auth_service import AuthService
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
@@ -26,26 +30,35 @@ async def register(
     # Check if user already exists
     existing_user = await auth_service.get_user_by_email(user_data.email)
     if existing_user:
+        logger.warning("Registration attempt with existing email: %s", user_data.email)
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Email already registered",
         )
 
-    # Create user with fiscal information
-    user = await auth_service.create_user(
-        email=user_data.email,
-        password=user_data.password,
-        full_name=user_data.full_name,
-        document_type=user_data.document_type,
-        document_number=user_data.document_number,
-        rif=user_data.rif,
-        business_name=user_data.business_name,
-        fiscal_address=user_data.fiscal_address,
-        phone=user_data.phone,
-        is_contributor=user_data.is_contributor,
-    )
+    try:
+        # Create user with fiscal information
+        user = await auth_service.create_user(
+            email=user_data.email,
+            password=user_data.password,
+            full_name=user_data.full_name,
+            document_type=user_data.document_type,
+            document_number=user_data.document_number,
+            rif=user_data.rif,
+            business_name=user_data.business_name,
+            fiscal_address=user_data.fiscal_address,
+            phone=user_data.phone,
+            is_contributor=user_data.is_contributor,
+        )
 
-    return UserResponse.model_validate(user)
+        logger.info("Successfully registered new user: %s (id=%s)", user_data.email, user.id)
+        return UserResponse.model_validate(user)
+    except Exception as e:
+        logger.exception("Failed to create user %s: %s", user_data.email, str(e))
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to create user account",
+        ) from e
 
 
 @router.post("/login", response_model=Token)

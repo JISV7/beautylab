@@ -84,26 +84,30 @@ axios.interceptors.response.use(
     (response) => response,
     async (error) => {
         const originalRequest = error.config;
-        
+
         // If error is 401 and we haven't retried yet
         if (error.response?.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
-            
+
             // Try to refresh the token
             const newToken = await refreshAccessToken();
-            
+
             if (newToken) {
                 // Retry original request with new token
                 originalRequest.headers.Authorization = `Bearer ${newToken}`;
                 return axios(originalRequest);
             }
         }
-        
-        // Token refresh failed or not 401 - logout and redirect to home
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');
-        localStorage.setItem('currentPage', 'home');
-        window.location.href = '/';
+
+        // Only logout and redirect on 401 errors (authentication failures)
+        // Don't redirect on 400 (validation errors) or other errors
+        if (error.response?.status === 401) {
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+            localStorage.setItem('currentPage', 'home');
+            window.location.href = '/';
+        }
+
         return Promise.reject(error);
     }
 );

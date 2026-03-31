@@ -355,3 +355,23 @@ class PaymentListResponse(BaseModel):
 
     payments: list[PaymentResponse]
     total: int
+
+
+# ==================== Course Purchase Schemas ====================
+
+
+class CoursePurchaseRequest(BaseModel):
+    """Request for course purchase with split payment."""
+
+    course_id: UUID
+    payments: list[SplitPaymentItem]
+
+
+class CoursePurchaseResponse(BaseModel):
+    """Response for course purchase."""
+
+    success: bool
+    invoice_number: str
+    total_paid: Decimal
+    payments: list[PaymentResponse]
+    message: str

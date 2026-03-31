@@ -74,7 +74,7 @@ class InvoiceService:
                     quantity=Decimal("1"),
                     unit_price=product.price,
                     tax_rate=product.tax_rate,
-                    is_exempt=product.tax_exempt,
+                    is_exempt=(product.tax_type == "exento"),
                 )
             ],
             adjustments=[],

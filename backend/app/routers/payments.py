@@ -1,22 +1,22 @@
 """Payments router for split payment processing."""
 
 from decimal import Decimal
+from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, status
-from pydantic import BaseModel
+from fastapi import APIRouter, Body, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.dependencies import CurrentUser
 from app.database import get_db
-from app.models.user import User
 from app.schemas.payment import (
+    CoursePurchaseRequest,
+    CoursePurchaseResponse,
     PaymentListResponse,
     PaymentMethodCreate,
     PaymentMethodResponse,
     PaymentResponse,
     PaymentWithDetails,
-    SplitPaymentItem,
     SplitPaymentRequest,
     SplitPaymentResponse,
 )
@@ -29,26 +29,9 @@ from app.services.payment_service import (
 router = APIRouter(prefix="/payments", tags=["Payments"])
 
 
-class CoursePurchaseRequest(BaseModel):
-    """Request for course purchase with split payment."""
-
-    course_id: UUID
-    payments: list[SplitPaymentItem]
-
-
-class CoursePurchaseResponse(BaseModel):
-    """Response for course purchase."""
-
-    success: bool
-    invoice_number: str
-    total_paid: Decimal
-    payments: list[PaymentResponse]
-    message: str
-
-
 @router.get("/methods", response_model=list[PaymentMethodResponse])
 async def list_payment_methods(
-    current_user: User = Depends(CurrentUser),
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> list[PaymentMethodResponse]:
     """Get current user's saved payment methods."""
@@ -61,8 +44,8 @@ async def list_payment_methods(
 
 @router.post("/methods", response_model=PaymentMethodResponse, status_code=status.HTTP_201_CREATED)
 async def add_payment_method(
-    method_data: PaymentMethodCreate,
-    current_user: User = Depends(CurrentUser),
+    method_data: Annotated[PaymentMethodCreate, Body(...)],
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> PaymentMethodResponse:
     """
@@ -98,8 +81,8 @@ async def add_payment_method(
 
 @router.post("/split", response_model=SplitPaymentResponse)
 async def process_split_payment(
-    request: SplitPaymentRequest,
-    current_user: User = Depends(CurrentUser),
+    request: Annotated[SplitPaymentRequest, Body(...)],
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> SplitPaymentResponse:
     """
@@ -192,7 +175,7 @@ async def process_split_payment(
 @router.get("/{payment_id}", response_model=PaymentWithDetails)
 async def get_payment(
     payment_id: UUID,
-    current_user: User = Depends(CurrentUser),
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> PaymentWithDetails:
     """Get payment details by ID."""
@@ -214,7 +197,7 @@ async def get_payment(
 @router.get("/invoice/{invoice_id}", response_model=PaymentListResponse)
 async def get_invoice_payments(
     invoice_id: UUID,
-    current_user: User = Depends(CurrentUser),
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> PaymentListResponse:
     """Get all payments for an invoice."""
@@ -231,7 +214,7 @@ async def get_invoice_payments(
 @router.get("/invoice/{invoice_id}/summary")
 async def get_payment_summary(
     invoice_id: UUID,
-    current_user: User = Depends(CurrentUser),
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> dict:
     """
@@ -252,7 +235,7 @@ async def get_payment_summary(
 
 @router.get("/statistics/methods")
 async def get_payment_method_statistics(
-    current_user: User = Depends(CurrentUser),
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> dict:
     """
@@ -269,8 +252,8 @@ async def get_payment_method_statistics(
 
 @router.post("/purchase-course", response_model=CoursePurchaseResponse)
 async def purchase_course(
-    request: CoursePurchaseRequest,
-    current_user: User = Depends(CurrentUser),
+    request: Annotated[CoursePurchaseRequest, Body(...)],
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> CoursePurchaseResponse:
     """
@@ -397,7 +380,7 @@ async def purchase_course(
 @router.get("/invoice/{invoice_id}/receipt")
 async def get_invoice_receipt(
     invoice_id: UUID,
-    current_user: User = Depends(CurrentUser),
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> dict:
     """

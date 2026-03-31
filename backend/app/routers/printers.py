@@ -9,6 +9,7 @@ from app.database import get_db
 from app.models.printer import Printer
 from app.models.user import User
 from app.schemas.printer import PrinterCreate, PrinterResponse, PrinterUpdate
+from app.services.printer_service import PrinterService
 
 router = APIRouter(prefix="/printers", tags=["Printers"])
 
@@ -19,8 +20,8 @@ async def list_printers(
     current_user: User = Depends(RequireAdmin),
 ):
     """Get all authorized printers."""
-    result = await db.execute(select(Printer).order_by(Printer.id))
-    printers = result.scalars().all()
+    service = PrinterService(db)
+    printers = await service.get_all()
     return [PrinterResponse.model_validate(printer) for printer in printers]
 
 
@@ -31,8 +32,8 @@ async def get_printer(
     current_user: User = Depends(RequireAdmin),
 ):
     """Get a specific printer."""
-    result = await db.execute(select(Printer).where(Printer.id == printer_id))
-    printer = result.scalar_one_or_none()
+    service = PrinterService(db)
+    printer = await service.get_by_id(printer_id)
 
     if not printer:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Printer not found")
@@ -47,19 +48,16 @@ async def create_printer(
     current_user: User = Depends(RequireAdmin),
 ):
     """Create a new authorized printer."""
+    service = PrinterService(db)
+    
     # Check if printer with same RIF already exists
-    existing = await db.execute(select(Printer).where(Printer.rif == printer_data.rif))
-    if existing.scalar_one_or_none():
+    if await service.check_rif_exists(printer_data.rif):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Printer with this RIF already exists",
         )
 
-    printer = Printer(**printer_data.model_dump())
-    db.add(printer)
-    await db.commit()
-    await db.refresh(printer)
-
+    printer = await service.create(printer_data)
     return PrinterResponse.model_validate(printer)
 
 

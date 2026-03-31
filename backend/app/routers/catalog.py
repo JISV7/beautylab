@@ -521,6 +521,7 @@ async def get_course_details(
         product_name=course.product.name if course.product else None,
         product_price=course.product.price if course.product else None,
         product_sku=course.product.sku if course.product else None,
+        product_tax_rate=course.product.tax_rate if course.product else None,
         video_url=None,  # Would add if course has video_url field
         user_licenses=license_responses,
     )
@@ -570,6 +571,7 @@ async def get_course(
         product_name=product_name,
         product_price=product_price,
         product_sku=product_sku,
+        product_tax_rate=course.product.tax_rate if course.product else None,
     )
 
 

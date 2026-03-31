@@ -247,6 +247,7 @@ class CourseWithDetails(CourseResponse):
     product_name: str | None = None
     product_price: Decimal | None = None
     product_sku: str | None = None
+    product_tax_rate: Decimal | None = None
     video_url: str | None = None
 
 

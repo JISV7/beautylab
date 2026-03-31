@@ -23,6 +23,7 @@ from app.models.base import Base, TimestampMixin
 if TYPE_CHECKING:
     from app.models.license import License
     from app.models.payment import Payment
+    from app.models.point_of_sale import PointOfSale
     from app.models.product import Product
     from app.models.user import User
 
@@ -72,6 +73,9 @@ class Invoice(Base, TimestampMixin):
 
     # Relationships
     client: Mapped[Optional["User"]] = relationship("User", back_populates="invoices")
+    point_of_sale: Mapped["PointOfSale"] = relationship(
+        "PointOfSale", back_populates="invoices"
+    )
     lines: Mapped[list["InvoiceLine"]] = relationship(
         "InvoiceLine", back_populates="invoice", cascade="all, delete-orphan"
     )

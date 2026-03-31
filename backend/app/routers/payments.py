@@ -368,6 +368,38 @@ async def purchase_course(
             detail=str(e),
         ) from e
 
+    # Send confirmation email
+    try:
+        from app.services.email_service import get_email_service
+        
+        email_service = get_email_service()
+        
+        # Build items list for email
+        items = [
+            {
+                "description": f"Course Enrollment - {course.title}",
+                "quantity": "1",
+                "unit_price": str(invoice.total),
+                "line_total": str(invoice.total),
+            }
+        ]
+        
+        # Get payment breakdown for email
+        payment_breakdown = await payment_service.get_payment_breakdown_for_email(invoice.id)
+        
+        email_service.send_purchase_confirmation_email(
+            to_email=current_user.email,
+            invoice_number=invoice.invoice_number,
+            course_name=course.title,
+            total=str(invoice.total),
+            issue_date=invoice.issue_date.isoformat(),
+            items=items,
+            payment_breakdown=payment_breakdown,
+        )
+    except Exception as e:
+        # Log error but don't fail the purchase
+        print(f"Failed to send confirmation email: {e}")
+
     return CoursePurchaseResponse(
         success=True,
         invoice_number=invoice.invoice_number,

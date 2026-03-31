@@ -28,6 +28,7 @@ interface CourseDetails {
     product_name: string | null;
     product_sku: string | null;
     product_price: string | null;
+    product_tax_rate: string | null;
     video_url: string | null;
     user_licenses: License[];
 }
@@ -339,6 +340,11 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
         return parseFloat(cleaned) || 0;
     };
 
+    const courseBasePrice = parsePrice(course?.product_price ?? null);
+    const courseTaxRate = parsePrice(course?.product_tax_rate ?? null);
+    const courseTax = courseBasePrice * (courseTaxRate / 100);
+    const coursePrice = courseBasePrice + courseTax; // Total with IVA
+
     if (isLoading) {
         return (
             <div className="p-6">
@@ -364,8 +370,6 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
             </div>
         );
     }
-
-    const coursePrice = parsePrice(course.product_price);
 
     // Render confirmation step
     if (paymentStep === 'confirmation' && receiptData) {
@@ -432,17 +436,27 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
 
                         {/* Content */}
                         <div className="p-6 space-y-6">
-                            {/* Price Display */}
-                            <div className="palette-surface palette-border border rounded-xl p-4 flex items-center justify-between">
-                                <div className="flex items-center gap-3">
-                                    <ShoppingCart size={24} className="text-[var(--palette-primary)]" />
-                                    <span className="text-p-font text-p-size text-p-color font-medium">
-                                        Course Price
+                            {/* Price Display with IVA breakdown */}
+                            <div className="palette-surface palette-border border rounded-xl p-4 space-y-3">
+                                <div className="flex items-center justify-between text-p-color opacity-75">
+                                    <span className="text-sm font-medium">Base Price</span>
+                                    <span className="text-sm font-medium">${courseBasePrice.toFixed(2)}</span>
+                                </div>
+                                <div className="flex items-center justify-between text-p-color opacity-75">
+                                    <span className="text-sm font-medium">IVA ({courseTaxRate}%)</span>
+                                    <span className="text-sm font-medium">${courseTax.toFixed(2)}</span>
+                                </div>
+                                <div className="border-t palette-border pt-3 flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <ShoppingCart size={20} className="text-[var(--palette-primary)]" />
+                                        <span className="text-p-font text-p-size text-p-color font-bold">
+                                            Total (with IVA)
+                                        </span>
+                                    </div>
+                                    <span className="text-h3-font text-h3-size text-h3-color font-black text-[var(--palette-primary)]">
+                                        ${coursePrice.toFixed(2)}
                                     </span>
                                 </div>
-                                <span className="text-h3-font text-h3-size text-h3-color font-black text-[var(--palette-primary)]">
-                                    ${coursePrice.toFixed(2)}
-                                </span>
                             </div>
 
                             {/* Error Display */}

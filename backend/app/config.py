@@ -45,6 +45,7 @@ class Settings(BaseSettings):
     smtp_user: str = ""
     smtp_password: str = ""
     from_email: str = "noreply@beautylab.com"
+    from_name: str = "BeautyLab"
 
     @property
     def async_database_url(self) -> str:

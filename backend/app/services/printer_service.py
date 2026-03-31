@@ -1,8 +1,12 @@
 """Printer service for business logic."""
 
+from datetime import date, datetime
+from decimal import Decimal
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.models.control_number_range import ControlNumberRange
 from app.models.printer import Printer
 from app.schemas.printer import PrinterCreate, PrinterUpdate
 
@@ -24,9 +28,22 @@ class PrinterService:
         return result.scalar_one_or_none()
 
     async def create(self, printer_data: PrinterCreate) -> Printer:
-        """Create a new printer."""
+        """Create a new printer with default control number range."""
         printer = Printer(**printer_data.model_dump())
         self.db.add(printer)
+        await self.db.flush()  # Get printer ID
+
+        # Create default control number range for this printer
+        control_range = ControlNumberRange(
+            printer_id=printer.id,
+            start_number="1",
+            end_number="10000",
+            current_number="0",
+            assigned_date=date.today(),
+            is_active=True,
+        )
+        self.db.add(control_range)
+
         await self.db.commit()
         await self.db.refresh(printer)
         return printer
@@ -62,3 +79,13 @@ class PrinterService:
             query = query.where(Printer.id != exclude_id)
         result = await self.db.execute(query)
         return result.scalar_one_or_none() is not None
+
+    async def get_control_number_range_for_printer(self, printer_id: int) -> ControlNumberRange | None:
+        """Get the active control number range for a printer."""
+        result = await self.db.execute(
+            select(ControlNumberRange).where(
+                ControlNumberRange.printer_id == printer_id,
+                ControlNumberRange.is_active == True
+            )
+        )
+        return result.scalar_one_or_none()

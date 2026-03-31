@@ -7,6 +7,7 @@ from uuid import UUID
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.models.control_number_range import ControlNumberRange
 from app.models.invoice import Invoice, InvoiceAdjustment, InvoiceLine
 from app.models.product import Product
 from app.schemas.invoice import InvoiceAdjustmentCreate, InvoiceCreate, InvoiceLineCreate
@@ -118,11 +119,18 @@ class InvoiceService:
         invoice_number = await self._generate_invoice_number()
         control_number = await self._generate_control_number()
 
+        # Get first active control number range
+        control_range = await self._get_active_control_number_range()
+        if not control_range:
+            raise InvoiceValidationError(
+                "No active control number range found. Please create a printer first."
+            )
+
         # Create invoice
         invoice = Invoice(
             invoice_number=invoice_number,
             control_number=control_number,
-            control_number_range_id=1,  # Default range - would be dynamic in production
+            control_number_range_id=control_range.id,
             point_of_sale_id=1,  # Default POS - would be dynamic in production
             issue_date=date.today(),
             issue_time=datetime.now().time(),
@@ -370,3 +378,13 @@ class InvoiceService:
             "subtotal": str(invoice.subtotal),
             "tax_total": str(invoice.tax_total),
         }
+
+    async def _get_active_control_number_range(self) -> ControlNumberRange | None:
+        """Get the first active control number range."""
+        result = await self.db.execute(
+            select(ControlNumberRange)
+            .where(ControlNumberRange.is_active == True)
+            .order_by(ControlNumberRange.id)
+            .limit(1)
+        )
+        return result.scalar_one_or_none()

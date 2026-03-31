@@ -277,6 +277,232 @@ class EmailService:
             html_content=html_content,
         )
 
+    def send_purchase_confirmation_email(
+        self,
+        to_email: str,
+        invoice_number: str,
+        course_name: str,
+        total: str,
+        issue_date: str,
+        items: list[dict],
+        payment_breakdown: list[dict] | None = None,
+    ) -> bool:
+        """
+        Send purchase confirmation email with payment details.
+
+        Args:
+            to_email: Customer email
+            invoice_number: Invoice number
+            course_name: Name of purchased course
+            total: Total amount paid
+            issue_date: Purchase date
+            items: List of line items
+            payment_breakdown: List of payment methods used (for split payments)
+        """
+        subject = f"Purchase Confirmation - {course_name} - BeautyLab"
+
+        # Build items HTML
+        items_html = ""
+        for item in items:
+            desc = item.get("description", "")
+            qty = item.get("quantity", 1)
+            price = item.get("unit_price", "0.00")
+            line_total = item.get("line_total", "0.00")
+            items_html += (
+                f"<tr>"
+                f'<td style="padding: 8px; border-bottom: 1px solid #ddd;">{desc}</td>'
+                f'<td style="padding: 8px; border-bottom: 1px solid #ddd; '
+                f'text-align: center;">{qty}</td>'
+                f'<td style="padding: 8px; border-bottom: 1px solid #ddd; '
+                f'text-align: right;">${price}</td>'
+                f'<td style="padding: 8px; border-bottom: 1px solid #ddd; '
+                f'text-align: right;">${line_total}</td>'
+                f"</tr>"
+            )
+
+        # Build payment breakdown HTML
+        payment_html = ""
+        if payment_breakdown:
+            payment_html = """
+            <div style="margin-top: 20px;">
+                <h3 style="color: #333; font-size: 16px; margin-bottom: 10px;">
+                    Payment Breakdown
+                </h3>
+                <table style="width: 100%; margin-top: 10px;">
+                    <thead>
+                        <tr>
+                            <th style="background-color: #4CAF50;
+                                color: white; padding: 8px; text-align: left;">Method</th>
+                            <th style="background-color: #4CAF50;
+                                color: white; padding: 8px; text-align: right;">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            """
+            for payment in payment_breakdown:
+                method = payment.get("method", "Unknown")
+                amount = payment.get("amount", "0.00")
+                reference = payment.get("reference", "")
+                ref_display = f" ({reference})" if reference else ""
+                payment_html += (
+                    f"<tr>"
+                    f'<td style="padding: 8px; border-bottom: 1px solid #ddd;">'
+                    f"{method}{ref_display}</td>"
+                    f'<td style="padding: 8px; border-bottom: 1px solid #ddd; '
+                    f'text-align: right;">${amount}</td>'
+                    f"</tr>"
+                )
+            payment_html += """
+                    </tbody>
+                </table>
+            </div>
+            """
+
+        html_content = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <style>
+                body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+                .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                .header {{ background-color: #4CAF50; color: white; padding: 20px;
+                           text-align: center; }}
+                .content {{ padding: 20px; background-color: #f9f9f9; }}
+                .invoice-details {{ background-color: white; padding: 20px; margin: 20px 0;
+                                   border-radius: 4px; }}
+                .success-banner {{ background-color: #d4edda; border: 1px solid #c3e6cb;
+                                   color: #155724; padding: 15px; border-radius: 4px;
+                                   margin: 20px 0; text-align: center; }}
+                table {{ width: 100%; border-collapse: collapse; margin: 20px 0; }}
+                th {{ background-color: #4CAF50; color: white; padding: 10px; text-align: left; }}
+                .total {{ font-size: 18px; font-weight: bold; text-align: right;
+                         margin-top: 20px; padding-top: 10px; border-top: 2px solid #4CAF50; }}
+                .footer {{ text-align: center; padding: 20px; color: #666; font-size: 12px; }}
+                .access-info {{ background-color: #e7f3ff; border: 1px solid #b3d9ff;
+                               color: #004085; padding: 15px; border-radius: 4px;
+                               margin: 20px 0; }}
+                .access-info h3 {{ margin-top: 0; color: #004085; }}
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <h1>BeautyLab</h1>
+                    <p>Purchase Confirmation</p>
+                </div>
+
+                <div class="content">
+                    <div class="success-banner">
+                        <strong>✓ Payment Successful!</strong><br>
+                        Your purchase has been confirmed.
+                    </div>
+
+                    <p>Dear Valued Customer,</p>
+                    <p>Thank you for your purchase! Your enrollment has been confirmed.</p>
+
+                    <div class="invoice-details">
+                        <p><strong>Invoice Number:</strong> {invoice_number}</p>
+                        <p><strong>Purchase Date:</strong> {issue_date}</p>
+                        <p><strong>Course:</strong> {course_name}</p>
+
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Description</th>
+                                    <th style="text-align: center;">Qty</th>
+                                    <th style="text-align: right;">Price</th>
+                                    <th style="text-align: right;">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {items_html}
+                            </tbody>
+                        </table>
+
+                        {payment_html}
+
+                        <div class="total">
+                            Total Paid: ${total}
+                        </div>
+                    </div>
+
+                    <div class="access-info">
+                        <h3>📚 Access Your Course</h3>
+                        <p>You can now access your course materials
+                           from your dashboard:</p>
+                        <p style="text-align: center; margin: 15px 0;">
+                            <a href="http://localhost:5173"
+                               style="background-color: #4CAF50; color: white;
+                                      padding: 12px 24px; text-decoration: none;
+                                      border-radius: 4px; display: inline-block;">
+                                Go to Dashboard
+                            </a>
+                        </p>
+                        <p style="font-size: 14px; margin-top: 10px;">
+                            Navigate to "My Courses" to start learning!
+                        </p>
+                    </div>
+
+                    <p>If you have questions or need assistance,
+                       please contact our support team.</p>
+
+                    <p>Best regards,<br><strong>The BeautyLab Team</strong></p>
+                </div>
+
+                <div class="footer">
+                    <p>&copy; 2026 BeautyLab. All rights reserved.</p>
+                    <p>Need help? Contact us at support@beautylab.com</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        """
+
+        text_content = f"""
+        Purchase Confirmation - {course_name}
+
+        Invoice Number: {invoice_number}
+        Purchase Date: {issue_date}
+        Course: {course_name}
+
+        Items:
+        {self._format_items_text(items)}
+
+        {"Payment Breakdown:" if payment_breakdown else ""}
+        {self._format_payments_text(payment_breakdown) if payment_breakdown else ""}
+
+        Total Paid: ${total}
+
+        ✓ Your payment was successful!
+
+        Access Your Course:
+        You can now access your course materials from your dashboard.
+        Navigate to "My Courses" to start learning!
+
+        If you have any questions, please contact us at support@beautylab.com
+
+        Best regards,
+        The BeautyLab Team
+        """
+
+        return self.send_email(
+            to_email=to_email,
+            subject=subject,
+            html_content=html_content,
+            text_content=text_content,
+        )
+
+    def _format_payments_text(self, payments: list[dict]) -> str:
+        """Format payment breakdown as text."""
+        lines = []
+        for payment in payments:
+            method = payment.get("method", "Unknown")
+            amount = payment.get("amount", "0.00")
+            reference = payment.get("reference", "")
+            ref_display = f" ({reference})" if reference else ""
+            lines.append(f"- {method}{ref_display}: ${amount}")
+        return "\n".join(lines)
+
 
 # Singleton instance
 _email_service = None

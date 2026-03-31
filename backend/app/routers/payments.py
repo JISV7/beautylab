@@ -4,6 +4,7 @@ from decimal import Decimal
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.dependencies import CurrentUser
@@ -15,6 +16,7 @@ from app.schemas.payment import (
     PaymentMethodResponse,
     PaymentResponse,
     PaymentWithDetails,
+    SplitPaymentItem,
     SplitPaymentRequest,
     SplitPaymentResponse,
 )
@@ -25,6 +27,23 @@ from app.services.payment_service import (
 )
 
 router = APIRouter(prefix="/payments", tags=["Payments"])
+
+
+class CoursePurchaseRequest(BaseModel):
+    """Request for course purchase with split payment."""
+
+    course_id: UUID
+    payments: list[SplitPaymentItem]
+
+
+class CoursePurchaseResponse(BaseModel):
+    """Response for course purchase."""
+
+    success: bool
+    invoice_number: str
+    total_paid: Decimal
+    payments: list[PaymentResponse]
+    message: str
 
 
 @router.get("/methods", response_model=list[PaymentMethodResponse])
@@ -246,3 +265,173 @@ async def get_payment_method_statistics(
     """
     payment_service = PaymentService(db)
     return await payment_service.get_payment_method_statistics()
+
+
+@router.post("/purchase-course", response_model=CoursePurchaseResponse)
+async def purchase_course(
+    request: CoursePurchaseRequest,
+    current_user: User = Depends(CurrentUser),
+    db: AsyncSession = Depends(get_db),
+) -> CoursePurchaseResponse:
+    """
+    Purchase a course with split payment support.
+
+    This endpoint:
+    1. Creates an invoice for the course
+    2. Processes split payment across multiple methods
+    3. Creates enrollment
+    4. Sends confirmation email
+
+    **Body:**
+    ```json
+    {
+        "course_id": "uuid",
+        "payments": [
+            {
+                "method_type": "credit_card",
+                "amount": 50.00,
+                "details": {
+                    "card_holder_name": "John Doe",
+                    "card_number": "4111111111111111",
+                    "expiry_month": 12,
+                    "expiry_year": 2027,
+                    "cvv": "123",
+                    "card_brand": "visa"
+                }
+            },
+            {
+                "method_type": "zelle",
+                "amount": 50.00,
+                "details": {
+                    "sender_name": "John Doe",
+                    "sender_email": "john@example.com",
+                    "recipient_email": "payments@beautylab.com",
+                    "confirmation_code": "ZELLE123456"
+                }
+            }
+        ]
+    }
+    ```
+
+    **Payment Methods Supported:**
+    - credit_card
+    - debit_card
+    - cash_deposit
+    - bank_transfer
+    - zelle
+    - pago_movil
+    - paypal
+    """
+    from app.services.catalog_service import CatalogService
+    from app.services.invoice_service import InvoiceNotFoundError, InvoiceService
+
+    catalog_service = CatalogService(db)
+    invoice_service = InvoiceService(db)
+    payment_service = PaymentService(db)
+
+    # Verify course exists and get product_id
+    course = await catalog_service.get_course_by_id(request.course_id)
+    if not course:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Course {request.course_id} not found",
+        )
+
+    if not course.product_id:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Course does not have an associated product",
+        )
+
+    # Create invoice for the purchase
+    try:
+        invoice = await invoice_service.create_invoice_for_course_purchase(
+            user_id=current_user.id,
+            course_id=request.course_id,
+            product_id=course.product_id,
+            user_email=current_user.email,
+            user_rif=None,  # Could be added to user profile
+            user_business_name=None,
+        )
+    except InvoiceNotFoundError as e:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(e),
+        ) from e
+
+    # Create split payment request
+    split_request = SplitPaymentRequest(
+        invoice_id=invoice.id,
+        payments=request.payments,
+    )
+
+    # Process payment
+    try:
+        payments, receipt_data = await payment_service.process_course_purchase(
+            user_id=current_user.id,
+            user_email=current_user.email,
+            course_id=request.course_id,
+            product_id=course.product_id,
+            request=split_request,
+        )
+    except PaymentAmountMismatchError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e),
+        ) from e
+    except PaymentMethodNotFoundError as e:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(e),
+        ) from e
+
+    return CoursePurchaseResponse(
+        success=True,
+        invoice_number=invoice.invoice_number,
+        total_paid=invoice.total,
+        payments=[PaymentResponse.model_validate(p) for p in payments],
+        message="Purchase successful! A confirmation email has been sent.",
+    )
+
+
+@router.get("/invoice/{invoice_id}/receipt")
+async def get_invoice_receipt(
+    invoice_id: UUID,
+    current_user: User = Depends(CurrentUser),
+    db: AsyncSession = Depends(get_db),
+) -> dict:
+    """
+    Get invoice receipt data for display on confirmation page.
+
+    Returns invoice details, line items, and payment breakdown.
+    """
+    from app.services.invoice_service import InvoiceService
+    from app.services.payment_service import PaymentService
+
+    invoice_service = InvoiceService(db)
+    payment_service = PaymentService(db)
+
+    # Get receipt data
+    receipt_data = await invoice_service.get_invoice_receipt_data(invoice_id)
+
+    if not receipt_data:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Invoice {invoice_id} not found",
+        )
+
+    # Check authorization - user must own the invoice
+    invoice = await invoice_service.get_invoice_by_id(invoice_id)
+    if not invoice or invoice.client_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not authorized to view this invoice",
+        )
+
+    # Get payment breakdown
+    payment_breakdown = await payment_service.get_payment_breakdown_for_email(invoice_id)
+
+    return {
+        **receipt_data,
+        "payment_breakdown": payment_breakdown,
+    }

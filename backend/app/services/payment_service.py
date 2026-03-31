@@ -14,8 +14,11 @@ from app.schemas.payment import (
     CashDepositDetails,
     CreditCardDetails,
     DebitCardDetails,
+    PagoMovilDetails,
+    PaypalDetails,
     SplitPaymentItem,
     SplitPaymentRequest,
+    ZelleDetails,
 )
 
 
@@ -242,6 +245,24 @@ class PaymentService:
             details.deposit_bank = transfer.bank_name
             details.deposit_date = transfer.transfer_date
 
+        elif isinstance(payment_item.details, ZelleDetails):
+            zelle = payment_item.details
+            details.deposit_reference = zelle.confirmation_code
+            details.deposit_bank = "Zelle"
+            details.card_holder_name = zelle.sender_name
+
+        elif isinstance(payment_item.details, PagoMovilDetails):
+            pago = payment_item.details
+            details.deposit_reference = pago.reference_code
+            details.deposit_bank = pago.bank_name
+            details.card_holder_name = pago.rif_cedula
+
+        elif isinstance(payment_item.details, PaypalDetails):
+            paypal = payment_item.details
+            details.deposit_reference = paypal.transaction_id
+            details.deposit_bank = "PayPal"
+            details.card_holder_name = paypal.payer_name
+
         self.db.add(details)
         await self.db.flush()
 
@@ -325,3 +346,114 @@ class PaymentService:
             "total_payments": total,
             "methods": methods,
         }
+
+    async def get_payment_breakdown_for_email(
+        self,
+        invoice_id: UUID,
+    ) -> list[dict]:
+        """
+        Get payment breakdown formatted for email template.
+
+        Returns:
+            List of payment info dicts with method and amount
+        """
+        payments = await self.get_invoice_payments(invoice_id)
+        breakdown = []
+
+        for payment in payments:
+            method_type = "Unknown"
+            reference = ""
+
+            if payment.payment_method:
+                method_type = payment.payment_method.method_type.replace("_", " ").title()
+
+            # Get reference from payment details
+            if payment.details:
+                if payment.details.deposit_reference:
+                    reference = payment.details.deposit_reference
+                elif payment.details.card_number_last4:
+                    reference = f"****{payment.details.card_number_last4}"
+
+            breakdown.append(
+                {
+                    "method": method_type,
+                    "amount": str(payment.amount),
+                    "reference": reference,
+                }
+            )
+
+        return breakdown
+
+    async def process_course_purchase(
+        self,
+        user_id: UUID,
+        user_email: str,
+        course_id: UUID,
+        product_id: UUID,
+        request: SplitPaymentRequest,
+    ) -> tuple[list[Payment], dict]:
+        """
+        Process a complete course purchase with split payment.
+
+        This method:
+        1. Validates invoice total matches payments
+        2. Creates payments
+        3. Creates enrollment
+        4. Returns payment breakdown for email
+
+        Args:
+            user_id: Purchasing user ID
+            user_email: User's email for confirmation
+            course_id: Course being purchased
+            product_id: Product associated with course
+            request: Split payment request
+
+        Returns:
+            Tuple of (payments list, receipt data dict)
+        """
+        from app.services.email_service import get_email_service
+        from app.services.enrollment_service import EnrollmentService
+        from app.services.invoice_service import InvoiceService
+
+        # Process the split payment
+        payments = await self.process_split_payment(request)
+
+        # Get invoice and course info for email
+        invoice_service = InvoiceService(self.db)
+        receipt_data = await invoice_service.get_invoice_receipt_data(request.invoice_id)
+
+        if receipt_data:
+            # Get payment breakdown
+            payment_breakdown = await self.get_payment_breakdown_for_email(request.invoice_id)
+
+            # Get course name from invoice line
+            course_name = "Course Enrollment"
+            if receipt_data.get("items"):
+                course_name = receipt_data["items"][0].get("description", course_name)
+
+            # Send confirmation email
+            email_service = get_email_service()
+            email_service.send_purchase_confirmation_email(
+                to_email=user_email,
+                invoice_number=receipt_data["invoice_number"],
+                course_name=course_name,
+                total=receipt_data["total"],
+                issue_date=receipt_data["issue_date"],
+                items=receipt_data["items"],
+                payment_breakdown=payment_breakdown,
+            )
+
+            # Create enrollment
+            enrollment_service = EnrollmentService(self.db)
+            try:
+                await enrollment_service.create_enrollment(
+                    user_id=user_id,
+                    course_id=course_id,
+                    invoice_id=request.invoice_id,
+                    allow_duplicate=False,
+                )
+            except Exception:
+                # Enrollment might already exist, continue anyway
+                pass
+
+        return payments, receipt_data

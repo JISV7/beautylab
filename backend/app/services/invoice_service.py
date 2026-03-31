@@ -30,6 +30,61 @@ class InvoiceService:
     def __init__(self, db: AsyncSession):
         self.db = db
 
+    async def create_invoice_for_course_purchase(
+        self,
+        user_id: UUID,
+        course_id: UUID,
+        product_id: UUID,
+        user_email: str,
+        user_rif: str | None = None,
+        user_business_name: str | None = None,
+    ) -> Invoice:
+        """
+        Create an invoice for a course purchase.
+
+        Args:
+            user_id: Purchasing user ID
+            course_id: Course being purchased
+            product_id: Product associated with the course
+            user_email: User's email for notifications
+            user_rif: User's RIF (optional)
+            user_business_name: User's business name (optional)
+
+        Returns:
+            Created invoice
+        """
+        # Get product details
+        product = await self._get_product_by_id(product_id)
+        if not product:
+            raise InvoiceNotFoundError(f"Product {product_id} not found")
+
+        # Create invoice data
+        invoice_data = InvoiceCreate(
+            client_id=user_id,
+            client_rif=user_rif,
+            client_business_name=user_business_name,
+            client_document_type=None,
+            client_document_number=None,
+            client_fiscal_address=None,
+            notes=f"Course purchase - Course ID: {course_id}",
+            lines=[
+                InvoiceLineCreate(
+                    product_id=product_id,
+                    description=f"Course Enrollment - {product.name}",
+                    quantity=Decimal("1"),
+                    unit_price=product.price,
+                    tax_rate=product.tax_rate,
+                    is_exempt=product.tax_exempt,
+                )
+            ],
+            adjustments=[],
+        )
+
+        # Create the invoice
+        invoice = await self.create_invoice(invoice_data)
+
+        return invoice
+
     async def get_invoice_by_id(self, invoice_id: UUID) -> Invoice | None:
         """Get invoice by ID."""
         result = await self.db.execute(select(Invoice).where(Invoice.id == invoice_id))
@@ -252,3 +307,66 @@ class InvoiceService:
         invoices = list(result.scalars().all())
 
         return invoices, total
+
+    async def get_invoice_with_details(
+        self,
+        invoice_id: UUID,
+    ) -> Invoice | None:
+        """Get invoice with line items and adjustments."""
+        from sqlalchemy.orm import selectinload
+
+        result = await self.db.execute(
+            select(Invoice)
+            .options(
+                selectinload(Invoice.lines),
+                selectinload(Invoice.adjustments),
+            )
+            .where(Invoice.id == invoice_id)
+        )
+        return result.scalar_one_or_none()
+
+    async def get_invoice_receipt_data(
+        self,
+        invoice_id: UUID,
+    ) -> dict | None:
+        """
+        Get invoice data formatted for receipt email.
+
+        Returns:
+            Dictionary with invoice data for email template
+        """
+        invoice = await self.get_invoice_with_details(invoice_id)
+        if not invoice:
+            return None
+
+        # Get user email if available
+        user_email = None
+        if invoice.client_id:
+            from app.models.user import User
+
+            user_result = await self.db.execute(
+                select(User.email).where(User.id == invoice.client_id)
+            )
+            user_email = user_result.scalar_one_or_none()
+
+        # Format line items
+        items = []
+        for line in invoice.lines:
+            items.append(
+                {
+                    "description": line.description,
+                    "quantity": str(line.quantity),
+                    "unit_price": str(line.unit_price),
+                    "line_total": str(line.line_total),
+                }
+            )
+
+        return {
+            "invoice_number": invoice.invoice_number,
+            "total": str(invoice.total),
+            "issue_date": invoice.issue_date.isoformat(),
+            "items": items,
+            "user_email": user_email,
+            "subtotal": str(invoice.subtotal),
+            "tax_total": str(invoice.tax_total),
+        }

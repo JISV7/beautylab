@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { CourseHero, LicenseTable, GiftLicenseModal, type License } from '../components/course';
-import { ArrowLeft } from 'lucide-react';
+import {
+    PaymentMethodSelector,
+    SplitPaymentManager,
+    PurchaseConfirmation,
+    type PaymentMethodType,
+    type SplitPaymentEntry,
+    type PaymentBreakdown,
+} from '../components/payment';
+import { ArrowLeft, X, ShoppingCart, Loader2 } from 'lucide-react';
 
 const API_URL = 'http://localhost:8000';
 
@@ -24,12 +32,49 @@ interface CourseDetails {
     user_licenses: License[];
 }
 
+interface PurchaseResponse {
+    success: boolean;
+    invoice_number: string;
+    total_paid: string;
+    payments: Array<{
+        id: string;
+        invoice_id: string;
+        amount: string;
+        status: string;
+    }>;
+    message: string;
+}
+
+interface ReceiptData {
+    invoice_number: string;
+    total: string;
+    issue_date: string;
+    items: Array<{
+        description: string;
+        quantity: string;
+        unit_price: string;
+        line_total: string;
+    }>;
+    user_email?: string;
+    payment_breakdown?: PaymentBreakdown[];
+}
+
+type PaymentStep = 'idle' | 'method_selection' | 'payment_details' | 'processing' | 'confirmation';
+
 export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, onBack }) => {
     const [course, setCourse] = useState<CourseDetails | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [giftModalOpen, setGiftModalOpen] = useState(false);
     const [selectedLicenseId, setSelectedLicenseId] = useState<string | null>(null);
+
+    // Payment state - starts as 'idle' until user clicks Buy
+    const [paymentStep, setPaymentStep] = useState<PaymentStep>('idle');
+    const [selectedMethods, setSelectedMethods] = useState<PaymentMethodType[]>(['credit_card']);
+    const [splitPayments, setSplitPayments] = useState<SplitPaymentEntry[]>([]);
+    const [purchaseError, setPurchaseError] = useState<string | null>(null);
+    const [receiptData, setReceiptData] = useState<ReceiptData | null>(null);
+    const [isPaymentValid, setIsPaymentValid] = useState(false);
 
     const fetchCourseDetails = async () => {
         try {
@@ -57,8 +102,158 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
     }, [courseId]);
 
     const handleBuy = () => {
-        // TODO: Implement purchase flow
-        alert('Purchase functionality coming soon!');
+        setPaymentStep('method_selection');
+        setPurchaseError(null);
+    };
+
+    const handleMethodToggle = (method: PaymentMethodType) => {
+        if (selectedMethods.includes(method)) {
+            if (selectedMethods.length > 1) {
+                setSelectedMethods(selectedMethods.filter((m) => m !== method));
+            }
+        } else {
+            setSelectedMethods([...selectedMethods, method]);
+        }
+    };
+
+    const handleProceedToPayment = () => {
+        if (selectedMethods.length === 0) return;
+        setPaymentStep('payment_details');
+    };
+
+    const handlePaymentsChange = (payments: SplitPaymentEntry[]) => {
+        setSplitPayments(payments);
+    };
+
+    const formatPaymentDetails = (entry: SplitPaymentEntry) => {
+        const { method, values } = entry;
+
+        switch (method) {
+            case 'credit_card':
+                return {
+                    card_holder_name: values.card_holder_name,
+                    card_number: values.card_number,
+                    expiry_month: parseInt(values.expiry_month || '1'),
+                    expiry_year: parseInt(values.expiry_year || '2025'),
+                    cvv: values.cvv,
+                    card_brand: values.card_brand,
+                };
+            case 'debit_card':
+                return {
+                    card_holder_name: values.card_holder_name,
+                    card_number: values.card_number,
+                    expiry_month: parseInt(values.expiry_month || '1'),
+                    expiry_year: parseInt(values.expiry_year || '2025'),
+                    cvv: values.cvv,
+                    bank_name: values.bank_name,
+                };
+            case 'zelle':
+                return {
+                    sender_name: values.sender_name,
+                    sender_email: values.sender_email,
+                    sender_phone: values.sender_phone,
+                    recipient_email: values.recipient_email,
+                    confirmation_code: values.confirmation_code,
+                };
+            case 'pago_movil':
+                return {
+                    bank_name: values.bank_name,
+                    phone_number: values.phone_number,
+                    rif_cedula: values.rif_cedula,
+                    reference_code: values.reference_code,
+                };
+            case 'paypal':
+                return {
+                    paypal_email: values.paypal_email,
+                    transaction_id: values.transaction_id,
+                    payer_name: values.payer_name,
+                };
+            case 'cash_deposit':
+                return {
+                    deposit_reference: values.deposit_reference,
+                    deposit_bank: values.bank_name,
+                    deposit_date: values.deposit_date,
+                };
+            case 'bank_transfer':
+                return {
+                    transfer_reference: values.transfer_reference,
+                    bank_name: values.bank_name,
+                    transfer_date: values.transfer_date,
+                    account_holder: values.account_holder,
+                };
+            default:
+                return {};
+        }
+    };
+
+    const handleSubmitPayment = async () => {
+        if (!isPaymentValid || !course) return;
+
+        setPaymentStep('processing');
+        setPurchaseError(null);
+
+        try {
+            const token = localStorage.getItem('access_token');
+
+            // Format payments for API
+            const payments = splitPayments.map((entry) => ({
+                method_type: entry.method,
+                amount: entry.amount.toFixed(2),
+                details: formatPaymentDetails(entry),
+            }));
+
+            const response = await axios.post<PurchaseResponse>(
+                `${API_URL}/payments/purchase-course`,
+                {
+                    course_id: courseId,
+                    payments,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+
+            setReceiptData({
+                invoice_number: response.data.invoice_number,
+                total: response.data.total_paid,
+                issue_date: new Date().toISOString(),
+                items: [
+                    {
+                        description: `Course Enrollment - ${course.title}`,
+                        quantity: '1',
+                        unit_price: response.data.total_paid,
+                        line_total: response.data.total_paid,
+                    },
+                ],
+                payment_breakdown: splitPayments.map((p) => ({
+                    method: p.method.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase()),
+                    amount: p.amount.toFixed(2),
+                    reference: p.values.confirmation_code || p.values.reference_code || p.values.transaction_id || '',
+                })),
+                user_email: undefined,
+            });
+
+            setPaymentStep('confirmation');
+        } catch (err: any) {
+            console.error('Payment failed:', err);
+            setPurchaseError(err.response?.data?.detail || 'Payment failed. Please try again.');
+            setPaymentStep('payment_details');
+        }
+    };
+
+    const handleGoToDashboard = () => {
+        // Navigate to dashboard - this would be handled by the parent app
+        if (onBack) {
+            onBack();
+        }
+    };
+
+    const handleViewCourses = () => {
+        // Navigate to user's courses
+        console.log('Navigate to courses');
     };
 
     const handleGift = (licenseId: string) => {
@@ -80,11 +275,17 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
             );
             setGiftModalOpen(false);
             setSelectedLicenseId(null);
-            fetchCourseDetails(); // Refresh licenses
+            fetchCourseDetails();
         } catch (err: any) {
             console.error('Failed to gift license:', err);
             alert(err.response?.data?.detail || 'Failed to gift license');
         }
+    };
+
+    const parsePrice = (priceStr: string | null): number => {
+        if (!priceStr) return 0;
+        const cleaned = priceStr.replace(/[^0-9.]/g, '');
+        return parseFloat(cleaned) || 0;
     };
 
     if (isLoading) {
@@ -113,10 +314,40 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
         );
     }
 
+    const coursePrice = parsePrice(course.product_price);
+
+    // Render confirmation step
+    if (paymentStep === 'confirmation' && receiptData) {
+        return (
+            <div className="p-6">
+                {onBack && (
+                    <button
+                        onClick={onBack}
+                        className="inline-flex items-center gap-2 text-p-font text-p-color hover:opacity-60 transition-opacity mb-6"
+                    >
+                        <ArrowLeft size={18} />
+                        Back to Explore
+                    </button>
+                )}
+                <PurchaseConfirmation
+                    invoiceNumber={receiptData.invoice_number}
+                    courseName={course.title}
+                    totalPaid={receiptData.total}
+                    issueDate={receiptData.issue_date}
+                    items={receiptData.items}
+                    paymentBreakdown={receiptData.payment_breakdown}
+                    userEmail={receiptData.user_email}
+                    onGoToDashboard={handleGoToDashboard}
+                    onViewCourses={handleViewCourses}
+                />
+            </div>
+        );
+    }
+
     return (
         <div className="p-6">
             {/* Back Button */}
-            {onBack && (
+            {onBack && paymentStep !== 'method_selection' && paymentStep !== 'payment_details' && (
                 <button
                     onClick={onBack}
                     className="inline-flex items-center gap-2 text-p-font text-p-color hover:opacity-60 transition-opacity mb-6"
@@ -124,6 +355,125 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
                     <ArrowLeft size={18} />
                     Back to Explore
                 </button>
+            )}
+
+            {/* Payment Modal Overlay */}
+            {(paymentStep === 'method_selection' || paymentStep === 'payment_details') && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+                    <div className="palette-surface palette-border border rounded-xl max-w-4xl w-full my-8 max-h-[90vh] overflow-y-auto">
+                        {/* Header */}
+                        <div className="sticky top-0 palette-surface border-b border-[var(--palette-border)] p-6 flex items-center justify-between z-10">
+                            <div>
+                                <h2 className="text-h3-font text-h3-size text-h3-color">
+                                    Complete Your Purchase
+                                </h2>
+                                <p className="text-p-font text-p-size text-p-color opacity-60">
+                                    {course.title}
+                                </p>
+                            </div>
+                            <button
+                                onClick={() => setPaymentStep('idle')}
+                                className="p-2 hover:bg-[var(--palette-background)] rounded-lg transition-colors"
+                            >
+                                <X size={24} className="text-p-color" />
+                            </button>
+                        </div>
+
+                        {/* Content */}
+                        <div className="p-6 space-y-6">
+                            {/* Price Display */}
+                            <div className="palette-surface palette-border border rounded-xl p-4 flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <ShoppingCart size={24} className="text-[var(--palette-primary)]" />
+                                    <span className="text-p-font text-p-size text-p-color font-medium">
+                                        Course Price
+                                    </span>
+                                </div>
+                                <span className="text-h3-font text-h3-size text-h3-color font-black text-[var(--palette-primary)]">
+                                    ${coursePrice.toFixed(2)}
+                                </span>
+                            </div>
+
+                            {/* Error Display */}
+                            {purchaseError && (
+                                <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4">
+                                    <p className="text-red-600 dark:text-red-400 font-medium">
+                                        {purchaseError}
+                                    </p>
+                                </div>
+                            )}
+
+                            {/* Step 1: Method Selection */}
+                            {paymentStep === 'method_selection' && (
+                                <div className="space-y-4">
+                                    <h3 className="text-h4-font text-h4-size text-h4-color font-semibold">
+                                        Select Payment Method(s)
+                                    </h3>
+                                    <p className="text-p-font text-p-size text-p-color opacity-60 text-sm">
+                                        You can split your payment across multiple methods
+                                    </p>
+                                    <PaymentMethodSelector
+                                        selectedMethods={selectedMethods}
+                                        onToggleMethod={handleMethodToggle}
+                                        allowMultiple={true}
+                                    />
+                                    <button
+                                        onClick={handleProceedToPayment}
+                                        className="theme-button theme-button-primary w-full"
+                                    >
+                                        Continue to Payment Details
+                                    </button>
+                                </div>
+                            )}
+
+                            {/* Step 2: Payment Details */}
+                            {paymentStep === 'payment_details' && (
+                                <div className="space-y-4">
+                                    <div className="flex items-center justify-between">
+                                        <button
+                                            onClick={() => setPaymentStep('method_selection')}
+                                            className="text-p-font text-p-size text-p-color hover:underline"
+                                        >
+                                            ← Back to Methods
+                                        </button>
+                                        <h3 className="text-h4-font text-h4-size text-h4-color font-semibold">
+                                            Payment Details
+                                        </h3>
+                                    </div>
+
+                                    <SplitPaymentManager
+                                        totalAmount={coursePrice}
+                                        onPaymentsChange={handlePaymentsChange}
+                                        onValid={setIsPaymentValid}
+                                    />
+
+                                    <button
+                                        onClick={handleSubmitPayment}
+                                        disabled={!isPaymentValid}
+                                        className="theme-button theme-button-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        Complete Purchase - ${coursePrice.toFixed(2)}
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Processing Overlay */}
+            {paymentStep === 'processing' && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+                    <div className="palette-surface palette-border border rounded-xl p-8 text-center max-w-md">
+                        <Loader2 size={48} className="animate-spin mx-auto mb-4 text-[var(--palette-primary)]" />
+                        <h3 className="text-h4-font text-h4-size text-h4-color mb-2">
+                            Processing Payment
+                        </h3>
+                        <p className="text-p-font text-p-size text-p-color opacity-60">
+                            Please wait while we process your payment...
+                        </p>
+                    </div>
+                </div>
             )}
 
             {/* Course Hero Section */}

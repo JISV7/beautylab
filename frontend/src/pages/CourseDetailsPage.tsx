@@ -25,6 +25,8 @@ interface CourseDetails {
     duration_hours: number | null;
     level_name: string | null;
     category_name: string | null;
+    product_name: string | null;
+    product_sku: string | null;
     product_price: string | null;
     video_url: string | null;
     user_licenses: License[];
@@ -501,6 +503,8 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
                 duration_hours={course.duration_hours}
                 level_name={course.level_name}
                 category_name={course.category_name}
+                product_name={course.product_name}
+                product_sku={course.product_sku}
                 price={course.product_price}
                 video_url={course.video_url}
                 onBuy={handleBuy}

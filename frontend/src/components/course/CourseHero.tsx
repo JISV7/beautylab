@@ -8,6 +8,8 @@ export interface CourseHeroProps {
     duration_hours: number | null;
     level_name: string | null;
     category_name: string | null;
+    product_name: string | null;
+    product_sku: string | null;
     price: string | null;
     video_url: string | null;
     onBuy?: () => void;
@@ -20,6 +22,8 @@ export const CourseHero: React.FC<CourseHeroProps> = ({
     duration_hours,
     level_name,
     category_name,
+    product_name,
+    product_sku,
     price,
     video_url,
     onBuy,
@@ -104,13 +108,38 @@ export const CourseHero: React.FC<CourseHeroProps> = ({
 
                 {/* Price and Buy Button */}
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-6 border-t border-[var(--palette-border)]">
-                    <div>
-                        <p className="text-[10px] font-bold text-p-color opacity-40 uppercase tracking-wider mb-1">
-                            Enrollment Price
-                        </p>
-                        <p className="text-2xl font-black text-p-color">
-                            {formatPrice(price)}
-                        </p>
+                    <div className="space-y-2">
+                        {/* Product Name */}
+                        {product_name && (
+                            <div>
+                                <p className="text-[10px] font-bold text-p-color opacity-40 uppercase tracking-wider mb-1">
+                                    Product Name
+                                </p>
+                                <p className="text-sm font-semibold text-p-color">
+                                    {product_name}
+                                </p>
+                            </div>
+                        )}
+                        {/* Product SKU */}
+                        {product_sku && (
+                            <div>
+                                <p className="text-[10px] font-bold text-p-color opacity-40 uppercase tracking-wider mb-1">
+                                    SKU
+                                </p>
+                                <p className="text-sm font-mono text-p-color opacity-80">
+                                    {product_sku}
+                                </p>
+                            </div>
+                        )}
+                        {/* Price */}
+                        <div>
+                            <p className="text-[10px] font-bold text-p-color opacity-40 uppercase tracking-wider mb-1">
+                                Enrollment Price
+                            </p>
+                            <p className="text-2xl font-black text-p-color">
+                                {formatPrice(price)}
+                            </p>
+                        </div>
                     </div>
                     <button
                         onClick={onBuy}

@@ -27,7 +27,7 @@ def upgrade() -> None:
         type_=sa.String(length=20),
         existing_nullable=True,
     )
-    
+
     # Alter phone column from String(12) to String(20) to accommodate international format
     op.alter_column(
         "users",
@@ -47,7 +47,7 @@ def downgrade() -> None:
         type_=sa.String(length=12),
         existing_nullable=True,
     )
-    
+
     # Revert rif column to String(10)
     op.alter_column(
         "users",

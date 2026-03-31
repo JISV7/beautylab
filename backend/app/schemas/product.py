@@ -23,7 +23,7 @@ class ProductBase(BaseModel):
     )
     tax_type: Literal["gravado", "exento", "exonerado"] = Field(
         default="gravado",
-        description="Tax type: gravado (with IVA), exento (without IVA), exonerado (exempt)",
+        description="Tax type: gravado (With IVA), exento (Without IVA), exonerado (legal exempt)",
     )
     is_active: bool = Field(default=True, description="Whether product is active")
 
@@ -73,7 +73,7 @@ class ProductResponse(BaseModel):
     sku: str
     price: Decimal
     tax_rate: Decimal
-    tax_type: str
+    tax_type: Literal["gravado", "exento", "exonerado"]
     is_active: bool
     created_at: datetime
     updated_at: datetime

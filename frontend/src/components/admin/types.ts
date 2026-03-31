@@ -134,7 +134,7 @@ export interface CourseFormData {
     product_name: string;
     sku: string;
     price: string;
-    tax_rate: string;
+    tax_rate: number;
     tax_type: 'gravado' | 'exento' | 'exonerado';
 }
 

@@ -38,10 +38,13 @@ services:
       db:
         condition: service_healthy
     volumes:
-      - ./backend:/app
-    # Overriding the default command since we'll use entrypoint.sh in Dockerfile
-    # or just specify it here if we want to bypass Dockerfile CMD
-    command: /app/entrypoint.sh
+      - ./backend/app:/app/app
+      - ./backend/tests:/app/tests
+      - ./backend/alembic:/app/alembic
+      - ./backend/alembic.ini:/app/alembic.ini
+      - ./backend/entrypoint.sh:/app/entrypoint.sh
+      - ./backend/pyproject.toml:/app/pyproject.toml
+      - ./backend/uv.lock:/app/uv.lock
 
 volumes:
   postgres_data:

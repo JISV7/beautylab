@@ -40,8 +40,8 @@ def upgrade() -> None:
             "tax_type",
             sa.String(length=20),
             nullable=False,
-            server_default="taxed",
-            comment="taxed, exempt, exonerated",
+            server_default="gravado",
+            comment="gravado, exento, exonerado",
         ),
         sa.Column("is_active", sa.Boolean(), nullable=False, server_default=sa.text("true")),
         sa.Column(
@@ -67,8 +67,8 @@ def upgrade() -> None:
     op.execute("COMMENT ON TABLE products IS 'Billable products and services';")
     op.execute(
         "COMMENT ON COLUMN products.tax_type IS "
-        "'Tax treatment type: taxed (with IVA), exempt (without IVA), "
-        "exonerated (without IVA but with justification)';"
+        "'Tax treatment type: gravado (with IVA), exento (without IVA), "
+        "exonerado (without IVA but with justification)';"
     )
 
 

@@ -150,47 +150,47 @@ function InvoiceDetail({ invoice, onBack }: { invoice: typeof mockInvoices[0]; o
         </button>
       </div>
 
-      {/* Contenedor de la Factura (Diseño basado en tu imagen) */}
+      {/* Invoice Container (Design based on your image) */}
       <div className="palette-surface p-10 rounded-lg shadow-sm palette-border print:shadow-none print:border-none print:p-0">
 
-        {/* Cabecera */}
+        {/* Header */}
         <div className="flex justify-between items-start mb-8 border-b pb-6 palette-border">
           <div>
-            <h1 className="text-4xl font-bold tracking-tight text-h1-color mb-4">FACTURA</h1>
-            <p className="text-sm text-p-color font-semibold">FECHA DE EMISIÓN</p>
+            <h1 className="text-4xl font-bold tracking-tight text-h1-color mb-4">INVOICE</h1>
+            <p className="text-sm text-p-color font-semibold">ISSUE DATE</p>
             <p className="text-md text-p-color">{invoice.date}, {invoice.time}</p>
           </div>
           <div className="text-right">
             <h2 className="text-2xl font-medium text-p-color mb-2">{invoice.id}</h2>
-            <p className="text-sm text-p-color opacity-75">Nro. de Control: {invoice.controlNo}</p>
-            <p className="text-sm text-p-color opacity-75">Total de Nros. de Control: Desde Nro.</p>
-            <p className="text-sm text-p-color opacity-75">00-01000001 Hasta Nro. 00-01500000</p>
+            <p className="text-sm text-p-color opacity-75">Control No.: {invoice.controlNo}</p>
+            <p className="text-sm text-p-color opacity-75">Total Control Nos.: From No.</p>
+            <p className="text-sm text-p-color opacity-75">00-01000001 To No. 00-01500000</p>
           </div>
         </div>
 
-        {/* Info Emisor y Cliente */}
+        {/* Issuer and Client Info */}
         <div className="grid grid-cols-2 gap-8 mb-8">
           <div>
             <h3 className="font-bold text-h3-color text-lg">codyn</h3>
             <p className="text-sm text-p-color mt-1">R.I.F.: J-12345678-0</p>
-            <p className="text-sm text-p-color mt-1">Dirección Fiscal: Codyn Tower, 1er Piso,</p>
-            <p className="text-sm text-p-color">Distrito Tecnológico, Caracas, Miranda</p>
+            <p className="text-sm text-p-color mt-1">Fiscal Address: Codyn Tower, 1st Floor,</p>
+            <p className="text-sm text-p-color">Tech District, Caracas, Miranda</p>
           </div>
           <div>
             <h3 className="font-bold text-h3-color text-lg">{invoice.client.name}</h3>
             <p className="text-sm text-p-color mt-1">R.I.F.: {invoice.client.rif}</p>
-            <p className="text-sm text-p-color mt-1 w-3/4">Dirección Fiscal: {invoice.client.address}</p>
+            <p className="text-sm text-p-color mt-1 w-3/4">Fiscal Address: {invoice.client.address}</p>
           </div>
         </div>
 
-        {/* Tabla de Artículos */}
+        {/* Items Table */}
         <table className="w-full text-left mb-8">
           <thead>
             <tr className="palette-surface text-p-color uppercase text-sm opacity-75">
-              <th className="py-2 px-3 font-semibold w-12">Nro.</th>
-              <th className="py-2 px-3 font-semibold">DESCRIPCIÓN</th>
-              <th className="py-2 px-3 font-semibold text-center">CANTIDAD</th>
-              <th className="py-2 px-3 font-semibold text-right">PRECIO UNITARIO</th>
+              <th className="py-2 px-3 font-semibold w-12">No.</th>
+              <th className="py-2 px-3 font-semibold">DESCRIPTION</th>
+              <th className="py-2 px-3 font-semibold text-center">QUANTITY</th>
+              <th className="py-2 px-3 font-semibold text-right">UNIT PRICE</th>
               <th className="py-2 px-3 font-semibold text-right">TOTAL</th>
             </tr>
           </thead>
@@ -207,42 +207,42 @@ function InvoiceDetail({ invoice, onBack }: { invoice: typeof mockInvoices[0]; o
           </tbody>
         </table>
 
-        {/* Totales */}
+        {/* Totals */}
         <div className="flex justify-end border-t palette-border pt-4 mb-8">
           <div className="w-80 space-y-2">
             <div className="flex justify-between text-p-color opacity-75">
-              <span>BASE IMPONIBLE (ALÍCUOTA 8%)</span>
+              <span>TAXABLE BASE (8% RATE)</span>
               <span>{invoice.taxableBase}</span>
             </div>
             <div className="flex justify-between text-p-color opacity-75">
-              <span>EXENTO/EXONERADO</span>
+              <span>EXEMPT</span>
               <span>{invoice.exempt}</span>
             </div>
             <div className="flex justify-between text-p-color opacity-75">
-              <span>IMPUESTO 8%</span>
+              <span>VAT 8%</span>
               <span>{invoice.tax}</span>
             </div>
             <div className="flex justify-between text-lg font-bold text-p-color pt-3 border-t palette-border mt-3">
-              <span>TOTAL A PAGAR</span>
+              <span>TOTAL TO PAY</span>
               <span>{invoice.total}</span>
             </div>
           </div>
         </div>
 
-        {/* Footer (Método de Pago e Imprenta) */}
+        {/* Footer (Payment Method and Printer) */}
         <div className="grid grid-cols-2 gap-8 border-t palette-border pt-6">
           <div>
-            <p className="text-p-color text-sm mb-1 uppercase opacity-75">MÉTODO DE PAGO</p>
+            <p className="text-p-color text-sm mb-1 uppercase opacity-75">PAYMENT METHOD</p>
             <p className="font-medium text-p-color">{invoice.paymentMethod}</p>
-            <p className="text-p-color text-sm mt-3 mb-1 uppercase opacity-75">FECHA DE PAGO</p>
+            <p className="text-p-color text-sm mt-3 mb-1 uppercase opacity-75">PAYMENT DATE</p>
             <p className="font-medium text-p-color">{invoice.paymentDate}</p>
           </div>
           <div>
-            <p className="text-p-color text-sm mb-1 uppercase opacity-75">IMPRESORA DIGITAL AUTORIZADA</p>
+            <p className="text-p-color text-sm mb-1 uppercase opacity-75">AUTHORIZED DIGITAL PRINTER</p>
             <p className="font-medium text-p-color">Imprentos C.A.</p>
             <p className="text-sm text-p-color opacity-75">R.I.F.: J-00123456-7</p>
-            <p className="text-sm text-p-color opacity-75">Providencia Administrativa Nro. SNAT/2023/001234</p>
-            <p className="text-sm text-p-color opacity-75">Fecha de Asignación: 15012023</p>
+            <p className="text-sm text-p-color opacity-75">Administrative Provision Nro. SNAT/2023/001234</p>
+            <p className="text-sm text-p-color opacity-75">Assignment Date: 15012023</p>
           </div>
         </div>
 

@@ -51,7 +51,7 @@ const emptyFormData: CourseFormData = {
     product_name: '',
     sku: '',
     price: '',
-    tax_rate: '16.00',
+    tax_rate: 16.00,
     tax_type: 'gravado',
 };
 
@@ -115,7 +115,7 @@ export const CourseManagement: React.FC<CourseManagementProps> = ({ courseId, on
                         product_name: course.product_name || '',
                         sku: course.product_sku || '', // Pre-fill existing SKU for updates
                         price: course.product_price?.toString() || '',
-                        tax_rate: '16.00',
+                        tax_rate: 16.00,
                         tax_type: 'gravado',
                     });
 

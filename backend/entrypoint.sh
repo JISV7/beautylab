@@ -10,12 +10,12 @@ echo "PostgreSQL is up and running!"
 
 # Run migrations
 echo "Running database migrations..."
-uv run alembic upgrade head
+alembic upgrade head
 
 # Seed database
 echo "Seeding database..."
-uv run python -m app.seed
+python3 -m app.seed
 
 # Start FastAPI server
 echo "Starting FastAPI server..."
-uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload

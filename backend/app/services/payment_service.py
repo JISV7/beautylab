@@ -11,7 +11,6 @@ from app.models.invoice import Invoice
 from app.models.payment import Payment, PaymentDetail, PaymentMethod
 from app.schemas.payment import (
     BankTransferDetails,
-    CashDepositDetails,
     CreditCardDetails,
     DebitCardDetails,
     PagoMovilDetails,
@@ -218,12 +217,6 @@ class PaymentService:
             details.card_cvv_hash = self._hash_sensitive_data(card.cvv)
             details.card_brand = "debit"
             details.bank_name = card.bank_name
-
-        elif isinstance(payment_item.details, CashDepositDetails):
-            deposit = payment_item.details
-            details.deposit_reference = deposit.deposit_reference
-            details.deposit_bank = deposit.deposit_bank
-            details.deposit_date = deposit.deposit_date
 
         elif isinstance(payment_item.details, BankTransferDetails):
             transfer = payment_item.details

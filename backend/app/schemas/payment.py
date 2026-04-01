@@ -101,24 +101,6 @@ class DebitCardDetails(BaseModel):
         return v
 
 
-class CashDepositDetails(BaseModel):
-    """Cash deposit payment details."""
-
-    deposit_reference: str = Field(..., max_length=100, description="Bank reference number")
-    deposit_bank: str = Field(..., max_length=255, description="Bank where deposit was made")
-    deposit_date: date
-
-    @field_validator("deposit_date", mode="before")
-    @classmethod
-    def parse_deposit_date(cls, v):
-        """Parse date from ISO format string."""
-        if isinstance(v, date):
-            return v
-        if isinstance(v, str):
-            return date.fromisoformat(v)
-        return v
-
-
 class BankTransferDetails(BaseModel):
     """Bank transfer payment details."""
 
@@ -175,7 +157,6 @@ class PagoMovilDetails(BaseModel):
     phone_number: str = Field(..., max_length=20, description="Phone number")
     rif_cedula: str = Field(..., max_length=20, description="RIF or Cédula number")
     reference_code: str = Field(..., max_length=50, description="Payment reference code")
-    amount: Decimal = Field(..., gt=0, description="Payment amount")
 
     @field_validator("phone_number")
     @classmethod
@@ -245,7 +226,6 @@ class PaymentCreate(PaymentBase):
     details: (
         CreditCardDetails
         | DebitCardDetails
-        | CashDepositDetails
         | BankTransferDetails
         | ZelleDetails
         | PagoMovilDetails
@@ -304,7 +284,6 @@ class SplitPaymentItem(BaseModel):
     details: (
         CreditCardDetails
         | DebitCardDetails
-        | CashDepositDetails
         | BankTransferDetails
         | ZelleDetails
         | PagoMovilDetails

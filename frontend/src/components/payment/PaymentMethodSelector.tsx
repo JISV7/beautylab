@@ -1,5 +1,5 @@
 import React from 'react';
-import { CreditCard, Smartphone, Mail, DollarSign, Landmark } from 'lucide-react';
+import { CreditCard, Smartphone, Mail, Landmark } from 'lucide-react';
 
 export type PaymentMethodType =
     | 'credit_card'
@@ -7,7 +7,6 @@ export type PaymentMethodType =
     | 'zelle'
     | 'pago_movil'
     | 'paypal'
-    | 'cash_deposit'
     | 'bank_transfer';
 
 export interface PaymentMethodOption {
@@ -61,13 +60,6 @@ const PAYMENT_METHODS: PaymentMethodOption[] = [
         color: 'bg-indigo-500',
     },
     {
-        id: 'cash_deposit',
-        name: 'Cash Deposit',
-        description: 'Deposit at bank branch',
-        icon: <DollarSign size={24} />,
-        color: 'bg-emerald-500',
-    },
-    {
         id: 'bank_transfer',
         name: 'Bank Transfer',
         description: 'Direct bank transfer',
@@ -110,14 +102,14 @@ export const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
                             relative p-4 rounded-xl border-2 transition-all duration-200
                             text-left w-full
                             ${isSelected
-                                ? 'border-[var(--palette-primary)] bg-[var(--palette-primary)]/5'
-                                : 'border-[var(--palette-border)] palette-surface hover:border-[var(--palette-primary)]/50'
+                                ? 'border-(--palette-primary) bg-(--palette-primary)/5'
+                                : 'border-(--palette-border) palette-surface hover:border-(--palette-primary)/50'
                             }
                         `}
                     >
                         {/* Selection indicator */}
                         {isSelected && (
-                            <div className="absolute top-2 right-2 w-5 h5 rounded-full bg-[var(--palette-primary)] flex items-center justify-center">
+                            <div className="absolute top-2 right-2 w-5 h5 rounded-full bg-(--palette-primary) flex items-center justify-center">
                                 <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                                     <path
                                         fillRule="evenodd"

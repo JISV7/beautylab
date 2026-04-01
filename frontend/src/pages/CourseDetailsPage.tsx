@@ -153,12 +153,6 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
                     transaction_id: values.transaction_id,
                     payer_name: values.payer_name,
                 };
-            case 'cash_deposit':
-                return {
-                    deposit_reference: values.deposit_reference,
-                    deposit_bank: values.bank_name,
-                    deposit_date: values.deposit_date,
-                };
             case 'bank_transfer':
                 return {
                     transfer_reference: values.transfer_reference,
@@ -214,11 +208,6 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
                     if (!values.paypal_email) return 'PayPal: PayPal email is required';
                     if (!values.transaction_id) return 'PayPal: Transaction ID is required';
                     if (!values.payer_name) return 'PayPal: Payer name is required';
-                    break;
-                case 'cash_deposit':
-                    if (!values.deposit_reference) return 'Cash Deposit: Reference number is required';
-                    if (!values.bank_name) return 'Cash Deposit: Bank name is required';
-                    if (!values.deposit_date) return 'Cash Deposit: Deposit date is required';
                     break;
                 case 'bank_transfer':
                     if (!values.transfer_reference) return 'Bank Transfer: Reference is required';
@@ -291,7 +280,15 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
             setPaymentStep('confirmation');
         } catch (err: any) {
             console.error('Payment failed:', err);
-            setPurchaseError(err.response?.data?.detail || 'Payment failed. Please try again.');
+            const errorDetail = err.response?.data?.detail;
+            if (Array.isArray(errorDetail)) {
+                // Format validation errors into readable string
+                setPurchaseError(errorDetail.map((e: any) => `${e.loc.join('.')}: ${e.msg}`).join(', '));
+            } else if (typeof errorDetail === 'object' && errorDetail !== null) {
+                setPurchaseError(JSON.stringify(errorDetail));
+            } else {
+                setPurchaseError(errorDetail || 'Payment failed. Please try again.');
+            }
             setPaymentStep('payment_details');
         }
     };

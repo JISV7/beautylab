@@ -6,7 +6,6 @@ export {
     ZelleForm,
     PagoMovilForm,
     PaypalForm,
-    CashDepositForm,
     BankTransferForm,
     type PaymentFormValues,
     type PaymentFormProps,

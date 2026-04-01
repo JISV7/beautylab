@@ -29,11 +29,9 @@ export interface PaymentFormValues {
     transaction_id?: string;
     payer_name?: string;
 
-    // Cash Deposit / Bank Transfer
-    deposit_reference?: string;
+    // Bank Transfer
     transfer_reference?: string;
     account_holder?: string;
-    deposit_date?: string;
     transfer_date?: string;
 }
 
@@ -612,70 +610,6 @@ export const PaypalForm: React.FC<PaymentFormProps> = ({
     );
 };
 
-export const CashDepositForm: React.FC<PaymentFormProps> = ({
-    value,
-    onChange,
-    errors = {},
-}) => {
-    const handleChange = (field: keyof PaymentFormValues, fieldValue: string) => {
-        onChange({ ...value, [field]: fieldValue });
-    };
-
-    return (
-        <div className="space-y-4">
-            <div>
-                <label className="text-p-font text-p-size text-p-color font-medium block mb-2">
-                    <Building size={16} />
-                    Bank Name
-                </label>
-                <input
-                    type="text"
-                    value={value.bank_name || ''}
-                    onChange={(e) => handleChange('bank_name', e.target.value)}
-                    className="theme-input w-full"
-                    placeholder="Banesco, Mercantil, etc."
-                />
-                {errors.bank_name && (
-                    <p className="text-red-500 text-sm mt-1">{errors.bank_name}</p>
-                )}
-            </div>
-
-            <div>
-                <label className="text-p-font text-p-size text-p-color font-medium block mb-2">
-                    <FileText size={16} />
-                    Deposit Reference Number
-                </label>
-                <input
-                    type="text"
-                    value={value.deposit_reference || ''}
-                    onChange={(e) => handleChange('deposit_reference', e.target.value)}
-                    className="theme-input w-full"
-                    placeholder="Bank reference number"
-                />
-                {errors.deposit_reference && (
-                    <p className="text-red-500 text-sm mt-1">{errors.deposit_reference}</p>
-                )}
-            </div>
-
-            <div>
-                <label className="text-p-font text-p-size text-p-color font-medium block mb-2">
-                    <Calendar size={16} />
-                    Deposit Date
-                </label>
-                <input
-                    type="date"
-                    value={value.deposit_date || ''}
-                    onChange={(e) => handleChange('deposit_date', e.target.value)}
-                    className="theme-input w-full"
-                />
-                {errors.deposit_date && (
-                    <p className="text-red-500 text-sm mt-1">{errors.deposit_date}</p>
-                )}
-            </div>
-        </div>
-    );
-};
-
 export const BankTransferForm: React.FC<PaymentFormProps> = ({
     value,
     onChange,
@@ -772,8 +706,6 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({
             return <PagoMovilForm {...props} />;
         case 'paypal':
             return <PaypalForm {...props} />;
-        case 'cash_deposit':
-            return <CashDepositForm {...props} />;
         case 'bank_transfer':
             return <BankTransferForm {...props} />;
         default:

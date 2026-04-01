@@ -232,7 +232,6 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
                                 <option value="zelle">Zelle</option>
                                 <option value="pago_movil">Pago Móvil</option>
                                 <option value="paypal">PayPal</option>
-                                <option value="cash_deposit">Cash Deposit</option>
                                 <option value="bank_transfer">Bank Transfer</option>
                             </select>
                         </div>

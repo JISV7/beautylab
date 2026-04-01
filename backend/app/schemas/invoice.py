@@ -7,6 +7,8 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from app.schemas.payment import PaymentResponse
+
 
 class InvoiceLineBase(BaseModel):
     """Base invoice line schema."""
@@ -124,10 +126,11 @@ class InvoiceResponse(BaseModel):
 
 
 class InvoiceWithDetails(InvoiceResponse):
-    """Invoice with lines and adjustments."""
+    """Invoice with lines, adjustments, and payments."""
 
     lines: list[InvoiceLineResponse] = []
     adjustments: list[InvoiceAdjustmentResponse] = []
+    payments: list[PaymentResponse] = []
 
 
 class InvoiceListResponse(BaseModel):

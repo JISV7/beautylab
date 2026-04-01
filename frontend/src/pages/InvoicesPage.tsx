@@ -1,252 +1,393 @@
-import { useState } from 'react';
-import { Printer, ArrowLeft } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import { FileText, X, Printer } from 'lucide-react';
 
-// --- DATOS DE PRUEBA (MOCK DATA) ---
-const mockInvoices = Array.from({ length: 12 }).map((_, i) => ({
-  id: `INV 001-0000021${4 + i}`,
-  controlNo: `00-0123456${7 + i}`,
-  date: '26102023',
-  time: '10:15:30 A.M.',
-  client: {
-    name: i % 2 === 0 ? 'Apex Solutions' : 'Tech Corp C.A.',
-    rif: `J-98765432-${i % 9}`,
-    address: 'Calle 1, Edif. Profesional, Piso 2, Carabobo'
-  },
-  items: [
-    { id: 1, desc: 'Fundamentals of AI and Machine Learning - 2-Day Workshop', qty: 2, price: '$1,299.00', total: 'Bs. 2,598.00' },
-    { id: 2, desc: 'Natural Language Processing: From Theory to Application', qty: 3, price: '$99.99', total: '$299.97' },
-    { id: 3, desc: 'Computer Vision Techniques for Real-World Problems', qty: 10, price: '$12.50', total: '$125.00' },
-    { id: 4, desc: 'Digital Course Access Fee & Resource Kit', qty: 1, price: '$45.00', total: '$45.00' },
-  ],
-  taxableBase: 'Bs. 3,067.00',
-  exempt: 'Bs. 0.00',
-  tax: 'Bs. 24.54',
-  total: 'Bs. 3,313.44',
-  paymentMethod: 'Bank Transfer',
-  paymentDate: '10112023'
-}));
+const API_URL = 'http://localhost:8000';
 
-// --- COMPONENTE PRINCIPAL ---
+interface InvoiceLine {
+    id: number;
+    description: string;
+    quantity: string;
+    unitPrice: string;
+    lineTotal: string;
+}
+
+interface Payment {
+    id: string;
+    amount: string;
+    status: string;
+    createdAt: string;
+}
+
+interface Invoice {
+    id: string;
+    invoiceNumber: string;
+    controlNumber: string;
+    issueDate: string;
+    issueTime: string;
+    total: string;
+    status: string;
+    clientRif?: string;
+    clientBusinessName?: string;
+    lines?: InvoiceLine[];
+    payments?: Payment[];
+    createdAt: string;
+}
+
+interface InvoicesResponse {
+    invoices: Invoice[];
+    total: number;
+    page: number;
+    pageSize: number;
+    totalPages: number;
+}
+
+const getAuthToken = (): string | null => {
+    return localStorage.getItem('access_token');
+};
+
+const api = axios.create({
+    baseURL: API_URL,
+    headers: {
+        'Content-Type': 'application/json',
+    },
+});
+
+api.interceptors.request.use((config) => {
+    const token = getAuthToken();
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+});
+
 export default function InvoicesPage() {
-  const [selectedInvoice, setSelectedInvoice] = useState<typeof mockInvoices[0] | null>(null);
+    const [invoices, setInvoices] = useState<Invoice[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
 
-  return (
-    <div className="flex h-screen palette-background text-p-font">
-      {/* CONTENIDO PRINCIPAL */}
-      <main className="flex-1 p-8 overflow-auto print:p-0 print:overflow-visible">
-        {selectedInvoice ? (
-          <InvoiceDetail
-            invoice={selectedInvoice}
-            onBack={() => setSelectedInvoice(null)}
-          />
-        ) : (
-          <InvoiceList
-            invoices={mockInvoices}
-            onSelect={setSelectedInvoice}
-          />
-        )}
-      </main>
-    </div>
-  );
+    const fetchInvoices = async (page: number = 1) => {
+        try {
+            setLoading(true);
+            const response = await api.get<InvoicesResponse>(`/invoices/?page=${page}&page_size=10`);
+            setInvoices(response.data.invoices);
+            setTotalPages(response.data.totalPages);
+            setCurrentPage(response.data.page);
+        } catch (error) {
+            console.error('Failed to fetch invoices:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const fetchInvoiceDetails = async (invoiceId: string) => {
+        try {
+            const response = await api.get<Invoice>(`/invoices/${invoiceId}`);
+            setSelectedInvoice(response.data);
+        } catch (error) {
+            console.error('Failed to fetch invoice details:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchInvoices();
+    }, []);
+
+    const handlePrint = () => {
+        window.print();
+    };
+
+    if (loading && invoices.length === 0) {
+        return (
+            <div className="flex items-center justify-center h-64">
+                <div className="text-p-color">Loading invoices...</div>
+            </div>
+        );
+    }
+
+    return (
+        <div className="flex h-screen palette-background text-p-font">
+            {selectedInvoice ? (
+                <InvoiceDetail
+                    invoice={selectedInvoice}
+                    onBack={() => setSelectedInvoice(null)}
+                    onPrint={handlePrint}
+                />
+            ) : (
+                <InvoiceList
+                    invoices={invoices}
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={fetchInvoices}
+                    onViewDetails={(invoice) => fetchInvoiceDetails(invoice.id)}
+                />
+            )}
+        </div>
+    );
 }
 
-// --- VISTA DE LISTA CON PAGINACIÓN ---
 function InvoiceList({
-  invoices,
-  onSelect,
+    invoices,
+    currentPage,
+    totalPages,
+    onPageChange,
+    onViewDetails,
 }: {
-  invoices: typeof mockInvoices;
-  onSelect: (inv: typeof mockInvoices[0]) => void;
+    invoices: Invoice[];
+    currentPage: number;
+    totalPages: number;
+    onPageChange: (page: number) => void;
+    onViewDetails: (invoice: Invoice) => void;
 }) {
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+    return (
+        <main className="flex-1 p-8 overflow-auto print:p-0 print:overflow-visible">
+            <div className="max-w-6xl mx-auto">
+                <h2 className="text-3xl font-bold text-primary mb-6">My Invoices</h2>
 
-  const totalPages = Math.ceil(invoices.length / itemsPerPage);
-  const currentInvoices = invoices.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+                {invoices.length === 0 ? (
+                    <div className="palette-surface palette-border border rounded-xl p-8 text-center">
+                        <FileText className="w-16 h-16 mx-auto mb-4 opacity-50" />
+                        <p className="text-p-color">No invoices found.</p>
+                        <p className="text-p-color opacity-75 text-sm mt-2">
+                            When you purchase a course, your invoices will appear here.
+                        </p>
+                    </div>
+                ) : (
+                    <>
+                        <div className="palette-surface rounded-lg shadow-sm palette-border overflow-hidden">
+                            <table className="w-full text-left border-collapse">
+                                <thead>
+                                    <tr className="palette-surface border-b palette-border text-p-color text-sm uppercase tracking-wider opacity-75">
+                                        <th className="p-4 font-semibold">Invoice #</th>
+                                        <th className="p-4 font-semibold">Control #</th>
+                                        <th className="p-4 font-semibold">Date</th>
+                                        <th className="p-4 font-semibold">Total</th>
+                                        <th className="p-4 font-semibold">Status</th>
+                                        <th className="p-4 font-semibold text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {invoices.map((invoice) => (
+                                        <tr
+                                            key={invoice.id}
+                                            className="border-b border-[var(--palette-border)] hover:bg-[var(--palette-surface)] cursor-pointer transition-colors"
+                                            onClick={() => onViewDetails(invoice)}
+                                        >
+                                            <td className="p-4 font-medium">{invoice.invoiceNumber}</td>
+                                            <td className="p-4 font-mono text-sm">{invoice.controlNumber}</td>
+                                            <td className="p-4">
+                                                {new Date(invoice.issueDate).toLocaleDateString()}
+                                            </td>
+                                            <td className="p-4 font-semibold text-primary">
+                                                ${parseFloat(invoice.total).toFixed(2)}
+                                            </td>
+                                            <td className="p-4">
+                                                <span
+                                                    className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                                        invoice.status === 'paid'
+                                                            ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                                                            : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
+                                                    }`}
+                                                >
+                                                    {invoice.status}
+                                                </span>
+                                            </td>
+                                            <td className="p-4 text-right">
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        onViewDetails(invoice);
+                                                    }}
+                                                    className="text-primary hover:underline text-sm"
+                                                >
+                                                    View
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
 
-  return (
-    <div className="max-w-5xl mx-auto">
-      <h2 className="text-3xl font-bold text-primary mb-6">Invoices</h2>
-
-      <div className="palette-surface rounded-lg shadow-sm palette-border overflow-hidden">
-        <table className="w-full text-left border-collapse">
-          <thead>
-            <tr className="palette-surface border-b palette-border text-p-color text-sm uppercase tracking-wider opacity-75">
-              <th className="p-4 font-semibold">Invoice #</th>
-              <th className="p-4 font-semibold">Client</th>
-              <th className="p-4 font-semibold">Date</th>
-              <th className="p-4 font-semibold text-right">Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentInvoices.map((inv) => (
-              <tr
-                key={inv.id}
-                onClick={() => onSelect(inv)}
-                className="border-b palette-border hover:palette-primary cursor-pointer transition-colors opacity-75 hover:opacity-100"
-              >
-                <td className="p-4 font-medium text-p-color">{inv.id}</td>
-                <td className="p-4 text-p-color opacity-75">{inv.client.name}</td>
-                <td className="p-4 text-p-color opacity-60 text-sm">{inv.date}</td>
-                <td className="p-4 text-right font-medium text-p-color">{inv.total}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-        {/* Paginación */}
-        <div className="p-4 flex items-center justify-between border-t palette-border palette-background">
-          <span className="text-sm text-p-color opacity-75">
-            Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, invoices.length)} of {invoices.length}
-          </span>
-          <div className="flex gap-2">
-            <button
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage(prev => prev - 1)}
-              className="theme-button theme-button-secondary disabled:opacity-50"
-            >
-              Prev
-            </button>
-            <button
-              disabled={currentPage === totalPages}
-              onClick={() => setCurrentPage(prev => prev + 1)}
-              className="theme-button theme-button-secondary disabled:opacity-50"
-            >
-              Next
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+                        {/* Pagination */}
+                        {totalPages > 1 && (
+                            <div className="flex items-center justify-center gap-2 mt-6">
+                                <button
+                                    onClick={() => onPageChange(currentPage - 1)}
+                                    disabled={currentPage === 1}
+                                    className="px-4 py-2 rounded-lg border border-[var(--palette-border)] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[var(--palette-surface)]"
+                                >
+                                    Previous
+                                </button>
+                                <span className="text-p-color">
+                                    Page {currentPage} of {totalPages}
+                                </span>
+                                <button
+                                    onClick={() => onPageChange(currentPage + 1)}
+                                    disabled={currentPage === totalPages}
+                                    className="px-4 py-2 rounded-lg border border-[var(--palette-border)] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[var(--palette-surface)]"
+                                >
+                                    Next
+                                </button>
+                            </div>
+                        )}
+                    </>
+                )}
+            </div>
+        </main>
+    );
 }
 
-// --- VISTA DETALLE Y FORMATO IMPRESIÓN ---
-function InvoiceDetail({ invoice, onBack }: { invoice: typeof mockInvoices[0]; onBack: () => void }) {
-  const handlePrint = () => {
-    window.print();
-  };
+function InvoiceDetail({
+    invoice,
+    onBack,
+    onPrint,
+}: {
+    invoice: Invoice;
+    onBack: () => void;
+    onPrint: () => void;
+}) {
+    return (
+        <main className="flex-1 p-8 overflow-auto print:p-0 print:overflow-visible">
+            <div className="max-w-4xl mx-auto">
+                {/* Header Actions - Hidden on Print */}
+                <div className="flex items-center justify-between mb-6 print:hidden">
+                    <button
+                        onClick={onBack}
+                        className="flex items-center gap-2 text-p-color hover:text-primary transition-colors"
+                    >
+                        <X className="w-5 h-5" />
+                        Back to Invoices
+                    </button>
+                    <button
+                        onClick={onPrint}
+                        className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-white hover:opacity-90 transition-opacity"
+                    >
+                        <Printer className="w-4 h-4" />
+                        Print Invoice
+                    </button>
+                </div>
 
-  return (
-    <div className="max-w-4xl mx-auto">
-      {/* Controles superiores (se ocultan al imprimir) */}
-      <div className="flex justify-between items-center mb-6 print:hidden">
-        <button
-          onClick={onBack}
-          className="text-p-color hover:text-primary font-medium flex items-center gap-2"
-        >
-          <ArrowLeft className="w-5 h-5" />
-          Back to Invoices
-        </button>
-        <button
-          onClick={handlePrint}
-          className="theme-button theme-button-primary"
-        >
-          <Printer className="w-5 h-5" />
-          Print Invoice
-        </button>
-      </div>
+                {/* Invoice Content */}
+                <div className="palette-surface palette-border border rounded-xl p-8 print:shadow-none print:border-0">
+                    {/* Invoice Header */}
+                    <div className="flex items-center justify-between mb-8 pb-6 border-b border-[var(--palette-border)]">
+                        <div>
+                            <h1 className="text-2xl font-bold text-primary">INVOICE</h1>
+                            <p className="text-p-color opacity-75 mt-1">
+                                {invoice.invoiceNumber}
+                            </p>
+                        </div>
+                        <div className="text-right">
+                            <p className="text-sm text-p-color opacity-75">Issue Date</p>
+                            <p className="font-medium">
+                                {new Date(invoice.issueDate).toLocaleDateString()}
+                            </p>
+                        </div>
+                    </div>
 
-      {/* Invoice Container (Design based on your image) */}
-      <div className="palette-surface p-10 rounded-lg shadow-sm palette-border print:shadow-none print:border-none print:p-0">
+                    {/* Invoice Details Grid */}
+                    <div className="grid grid-cols-2 gap-8 mb-8">
+                        <div>
+                            <h3 className="text-sm font-semibold text-p-color opacity-75 uppercase mb-2">
+                                Bill To
+                            </h3>
+                            <p className="font-medium">
+                                {invoice.clientBusinessName || 'Customer'}
+                            </p>
+                            {invoice.clientRif && (
+                                <p className="text-p-color text-sm">RIF: {invoice.clientRif}</p>
+                            )}
+                        </div>
+                        <div className="text-right">
+                            <h3 className="text-sm font-semibold text-p-color opacity-75 uppercase mb-2">
+                                Control Number
+                            </h3>
+                            <p className="font-mono text-lg">{invoice.controlNumber}</p>
+                        </div>
+                    </div>
 
-        {/* Header */}
-        <div className="flex justify-between items-start mb-8 border-b pb-6 palette-border">
-          <div>
-            <h1 className="text-4xl font-bold tracking-tight text-h1-color mb-4">INVOICE</h1>
-            <p className="text-sm text-p-color font-semibold">ISSUE DATE</p>
-            <p className="text-md text-p-color">{invoice.date}, {invoice.time}</p>
-          </div>
-          <div className="text-right">
-            <h2 className="text-2xl font-medium text-p-color mb-2">{invoice.id}</h2>
-            <p className="text-sm text-p-color opacity-75">Control No.: {invoice.controlNo}</p>
-            <p className="text-sm text-p-color opacity-75">Total Control Nos.: From No.</p>
-            <p className="text-sm text-p-color opacity-75">00-01000001 To No. 00-01500000</p>
-          </div>
-        </div>
+                    {/* Line Items Table */}
+                    {invoice.lines && invoice.lines.length > 0 && (
+                        <table className="w-full mb-8">
+                            <thead>
+                                <tr className="border-b border-[var(--palette-border)] text-sm uppercase opacity-75">
+                                    <th className="text-left py-3 font-semibold">Description</th>
+                                    <th className="text-center py-3 font-semibold">Qty</th>
+                                    <th className="text-right py-3 font-semibold">Unit Price</th>
+                                    <th className="text-right py-3 font-semibold">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {invoice.lines.map((line) => (
+                                    <tr key={line.id} className="border-b border-[var(--palette-border)]">
+                                        <td className="py-3">{line.description}</td>
+                                        <td className="py-3 text-center">{line.quantity}</td>
+                                        <td className="py-3 text-right">
+                                            ${parseFloat(line.unitPrice).toFixed(2)}
+                                        </td>
+                                        <td className="py-3 text-right font-medium">
+                                            ${parseFloat(line.lineTotal).toFixed(2)}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    )}
 
-        {/* Issuer and Client Info */}
-        <div className="grid grid-cols-2 gap-8 mb-8">
-          <div>
-            <h3 className="font-bold text-h3-color text-lg">codyn</h3>
-            <p className="text-sm text-p-color mt-1">R.I.F.: J-12345678-0</p>
-            <p className="text-sm text-p-color mt-1">Fiscal Address: Codyn Tower, 1st Floor,</p>
-            <p className="text-sm text-p-color">Tech District, Caracas, Miranda</p>
-          </div>
-          <div>
-            <h3 className="font-bold text-h3-color text-lg">{invoice.client.name}</h3>
-            <p className="text-sm text-p-color mt-1">R.I.F.: {invoice.client.rif}</p>
-            <p className="text-sm text-p-color mt-1 w-3/4">Fiscal Address: {invoice.client.address}</p>
-          </div>
-        </div>
+                    {/* Totals */}
+                    <div className="flex justify-end mb-8">
+                        <div className="w-64">
+                            <div className="flex items-center justify-between py-2 border-b border-[var(--palette-border)]">
+                                <span className="text-p-color opacity-75">Total</span>
+                                <span className="text-xl font-bold text-primary">
+                                    ${parseFloat(invoice.total).toFixed(2)}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
 
-        {/* Items Table */}
-        <table className="w-full text-left mb-8">
-          <thead>
-            <tr className="palette-surface text-p-color uppercase text-sm opacity-75">
-              <th className="py-2 px-3 font-semibold w-12">No.</th>
-              <th className="py-2 px-3 font-semibold">DESCRIPTION</th>
-              <th className="py-2 px-3 font-semibold text-center">QUANTITY</th>
-              <th className="py-2 px-3 font-semibold text-right">UNIT PRICE</th>
-              <th className="py-2 px-3 font-semibold text-right">TOTAL</th>
-            </tr>
-          </thead>
-          <tbody>
-            {invoice.items.map((item, index) => (
-              <tr key={item.id} className="border-b palette-border last:border-0">
-                <td className="py-4 px-3 text-p-color opacity-75">{index + 1}.</td>
-                <td className="py-4 px-3 text-p-color pr-10">{item.desc}</td>
-                <td className="py-4 px-3 text-p-color opacity-75 text-center">@ {item.qty}</td>
-                <td className="py-4 px-3 text-p-color opacity-75 text-right">@ {item.price}</td>
-                <td className="py-4 px-3 text-p-color text-right font-medium">{item.total}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                    {/* Payment Information */}
+                    {invoice.payments && invoice.payments.length > 0 && (
+                        <div className="mt-8 pt-6 border-t border-[var(--palette-border)]">
+                            <h3 className="text-sm font-semibold text-p-color opacity-75 uppercase mb-4">
+                                Payment Information
+                            </h3>
+                            <div className="space-y-2">
+                                {invoice.payments.map((payment) => (
+                                    <div
+                                        key={payment.id}
+                                        className="flex items-center justify-between py-2 px-4 rounded-lg bg-[var(--palette-surface)]"
+                                    >
+                                        <span className="text-sm">
+                                            {new Date(payment.createdAt).toLocaleDateString()}
+                                        </span>
+                                        <span className="font-medium">
+                                            ${parseFloat(payment.amount).toFixed(2)}
+                                        </span>
+                                        <span
+                                            className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                                payment.status === 'completed'
+                                                    ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                                                    : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
+                                            }`}
+                                        >
+                                            {payment.status}
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
 
-        {/* Totals */}
-        <div className="flex justify-end border-t palette-border pt-4 mb-8">
-          <div className="w-80 space-y-2">
-            <div className="flex justify-between text-p-color opacity-75">
-              <span>TAXABLE BASE (8% RATE)</span>
-              <span>{invoice.taxableBase}</span>
+                    {/* Footer */}
+                    <div className="mt-8 pt-6 border-t border-[var(--palette-border)] text-center text-sm text-p-color opacity-60 print:hidden">
+                        <p>Thank you for your purchase!</p>
+                    </div>
+                </div>
             </div>
-            <div className="flex justify-between text-p-color opacity-75">
-              <span>EXEMPT</span>
-              <span>{invoice.exempt}</span>
-            </div>
-            <div className="flex justify-between text-p-color opacity-75">
-              <span>VAT 8%</span>
-              <span>{invoice.tax}</span>
-            </div>
-            <div className="flex justify-between text-lg font-bold text-p-color pt-3 border-t palette-border mt-3">
-              <span>TOTAL TO PAY</span>
-              <span>{invoice.total}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Footer (Payment Method and Printer) */}
-        <div className="grid grid-cols-2 gap-8 border-t palette-border pt-6">
-          <div>
-            <p className="text-p-color text-sm mb-1 uppercase opacity-75">PAYMENT METHOD</p>
-            <p className="font-medium text-p-color">{invoice.paymentMethod}</p>
-            <p className="text-p-color text-sm mt-3 mb-1 uppercase opacity-75">PAYMENT DATE</p>
-            <p className="font-medium text-p-color">{invoice.paymentDate}</p>
-          </div>
-          <div>
-            <p className="text-p-color text-sm mb-1 uppercase opacity-75">AUTHORIZED DIGITAL PRINTER</p>
-            <p className="font-medium text-p-color">Imprentos C.A.</p>
-            <p className="text-sm text-p-color opacity-75">R.I.F.: J-00123456-7</p>
-            <p className="text-sm text-p-color opacity-75">Administrative Provision Nro. SNAT/2023/001234</p>
-            <p className="text-sm text-p-color opacity-75">Assignment Date: 15012023</p>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  );
+        </main>
+    );
 }

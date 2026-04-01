@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, BookOpen, Compass, Users, Home, Sparkles } from 'lucide-react';
+import { X, BookOpen, Compass, Users, Home, Sparkles, FileText } from 'lucide-react';
 
 interface SidebarProps {
     activeItem?: string;
@@ -21,6 +21,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         { id: 'learning-paths', label: 'Learning Paths', icon: Compass },
         { id: 'community', label: 'Community', icon: Users },
         { id: 'ai-lab', label: 'AI Lab', icon: Sparkles },
+        { id: 'invoices', label: 'Invoices', icon: FileText },
     ];
 
     const handleClick = (itemId: string) => {

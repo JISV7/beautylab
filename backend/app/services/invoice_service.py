@@ -6,6 +6,7 @@ from uuid import UUID
 
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from app.models.company_info import CompanyInfo
 from app.models.control_number_range import ControlNumberRange
@@ -338,14 +339,14 @@ class InvoiceService:
         self,
         invoice_id: UUID,
     ) -> Invoice | None:
-        """Get invoice with line items and adjustments."""
-        from sqlalchemy.orm import selectinload
+        """Get invoice with line items, adjustments, and payments."""
 
         result = await self.db.execute(
             select(Invoice)
             .options(
                 selectinload(Invoice.lines),
                 selectinload(Invoice.adjustments),
+                selectinload(Invoice.payments),
             )
             .where(Invoice.id == invoice_id)
         )

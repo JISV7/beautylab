@@ -422,6 +422,8 @@ class PaymentService:
                 issue_date=receipt_data["issue_date"],
                 items=receipt_data["items"],
                 payment_breakdown=payment_breakdown,
+                subtotal=receipt_data.get("subtotal"),
+                tax_total=receipt_data.get("tax_total"),
             )
 
             # Create enrollment

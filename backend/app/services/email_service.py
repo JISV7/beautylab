@@ -285,6 +285,8 @@ class EmailService:
         issue_date: str,
         items: list[dict],
         payment_breakdown: list[dict] | None = None,
+        subtotal: str | None = None,
+        tax_total: str | None = None,
     ) -> bool:
         """
         Send purchase confirmation email with payment details.
@@ -297,6 +299,8 @@ class EmailService:
             issue_date: Purchase date
             items: List of line items
             payment_breakdown: List of payment methods used (for split payments)
+            subtotal: Subtotal before tax
+            tax_total: Tax amount (IVA)
         """
         subject = f"Purchase Confirmation - {course_name} - Codyn Academy"
 
@@ -420,8 +424,18 @@ class EmailService:
 
                         {payment_html}
 
-                        <div class="total">
-                            Total Paid: ${total}
+                        <div style="margin-top: 20px; padding-top: 10px; border-top: 1px solid #ddd;">
+                            <div style="display: flex; justify-content: space-between; padding: 5px 0;">
+                                <span>Base Price:</span>
+                                <span>${subtotal or "0.00"}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 5px 0;">
+                                <span>IVA (16%):</span>
+                                <span>${tax_total or "0.00"}</span>
+                            </div>
+                            <div class="total">
+                                Total Paid: ${total}
+                            </div>
                         </div>
                     </div>
 
@@ -458,30 +472,33 @@ class EmailService:
         """
 
         text_content = f"""
-        Purchase Confirmation - {course_name}
+Purchase Confirmation - {course_name}
 
-        Invoice Number: {invoice_number}
-        Purchase Date: {issue_date}
-        Course: {course_name}
+Invoice Number: {invoice_number}
+Purchase Date: {issue_date}
+Course: {course_name}
 
-        Items:
-        {self._format_items_text(items)}
+Items:
+{self._format_items_text(items)}
 
-        {"Payment Breakdown:" if payment_breakdown else ""}
-        {self._format_payments_text(payment_breakdown) if payment_breakdown else ""}
+{"Payment Breakdown:" if payment_breakdown else ""}
+{self._format_payments_text(payment_breakdown) if payment_breakdown else ""}
 
-        Total Paid: ${total}
+Pricing:
+  Base Price: ${subtotal or "0.00"}
+  IVA (16%):  ${tax_total or "0.00"}
+  Total Paid: ${total}
 
-        ✓ Your payment was successful!
+✓ Your payment was successful!
 
-        Access Your Course:
-        You can now access your course materials from your dashboard.
-        Navigate to "My Courses" to start learning!
+Access Your Course:
+You can now access your course materials from your dashboard.
+Navigate to "My Courses" to start learning!
 
-        If you have any questions, please contact us at {settings.support_email}
+If you have any questions, please contact us at {settings.support_email}
 
-        Best regards,
-        The Codyn Academy Team
+Best regards,
+The Codyn Academy Team
         """
 
         return self.send_email(

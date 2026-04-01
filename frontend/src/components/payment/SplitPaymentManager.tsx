@@ -98,10 +98,17 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
     };
 
     const updatePaymentAmount = (id: string, amount: number) => {
+        // Calculate the maximum allowed for this specific payment
+        // (remaining balance + this payment's current amount = max this payment can be)
+        const otherPaymentsTotal = payments
+            .filter((p) => p.id !== id)
+            .reduce((sum, p) => sum + p.amount, 0);
+        const maxForThisPayment = totalAmount - otherPaymentsTotal;
+        
         setPayments(
             payments.map((p) =>
                 p.id === id
-                    ? { ...p, amount: Math.max(0, Math.min(totalAmount, amount)) }
+                    ? { ...p, amount: Math.max(0, Math.min(maxForThisPayment, amount)) }
                     : p
             )
         );
@@ -252,7 +259,7 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
                                     placeholder="0.00"
                                     step="0.01"
                                     min="0"
-                                    max={totalAmount}
+                                    max={totalAmount - (totalAllocated - payment.amount)}
                                 />
                             </div>
                             <p className="text-sm text-p-color opacity-60 mt-1">

@@ -115,11 +115,6 @@ class InvoiceService:
         # Calculate totals
         totals = await self._calculate_invoice_totals(invoice_data.lines)
 
-        # Get next invoice number and control number
-        # For now, using simple generation - in production would use DB sequences
-        invoice_number = await self._generate_invoice_number()
-        control_number = await self._generate_control_number()
-
         # Get active company info
         active_company = await self._get_active_company()
         if not active_company:
@@ -133,6 +128,11 @@ class InvoiceService:
             raise InvoiceValidationError(
                 "No active control number range found. Please create a printer first."
             )
+
+        # Get next invoice number and control number
+        # For now, using simple generation - in production would use DB sequences
+        invoice_number = await self._generate_invoice_number()
+        control_number = await self._generate_control_number(control_range)
 
         # Create invoice
         invoice = Invoice(
@@ -169,6 +169,9 @@ class InvoiceService:
         for adj_data in invoice_data.adjustments:
             adj = await self._create_invoice_adjustment(invoice.id, adj_data)
             self.db.add(adj)
+
+        # Increment the control number range current_number
+        control_range.current_number = str(int(control_range.current_number) + 1)
 
         await self.db.commit()
         await self.db.refresh(invoice)
@@ -280,22 +283,28 @@ class InvoiceService:
         # Default starting number
         return "A-00000001"
 
-    async def _generate_control_number(self) -> str:
-        """Generate control number."""
-        # Simplified generation - in production would use official numbering
-        result = await self.db.execute(
-            select(Invoice.control_number).order_by(Invoice.created_at.desc()).limit(1)
-        )
-        last_control = result.scalar_one_or_none()
+    async def _generate_control_number(
+        self, control_range: ControlNumberRange | None = None
+    ) -> str:
+        """
+        Generate control number from the active control number range.
 
-        if last_control:
-            try:
-                num = int(last_control) + 1
-                return f"{num:012d}"
-            except ValueError:
-                pass
+        Args:
+            control_range: Optional control number range.
+                If not provided, gets the active one.
 
-        return "000000000001"
+        Returns:
+            Next control number (current_number + 1, zero-padded to 12 digits)
+        """
+        if control_range is None:
+            control_range = await self._get_active_control_number_range()
+
+        if control_range is None:
+            return "000000000001"
+
+        # Get next number (current + 1)
+        next_num = int(control_range.current_number) + 1
+        return f"{next_num:012d}"
 
     async def _get_product_by_id(self, product_id: UUID) -> Product | None:
         """Get product by ID."""

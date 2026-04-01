@@ -343,7 +343,7 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
     const courseBasePrice = parsePrice(course?.product_price ?? null);
     const courseTaxRate = parsePrice(course?.product_tax_rate ?? null);
     const courseTax = courseBasePrice * (courseTaxRate / 100);
-    const coursePrice = courseBasePrice + courseTax; // Total with IVA
+    const coursePrice = Math.round((courseBasePrice + courseTax) * 100) / 100; // Total with IVA, rounded to 2 decimals
 
     if (isLoading) {
         return (

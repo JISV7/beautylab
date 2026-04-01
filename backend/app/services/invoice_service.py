@@ -375,7 +375,7 @@ class InvoiceService:
         self,
         invoice_id: UUID,
     ) -> Invoice | None:
-        """Get invoice with line items, adjustments, payments, and company info."""
+        """Get invoice with line items, adjustments, payments, company info, and printer data."""
 
         result = await self.db.execute(
             select(Invoice)
@@ -384,6 +384,7 @@ class InvoiceService:
                 selectinload(Invoice.adjustments),
                 selectinload(Invoice.payments),
                 selectinload(Invoice.company),
+                selectinload(Invoice.control_number_range).selectinload(ControlNumberRange.printer),
             )
             .where(Invoice.id == invoice_id)
         )

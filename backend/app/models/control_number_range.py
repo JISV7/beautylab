@@ -9,6 +9,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.models.base import Base, TimestampMixin
 
 if TYPE_CHECKING:
+    from app.models.invoice import Invoice
     from app.models.printer import Printer
 
 
@@ -30,6 +31,9 @@ class ControlNumberRange(Base, TimestampMixin):
 
     # Relationships
     printer: Mapped["Printer"] = relationship("Printer", back_populates="control_number_ranges")
+    invoices: Mapped[list["Invoice"]] = relationship(
+        "Invoice", back_populates="control_number_range"
+    )
 
     def __repr__(self) -> str:
         return f"<ControlNumberRange(id={self.id}, printer={self.printer_id})>"

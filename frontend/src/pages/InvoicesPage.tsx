@@ -12,6 +12,7 @@ interface InvoiceLine {
     line_total: string;
     tax_rate?: string;
     tax_amount?: string;
+    is_exempt?: boolean;
 }
 
 interface Payment {
@@ -20,6 +21,30 @@ interface Payment {
     status: string;
     created_at: string;
     method_type?: string;
+}
+
+interface PrinterInfo {
+    id: number;
+    business_name: string;
+    rif: string;
+    authorization_providence: string;
+}
+
+interface ControlNumberRangeInfo {
+    id: number;
+    start_number: string;
+    end_number: string;
+    assigned_date: string;
+    printer_id: number;
+    printer?: PrinterInfo;
+}
+
+interface Adjustment {
+    id: number;
+    adjustment_type: string;
+    description: string;
+    amount: string;
+    is_percentage: boolean;
 }
 
 interface CompanyInfo {
@@ -48,8 +73,10 @@ interface Invoice {
     client_document_number?: string;
     client_fiscal_address?: string;
     lines?: InvoiceLine[];
+    adjustments?: Adjustment[];
     payments?: Payment[];
     company?: CompanyInfo;
+    control_number_range?: ControlNumberRangeInfo;
     created_at: string;
 }
 
@@ -337,8 +364,28 @@ function InvoiceDetail({
     onBack: () => void;
     onPrint: () => void;
 }) {
-    // Format date as DD/MM/YYYY
+    // Format date as DDMMYYYY (Venezuelan standard Art. 7.6)
     const formatDate = (dateStr: string) => {
+        const date = new Date(dateStr);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        return `${day}${month}${year}`;
+    };
+
+    // Format time as HH.MM.SS AM/PM (Venezuelan standard Art. 7.6)
+    const formatTime = (timeStr: string) => {
+        const date = new Date(`2000-01-01T${timeStr}`);
+        let hours = date.getHours();
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+        const ampm = hours >= 12 ? 'p.m.' : 'a.m.';
+        hours = hours % 12 || 12;
+        return `${String(hours).padStart(2, '0')}.${minutes}.${seconds} ${ampm}`;
+    };
+
+    // Format date for display (readable)
+    const formatDateDisplay = (dateStr: string) => {
         const date = new Date(dateStr);
         return date.toLocaleDateString('es-VE', {
             day: '2-digit',
@@ -347,20 +394,9 @@ function InvoiceDetail({
         });
     };
 
-    // Format time as HH:MM:SS AM/PM
-    const formatTime = (timeStr: string) => {
-        const date = new Date(`2000-01-01T${timeStr}`);
-        return date.toLocaleTimeString('es-VE', {
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            hour12: true,
-        });
-    };
-
     return (
         <main className="flex-1 p-8 overflow-auto print:p-0 print:overflow-visible">
-            <div className="max-w-5xl mx-auto">
+            <div className="max-w-6xl mx-auto">
                 {/* Header Actions - Hidden on Print */}
                 <div className="flex items-center justify-between mb-6 print:hidden">
                     <button
@@ -368,21 +404,23 @@ function InvoiceDetail({
                         className="flex items-center gap-2 text-p-color hover:text-primary transition-colors"
                     >
                         <X className="w-5 h-5" />
-                        Back to Invoices
+                        Volver a Facturas
                     </button>
                     <button
                         onClick={onPrint}
                         className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-white hover:opacity-90 transition-opacity"
                     >
                         <Printer className="w-4 h-4" />
-                        Print Invoice
+                        Imprimir Factura
                     </button>
                 </div>
 
-                {/* Invoice Content */}
+                {/* Invoice Content - Venezuelan Compliance (Art. 7) */}
                 <div className="palette-surface palette-border border rounded-xl p-8 print:shadow-none print:border-0">
-                    {/* Invoice Header - Venezuelan Compliance */}
-                    <div className="border-b border-[var(--palette-border)] pb-6 mb-6">
+                    {/* Art. 1: Denominación del documento "FACTURA" */}
+                    {/* Art. 2: Numeración consecutiva y única */}
+                    {/* Art. 3: Emisor info */}
+                    <div className="border-b-2 border-[var(--palette-border)] pb-6 mb-6">
                         <div className="flex items-start justify-between mb-4">
                             <div>
                                 <h1 className="text-3xl font-bold text-primary">FACTURA</h1>
@@ -395,71 +433,114 @@ function InvoiceDetail({
                                     <p className="font-semibold">{invoice.company.business_name}</p>
                                     <p className="text-sm text-p-color">RIF: {invoice.company.rif}</p>
                                     <p className="text-sm text-p-color">{invoice.company.fiscal_address}</p>
+                                    {invoice.company.phone && (
+                                        <p className="text-sm text-p-color">Tel: {invoice.company.phone}</p>
+                                    )}
                                 </div>
                             )}
                         </div>
 
-                        <div className="grid grid-cols-3 gap-4 text-sm">
+                        {/* Art. 4: Número de control */}
+                        {/* Art. 6: Fecha y hora de emisión (DDMMYYYY - HH.MM.SS AM/PM) */}
+                        <div className="grid grid-cols-4 gap-4 text-sm bg-[var(--palette-surface)] p-4 rounded-lg">
                             <div>
-                                <p className="text-p-color opacity-75">Control Number</p>
+                                <p className="text-p-color opacity-75 text-xs uppercase">N° Control</p>
                                 <p className="font-mono font-medium">{invoice.control_number}</p>
                             </div>
                             <div>
-                                <p className="text-p-color opacity-75">Date of Issue</p>
+                                <p className="text-p-color opacity-75 text-xs uppercase">Fecha de Emisión</p>
                                 <p className="font-medium">{formatDate(invoice.issue_date)}</p>
+                                <p className="text-xs text-p-color opacity-50">
+                                    ({formatDateDisplay(invoice.issue_date)})
+                                </p>
+                            </div>
+                            <div>
+                                <p className="text-p-color opacity-75 text-xs uppercase">Hora de Emisión</p>
+                                <p className="font-medium">{formatTime(invoice.issue_time)}</p>
                             </div>
                             <div className="text-right">
-                                <p className="text-p-color opacity-75">Time of Issue</p>
-                                <p className="font-medium">{formatTime(invoice.issue_time)}</p>
+                                <p className="text-p-color opacity-75 text-xs uppercase">Estado</p>
+                                <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
+                                    {invoice.status === 'issued' ? 'Emitida' : invoice.status}
+                                </span>
                             </div>
                         </div>
                     </div>
 
-                    {/* Client Information */}
+                    {/* Art. 5: Rango de números de control */}
+                    {invoice.control_number_range && (
+                        <div className="bg-[var(--palette-surface)] p-3 rounded-lg mb-6 text-sm">
+                            <p className="text-p-color opacity-75 text-xs uppercase mb-1">
+                                Rango de Números de Control Asignados
+                            </p>
+                            <p className="font-medium">
+                                Desde el N° {invoice.control_number_range.start_number.padStart(12, '0')}{' '}
+                                hasta el N° {invoice.control_number_range.end_number.padStart(12, '0')}
+                            </p>
+                            {/* Art. 15: Fecha de asignación del número de control */}
+                            <p className="text-xs text-p-color opacity-50 mt-1">
+                                Fecha de asignación: {formatDateDisplay(invoice.control_number_range.assigned_date)}
+                            </p>
+                        </div>
+                    )}
+
+                    {/* Art. 7: Información del cliente */}
                     <div className="palette-surface palette-border border rounded-lg p-4 mb-6">
                         <h3 className="text-sm font-semibold text-p-color opacity-75 uppercase mb-3">
-                            Client Information
+                            Datos del Cliente
                         </h3>
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <p className="text-p-color opacity-75 text-xs">Name</p>
+                                <p className="text-p-color opacity-75 text-xs">Nombre / Razón Social</p>
                                 <p className="font-medium">
-                                    {invoice.client_business_name || invoice.client_rif || 'Customer'}
+                                    {invoice.client_business_name || 
+                                     (invoice.client_document_type && invoice.client_document_number) ||
+                                     invoice.client_rif || 
+                                     'Cliente'}
                                 </p>
                             </div>
                             <div>
-                                <p className="text-p-color opacity-75 text-xs">RIF / ID</p>
+                                <p className="text-p-color opacity-75 text-xs">
+                                    RIF / Cédula / Pasaporte
+                                </p>
                                 <p className="font-medium">
-                                    {invoice.client_document_type
+                                    {invoice.client_document_type && invoice.client_document_number
                                         ? `${invoice.client_document_type}-${invoice.client_document_number}`
                                         : invoice.client_rif || 'N/A'}
                                 </p>
                             </div>
                             {invoice.client_fiscal_address && (
                                 <div className="col-span-2">
-                                    <p className="text-p-color opacity-75 text-xs">Fiscal Address</p>
+                                    <p className="text-p-color opacity-75 text-xs">Domicilio Fiscal</p>
                                     <p className="font-medium">{invoice.client_fiscal_address}</p>
                                 </div>
                             )}
                         </div>
                     </div>
 
-                    {/* Line Items Table */}
+                    {/* Art. 8: Descripción de operaciones y precio */}
+                    {/* Art. 9: Entrega de bienes (si aplica) */}
                     {invoice.lines && invoice.lines.length > 0 && (
                         <table className="w-full mb-6">
                             <thead>
                                 <tr className="border-b-2 border-[var(--palette-border)] text-sm uppercase opacity-75">
-                                    <th className="text-left py-3 font-semibold">Description</th>
-                                    <th className="text-center py-3 font-semibold">Qty</th>
-                                    <th className="text-right py-3 font-semibold">Unit Price</th>
-                                    <th className="text-right py-3 font-semibold">Tax %</th>
+                                    <th className="text-left py-3 font-semibold">Descripción</th>
+                                    <th className="text-center py-3 font-semibold">Cant.</th>
+                                    <th className="text-right py-3 font-semibold">Precio Unit.</th>
+                                    <th className="text-right py-3 font-semibold">Alícuota</th>
                                     <th className="text-right py-3 font-semibold">Total</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {invoice.lines.map((line) => (
                                     <tr key={line.id} className="border-b border-[var(--palette-border)]">
-                                        <td className="py-3">{line.description}</td>
+                                        <td className="py-3">
+                                            {line.description}
+                                            {/* Art. 8: Operación exenta */}
+                                            {line.is_exempt && (
+                                                <span className="ml-2 text-xs text-p-color opacity-75">(E)</span>
+                                            )}
+                                        </td>
                                         <td className="py-3 text-center">{line.quantity}</td>
                                         <td className="py-3 text-right">
                                             ${parseFloat(line.unit_price).toFixed(2)}
@@ -476,11 +557,30 @@ function InvoiceDetail({
                         </table>
                     )}
 
-                    {/* Pricing Breakdown - Venezuelan Compliance */}
+                    {/* Art. 10: Ajustes (descuentos, bonificaciones) */}
+                    {invoice.adjustments && invoice.adjustments.length > 0 && (
+                        <div className="mb-6">
+                            <h4 className="text-sm font-semibold text-p-color opacity-75 uppercase mb-2">
+                                Ajustes
+                            </h4>
+                            {invoice.adjustments.map((adj) => (
+                                <div key={adj.id} className="flex justify-between py-1 text-sm">
+                                    <span>{adj.description}</span>
+                                    <span className="font-medium">
+                                        {adj.adjustment_type === 'discount' ? '-' : ''}${parseFloat(adj.amount).toFixed(2)}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
+                    {/* Art. 11: Base imponible */}
+                    {/* Art. 12: IVA discriminado */}
+                    {/* Art. 13: Total de operaciones */}
                     <div className="flex justify-end mb-6">
                         <div className="w-80">
                             <div className="flex items-center justify-between py-2 border-b border-[var(--palette-border)]">
-                                <span className="text-p-color opacity-75">Base Price (Subtotal)</span>
+                                <span className="text-p-color opacity-75">Base Imponible</span>
                                 <span className="font-medium">
                                     ${parseFloat(invoice.subtotal).toFixed(2)}
                                 </span>
@@ -493,7 +593,7 @@ function InvoiceDetail({
                             </div>
                             {invoice.discount_total && parseFloat(invoice.discount_total) > 0 && (
                                 <div className="flex items-center justify-between py-2 border-b border-[var(--palette-border)]">
-                                    <span className="text-p-color opacity-75">Discount</span>
+                                    <span className="text-p-color opacity-75">Descuentos</span>
                                     <span className="font-medium text-green-600">
                                         -${parseFloat(invoice.discount_total).toFixed(2)}
                                     </span>
@@ -508,11 +608,11 @@ function InvoiceDetail({
                         </div>
                     </div>
 
-                    {/* Payment Information */}
+                    {/* Información de pagos */}
                     {invoice.payments && invoice.payments.length > 0 && (
                         <div className="mt-6 pt-6 border-t border-[var(--palette-border)]">
                             <h3 className="text-sm font-semibold text-p-color opacity-75 uppercase mb-4">
-                                Payment Breakdown
+                                Desglose de Pagos
                             </h3>
                             <div className="space-y-2">
                                 {invoice.payments.map((payment) => (
@@ -522,10 +622,10 @@ function InvoiceDetail({
                                     >
                                         <div>
                                             <span className="font-medium capitalize">
-                                                {payment.method_type?.replace('_', ' ') || 'Payment'}
+                                                {payment.method_type?.replace('_', ' ') || 'Pago'}
                                             </span>
                                             <span className="text-sm text-p-color opacity-75 ml-2">
-                                                ({new Date(payment.created_at).toLocaleDateString()})
+                                                ({formatDateDisplay(payment.created_at)})
                                             </span>
                                         </div>
                                         <div className="flex items-center gap-3">
@@ -539,7 +639,7 @@ function InvoiceDetail({
                                                         : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
                                                 }`}
                                             >
-                                                {payment.status}
+                                                {payment.status === 'completed' ? 'Completado' : payment.status}
                                             </span>
                                         </div>
                                     </div>
@@ -548,11 +648,24 @@ function InvoiceDetail({
                         </div>
                     )}
 
-                    {/* Footer - Venezuelan Compliance */}
+                    {/* Art. 14: Información de la imprenta digital autorizada */}
+                    {invoice.control_number_range && (
+                        <div className="mt-6 pt-6 border-t-2 border-[var(--palette-border)] text-xs text-p-color opacity-75">
+                            <h4 className="font-semibold uppercase mb-2">
+                                Imprenta Digital Autorizada
+                            </h4>
+                            <p>
+                                {invoice.control_number_range.printer?.business_name || 'Imprenta'} | 
+                                RIF: {invoice.control_number_range.printer?.rif || 'N/A'}
+                            </p>
+                            <p className="mt-1">
+                                Providencia Administrativa: {invoice.control_number_range.printer?.authorization_providence || 'N/A'}
+                            </p>
+                        </div>
+                    )}
+
+                    {/* Footer */}
                     <div className="mt-8 pt-6 border-t border-[var(--palette-border)] text-center text-xs text-p-color opacity-60 print:block">
-                        <p className="mb-2">
-                            This invoice complies with the requirements of the Venezuelan Administrative Providence.
-                        </p>
                         {invoice.company && (
                             <p>
                                 {invoice.company.business_name} | RIF: {invoice.company.rif}

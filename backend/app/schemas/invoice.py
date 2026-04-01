@@ -10,6 +10,30 @@ from pydantic import BaseModel, ConfigDict, Field
 from app.schemas.payment import PaymentResponse
 
 
+class PrinterResponse(BaseModel):
+    """Schema for authorized printer response (Art. 14)."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    business_name: str
+    rif: str
+    authorization_providence: str
+
+
+class ControlNumberRangeResponse(BaseModel):
+    """Schema for control number range response (Art. 4, 5, 15)."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    start_number: str
+    end_number: str
+    assigned_date: date
+    printer_id: int
+    printer: PrinterResponse | None = None
+
+
 class CompanyInfoResponse(BaseModel):
     """Schema for company info response."""
 
@@ -142,12 +166,13 @@ class InvoiceResponse(BaseModel):
 
 
 class InvoiceWithDetails(InvoiceResponse):
-    """Invoice with lines, adjustments, payments, and company info."""
+    """Invoice with lines, adjustments, payments, company info, and printer data (Art. 7)."""
 
     lines: list[InvoiceLineResponse] = []
     adjustments: list[InvoiceAdjustmentResponse] = []
     payments: list[PaymentResponse] = []
     company: CompanyInfoResponse | None = None
+    control_number_range: ControlNumberRangeResponse | None = None
 
 
 class InvoiceListResponse(BaseModel):

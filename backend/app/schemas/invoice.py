@@ -10,6 +10,19 @@ from pydantic import BaseModel, ConfigDict, Field
 from app.schemas.payment import PaymentResponse
 
 
+class CompanyInfoResponse(BaseModel):
+    """Schema for company info response."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    business_name: str
+    rif: str
+    fiscal_address: str | None = None
+    email: str | None = None
+    phone: str | None = None
+
+
 class InvoiceLineBase(BaseModel):
     """Base invoice line schema."""
 
@@ -114,6 +127,9 @@ class InvoiceResponse(BaseModel):
     client_id: UUID | None = None
     client_rif: str | None = None
     client_business_name: str | None = None
+    client_document_type: str | None = None
+    client_document_number: str | None = None
+    client_fiscal_address: str | None = None
     company_info_id: int | None = None
     subtotal: Decimal
     discount_total: Decimal
@@ -126,11 +142,12 @@ class InvoiceResponse(BaseModel):
 
 
 class InvoiceWithDetails(InvoiceResponse):
-    """Invoice with lines, adjustments, and payments."""
+    """Invoice with lines, adjustments, payments, and company info."""
 
     lines: list[InvoiceLineResponse] = []
     adjustments: list[InvoiceAdjustmentResponse] = []
     payments: list[PaymentResponse] = []
+    company: CompanyInfoResponse | None = None
 
 
 class InvoiceListResponse(BaseModel):

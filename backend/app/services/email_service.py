@@ -424,12 +424,15 @@ class EmailService:
 
                         {payment_html}
 
-                        <div style="margin-top: 20px; padding-top: 10px; border-top: 1px solid #ddd;">
-                            <div style="display: flex; justify-content: space-between; padding: 5px 0;">
+                        <div style="margin-top: 20px;
+                            padding-top: 10px; border-top: 1px solid #ddd;">
+                            <div style="display: flex;
+                                justify-content: space-between; padding: 5px 0;">
                                 <span>Base Price:</span>
                                 <span>${subtotal or "0.00"}</span>
                             </div>
-                            <div style="display: flex; justify-content: space-between; padding: 5px 0;">
+                            <div style="display: flex;
+                                justify-content: space-between; padding: 5px 0;">
                                 <span>IVA (16%):</span>
                                 <span>${tax_total or "0.00"}</span>
                             </div>

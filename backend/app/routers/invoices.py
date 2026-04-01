@@ -7,7 +7,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.dependencies import CurrentUser
 from app.database import get_db
-from app.models.user import User
 from app.schemas.invoice import (
     InvoiceCreate,
     InvoiceListResponse,
@@ -20,12 +19,22 @@ from app.services.invoice_service import InvoiceService
 router = APIRouter(prefix="/invoices", tags=["Invoices"])
 
 
+@router.get("/summary")
+async def get_invoice_summary(
+    current_user: CurrentUser,
+    db: AsyncSession = Depends(get_db),
+) -> dict:
+    """Get invoice summary statistics for the current user."""
+    invoice_service = InvoiceService(db)
+    return await invoice_service.get_user_invoice_summary(current_user.id)
+
+
 @router.get("/", response_model=InvoiceListResponse)
 async def list_invoices(
+    current_user: CurrentUser,
+    db: AsyncSession = Depends(get_db),
     page: int = Query(1, ge=1),
     page_size: int = Query(10, ge=1, le=100),
-    current_user: User = Depends(CurrentUser),
-    db: AsyncSession = Depends(get_db),
 ) -> InvoiceListResponse:
     """Get current user's invoices."""
     invoice_service = InvoiceService(db)
@@ -50,13 +59,13 @@ async def list_invoices(
 @router.get("/{invoice_id}", response_model=InvoiceWithDetails)
 async def get_invoice(
     invoice_id: UUID,
-    current_user: User = Depends(CurrentUser),
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> InvoiceWithDetails:
     """Get a specific invoice by ID."""
     invoice_service = InvoiceService(db)
 
-    invoice = await invoice_service.get_invoice_by_id(invoice_id)
+    invoice = await invoice_service.get_invoice_with_details(invoice_id)
 
     if not invoice:
         raise HTTPException(
@@ -77,7 +86,7 @@ async def get_invoice(
 @router.get("/number/{invoice_number}", response_model=InvoiceWithDetails)
 async def get_invoice_by_number(
     invoice_number: str,
-    current_user: User = Depends(CurrentUser),
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> InvoiceWithDetails:
     """Get invoice by invoice number."""
@@ -104,7 +113,7 @@ async def get_invoice_by_number(
 @router.post("/", response_model=InvoiceResponse, status_code=status.HTTP_201_CREATED)
 async def create_invoice(
     invoice_data: InvoiceCreate,
-    current_user: User = Depends(CurrentUser),
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> InvoiceResponse:
     """
@@ -151,7 +160,7 @@ async def create_invoice(
 async def update_invoice(
     invoice_id: UUID,
     invoice_data: InvoiceUpdate,
-    current_user: User = Depends(CurrentUser),
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> InvoiceResponse:
     """Update invoice (admin only - e.g., change status, add notes)."""
@@ -180,7 +189,7 @@ async def update_invoice(
 @router.get("/{invoice_id}/download")
 async def download_invoice(
     invoice_id: UUID,
-    current_user: User = Depends(CurrentUser),
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> dict:
     """

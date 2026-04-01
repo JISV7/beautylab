@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { FileText, X, Printer } from 'lucide-react';
+import { FileText, X, Printer, DollarSign, Receipt, Percent } from 'lucide-react';
 
 const API_URL = 'http://localhost:8000';
 
@@ -8,30 +8,56 @@ interface InvoiceLine {
     id: number;
     description: string;
     quantity: string;
-    unitPrice: string;
-    lineTotal: string;
+    unit_price: string;
+    line_total: string;
+    tax_rate?: string;
+    tax_amount?: string;
 }
 
 interface Payment {
     id: string;
     amount: string;
     status: string;
-    createdAt: string;
+    created_at: string;
+    method_type?: string;
+}
+
+interface CompanyInfo {
+    id: number;
+    business_name: string;
+    rif: string;
+    fiscal_address?: string;
+    email?: string;
+    phone?: string;
 }
 
 interface Invoice {
     id: string;
-    invoiceNumber: string;
-    controlNumber: string;
-    issueDate: string;
-    issueTime: string;
+    invoice_number: string;
+    control_number: string;
+    issue_date: string;
+    issue_time: string;
+    subtotal: string;
+    discount_total: string;
+    tax_total: string;
     total: string;
     status: string;
-    clientRif?: string;
-    clientBusinessName?: string;
+    client_rif?: string;
+    client_business_name?: string;
+    client_document_type?: string;
+    client_document_number?: string;
+    client_fiscal_address?: string;
     lines?: InvoiceLine[];
     payments?: Payment[];
-    createdAt: string;
+    company?: CompanyInfo;
+    created_at: string;
+}
+
+interface InvoiceSummary {
+    total_invoices: number;
+    total_subtotal: string;
+    total_iva: string;
+    total_paid: string;
 }
 
 interface InvoicesResponse {
@@ -67,6 +93,16 @@ export default function InvoicesPage() {
     const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+    const [summary, setSummary] = useState<InvoiceSummary | null>(null);
+
+    const fetchSummary = async () => {
+        try {
+            const response = await api.get<InvoiceSummary>('/invoices/summary');
+            setSummary(response.data);
+        } catch (error) {
+            console.error('Failed to fetch invoice summary:', error);
+        }
+    };
 
     const fetchInvoices = async (page: number = 1) => {
         try {
@@ -92,6 +128,7 @@ export default function InvoicesPage() {
     };
 
     useEffect(() => {
+        fetchSummary();
         fetchInvoices();
     }, []);
 
@@ -118,6 +155,7 @@ export default function InvoicesPage() {
             ) : (
                 <InvoiceList
                     invoices={invoices}
+                    summary={summary}
                     currentPage={currentPage}
                     totalPages={totalPages}
                     onPageChange={fetchInvoices}
@@ -130,12 +168,14 @@ export default function InvoicesPage() {
 
 function InvoiceList({
     invoices,
+    summary,
     currentPage,
     totalPages,
     onPageChange,
     onViewDetails,
 }: {
     invoices: Invoice[];
+    summary: InvoiceSummary | null;
     currentPage: number;
     totalPages: number;
     onPageChange: (page: number) => void;
@@ -145,6 +185,54 @@ function InvoiceList({
         <main className="flex-1 p-8 overflow-auto print:p-0 print:overflow-visible">
             <div className="max-w-6xl mx-auto">
                 <h2 className="text-3xl font-bold text-primary mb-6">My Invoices</h2>
+
+                {/* Summary Cards */}
+                {summary && (
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                        <div className="palette-surface palette-border border rounded-xl p-4 flex items-center gap-4">
+                            <div className="p-3 bg-primary/10 rounded-lg">
+                                <Receipt className="w-6 h-6 text-primary" />
+                            </div>
+                            <div>
+                                <p className="text-sm text-p-color opacity-75">Total Invoices</p>
+                                <p className="text-2xl font-bold">{summary.total_invoices}</p>
+                            </div>
+                        </div>
+                        <div className="palette-surface palette-border border rounded-xl p-4 flex items-center gap-4">
+                            <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-lg">
+                                <DollarSign className="w-6 h-6 text-green-600 dark:text-green-400" />
+                            </div>
+                            <div>
+                                <p className="text-sm text-p-color opacity-75">Base Total</p>
+                                <p className="text-2xl font-bold text-green-600 dark:text-green-400">
+                                    ${parseFloat(summary.total_subtotal).toFixed(2)}
+                                </p>
+                            </div>
+                        </div>
+                        <div className="palette-surface palette-border border rounded-xl p-4 flex items-center gap-4">
+                            <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                                <Percent className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                            </div>
+                            <div>
+                                <p className="text-sm text-p-color opacity-75">Total IVA (16%)</p>
+                                <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                                    ${parseFloat(summary.total_iva).toFixed(2)}
+                                </p>
+                            </div>
+                        </div>
+                        <div className="palette-surface palette-border border rounded-xl p-4 flex items-center gap-4">
+                            <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
+                                <FileText className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                            </div>
+                            <div>
+                                <p className="text-sm text-p-color opacity-75">Total Paid</p>
+                                <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">
+                                    ${parseFloat(summary.total_paid).toFixed(2)}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 {invoices.length === 0 ? (
                     <div className="palette-surface palette-border border rounded-xl p-8 text-center">
@@ -175,10 +263,10 @@ function InvoiceList({
                                             className="border-b border-[var(--palette-border)] hover:bg-[var(--palette-surface)] cursor-pointer transition-colors"
                                             onClick={() => onViewDetails(invoice)}
                                         >
-                                            <td className="p-4 font-medium">{invoice.invoiceNumber}</td>
-                                            <td className="p-4 font-mono text-sm">{invoice.controlNumber}</td>
+                                            <td className="p-4 font-medium">{invoice.invoice_number}</td>
+                                            <td className="p-4 font-mono text-sm">{invoice.control_number}</td>
                                             <td className="p-4">
-                                                {new Date(invoice.issueDate).toLocaleDateString()}
+                                                {new Date(invoice.issue_date).toLocaleDateString()}
                                             </td>
                                             <td className="p-4 font-semibold text-primary">
                                                 ${parseFloat(invoice.total).toFixed(2)}
@@ -249,9 +337,30 @@ function InvoiceDetail({
     onBack: () => void;
     onPrint: () => void;
 }) {
+    // Format date as DD/MM/YYYY
+    const formatDate = (dateStr: string) => {
+        const date = new Date(dateStr);
+        return date.toLocaleDateString('es-VE', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+        });
+    };
+
+    // Format time as HH:MM:SS AM/PM
+    const formatTime = (timeStr: string) => {
+        const date = new Date(`2000-01-01T${timeStr}`);
+        return date.toLocaleTimeString('es-VE', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: true,
+        });
+    };
+
     return (
         <main className="flex-1 p-8 overflow-auto print:p-0 print:overflow-visible">
-            <div className="max-w-4xl mx-auto">
+            <div className="max-w-5xl mx-auto">
                 {/* Header Actions - Hidden on Print */}
                 <div className="flex items-center justify-between mb-6 print:hidden">
                     <button
@@ -272,51 +381,78 @@ function InvoiceDetail({
 
                 {/* Invoice Content */}
                 <div className="palette-surface palette-border border rounded-xl p-8 print:shadow-none print:border-0">
-                    {/* Invoice Header */}
-                    <div className="flex items-center justify-between mb-8 pb-6 border-b border-[var(--palette-border)]">
-                        <div>
-                            <h1 className="text-2xl font-bold text-primary">INVOICE</h1>
-                            <p className="text-p-color opacity-75 mt-1">
-                                {invoice.invoiceNumber}
-                            </p>
+                    {/* Invoice Header - Venezuelan Compliance */}
+                    <div className="border-b border-[var(--palette-border)] pb-6 mb-6">
+                        <div className="flex items-start justify-between mb-4">
+                            <div>
+                                <h1 className="text-3xl font-bold text-primary">FACTURA</h1>
+                                <p className="text-p-color opacity-75 mt-1">
+                                    N° {invoice.invoice_number}
+                                </p>
+                            </div>
+                            {invoice.company && (
+                                <div className="text-right">
+                                    <p className="font-semibold">{invoice.company.business_name}</p>
+                                    <p className="text-sm text-p-color">RIF: {invoice.company.rif}</p>
+                                    <p className="text-sm text-p-color">{invoice.company.fiscal_address}</p>
+                                </div>
+                            )}
                         </div>
-                        <div className="text-right">
-                            <p className="text-sm text-p-color opacity-75">Issue Date</p>
-                            <p className="font-medium">
-                                {new Date(invoice.issueDate).toLocaleDateString()}
-                            </p>
+
+                        <div className="grid grid-cols-3 gap-4 text-sm">
+                            <div>
+                                <p className="text-p-color opacity-75">Control Number</p>
+                                <p className="font-mono font-medium">{invoice.control_number}</p>
+                            </div>
+                            <div>
+                                <p className="text-p-color opacity-75">Date of Issue</p>
+                                <p className="font-medium">{formatDate(invoice.issue_date)}</p>
+                            </div>
+                            <div className="text-right">
+                                <p className="text-p-color opacity-75">Time of Issue</p>
+                                <p className="font-medium">{formatTime(invoice.issue_time)}</p>
+                            </div>
                         </div>
                     </div>
 
-                    {/* Invoice Details Grid */}
-                    <div className="grid grid-cols-2 gap-8 mb-8">
-                        <div>
-                            <h3 className="text-sm font-semibold text-p-color opacity-75 uppercase mb-2">
-                                Bill To
-                            </h3>
-                            <p className="font-medium">
-                                {invoice.clientBusinessName || 'Customer'}
-                            </p>
-                            {invoice.clientRif && (
-                                <p className="text-p-color text-sm">RIF: {invoice.clientRif}</p>
+                    {/* Client Information */}
+                    <div className="palette-surface palette-border border rounded-lg p-4 mb-6">
+                        <h3 className="text-sm font-semibold text-p-color opacity-75 uppercase mb-3">
+                            Client Information
+                        </h3>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <p className="text-p-color opacity-75 text-xs">Name</p>
+                                <p className="font-medium">
+                                    {invoice.client_business_name || invoice.client_rif || 'Customer'}
+                                </p>
+                            </div>
+                            <div>
+                                <p className="text-p-color opacity-75 text-xs">RIF / ID</p>
+                                <p className="font-medium">
+                                    {invoice.client_document_type
+                                        ? `${invoice.client_document_type}-${invoice.client_document_number}`
+                                        : invoice.client_rif || 'N/A'}
+                                </p>
+                            </div>
+                            {invoice.client_fiscal_address && (
+                                <div className="col-span-2">
+                                    <p className="text-p-color opacity-75 text-xs">Fiscal Address</p>
+                                    <p className="font-medium">{invoice.client_fiscal_address}</p>
+                                </div>
                             )}
-                        </div>
-                        <div className="text-right">
-                            <h3 className="text-sm font-semibold text-p-color opacity-75 uppercase mb-2">
-                                Control Number
-                            </h3>
-                            <p className="font-mono text-lg">{invoice.controlNumber}</p>
                         </div>
                     </div>
 
                     {/* Line Items Table */}
                     {invoice.lines && invoice.lines.length > 0 && (
-                        <table className="w-full mb-8">
+                        <table className="w-full mb-6">
                             <thead>
-                                <tr className="border-b border-[var(--palette-border)] text-sm uppercase opacity-75">
+                                <tr className="border-b-2 border-[var(--palette-border)] text-sm uppercase opacity-75">
                                     <th className="text-left py-3 font-semibold">Description</th>
                                     <th className="text-center py-3 font-semibold">Qty</th>
                                     <th className="text-right py-3 font-semibold">Unit Price</th>
+                                    <th className="text-right py-3 font-semibold">Tax %</th>
                                     <th className="text-right py-3 font-semibold">Total</th>
                                 </tr>
                             </thead>
@@ -326,10 +462,13 @@ function InvoiceDetail({
                                         <td className="py-3">{line.description}</td>
                                         <td className="py-3 text-center">{line.quantity}</td>
                                         <td className="py-3 text-right">
-                                            ${parseFloat(line.unitPrice).toFixed(2)}
+                                            ${parseFloat(line.unit_price).toFixed(2)}
+                                        </td>
+                                        <td className="py-3 text-right text-p-color opacity-75">
+                                            {line.tax_rate ? `${parseFloat(line.tax_rate).toFixed(2)}%` : '16%'}
                                         </td>
                                         <td className="py-3 text-right font-medium">
-                                            ${parseFloat(line.lineTotal).toFixed(2)}
+                                            ${parseFloat(line.line_total).toFixed(2)}
                                         </td>
                                     </tr>
                                 ))}
@@ -337,11 +476,31 @@ function InvoiceDetail({
                         </table>
                     )}
 
-                    {/* Totals */}
-                    <div className="flex justify-end mb-8">
-                        <div className="w-64">
+                    {/* Pricing Breakdown - Venezuelan Compliance */}
+                    <div className="flex justify-end mb-6">
+                        <div className="w-80">
                             <div className="flex items-center justify-between py-2 border-b border-[var(--palette-border)]">
-                                <span className="text-p-color opacity-75">Total</span>
+                                <span className="text-p-color opacity-75">Base Price (Subtotal)</span>
+                                <span className="font-medium">
+                                    ${parseFloat(invoice.subtotal).toFixed(2)}
+                                </span>
+                            </div>
+                            <div className="flex items-center justify-between py-2 border-b border-[var(--palette-border)]">
+                                <span className="text-p-color opacity-75">IVA (16%)</span>
+                                <span className="font-medium">
+                                    ${parseFloat(invoice.tax_total).toFixed(2)}
+                                </span>
+                            </div>
+                            {invoice.discount_total && parseFloat(invoice.discount_total) > 0 && (
+                                <div className="flex items-center justify-between py-2 border-b border-[var(--palette-border)]">
+                                    <span className="text-p-color opacity-75">Discount</span>
+                                    <span className="font-medium text-green-600">
+                                        -${parseFloat(invoice.discount_total).toFixed(2)}
+                                    </span>
+                                </div>
+                            )}
+                            <div className="flex items-center justify-between py-3 bg-primary/10 px-3 rounded-lg mt-2">
+                                <span className="font-bold text-primary">Total</span>
                                 <span className="text-xl font-bold text-primary">
                                     ${parseFloat(invoice.total).toFixed(2)}
                                 </span>
@@ -351,9 +510,9 @@ function InvoiceDetail({
 
                     {/* Payment Information */}
                     {invoice.payments && invoice.payments.length > 0 && (
-                        <div className="mt-8 pt-6 border-t border-[var(--palette-border)]">
+                        <div className="mt-6 pt-6 border-t border-[var(--palette-border)]">
                             <h3 className="text-sm font-semibold text-p-color opacity-75 uppercase mb-4">
-                                Payment Information
+                                Payment Breakdown
                             </h3>
                             <div className="space-y-2">
                                 {invoice.payments.map((payment) => (
@@ -361,30 +520,44 @@ function InvoiceDetail({
                                         key={payment.id}
                                         className="flex items-center justify-between py-2 px-4 rounded-lg bg-[var(--palette-surface)]"
                                     >
-                                        <span className="text-sm">
-                                            {new Date(payment.createdAt).toLocaleDateString()}
-                                        </span>
-                                        <span className="font-medium">
-                                            ${parseFloat(payment.amount).toFixed(2)}
-                                        </span>
-                                        <span
-                                            className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                                payment.status === 'completed'
-                                                    ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
-                                                    : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
-                                            }`}
-                                        >
-                                            {payment.status}
-                                        </span>
+                                        <div>
+                                            <span className="font-medium capitalize">
+                                                {payment.method_type?.replace('_', ' ') || 'Payment'}
+                                            </span>
+                                            <span className="text-sm text-p-color opacity-75 ml-2">
+                                                ({new Date(payment.created_at).toLocaleDateString()})
+                                            </span>
+                                        </div>
+                                        <div className="flex items-center gap-3">
+                                            <span className="font-medium">
+                                                ${parseFloat(payment.amount).toFixed(2)}
+                                            </span>
+                                            <span
+                                                className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                                    payment.status === 'completed'
+                                                        ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                                                        : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
+                                                }`}
+                                            >
+                                                {payment.status}
+                                            </span>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
                         </div>
                     )}
 
-                    {/* Footer */}
-                    <div className="mt-8 pt-6 border-t border-[var(--palette-border)] text-center text-sm text-p-color opacity-60 print:hidden">
-                        <p>Thank you for your purchase!</p>
+                    {/* Footer - Venezuelan Compliance */}
+                    <div className="mt-8 pt-6 border-t border-[var(--palette-border)] text-center text-xs text-p-color opacity-60 print:block">
+                        <p className="mb-2">
+                            This invoice complies with the requirements of the Venezuelan Administrative Providence.
+                        </p>
+                        {invoice.company && (
+                            <p>
+                                {invoice.company.business_name} | RIF: {invoice.company.rif}
+                            </p>
+                        )}
                     </div>
                 </div>
             </div>

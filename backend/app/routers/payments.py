@@ -333,8 +333,11 @@ async def purchase_course(
             course_id=request.course_id,
             product_id=course.product_id,
             user_email=current_user.email,
-            user_rif=None,  # Could be added to user profile
-            user_business_name=None,
+            user_rif=current_user.rif,
+            user_business_name=current_user.business_name,
+            user_document_type=current_user.document_type,
+            user_document_number=current_user.document_number,
+            user_fiscal_address=current_user.fiscal_address,
         )
     except InvoiceNotFoundError as e:
         raise HTTPException(

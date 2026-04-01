@@ -41,6 +41,9 @@ class InvoiceService:
         user_email: str,
         user_rif: str | None = None,
         user_business_name: str | None = None,
+        user_document_type: str | None = None,
+        user_document_number: str | None = None,
+        user_fiscal_address: str | None = None,
     ) -> Invoice:
         """
         Create an invoice for a course purchase.
@@ -52,6 +55,9 @@ class InvoiceService:
             user_email: User's email for notifications
             user_rif: User's RIF (optional)
             user_business_name: User's business name (optional)
+            user_document_type: User's document type (V, J, E, etc.)
+            user_document_number: User's document number
+            user_fiscal_address: User's fiscal address
 
         Returns:
             Created invoice
@@ -66,9 +72,9 @@ class InvoiceService:
             client_id=user_id,
             client_rif=user_rif,
             client_business_name=user_business_name,
-            client_document_type=None,
-            client_document_number=None,
-            client_fiscal_address=None,
+            client_document_type=user_document_type,
+            client_document_number=user_document_number,
+            client_fiscal_address=user_fiscal_address,
             notes=f"Course purchase - Course ID: {course_id}",
             lines=[
                 InvoiceLineCreate(
@@ -318,8 +324,16 @@ class InvoiceService:
         page: int = 1,
         page_size: int = 10,
     ) -> tuple[list[Invoice], int]:
-        """Get all invoices for a user."""
-        query = select(Invoice).where(Invoice.client_id == user_id)
+        """Get all invoices for a user with lines and payments loaded."""
+        query = (
+            select(Invoice)
+            .options(
+                selectinload(Invoice.lines),
+                selectinload(Invoice.payments),
+                selectinload(Invoice.company),
+            )
+            .where(Invoice.client_id == user_id)
+        )
 
         # Get total count
         count_query = select(func.count()).select_from(query.subquery())
@@ -335,11 +349,33 @@ class InvoiceService:
 
         return invoices, total
 
+    async def get_user_invoice_summary(
+        self,
+        user_id: UUID,
+    ) -> dict:
+        """Get invoice summary statistics for a user."""
+        result = await self.db.execute(
+            select(
+                func.count(Invoice.id).label("total_invoices"),
+                func.sum(Invoice.subtotal).label("total_subtotal"),
+                func.sum(Invoice.tax_total).label("total_tax"),
+                func.sum(Invoice.total).label("total_paid"),
+            ).where(Invoice.client_id == user_id)
+        )
+        row = result.first()
+
+        return {
+            "total_invoices": row.total_invoices or 0,
+            "total_subtotal": str(row.total_subtotal or Decimal("0.00")),
+            "total_iva": str(row.total_tax or Decimal("0.00")),
+            "total_paid": str(row.total_paid or Decimal("0.00")),
+        }
+
     async def get_invoice_with_details(
         self,
         invoice_id: UUID,
     ) -> Invoice | None:
-        """Get invoice with line items, adjustments, and payments."""
+        """Get invoice with line items, adjustments, payments, and company info."""
 
         result = await self.db.execute(
             select(Invoice)
@@ -347,6 +383,7 @@ class InvoiceService:
                 selectinload(Invoice.lines),
                 selectinload(Invoice.adjustments),
                 selectinload(Invoice.payments),
+                selectinload(Invoice.company),
             )
             .where(Invoice.id == invoice_id)
         )

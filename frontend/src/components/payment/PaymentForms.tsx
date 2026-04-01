@@ -1,6 +1,6 @@
 import React from 'react';
 import { CreditCard, Building, Mail, Calendar, Lock, User, Phone, FileText } from 'lucide-react';
-import type { PaymentMethodType } from './PaymentMethodSelector';
+import type { PaymentMethodType } from './types';
 
 export interface PaymentFormValues {
     // Credit/Debit Card

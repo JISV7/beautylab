@@ -1,4 +1,3 @@
-export { PaymentMethodSelector, type PaymentMethodOption, type PaymentMethodType } from './PaymentMethodSelector';
 export {
     PaymentForm,
     CreditCardForm,
@@ -10,5 +9,6 @@ export {
     type PaymentFormValues,
     type PaymentFormProps,
 } from './PaymentForms';
+export type { PaymentMethodType } from './types';
 export { SplitPaymentManager, type SplitPaymentEntry } from './SplitPaymentManager';
 export { PurchaseConfirmation, type PaymentBreakdown } from './PurchaseConfirmation';

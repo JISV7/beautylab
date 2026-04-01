@@ -18,6 +18,7 @@ class CompanyInfoBase(BaseModel):
     phone: str | None = Field(None, max_length=20, description="Phone number")
     email: str | None = Field(None, max_length=255, description="Email address")
     logo_url: str | None = Field(None, max_length=255, description="Logo URL")
+    is_active: bool = Field(False, description="Whether this company profile is active")
 
     @field_validator("rif")
     @classmethod
@@ -58,6 +59,7 @@ class CompanyInfoUpdate(BaseModel):
     phone: str | None = Field(None, max_length=20)
     email: str | None = Field(None, max_length=255)
     logo_url: str | None = Field(None, max_length=255)
+    is_active: bool | None = Field(None, description="Whether this company profile is active")
 
     model_config = ConfigDict(
         alias_generator=to_camel,
@@ -97,6 +99,7 @@ class CompanyInfoResponse(BaseModel):
     phone: str | None = None
     email: str | None = None
     logo_url: str | None = None
+    is_active: bool
     created_at: str
     updated_at: str
 

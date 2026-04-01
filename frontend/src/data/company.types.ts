@@ -10,6 +10,7 @@ export interface CompanyInfo extends Record<string, unknown> {
   phone?: string | null;
   email?: string | null;
   logoUrl?: string | null;
+  isActive: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -19,6 +20,7 @@ export interface Printer extends Record<string, unknown> {
   businessName: string;
   rif: string;
   authorizationProvidence: string;
+  isActive: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -30,10 +32,12 @@ export interface CompanyInfoCreate {
   phone?: string | null;
   email?: string | null;
   logoUrl?: string | null;
+  isActive?: boolean;
 }
 
 export interface PrinterCreate {
   businessName: string;
   rif: string;
   authorizationProvidence: string;
+  isActive?: boolean;
 }

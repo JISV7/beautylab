@@ -21,6 +21,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.models.base import Base, TimestampMixin
 
 if TYPE_CHECKING:
+    from app.models.company_info import CompanyInfo
     from app.models.license import License
     from app.models.payment import Payment
     from app.models.point_of_sale import PointOfSale
@@ -48,6 +49,11 @@ class Invoice(Base, TimestampMixin):
         ForeignKey("point_of_sale.id"),
         nullable=False,
     )
+    company_info_id: Mapped[int | None] = mapped_column(
+        ForeignKey("company_info.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True,
+    )
     issue_date: Mapped[date] = mapped_column(Date, nullable=False)
     issue_time: Mapped[time] = mapped_column(Time, nullable=False)
     client_id: Mapped[UUID | None] = mapped_column(
@@ -74,6 +80,9 @@ class Invoice(Base, TimestampMixin):
     # Relationships
     client: Mapped[Optional["User"]] = relationship("User", back_populates="invoices")
     point_of_sale: Mapped["PointOfSale"] = relationship("PointOfSale", back_populates="invoices")
+    company: Mapped[Optional["CompanyInfo"]] = relationship(
+        "CompanyInfo", back_populates="invoices"
+    )
     lines: Mapped[list["InvoiceLine"]] = relationship(
         "InvoiceLine", back_populates="invoice", cascade="all, delete-orphan"
     )

@@ -1,12 +1,10 @@
 """Printers router for managing authorized printers."""
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.dependencies import RequireAdmin
 from app.database import get_db
-from app.models.printer import Printer
 from app.models.user import User
 from app.schemas.printer import PrinterCreate, PrinterResponse, PrinterUpdate
 from app.services.printer_service import PrinterService
@@ -69,30 +67,30 @@ async def update_printer(
     current_user: User = Depends(RequireAdmin),
 ):
     """Update printer information."""
-    result = await db.execute(select(Printer).where(Printer.id == printer_id))
-    printer = result.scalar_one_or_none()
+    service = PrinterService(db)
+    printer = await service.get_by_id(printer_id)
 
     if not printer:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Printer not found")
 
     # Check RIF uniqueness if being updated
     if printer_data.rif and printer_data.rif != printer.rif:
-        existing = await db.execute(
-            select(Printer).where(Printer.rif == printer_data.rif, Printer.id != printer_id)
-        )
-        if existing.scalar_one_or_none():
+        if await service.check_rif_exists(printer_data.rif, exclude_id=printer_id):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Printer with this RIF already exists",
             )
 
-    # Update fields
-    update_data = printer_data.model_dump(exclude_unset=True)
-    for field, value in update_data.items():
-        setattr(printer, field, value)
-
-    await db.commit()
-    await db.refresh(printer)
+    # Handle is_active change through service
+    if printer_data.is_active is not None and printer_data.is_active:
+        printer = await service.set_active(printer_id)
+    else:
+        # Update other fields
+        update_data = printer_data.model_dump(exclude_unset=True, exclude={"is_active"})
+        for field, value in update_data.items():
+            setattr(printer, field, value)
+        await db.commit()
+        await db.refresh(printer)
 
     return PrinterResponse.model_validate(printer)
 
@@ -104,11 +102,32 @@ async def delete_printer(
     current_user: User = Depends(RequireAdmin),
 ):
     """Delete a printer."""
-    result = await db.execute(select(Printer).where(Printer.id == printer_id))
-    printer = result.scalar_one_or_none()
+    service = PrinterService(db)
+
+    try:
+        success = await service.delete(printer_id)
+        if not success:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Printer not found")
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+
+
+@router.post("/{printer_id}/set-active", response_model=PrinterResponse)
+async def set_active_printer(
+    printer_id: int,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(RequireAdmin),
+):
+    """
+    Set a printer as the active one for invoice printing.
+
+    This will automatically deactivate all other printers and their control number ranges.
+    Only one printer can be active at a time.
+    """
+    service = PrinterService(db)
+    printer = await service.set_active(printer_id)
 
     if not printer:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Printer not found")
 
-    await db.delete(printer)
-    await db.commit()
+    return PrinterResponse.model_validate(printer)

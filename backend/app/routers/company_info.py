@@ -17,6 +17,7 @@ from app.schemas.company_info import (
     CompanyInfoResponse,
     CompanyInfoUpdate,
 )
+from app.services.company_info_service import CompanyInfoService
 
 router = APIRouter(prefix="/company-info", tags=["Company Info"])
 
@@ -100,18 +101,20 @@ async def create_company_info(
     current_user: User = Depends(RequireAdmin),
 ):
     """Create a new company information record."""
+    service = CompanyInfoService(db)
+
     # Check if company with same RIF already exists
-    existing = await db.execute(select(CompanyInfo).where(CompanyInfo.rif == company_data.rif))
-    if existing.scalar_one_or_none():
+    if await service.check_rif_exists(company_data.rif):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Company with this RIF already exists",
         )
 
-    company = CompanyInfo(**company_data.model_dump())
-    db.add(company)
-    await db.commit()
-    await db.refresh(company)
+    company = await service.create(company_data)
+
+    # If this is the first company or explicitly set as active, activate it
+    if company_data.is_active:
+        company = await service.set_active(company.id)
 
     return CompanyInfoResponse.model_validate(company)
 
@@ -124,32 +127,30 @@ async def update_company_info(
     current_user: User = Depends(RequireAdmin),
 ):
     """Update company information."""
-    result = await db.execute(select(CompanyInfo).where(CompanyInfo.id == company_id))
-    company = result.scalar_one_or_none()
+    service = CompanyInfoService(db)
+    company = await service.get_by_id(company_id)
 
     if not company:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Company info not found")
 
     # Check RIF uniqueness if being updated
     if company_data.rif and company_data.rif != company.rif:
-        existing = await db.execute(
-            select(CompanyInfo).where(
-                CompanyInfo.rif == company_data.rif, CompanyInfo.id != company_id
-            )
-        )
-        if existing.scalar_one_or_none():
+        if await service.check_rif_exists(company_data.rif, exclude_id=company_id):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Company with this RIF already exists",
             )
 
-    # Update fields
-    update_data = company_data.model_dump(exclude_unset=True)
-    for field, value in update_data.items():
-        setattr(company, field, value)
-
-    await db.commit()
-    await db.refresh(company)
+    # Handle is_active change through service
+    if company_data.is_active is not None and company_data.is_active:
+        company = await service.set_active(company_id)
+    else:
+        # Update other fields
+        update_data = company_data.model_dump(exclude_unset=True, exclude={"is_active"})
+        for field, value in update_data.items():
+            setattr(company, field, value)
+        await db.commit()
+        await db.refresh(company)
 
     return CompanyInfoResponse.model_validate(company)
 
@@ -161,11 +162,54 @@ async def delete_company_info(
     current_user: User = Depends(RequireAdmin),
 ):
     """Delete a company information record."""
-    result = await db.execute(select(CompanyInfo).where(CompanyInfo.id == company_id))
-    company = result.scalar_one_or_none()
+    service = CompanyInfoService(db)
+
+    try:
+        success = await service.delete(company_id)
+        if not success:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Company info not found"
+            )
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+
+
+@router.post("/{company_id}/set-active", response_model=CompanyInfoResponse)
+async def set_active_company(
+    company_id: int,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(RequireAdmin),
+):
+    """
+    Set a company as the active one for invoicing.
+
+    This will automatically deactivate all other company profiles.
+    Only one company can be active at a time.
+    """
+    service = CompanyInfoService(db)
+    company = await service.set_active(company_id)
 
     if not company:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Company info not found")
 
-    await db.delete(company)
-    await db.commit()
+    return CompanyInfoResponse.model_validate(company)
+
+
+@router.get("/active/public", response_model=CompanyInfoResponse)
+async def get_active_company_info(db: AsyncSession = Depends(get_db)):
+    """
+    Get the currently active company information.
+
+    This endpoint is public and does not require authentication.
+    Returns 404 if no active company is configured.
+    """
+    service = CompanyInfoService(db)
+    company = await service.get_active_company()
+
+    if not company:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No active company configured. Please contact administrator.",
+        )
+
+    return CompanyInfoResponse.model_validate(company)

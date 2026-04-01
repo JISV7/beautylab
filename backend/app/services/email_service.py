@@ -250,7 +250,7 @@ class EmailService:
 
                 <div class="content">
                     <p>Hello {user_name},</p>
-                    <p>Thank you for joining Codyn Academy - your online programming and AI learning platform.</p>
+                    <p>Thank you for joining Codyn Academy - your online learning platform.</p>
                     <p>Get started by exploring our features:</p>
                     <ul>
                         <li>Browse programming courses</li>
@@ -258,7 +258,7 @@ class EmailService:
                         <li>Purchase courses and learning paths</li>
                     </ul>
                     <p style="text-align: center; margin: 30px 0;">
-                        <a href="{settings.website_url}/dashboard" class="button">Go to Dashboard</a>
+                        <a href="{settings.website_url}/dashboard" class="button">To Dashboard</a>
                     </p>
                 </div>
 

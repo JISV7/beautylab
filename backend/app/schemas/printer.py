@@ -16,6 +16,7 @@ class PrinterBase(BaseModel):
     authorization_providence: str = Field(
         ..., max_length=255, description="Authorization providence number"
     )
+    is_active: bool = Field(True, description="Whether this printer is active")
 
     @field_validator("rif")
     @classmethod
@@ -42,6 +43,7 @@ class PrinterUpdate(BaseModel):
     business_name: str | None = Field(None, max_length=255)
     rif: str | None = Field(None, max_length=20)
     authorization_providence: str | None = Field(None, max_length=255)
+    is_active: bool | None = Field(None, description="Whether this printer is active")
 
     model_config = ConfigDict(
         alias_generator=to_camel,
@@ -85,4 +87,10 @@ class PrinterResponse(PrinterBase):
     @classmethod
     def skip_rif_validation_for_response(cls, v):
         """Skip RIF validation for responses (data already in DB)."""
+        return v
+
+    @field_validator("is_active", mode="before")
+    @classmethod
+    def skip_is_active_validation_for_response(cls, v):
+        """Skip is_active validation for responses (data already in DB)."""
         return v

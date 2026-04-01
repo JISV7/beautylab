@@ -33,7 +33,7 @@ api.interceptors.request.use((config) => {
 interface CompanyFormProps {
   company?: CompanyInfo | null;
   formData: CompanyInfoCreate;
-  onChange: (field: keyof CompanyInfoCreate, value: string) => void;
+  onChange: (field: keyof CompanyInfoCreate, value: string | boolean) => void;
   onSave: () => void;
   onCancel: () => void;
   saving?: boolean;
@@ -525,6 +525,26 @@ export const CompanyForm: React.FC<CompanyFormProps> = ({
                     {uploadError}
                   </p>
                 )}
+              </div>
+
+              {/* Active Status Toggle */}
+              <div className="pt-4 border-t" style={{ borderColor: 'var(--palette-border)' }}>
+                <label className="flex items-center gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    name="isActive"
+                    checked={formData.isActive ?? false}
+                    onChange={(e) => onChange('isActive', e.target.checked)}
+                    className="w-5 h-5 rounded border-[var(--palette-border)] text-[var(--palette-primary)] focus:ring-[var(--palette-primary)] focus:ring-2"
+                    disabled={saving}
+                  />
+                  <div className="flex flex-col">
+                    <span className="text-[var(--text-p-color)] font-medium">Set as Active Company</span>
+                    <span className="text-xs text-[var(--text-p-color)] opacity-75">
+                      Only one company can be active at a time. Activating this company will deactivate others.
+                    </span>
+                  </div>
+                </label>
               </div>
             </div>
           </div>

@@ -39,6 +39,7 @@ export default function CompanyInfoPage() {
     phone: '',
     email: '',
     logoUrl: '',
+    isActive: false,
   });
   const [companyToDelete, setCompanyToDelete] = useState<CompanyInfo | null>(null);
   const [confirmModal, setConfirmModal] = useState<{
@@ -55,6 +56,13 @@ export default function CompanyInfoPage() {
     message: '',
     confirmText: 'Confirm',
     onConfirm: null,
+  });
+  const [setActiveModal, setSetActiveModal] = useState<{
+    isOpen: boolean;
+    company: CompanyInfo | null;
+  }>({
+    isOpen: false,
+    company: null,
   });
 
   const fetchCompanies = async () => {
@@ -83,6 +91,7 @@ export default function CompanyInfoPage() {
         phone: company.phone || '',
         email: company.email || '',
         logoUrl: company.logoUrl || '',
+        isActive: company.isActive,
       });
     } else {
       setEditingCompany(null);
@@ -93,6 +102,7 @@ export default function CompanyInfoPage() {
         phone: '',
         email: '',
         logoUrl: '',
+        isActive: false,
       });
     }
     setIsFormOpen(true);
@@ -148,8 +158,29 @@ export default function CompanyInfoPage() {
     }
   };
 
-  const handleFormChange = (field: keyof CompanyInfoCreate, value: string) => {
+  const handleFormChange = (field: keyof CompanyInfoCreate, value: string | boolean) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleSetActive = (company: CompanyInfo) => {
+    setSetActiveModal({
+      isOpen: true,
+      company,
+    });
+  };
+
+  const confirmSetActive = async () => {
+    if (!setActiveModal.company) return;
+    try {
+      setSaving(true);
+      await api.post(`/company-info/${setActiveModal.company.id}/set-active`);
+      setSetActiveModal({ isOpen: false, company: null });
+      fetchCompanies();
+    } catch (error: any) {
+      console.error('Failed to set active company:', error);
+    } finally {
+      setSaving(false);
+    }
   };
 
   if (loading && companies.length === 0) {
@@ -169,6 +200,7 @@ export default function CompanyInfoPage() {
         onEdit={handleOpenForm}
         onDelete={handleDelete}
         onAdd={() => handleOpenForm()}
+        onSetActive={handleSetActive}
       />
 
       {isFormOpen && (
@@ -190,6 +222,34 @@ export default function CompanyInfoPage() {
         message={confirmModal.message}
         confirmText={confirmModal.confirmText}
         type={confirmModal.type}
+      />
+
+      {/* Set Active Confirmation Modal */}
+      <ConfirmModal
+        isOpen={setActiveModal.isOpen}
+        onClose={() => setSetActiveModal(prev => ({ ...prev, isOpen: false }))}
+        onConfirm={confirmSetActive}
+        title="Set Active Company"
+        message={
+          <>
+            <p className="text-p-color mb-3">
+              Are you sure you want to set <strong>"{setActiveModal.company?.businessName}"</strong> as the active company?
+            </p>
+            <div
+              className="p-3 rounded-lg border"
+              style={{
+                backgroundColor: 'var(--palette-surface)',
+                borderColor: 'var(--palette-border)',
+              }}
+            >
+              <p className="text-sm text-[var(--text-p-color)] opacity-80">
+                <strong>Note:</strong> This will automatically deactivate all other companies. Only one company can be active at a time.
+              </p>
+            </div>
+          </>
+        }
+        confirmText="Set Active"
+        type="primary"
       />
     </div>
   );

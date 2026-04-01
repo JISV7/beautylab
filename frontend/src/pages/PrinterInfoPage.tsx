@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { PrinterTable, PrinterForm } from '../components/admin/printer';
+import { ConfirmModal } from '../components/admin/ConfirmModal';
 import type { Printer, PrinterCreate } from '../data/company.types';
 
 const API_URL = 'http://localhost:8000';
@@ -35,6 +36,29 @@ export default function PrinterInfoPage() {
     businessName: '',
     rif: '',
     authorizationProvidence: '',
+    isActive: false,
+  });
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean;
+    type: 'danger' | 'primary' | 'success';
+    title: string;
+    message: string | React.ReactNode;
+    confirmText: string;
+    onConfirm: (() => void) | null;
+  }>({
+    isOpen: false,
+    type: 'primary',
+    title: '',
+    message: '',
+    confirmText: 'Confirm',
+    onConfirm: null,
+  });
+  const [setActiveModal, setSetActiveModal] = useState<{
+    isOpen: boolean;
+    printer: Printer | null;
+  }>({
+    isOpen: false,
+    printer: null,
   });
 
   const fetchPrinters = async () => {
@@ -60,6 +84,7 @@ export default function PrinterInfoPage() {
         businessName: printer.businessName,
         rif: printer.rif,
         authorizationProvidence: printer.authorizationProvidence,
+        isActive: printer.isActive,
       });
     } else {
       setEditingPrinter(null);
@@ -67,6 +92,7 @@ export default function PrinterInfoPage() {
         businessName: '',
         rif: '',
         authorizationProvidence: '',
+        isActive: false,
       });
     }
     setIsFormOpen(true);
@@ -89,7 +115,28 @@ export default function PrinterInfoPage() {
     }
   };
 
-  const handleDelete = async (printer: Printer) => {
+  const handleDelete = (printer: Printer) => {
+    setConfirmModal({
+      isOpen: true,
+      type: 'danger',
+      title: 'Delete Printer',
+      message: (
+        <>
+          Are you sure you want to delete <strong>"{printer.businessName}"</strong>?
+          <br />
+          <span className="text-red-600 dark:text-red-400 mt-2 block">
+            This action cannot be undone.
+          </span>
+        </>
+      ),
+      confirmText: 'Delete',
+      onConfirm: () => {
+        executeDelete(printer);
+      },
+    });
+  };
+
+  const executeDelete = async (printer: Printer) => {
     try {
       await api.delete(`/printers/${printer.id}`);
       setPrinters(printers.filter((p) => p.id !== printer.id));
@@ -98,8 +145,29 @@ export default function PrinterInfoPage() {
     }
   };
 
-  const handleFormChange = (field: keyof PrinterCreate, value: string) => {
+  const handleFormChange = (field: keyof PrinterCreate, value: string | boolean) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleSetActive = (printer: Printer) => {
+    setSetActiveModal({
+      isOpen: true,
+      printer,
+    });
+  };
+
+  const confirmSetActive = async () => {
+    if (!setActiveModal.printer) return;
+    try {
+      setSaving(true);
+      await api.post(`/printers/${setActiveModal.printer.id}/set-active`);
+      setSetActiveModal({ isOpen: false, printer: null });
+      fetchPrinters();
+    } catch (error: any) {
+      console.error('Failed to set active printer:', error);
+    } finally {
+      setSaving(false);
+    }
   };
 
   if (loading && printers.length === 0) {
@@ -119,6 +187,7 @@ export default function PrinterInfoPage() {
         onEdit={handleOpenForm}
         onDelete={handleDelete}
         onAdd={() => handleOpenForm()}
+        onSetActive={handleSetActive}
       />
 
       {isFormOpen && (
@@ -131,6 +200,45 @@ export default function PrinterInfoPage() {
           saving={saving}
         />
       )}
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmModal
+        isOpen={confirmModal.isOpen}
+        onClose={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))}
+        onConfirm={confirmModal.onConfirm || (() => {})}
+        title={confirmModal.title}
+        message={confirmModal.message}
+        confirmText={confirmModal.confirmText}
+        type={confirmModal.type}
+      />
+
+      {/* Set Active Confirmation Modal */}
+      <ConfirmModal
+        isOpen={setActiveModal.isOpen}
+        onClose={() => setSetActiveModal(prev => ({ ...prev, isOpen: false }))}
+        onConfirm={confirmSetActive}
+        title="Set Active Printer"
+        message={
+          <>
+            <p className="text-p-color mb-3">
+              Are you sure you want to set <strong>"{setActiveModal.printer?.businessName}"</strong> as the active printer?
+            </p>
+            <div
+              className="p-3 rounded-lg border"
+              style={{
+                backgroundColor: 'var(--palette-surface)',
+                borderColor: 'var(--palette-border)',
+              }}
+            >
+              <p className="text-sm text-[var(--text-p-color)] opacity-80">
+                <strong>Note:</strong> This will automatically deactivate all other printers and their control number ranges. Only one printer can be active at a time.
+              </p>
+            </div>
+          </>
+        }
+        confirmText="Set Active"
+        type="primary"
+      />
     </div>
   );
 }

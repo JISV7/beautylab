@@ -7,6 +7,7 @@ from uuid import UUID
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.models.company_info import CompanyInfo
 from app.models.control_number_range import ControlNumberRange
 from app.models.invoice import Invoice, InvoiceAdjustment, InvoiceLine
 from app.models.product import Product
@@ -119,6 +120,13 @@ class InvoiceService:
         invoice_number = await self._generate_invoice_number()
         control_number = await self._generate_control_number()
 
+        # Get active company info
+        active_company = await self._get_active_company()
+        if not active_company:
+            raise InvoiceValidationError(
+                "No active company configured. Please configure company information first."
+            )
+
         # Get first active control number range
         control_range = await self._get_active_control_number_range()
         if not control_range:
@@ -132,6 +140,7 @@ class InvoiceService:
             control_number=control_number,
             control_number_range_id=control_range.id,
             point_of_sale_id=1,  # Default POS - would be dynamic in production
+            company_info_id=active_company.id,
             issue_date=date.today(),
             issue_time=datetime.now().time(),
             client_id=invoice_data.client_id,
@@ -386,5 +395,12 @@ class InvoiceService:
             .where(ControlNumberRange.is_active)
             .order_by(ControlNumberRange.id)
             .limit(1)
+        )
+        return result.scalar_one_or_none()
+
+    async def _get_active_company(self) -> CompanyInfo | None:
+        """Get the currently active company information."""
+        result = await self.db.execute(
+            select(CompanyInfo).where(CompanyInfo.is_active).order_by(CompanyInfo.id).limit(1)
         )
         return result.scalar_one_or_none()

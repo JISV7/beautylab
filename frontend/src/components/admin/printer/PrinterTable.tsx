@@ -1,7 +1,7 @@
 import type { Column } from '../data-table';
 import type { Printer } from '../../../data/company.types';
 import { DataTable } from '../data-table';
-import { Edit, Trash2 } from 'lucide-react';
+import { Edit, Trash2, CheckCircle, XCircle, Star } from 'lucide-react';
 
 interface PrinterTableProps {
   printers: Printer[];
@@ -10,6 +10,7 @@ interface PrinterTableProps {
   onEdit: (printer: Printer) => void;
   onDelete: (printer: Printer) => void;
   onAdd: () => void;
+  onSetActive?: (printer: Printer) => void;
 }
 
 export const PrinterTable: React.FC<PrinterTableProps> = ({
@@ -19,13 +20,8 @@ export const PrinterTable: React.FC<PrinterTableProps> = ({
   onEdit,
   onDelete,
   onAdd,
+  onSetActive,
 }) => {
-  const handleDelete = (printer: Printer) => {
-    if (window.confirm(`Are you sure you want to delete "${printer.businessName}"?`)) {
-      onDelete(printer);
-    }
-  };
-
   const columns: Column<Printer>[] = [
     {
       key: 'businessName',
@@ -49,11 +45,40 @@ export const PrinterTable: React.FC<PrinterTableProps> = ({
       ),
     },
     {
+      key: 'isActive',
+      label: 'Status',
+      sortable: true,
+      render: (item) => (
+        <div className="flex items-center gap-2">
+          {item.isActive ? (
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
+              <CheckCircle className="w-3.5 h-3.5" />
+              Active
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400">
+              <XCircle className="w-3.5 h-3.5" />
+              Inactive
+            </span>
+          )}
+        </div>
+      ),
+    },
+    {
       key: 'actions',
       label: 'Actions',
       className: 'text-right',
       render: (item) => (
         <div className="flex items-center justify-end gap-2">
+          {!item.isActive && onSetActive && (
+            <button
+              onClick={() => onSetActive(item)}
+              className="p-1.5 rounded-lg hover:bg-yellow-50 dark:hover:bg-yellow-900/20 text-yellow-600 dark:text-yellow-400 transition-colors"
+              title="Set as Active"
+            >
+              <Star className="w-4 h-4" />
+            </button>
+          )}
           <button
             onClick={() => onEdit(item)}
             className="p-1.5 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 text-blue-600 dark:text-blue-400 transition-colors"
@@ -62,9 +87,14 @@ export const PrinterTable: React.FC<PrinterTableProps> = ({
             <Edit className="w-4 h-4" />
           </button>
           <button
-            onClick={() => handleDelete(item)}
-            className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400 transition-colors"
-            title="Delete"
+            onClick={() => onDelete(item)}
+            disabled={item.isActive}
+            className={`p-1.5 rounded-lg transition-colors ${
+              item.isActive
+                ? 'opacity-30 cursor-not-allowed text-gray-400'
+                : 'hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400'
+            }`}
+            title={item.isActive ? 'Cannot delete active printer' : 'Delete'}
           >
             <Trash2 className="w-4 h-4" />
           </button>

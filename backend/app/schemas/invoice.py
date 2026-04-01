@@ -112,6 +112,7 @@ class InvoiceResponse(BaseModel):
     client_id: UUID | None = None
     client_rif: str | None = None
     client_business_name: str | None = None
+    company_info_id: int | None = None
     subtotal: Decimal
     discount_total: Decimal
     tax_total: Decimal

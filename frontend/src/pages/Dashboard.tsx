@@ -55,7 +55,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigateToAdmin, onLogou
             {activeItem === 'explore' ? (
                 <ExplorePage onViewCourse={handleViewCourse} />
             ) : activeItem === 'my-courses' ? (
-                <MyCoursesPage />
+                <MyCoursesPage onViewCourse={handleViewCourse} />
             ) : activeItem === 'invoices' ? (
                 <InvoicesPage />
             ) : (

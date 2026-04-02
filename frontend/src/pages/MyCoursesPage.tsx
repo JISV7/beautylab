@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Book, Gift, Key, Share2, CheckCircle, Clock } from 'lucide-react';
+import { Book, Key, Share2, CheckCircle, Clock, ChevronDown, Gift } from 'lucide-react';
+import { MyCoursesFilters, type Category } from '../components/user/MyCoursesFilters';
 
 const API_URL = 'http://localhost:8000';
 
@@ -17,6 +18,8 @@ interface UserCourse {
     course_title: string;
     course_slug: string;
     course_image_url: string | null;
+    category_id: number | null;
+    category_name: string | null;
     licenses: License[];
     total_paid: string;
     total_required: string;
@@ -43,9 +46,25 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
-export default function MyCoursesPage() {
+export default function MyCoursesPage({ onViewCourse }: { onViewCourse?: (courseId: string) => void }) {
     const [courses, setCourses] = useState<UserCourse[]>([]);
+    const [categories, setCategories] = useState<Category[]>([]);
     const [loading, setLoading] = useState(true);
+    const [expandedLicenses, setExpandedLicenses] = useState<string[]>([]);
+
+    // Filter states
+    const [searchQuery, setSearchQuery] = useState('');
+    const [statusFilter, setStatusFilter] = useState('all');
+    const [categoryFilter, setCategoryFilter] = useState('');
+    const [includeChildren, setIncludeChildren] = useState(false);
+
+    const toggleLicenses = (courseId: string) => {
+        setExpandedLicenses(prev => 
+            prev.includes(courseId) 
+                ? prev.filter(id => id !== courseId)
+                : [...prev, courseId]
+        );
+    };
 
     const fetchCourses = async () => {
         try {
@@ -59,8 +78,18 @@ export default function MyCoursesPage() {
         }
     };
 
+    const fetchCategories = async () => {
+        try {
+            const response = await api.get('/catalog/categories');
+            setCategories(response.data.categories || []);
+        } catch (error) {
+            console.error('Failed to fetch categories:', error);
+        }
+    };
+
     useEffect(() => {
         fetchCourses();
+        fetchCategories();
     }, []);
 
     const getStatusBadge = (course: UserCourse) => {
@@ -91,20 +120,42 @@ export default function MyCoursesPage() {
         }
     };
 
-    const getLicenseStatusBadge = (license: License) => {
-        const badges = {
-            pending: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
-            active: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
-            redeemed: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
-            expired: 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400',
-            cancelled: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
-        };
-        return (
-            <span className={`px-2 py-1 rounded text-xs font-medium ${badges[license.status as keyof typeof badges] || badges.pending}`}>
-                {license.status}
-            </span>
-        );
-    };
+    // Filter courses based on search and filters
+    const filteredCourses = courses.filter((course) => {
+        // Search filter
+        const matchesSearch = course.course_title.toLowerCase().includes(searchQuery.toLowerCase());
+        
+        // Category filter with includeChildren support
+        const matchesCategory = (() => {
+            if (!categoryFilter) return true;
+            if (includeChildren) {
+                // Get all child category IDs recursively
+                const getChildIds = (parentId: number): number[] => {
+                    return categories
+                        .filter(c => c.parent_id === parentId)
+                        .flatMap(c => [c.id, ...getChildIds(c.id)]);
+                };
+                const allowedIds = [parseInt(categoryFilter), ...getChildIds(parseInt(categoryFilter))];
+                return allowedIds.includes(course.category_id || 0);
+            }
+            return course.category_id?.toString() === categoryFilter;
+        })();
+        
+        // Status filter
+        const matchesStatus = (() => {
+            if (statusFilter === 'all') return true;
+            if (statusFilter === 'partial') return !course.is_fully_paid;
+            if (statusFilter === 'ready') {
+                return course.is_fully_paid && course.licenses.every(l => l.status === 'pending');
+            }
+            if (statusFilter === 'active') {
+                return course.is_fully_paid && course.licenses.some(l => l.status === 'active' || l.status === 'redeemed');
+            }
+            return true;
+        })();
+        
+        return matchesSearch && matchesCategory && matchesStatus;
+    });
 
     if (loading) {
         return (
@@ -119,6 +170,26 @@ export default function MyCoursesPage() {
             <div className="max-w-7xl mx-auto">
                 <h2 className="text-3xl font-bold text-primary mb-6">My Courses</h2>
 
+                {/* Filters */}
+                <MyCoursesFilters
+                    searchQuery={searchQuery}
+                    statusFilter={statusFilter}
+                    categoryFilter={categoryFilter}
+                    includeChildren={includeChildren}
+                    categories={categories}
+                    onSearchChange={setSearchQuery}
+                    onStatusFilterChange={setStatusFilter}
+                    onCategoryFilterChange={setCategoryFilter}
+                    onIncludeChildrenChange={setIncludeChildren}
+                />
+
+                {/* Results Count */}
+                <div className="mb-6 mt-4 flex items-center justify-between">
+                    <p className="text-p-color opacity-60">
+                        Showing <span className="font-bold text-p-color">{filteredCourses.length}</span> courses
+                    </p>
+                </div>
+
                 {courses.length === 0 ? (
                     <div className="palette-surface palette-border border rounded-xl p-8 text-center">
                         <Book className="w-16 h-16 mx-auto mb-4 opacity-50" />
@@ -129,7 +200,7 @@ export default function MyCoursesPage() {
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {courses.map((course) => (
+                        {filteredCourses.map((course) => (
                             <div
                                 key={course.course_id}
                                 className="palette-surface palette-border border rounded-xl overflow-hidden hover:shadow-lg transition-shadow"
@@ -149,11 +220,13 @@ export default function MyCoursesPage() {
 
                                 {/* Course Info */}
                                 <div className="p-4">
-                                    <div className="flex items-start justify-between mb-2">
-                                        <h3 className="font-semibold text-lg line-clamp-2">
+                                    <div className="mb-2">
+                                        <h3 className="font-semibold text-lg line-clamp-2 mb-2">
                                             {course.course_title}
                                         </h3>
-                                        {getStatusBadge(course)}
+                                        <div className="mt-2">
+                                            {getStatusBadge(course)}
+                                        </div>
                                     </div>
 
                                     {/* Payment Progress */}
@@ -171,36 +244,61 @@ export default function MyCoursesPage() {
                                                     style={{ width: `${Math.min(course.payment_progress, 100)}%` }}
                                                 />
                                             </div>
-                                            <p className="text-xs text-p-color opacity-50 mt-1">
-                                                Complete payment to unlock full access
-                                            </p>
                                         </div>
                                     )}
 
-                                    {/* Licenses */}
+                                    {/* Licenses Toggle */}
                                     {course.licenses.length > 0 && (
                                         <div className="mb-4">
-                                            <h4 className="text-sm font-semibold text-p-color opacity-75 mb-2">
-                                                Licenses
-                                            </h4>
-                                            <div className="space-y-2">
-                                                {course.licenses.map((license) => (
-                                                    <div
-                                                        key={license.id}
-                                                        className="flex items-center justify-between p-2 bg-[var(--palette-surface)] rounded-lg"
-                                                    >
-                                                        <div className="flex items-center gap-2">
-                                                            <Gift className="w-4 h-4 text-p-color opacity-50" />
-                                                            <span className="text-xs font-mono text-p-color opacity-75">
-                                                                {license.license_code.slice(0, 8)}...
-                                                            </span>
-                                                        </div>
-                                                        <div className="flex items-center gap-2">
-                                                            {getLicenseStatusBadge(license)}
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                            </div>
+                                            <button
+                                                onClick={() => toggleLicenses(course.course_id)}
+                                                className="w-full flex items-center justify-between p-3 bg-[var(--palette-surface)] rounded-lg hover:opacity-80 transition-opacity"
+                                            >
+                                                <div className="flex items-center gap-2">
+                                                    <Gift className="w-4 h-4 text-p-color opacity-50" />
+                                                    <span className="text-sm font-semibold text-p-color opacity-75">
+                                                        Licenses ({course.licenses.length})
+                                                    </span>
+                                                </div>
+                                                <ChevronDown className={`w-4 h-4 transition-transform ${
+                                                    expandedLicenses.includes(course.course_id) ? 'rotate-180' : ''
+                                                }`} />
+                                            </button>
+                                            
+                                            {/* Expanded Summary */}
+                                            {expandedLicenses.includes(course.course_id) && (
+                                                <div className="mt-2 space-y-2">
+                                                    {(() => {
+                                                        const counts = {
+                                                            pending: course.licenses.filter(l => l.status === 'pending').length,
+                                                            active: course.licenses.filter(l => l.status === 'active').length,
+                                                            redeemed: course.licenses.filter(l => l.status === 'redeemed').length,
+                                                            expired: course.licenses.filter(l => l.status === 'expired').length,
+                                                            cancelled: course.licenses.filter(l => l.status === 'cancelled').length,
+                                                        };
+                                                        const statusLabels: Record<string, string> = {
+                                                            pending: 'Pending',
+                                                            active: 'Active',
+                                                            redeemed: 'Redeemed',
+                                                            expired: 'Expired',
+                                                            cancelled: 'Cancelled',
+                                                        };
+                                                        return Object.entries(counts).map(([status, count]) => (
+                                                            <div
+                                                                key={status}
+                                                                className="flex items-center justify-between p-2 bg-[var(--palette-surface)] rounded-lg"
+                                                            >
+                                                                <span className="text-sm text-p-color opacity-75">
+                                                                    {statusLabels[status]}
+                                                                </span>
+                                                                <span className="font-bold text-p-color">
+                                                                    {count}
+                                                                </span>
+                                                            </div>
+                                                        ));
+                                                    })()}
+                                                </div>
+                                            )}
                                         </div>
                                     )}
 
@@ -208,7 +306,7 @@ export default function MyCoursesPage() {
                                     <div className="flex gap-2 pt-4 border-t border-[var(--palette-border)]">
                                         <button
                                             className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg theme-button theme-button-primary text-sm"
-                                            onClick={() => window.location.href = `/courses/${course.course_slug}`}
+                                            onClick={() => onViewCourse?.(course.course_id)}
                                         >
                                             <Book className="w-4 h-4" />
                                             View Course

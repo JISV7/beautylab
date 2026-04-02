@@ -919,6 +919,8 @@ class UserCourseResponse(BaseModel):
     course_title: str
     course_slug: str
     course_image_url: str | None = None
+    category_id: int | None = None
+    category_name: str | None = None
     # License information
     licenses: list[dict] = []
     # Payment progress
@@ -1012,6 +1014,8 @@ async def get_my_courses(
                 course_title=data["course"].title,
                 course_slug=data["course"].slug,
                 course_image_url=data["course"].image_url,
+                category_id=data["course"].category_id,
+                category_name=data["course"].category.name if data["course"].category else None,
                 licenses=[
                     {
                         "id": str(lic.id),

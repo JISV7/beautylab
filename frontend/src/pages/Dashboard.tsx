@@ -3,6 +3,7 @@ import { DashboardLayout } from '../components/layout/DashboardLayout';
 import { ExplorePage } from './ExplorePage';
 import { CourseDetailsPage } from './CourseDetailsPage';
 import InvoicesPage from './InvoicesPage';
+import MyCoursesPage from './MyCoursesPage';
 
 interface DashboardProps {
     onNavigateToAdmin?: () => void;
@@ -53,6 +54,8 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigateToAdmin, onLogou
         >
             {activeItem === 'explore' ? (
                 <ExplorePage onViewCourse={handleViewCourse} />
+            ) : activeItem === 'my-courses' ? (
+                <MyCoursesPage />
             ) : activeItem === 'invoices' ? (
                 <InvoicesPage />
             ) : (

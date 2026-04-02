@@ -159,10 +159,14 @@ class InvoiceResponse(BaseModel):
     discount_total: Decimal
     tax_total: Decimal
     total: Decimal
-    status: str
+    status: str  # calculated: issued, partial, paid, cancelled
     notes: str | None = None
     created_at: datetime
     updated_at: datetime
+    # Payment progress (calculated)
+    total_paid: Decimal = Decimal("0.00")
+    remaining_balance: Decimal = Decimal("0.00")
+    payment_progress: float = 0.0  # percentage 0-100
 
 
 class InvoiceWithDetails(InvoiceResponse):

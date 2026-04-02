@@ -28,6 +28,29 @@ class InvoiceValidationError(ValueError):
     pass
 
 
+def calculate_invoice_status(invoice: Invoice, payments: list[Payment]) -> str:
+    """
+    Calculate invoice status based on payments received.
+
+    Returns:
+        - 'paid': Total payments >= invoice total
+        - 'partial': Some payments received but < invoice total
+        - 'issued': No payments yet
+        - 'cancelled': Invoice was cancelled
+    """
+    if invoice.status == "cancelled":
+        return "cancelled"
+
+    total_paid = sum(p.amount for p in payments)
+
+    if total_paid <= 0:
+        return "issued"
+    elif total_paid >= invoice.total:
+        return "paid"
+    else:
+        return "partial"
+
+
 class InvoiceService:
     """Service for invoice generation and management."""
 

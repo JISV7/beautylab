@@ -81,6 +81,10 @@ interface Invoice {
     company?: CompanyInfo;
     control_number_range?: ControlNumberRangeInfo;
     created_at: string;
+    // Payment progress (calculated by backend)
+    total_paid?: string;
+    remaining_balance?: string;
+    payment_progress?: number;
 }
 
 interface InvoiceSummary {
@@ -462,18 +466,49 @@ function InvoiceList({
                                             <td className="p-4">
                                                 {new Date(invoice.issue_date).toLocaleDateString()}
                                             </td>
-                                            <td className="p-4 font-semibold text-primary">
-                                                ${parseFloat(invoice.total).toFixed(2)}
+                                            <td className="p-4">
+                                                <div className="flex flex-col gap-1">
+                                                    <span className="font-semibold text-primary">
+                                                        ${parseFloat(invoice.total).toFixed(2)}
+                                                    </span>
+                                                    {invoice.payment_progress !== undefined && (
+                                                        <div className="w-32">
+                                                            <div className="flex items-center gap-2">
+                                                                <div className="flex-1 h-2 bg-[var(--palette-surface)] rounded-full overflow-hidden">
+                                                                    <div 
+                                                                        className={`h-full rounded-full ${
+                                                                            invoice.payment_progress >= 100 
+                                                                                ? 'bg-green-500' 
+                                                                                : invoice.payment_progress > 0 
+                                                                                ? 'bg-blue-500' 
+                                                                                : 'bg-yellow-500'
+                                                                        }`}
+                                                                        style={{ width: `${Math.min(invoice.payment_progress, 100)}%` }}
+                                                                    />
+                                                                </div>
+                                                                <span className="text-xs text-p-color opacity-75 w-10">
+                                                                    {invoice.payment_progress.toFixed(0)}%
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </div>
                                             </td>
                                             <td className="p-4">
                                                 <span
                                                     className={`px-2 py-1 rounded-full text-xs font-medium ${
                                                         invoice.status === 'paid'
                                                             ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                                                            : invoice.status === 'partial'
+                                                            ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
+                                                            : invoice.status === 'cancelled'
+                                                            ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
                                                             : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
                                                     }`}
                                                 >
-                                                    {invoice.status}
+                                                    {invoice.status === 'paid' ? 'Paid' : 
+                                                     invoice.status === 'partial' ? 'Partial' :
+                                                     invoice.status === 'cancelled' ? 'Cancelled' : 'Issued'}
                                                 </span>
                                             </td>
                                             <td className="p-4 text-right">

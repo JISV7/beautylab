@@ -439,4 +439,40 @@ class PaymentService:
                 # Enrollment might already exist, continue anyway
                 pass
 
+            # Create license for the course
+            from app.models.invoice import InvoiceLine
+            from app.schemas.license import LicensePurchaseItem, LicensePurchaseRequest
+            from app.services.license_service import LicenseService
+
+            license_service = LicenseService(self.db)
+            try:
+                # Get the invoice line for this course
+                line_result = await self.db.execute(
+                    select(InvoiceLine)
+                    .where(
+                        InvoiceLine.invoice_id == request.invoice_id,
+                        InvoiceLine.product_id == product_id,
+                    )
+                    .limit(1)
+                )
+                invoice_line = line_result.scalar_one_or_none()
+
+                license_request = LicensePurchaseRequest(
+                    items=[
+                        LicensePurchaseItem(
+                            product_id=product_id,
+                            quantity=1,
+                            license_type="gift",
+                        )
+                    ]
+                )
+                await license_service.purchase_licenses(
+                    request=license_request,
+                    purchased_by_user_id=user_id,
+                    invoice_line_id=invoice_line.id if invoice_line else None,
+                )
+            except Exception:
+                # License creation might fail, but don't fail the purchase
+                pass
+
         return payments, receipt_data

@@ -5,6 +5,8 @@ from typing import Annotated
 from uuid import UUID
 
 from fastapi import APIRouter, Body, Depends, HTTPException, Query, status
+from pydantic import BaseModel, ConfigDict
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.dependencies import CurrentUser
@@ -889,3 +891,128 @@ async def delete_learning_path(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=str(e),
         ) from e
+
+
+# ==================== User's Purchased Courses ====================
+
+
+class UserCourseResponse(BaseModel):
+    """User's purchased course with license information."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    course_id: UUID
+    course_title: str
+    course_slug: str
+    course_image_url: str | None = None
+    # License information
+    licenses: list[dict] = []
+    # Payment progress
+    total_paid: str = "0.00"
+    total_required: str = "0.00"
+    payment_progress: float = 0.0
+    is_fully_paid: bool = False
+
+
+@router.get("/my-courses", response_model=list[UserCourseResponse])
+async def get_my_courses(
+    current_user: CurrentUser,
+    db: AsyncSession = Depends(get_db),
+) -> list[UserCourseResponse]:
+    """Get all courses owned by the current user (partial or full ownership).
+
+    Returns courses with:
+    - License information (pending, active, redeemed)
+    - Payment progress (how much has been paid vs total required)
+    - Ownership status (partial or full)
+    """
+    from sqlalchemy.orm import selectinload
+
+    from app.models.course import Course
+    from app.models.invoice import Invoice
+    from app.models.license import License
+    from app.models.payment import Payment
+
+    # Get all licenses purchased by user
+    result = await db.execute(
+        select(License)
+        .options(
+            selectinload(License.course).selectinload(Course.category),
+            selectinload(License.product),
+        )
+        .where(License.purchased_by_user_id == current_user.id)
+        .order_by(License.created_at.desc())
+    )
+    licenses = list(result.scalars().all())
+
+    # Group by course and calculate payment progress
+    course_data = {}
+    for lic in licenses:
+        if not lic.course_id:
+            continue
+
+        course_id = str(lic.course_id)
+        if course_id not in course_data:
+            course_data[course_id] = {
+                "course": lic.course,
+                "licenses": [],
+                "invoice_ids": set(),
+            }
+        course_data[course_id]["licenses"].append(lic)
+        if lic.invoice_line_id:
+            # Get invoice from invoice_line
+            from app.models.invoice import InvoiceLine
+
+            inv_line_result = await db.execute(
+                select(InvoiceLine).where(InvoiceLine.id == lic.invoice_line_id)
+            )
+            inv_line = inv_line_result.scalar_one_or_none()
+            if inv_line:
+                course_data[course_id]["invoice_ids"].add(inv_line.invoice_id)
+
+    # Build response
+    response = []
+    for course_id, data in course_data.items():
+        # Calculate payment progress
+        total_required = Decimal("0.00")
+        total_paid = Decimal("0.00")
+
+        for invoice_id in data["invoice_ids"]:
+            inv_result = await db.execute(select(Invoice).where(Invoice.id == invoice_id))
+            invoice = inv_result.scalar_one_or_none()
+            if invoice:
+                total_required += invoice.total
+                # Get payments for this invoice
+                pay_result = await db.execute(
+                    select(Payment).where(Payment.invoice_id == invoice_id)
+                )
+                payments = pay_result.scalars().all()
+                total_paid += sum(p.amount for p in payments)
+
+        is_fully_paid = total_paid >= total_required if total_required > 0 else False
+        progress = float((total_paid / total_required) * 100) if total_required > 0 else 0.0
+
+        response.append(
+            UserCourseResponse(
+                course_id=data["course"].id,
+                course_title=data["course"].title,
+                course_slug=data["course"].slug,
+                course_image_url=data["course"].image_url,
+                licenses=[
+                    {
+                        "id": str(lic.id),
+                        "license_code": str(lic.license_code),
+                        "status": lic.status,
+                        "license_type": lic.license_type,
+                        "redeemed_at": lic.redeemed_at.isoformat() if lic.redeemed_at else None,
+                    }
+                    for lic in data["licenses"]
+                ],
+                total_paid=str(total_paid),
+                total_required=str(total_required),
+                payment_progress=round(progress, 2),
+                is_fully_paid=is_fully_paid,
+            )
+        )
+
+    return response

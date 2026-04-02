@@ -47,11 +47,51 @@ async def list_invoices(
 
     total_pages = (total + page_size - 1) // page_size
 
+    # Build invoice responses with calculated status and payment progress
+
+    from app.services.invoice_service import calculate_invoice_status
+
+    invoices_data = []
+    for inv in invoices:
+        # Calculate total paid and status
+        total_paid = sum(p.amount for p in inv.payments)
+        calculated_status = calculate_invoice_status(inv, inv.payments)
+        remaining = inv.total - total_paid
+        progress = float((total_paid / inv.total) * 100) if inv.total > 0 else 0.0
+
+        invoices_data.append(
+            InvoiceResponse(
+                id=inv.id,
+                invoice_number=inv.invoice_number,
+                control_number=inv.control_number,
+                issue_date=inv.issue_date,
+                issue_time=inv.issue_time,
+                client_id=inv.client_id,
+                client_rif=inv.client_rif,
+                client_business_name=inv.client_business_name,
+                client_document_type=inv.client_document_type,
+                client_document_number=inv.client_document_number,
+                client_fiscal_address=inv.client_fiscal_address,
+                company_info_id=inv.company_info_id,
+                subtotal=inv.subtotal,
+                discount_total=inv.discount_total,
+                tax_total=inv.tax_total,
+                total=inv.total,
+                status=calculated_status,
+                notes=inv.notes,
+                created_at=inv.created_at,
+                updated_at=inv.updated_at,
+                total_paid=total_paid,
+                remaining_balance=remaining,
+                payment_progress=round(progress, 2),
+            )
+        )
+
     return InvoiceListResponse(
-        invoices=[InvoiceResponse.model_validate(inv) for inv in invoices],
+        invoices=invoices_data,
         total=total,
         page=page,
-        page_size=page_size,
+        page_size=10,
         total_pages=total_pages,
     )
 

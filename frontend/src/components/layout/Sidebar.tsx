@@ -16,7 +16,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 }) => {
     const navItems = [
         { id: 'home', label: 'Home', icon: Home },
-        { id: 'courses', label: 'My Courses', icon: BookOpen },
+        { id: 'my-courses', label: 'My Courses', icon: BookOpen },
         { id: 'explore', label: 'Explore', icon: Compass },
         { id: 'learning-paths', label: 'Learning Paths', icon: Compass },
         { id: 'community', label: 'Community', icon: Users },

@@ -31,6 +31,12 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigateToAdmin, onLogou
         onNavigateToAdmin?.();
     };
 
+    const handleNavigateToHome = () => {
+        // Navigate to home by triggering a page state change through a custom event
+        const event = new CustomEvent('navigate-to-home');
+        window.dispatchEvent(event);
+    };
+
     // Show course details if a course is selected
     if (selectedCourseId) {
         return (
@@ -50,6 +56,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigateToAdmin, onLogou
             activeItem={activeItem}
             onNavigate={handleNavigate}
             onAdminNavigate={handleAdminNavigate}
+            onNavigateToHome={handleNavigateToHome}
             onLogout={onLogout}
         >
             {activeItem === 'explore' ? (

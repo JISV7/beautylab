@@ -7,11 +7,12 @@ import { UserMenu } from './UserMenu';
 interface DashboardHeaderProps {
     onNavigate?: (page: string) => void;
     onNavigateToAdmin?: () => void;
+    onNavigateToHome?: () => void;
     onLogout?: () => void;
     onMenuToggle?: () => void;
 }
 
-export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNavigate, onNavigateToAdmin, onLogout, onMenuToggle }) => {
+export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNavigate, onNavigateToAdmin, onNavigateToHome, onLogout, onMenuToggle }) => {
     const { user, logout: authLogout } = useAuth();
     const { currentMode, setPaletteMode } = useTheme();
     const [isNotificationOpen, setIsNotificationOpen] = useState(false);
@@ -127,7 +128,10 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNavigate, on
                     user={user}
                     onNavigate={onNavigate}
                     onNavigateToAdmin={onNavigateToAdmin}
+                    onNavigateToDashboard={onNavigateToHome}
+                    onNavigateToHome={onNavigateToHome}
                     onLogout={handleLogout}
+                    isOnHome={false}
                 />
             </div>
         </header>

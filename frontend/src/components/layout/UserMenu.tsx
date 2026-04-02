@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { User, LogOut, Settings, Shield } from 'lucide-react';
+import { User, LogOut, Shield, Home } from 'lucide-react';
 
 interface UserMenuProps {
     user: {
@@ -9,14 +9,20 @@ interface UserMenuProps {
     } | null;
     onNavigate?: (page: string) => void;
     onNavigateToAdmin?: () => void;
+    onNavigateToHome?: () => void;
+    onNavigateToDashboard?: () => void;
     onLogout?: () => void;
+    isOnHome?: boolean;
 }
 
 export const UserMenu: React.FC<UserMenuProps> = ({
     user,
     onNavigate,
     onNavigateToAdmin,
+    onNavigateToHome,
+    onNavigateToDashboard,
     onLogout,
+    isOnHome = false,
 }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
@@ -40,6 +46,20 @@ export const UserMenu: React.FC<UserMenuProps> = ({
         setIsMenuOpen(false);
     };
 
+    const handleGoToHome = () => {
+        if (onNavigateToHome) {
+            onNavigateToHome();
+        }
+        setIsMenuOpen(false);
+    };
+
+    const handleGoToDashboard = () => {
+        if (onNavigateToDashboard) {
+            onNavigateToDashboard();
+        }
+        setIsMenuOpen(false);
+    };
+
     const userName = user?.name || user?.email?.split('@')[0] || 'User';
 
     return (
@@ -57,17 +77,32 @@ export const UserMenu: React.FC<UserMenuProps> = ({
             </button>
 
             {isMenuOpen && (
-                <div className="absolute right-0 mt-2 w-48 palette-surface palette-border border rounded-xl shadow-lg py-1 z-50">
+                <div className="absolute right-0 mt-2 w-64 palette-surface palette-border border rounded-xl shadow-lg py-1 z-50">
                     <div className="px-4 py-2 border-b palette-border">
-                        <p className="text-p-font text-p-size text-p-color">
+                        <p className="text-p-font text-p-size text-p-color font-semibold break-all">
                             {userName}
                         </p>
-                        <p className="text-p-font text-p-size text-p-color">{user?.email}</p>
+                        <p className="text-p-font text-p-size text-p-color break-all opacity-75">
+                            {user?.email}
+                        </p>
                     </div>
-                    <button className="w-full text-left px-4 py-2 text-p-font text-p-size text-p-color hover:bg-[var(--palette-primary)] hover:text-white flex items-center gap-2 transition-colors">
-                        <Settings className="w-4 h-4" />
-                        Settings
-                    </button>
+                    {isOnHome ? (
+                        <button
+                            onClick={handleGoToDashboard}
+                            className="w-full text-left px-4 py-2 text-p-font text-p-size text-p-color hover:bg-[var(--palette-primary)] hover:text-white flex items-center gap-2 transition-colors"
+                        >
+                            <Home className="w-4 h-4 rotate-180" />
+                            Go to Dashboard
+                        </button>
+                    ) : (
+                        <button
+                            onClick={handleGoToHome}
+                            className="w-full text-left px-4 py-2 text-p-font text-p-size text-p-color hover:bg-[var(--palette-primary)] hover:text-white flex items-center gap-2 transition-colors"
+                        >
+                            <Home className="w-4 h-4" />
+                            Go to Home
+                        </button>
+                    )}
                     {user?.isAdmin && (
                         <button
                             onClick={handleAdminPanel}

@@ -8,11 +8,12 @@ import { UserMenu } from './UserMenu';
 interface HeaderProps {
   onNavigateToDashboard?: () => void;
   onNavigateToAdmin?: () => void;
-  onNavigateToExplore?: () => void;
+  onNavigateToHome?: () => void;
   onLogout?: () => void;
+  isOnHome?: boolean;
 }
 
-export const Header: React.FC<HeaderProps> = ({ onNavigateToDashboard, onNavigateToAdmin, onNavigateToExplore, onLogout }) => {
+export const Header: React.FC<HeaderProps> = ({ onNavigateToDashboard, onNavigateToAdmin, onNavigateToHome, onLogout, isOnHome = false }) => {
   const { currentMode, setPaletteMode } = useTheme();
   const { isAuthenticated, user } = useAuth();
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
@@ -42,12 +43,6 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateToDashboard, onNavigat
 
           {/* Navigation */}
           <nav className="hidden md:flex items-center gap-6">
-            <button
-              onClick={onNavigateToExplore}
-              className="text-p-font text-p-size text-p-color hover:palette-primary transition-colors"
-            >
-              Explore
-            </button>
             <a href="#courses" className="text-p-font text-p-size text-p-color hover:palette-primary transition-colors">
               Courses
             </a>
@@ -100,7 +95,14 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateToDashboard, onNavigat
 
             {/* Authentication */}
             {isAuthenticated ? (
-              <UserMenu user={user} onNavigateToAdmin={onNavigateToAdmin} onLogout={handleLogout} />
+              <UserMenu 
+                user={user} 
+                onNavigateToDashboard={onNavigateToDashboard}
+                onNavigateToAdmin={onNavigateToAdmin} 
+                onNavigateToHome={onNavigateToHome}
+                isOnHome={isOnHome}
+                onLogout={handleLogout} 
+              />
             ) : (
               <button
                 onClick={() => setLoginDialogOpen(true)}

@@ -27,9 +27,9 @@ function App() {
     setCurrentPage('admin');
   };
 
-  const handleNavigateToExplore = () => {
-    console.log('[App] Navigating to explore');
-    setCurrentPage('explore');
+  const handleNavigateToHome = () => {
+    console.log('[App] Navigating to home');
+    setCurrentPage('home');
   };
 
   const handleViewCourse = (courseId: string) => {
@@ -49,6 +49,15 @@ function App() {
     setSelectedCourseId(null);
     setCurrentPage('home');
   };
+
+  // Listen for navigate-to-home events from Dashboard
+  useEffect(() => {
+    const handleNavigateToHomeEvent = () => {
+      handleNavigateToHome();
+    };
+    window.addEventListener('navigate-to-home', handleNavigateToHomeEvent);
+    return () => window.removeEventListener('navigate-to-home', handleNavigateToHomeEvent);
+  }, []);
 
   // Persist page state to localStorage
   useEffect(() => {
@@ -71,7 +80,7 @@ function App() {
           <Home
             onNavigateToDashboard={handleNavigateToDashboard}
             onNavigateToAdmin={handleNavigateToAdmin}
-            onNavigateToExplore={handleNavigateToExplore}
+            onNavigateToHome={handleNavigateToHome}
             onLogout={handleLogout}
           />
         )}

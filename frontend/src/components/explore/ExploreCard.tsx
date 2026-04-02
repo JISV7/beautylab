@@ -41,8 +41,8 @@ export const ExploreCard: React.FC<ExploreCardProps> = ({ course, onViewDetails 
     const isNew = () => {
         const createdDate = new Date(course.created_at);
         const now = new Date();
-        const daysDiff = (now.getTime() - createdDate.getTime()) / (1000 * 3600 * 24);
-        return daysDiff < 30;
+        const minutesDiff = (now.getTime() - createdDate.getTime()) / (1000 * 60);
+        return minutesDiff < 3;  // Shows for 3 minutes
     };
 
     const isFeatured = course.published;

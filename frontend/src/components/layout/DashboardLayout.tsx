@@ -7,6 +7,7 @@ interface DashboardLayoutProps {
     activeItem?: string;
     onNavigate?: (item: string) => void;
     onAdminNavigate?: () => void;
+    onNavigateToHome?: () => void;
     onLogout?: () => void;
 }
 
@@ -15,6 +16,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
     activeItem = 'home',
     onNavigate,
     onAdminNavigate,
+    onNavigateToHome,
     onLogout,
 }) => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -32,9 +34,10 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
     return (
         <div className="min-h-screen flex flex-col theme-background">
             {/* Header - Full Width Top */}
-            <DashboardHeader 
-                onNavigate={onNavigate} 
-                onNavigateToAdmin={onAdminNavigate} 
+            <DashboardHeader
+                onNavigate={onNavigate}
+                onNavigateToAdmin={onAdminNavigate}
+                onNavigateToHome={onNavigateToHome}
                 onLogout={onLogout}
                 onMenuToggle={() => setSidebarOpen(true)}
             />

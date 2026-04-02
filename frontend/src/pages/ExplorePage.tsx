@@ -19,6 +19,7 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({ onViewCourse }) => {
     const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
     const [selectedLevel, setSelectedLevel] = useState<number | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
+    const [includeChildren, setIncludeChildren] = useState(false);
 
     // Fetch courses from API
     const fetchCourses = async () => {
@@ -26,13 +27,14 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({ onViewCourse }) => {
             setIsLoading(true);
             setError(null);
 
-            const params: Record<string, string | number> = {};
+            const params: Record<string, string | number | boolean> = {};
             if (selectedCategory) params.category_id = selectedCategory;
             if (selectedLevel) params.level_id = selectedLevel;
             if (searchQuery) params.search = searchQuery;
+            if (selectedCategory && includeChildren) params.include_children = true;
 
             const response = await axios.get(`${API_URL}/catalog/courses/public`, { params });
-            
+
             setCourses(response.data.courses);
             setCategories(response.data.categories);
             setLevels(response.data.levels);
@@ -52,7 +54,7 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({ onViewCourse }) => {
     // Refetch when filters change
     useEffect(() => {
         fetchCourses();
-    }, [selectedCategory, selectedLevel, searchQuery]);
+    }, [selectedCategory, selectedLevel, searchQuery, includeChildren]);
 
     const handleClearFilters = () => {
         setSelectedCategory(null);
@@ -103,9 +105,11 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({ onViewCourse }) => {
                     selectedCategory={selectedCategory}
                     selectedLevel={selectedLevel}
                     searchQuery={searchQuery}
+                    includeChildren={includeChildren}
                     onCategoryChange={setSelectedCategory}
                     onLevelChange={setSelectedLevel}
                     onSearchChange={setSearchQuery}
+                    onIncludeChildrenChange={setIncludeChildren}
                     onClearFilters={handleClearFilters}
                 />
 

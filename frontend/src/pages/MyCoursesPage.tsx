@@ -196,11 +196,6 @@ export default function MyCoursesPage() {
                                                             </span>
                                                         </div>
                                                         <div className="flex items-center gap-2">
-                                                            {license.status === 'pending' && !course.is_fully_paid && (
-                                                                <span className="text-xs text-p-color opacity-50 mr-2">
-                                                                    Pay Bs. {(parseFloat(course.total_required) - parseFloat(course.total_paid)).toFixed(2)} more to activate
-                                                                </span>
-                                                            )}
                                                             {getLicenseStatusBadge(license)}
                                                         </div>
                                                     </div>

@@ -314,6 +314,7 @@ async def list_courses(
     level_id: int | None = None,
     published: bool | None = None,
     search: str | None = None,
+    include_children: bool = False,
     db: AsyncSession = Depends(get_db),
 ) -> CourseListResponse:
     """List all courses with pagination and filters.
@@ -322,6 +323,9 @@ async def list_courses(
     - null: returns all courses (admin)
     - true: returns only published courses (public)
     - false: returns only unpublished courses (admin)
+
+    Args:
+        include_children: If true and category_id is provided, include courses from child categories
     """
     catalog_service = CatalogService(db)
     courses, total = await catalog_service.get_all_courses(
@@ -331,6 +335,7 @@ async def list_courses(
         level_id=level_id,
         published=published,
         search=search,
+        include_children=include_children,
     )
 
     total_pages = (total + page_size - 1) // page_size
@@ -372,8 +377,16 @@ async def list_public_courses(
     category_id: int | None = None,
     level_id: int | None = None,
     search: str | None = None,
+    include_children: bool = False,
 ):
-    """Get all published courses for public display (Explore page)."""
+    """Get all published courses for public display (Explore page).
+
+    Args:
+        category_id: Filter by category ID
+        level_id: Filter by level ID
+        search: Search in title and description
+        include_children: If true and category_id is provided, include courses from child categories
+    """
     catalog_service = CatalogService(db)
 
     # Get published courses with filters
@@ -381,6 +394,7 @@ async def list_public_courses(
         category_id=category_id,
         level_id=level_id,
         search=search,
+        include_children=include_children,
     )
 
     # Get all categories and levels for filters

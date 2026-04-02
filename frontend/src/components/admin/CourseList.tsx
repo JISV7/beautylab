@@ -40,6 +40,7 @@ export const CourseList: React.FC<CourseListProps> = ({ onNavigateToCreate, onNa
     const [categoryFilter, setCategoryFilter] = useState<string>('');
     const [levelFilter, setLevelFilter] = useState<string>('');
     const [publishedFilter, setPublishedFilter] = useState<string>('all');
+    const [includeChildren, setIncludeChildren] = useState(false);
 
     // Pagination state
     const [currentPage, setCurrentPage] = useState(1);
@@ -81,6 +82,7 @@ export const CourseList: React.FC<CourseListProps> = ({ onNavigateToCreate, onNa
                         search: searchQuery || undefined,
                         category_id: categoryFilter || undefined,
                         level_id: levelFilter || undefined,
+                        include_children: categoryFilter && includeChildren ? true : undefined,
                     },
                 }),
                 api.get('/catalog/categories'),
@@ -105,7 +107,7 @@ export const CourseList: React.FC<CourseListProps> = ({ onNavigateToCreate, onNa
 
     useEffect(() => {
         fetchData();
-    }, [currentPage, publishedFilter]);
+    }, [currentPage, publishedFilter, includeChildren, categoryFilter, levelFilter, searchQuery]);
 
     // Handle filter changes (reset to page 1)
     const handleSearchChange = (value: string) => {
@@ -202,7 +204,23 @@ export const CourseList: React.FC<CourseListProps> = ({ onNavigateToCreate, onNa
     const filteredCourses = courses.filter((course) => {
         const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
             course.description?.toLowerCase().includes(searchQuery.toLowerCase());
-        const matchesCategory = !categoryFilter || course.category_id?.toString() === categoryFilter;
+        
+        // Category filter with includeChildren support
+        const matchesCategory = (() => {
+            if (!categoryFilter) return true;
+            if (includeChildren) {
+                // Get all child category IDs recursively
+                const getChildIds = (parentId: number): number[] => {
+                    return categories
+                        .filter(c => c.parent_id === parentId)
+                        .flatMap(c => [c.id, ...getChildIds(c.id)]);
+                };
+                const allowedIds = [parseInt(categoryFilter), ...getChildIds(parseInt(categoryFilter))];
+                return allowedIds.includes(course.category_id || 0);
+            }
+            return course.category_id?.toString() === categoryFilter;
+        })();
+        
         const matchesLevel = !levelFilter || course.level_id?.toString() === levelFilter;
         return matchesSearch && matchesCategory && matchesLevel;
     });
@@ -232,12 +250,14 @@ export const CourseList: React.FC<CourseListProps> = ({ onNavigateToCreate, onNa
                     categoryFilter={categoryFilter}
                     levelFilter={levelFilter}
                     publishedFilter={publishedFilter}
+                    includeChildren={includeChildren}
                     categories={categories}
                     levels={levels}
                     onSearchChange={handleSearchChange}
                     onCategoryChange={handleCategoryChange}
                     onLevelChange={handleLevelChange}
                     onPublishedFilterChange={setPublishedFilter}
+                    onIncludeChildrenChange={setIncludeChildren}
                 />
 
                 {/* Table */}

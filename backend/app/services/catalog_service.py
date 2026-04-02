@@ -300,6 +300,7 @@ class CatalogService:
         level_id: int | None = None,
         published: bool | None = None,
         search: str | None = None,
+        include_children: bool = False,
     ) -> tuple[list[Course], int]:
         """Get all courses with pagination and filters."""
         from sqlalchemy.orm import selectinload
@@ -311,7 +312,12 @@ class CatalogService:
 
         # Apply filters
         if category_id is not None:
-            query = query.where(Course.category_id == category_id)
+            if include_children:
+                # Get all child category IDs recursively
+                category_ids = await self.get_child_category_ids(category_id)
+                query = query.where(Course.category_id.in_(category_ids))
+            else:
+                query = query.where(Course.category_id == category_id)
         if level_id is not None:
             query = query.where(Course.level_id == level_id)
         if published is not None:
@@ -336,11 +342,29 @@ class CatalogService:
 
         return courses, total
 
+    async def get_child_category_ids(self, category_id: int) -> list[int]:
+        """Recursively get all child category IDs for a given category."""
+        child_ids = [category_id]
+
+        # Get direct children
+        children_result = await self.db.execute(
+            select(Category.id).where(Category.parent_id == category_id)
+        )
+        direct_children = list(child_ids for child_ids in children_result.scalars().all())
+
+        for child_id in direct_children:
+            # Recursively get grandchildren
+            grandchildren_ids = await self.get_child_category_ids(child_id)
+            child_ids.extend(grandchildren_ids)
+
+        return child_ids
+
     async def get_public_courses(
         self,
         category_id: int | None = None,
         level_id: int | None = None,
         search: str | None = None,
+        include_children: bool = False,
     ) -> tuple[list[Course], int]:
         """Get published courses for public display (Explore page)."""
         from sqlalchemy.orm import selectinload
@@ -358,7 +382,12 @@ class CatalogService:
 
         # Apply filters
         if category_id is not None:
-            query = query.where(Course.category_id == category_id)
+            if include_children:
+                # Get all child category IDs recursively
+                category_ids = await self.get_child_category_ids(category_id)
+                query = query.where(Course.category_id.in_(category_ids))
+            else:
+                query = query.where(Course.category_id == category_id)
         if level_id is not None:
             query = query.where(Course.level_id == level_id)
         if search:

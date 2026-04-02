@@ -28,9 +28,11 @@ export interface ExploreFiltersProps {
     selectedCategory: number | null;
     selectedLevel: number | null;
     searchQuery: string;
+    includeChildren: boolean;
     onCategoryChange: (categoryId: number | null) => void;
     onLevelChange: (levelId: number | null) => void;
     onSearchChange: (query: string) => void;
+    onIncludeChildrenChange: (include: boolean) => void;
     onClearFilters: () => void;
 }
 
@@ -40,9 +42,11 @@ export const ExploreFilters: React.FC<ExploreFiltersProps> = ({
     selectedCategory,
     selectedLevel,
     searchQuery,
+    includeChildren,
     onCategoryChange,
     onLevelChange,
     onSearchChange,
+    onIncludeChildrenChange,
     onClearFilters,
 }) => {
     const [localSearch, setLocalSearch] = useState(searchQuery);
@@ -138,6 +142,34 @@ export const ExploreFilters: React.FC<ExploreFiltersProps> = ({
                             ))}
                         </select>
                     </div>
+
+                    {/* Include Children Toggle */}
+                    {selectedCategory !== null && (
+                        <div className="flex-1">
+                            <label className="block text-xs font-bold text-p-color opacity-60 uppercase tracking-wider mb-2">
+                                Include Subcategories
+                            </label>
+                            <button
+                                onClick={() => onIncludeChildrenChange(!includeChildren)}
+                                className={`w-full py-2.5 px-4 rounded-lg border font-bold text-sm transition-all flex items-center justify-center gap-2 ${
+                                    includeChildren
+                                        ? 'bg-[var(--palette-primary)] text-[var(--decorator-color)] border-[var(--palette-primary)]'
+                                        : 'bg-[var(--palette-background)] text-p-color opacity-60 border-[var(--palette-border)]'
+                                }`}
+                                aria-label="Toggle include subcategories"
+                                aria-pressed={includeChildren}
+                            >
+                                <span className={`w-4 h-4 rounded border-2 flex items-center justify-center ${
+                                    includeChildren ? 'border-white bg-white/20' : 'border-current'
+                                }`}>
+                                    {includeChildren && <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M1 5L4 8L9 2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                    </svg>}
+                                </span>
+                                {includeChildren ? 'ON' : 'OFF'}
+                            </button>
+                        </div>
+                    )}
 
                     {/* Clear Filters Button */}
                     {hasActiveFilters && (

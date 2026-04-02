@@ -178,7 +178,7 @@ export default function MyCoursesPage() {
                                     )}
 
                                     {/* Licenses */}
-                                    {course.is_fully_paid && course.licenses.length > 0 && (
+                                    {course.licenses.length > 0 && (
                                         <div className="mb-4">
                                             <h4 className="text-sm font-semibold text-p-color opacity-75 mb-2">
                                                 Licenses
@@ -195,7 +195,14 @@ export default function MyCoursesPage() {
                                                                 {license.license_code.slice(0, 8)}...
                                                             </span>
                                                         </div>
-                                                        {getLicenseStatusBadge(license)}
+                                                        <div className="flex items-center gap-2">
+                                                            {license.status === 'pending' && !course.is_fully_paid && (
+                                                                <span className="text-xs text-p-color opacity-50 mr-2">
+                                                                    Pay ${parseFloat(course.total_required) - parseFloat(course.total_paid)} more to activate
+                                                                </span>
+                                                            )}
+                                                            {getLicenseStatusBadge(license)}
+                                                        </div>
                                                     </div>
                                                 ))}
                                             </div>
@@ -211,7 +218,7 @@ export default function MyCoursesPage() {
                                             <Book className="w-4 h-4" />
                                             View Course
                                         </button>
-                                        {course.is_fully_paid && course.licenses.some(l => l.status === 'pending') && (
+                                        {course.is_fully_paid && course.licenses.some(l => l.status === 'active') && (
                                             <>
                                                 <button
                                                     className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg theme-button theme-button-secondary text-sm"

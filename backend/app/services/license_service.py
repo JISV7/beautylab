@@ -65,22 +65,30 @@ class LicenseService:
         Returns:
             List of created licenses
         """
+        from sqlalchemy.orm import selectinload
+
+        from app.models.product import Product
+
         licenses = []
 
         for item in request.items:
-            # Verify product exists
-            product = await self._get_product_by_id(item.product_id)
+            # Verify product exists and load course/learning_path relationships
+            product_result = await self.db.execute(
+                select(Product)
+                .options(
+                    selectinload(Product.course),
+                    selectinload(Product.learning_path),
+                )
+                .where(Product.id == item.product_id)
+            )
+            product = product_result.scalar_one_or_none()
+
             if not product:
                 raise LicenseNotFoundError(f"Product {item.product_id} not found")
 
             # Get associated course or learning path if exists
-            course = None
-            learning_path = None
-
-            if product.course:
-                course = product.course
-            elif product.learning_path:
-                learning_path = product.learning_path
+            course = product.course
+            learning_path = product.learning_path
 
             # Create licenses for each unit
             for _ in range(item.quantity):
@@ -350,3 +358,48 @@ class LicenseService:
             "learning_path_title": learning_path_title,
             "message": message,
         }
+
+    async def activate_licenses_for_invoice(
+        self,
+        invoice_id: UUID,
+    ) -> int:
+        """
+        Activate all pending licenses associated with a fully paid invoice.
+
+        Args:
+            invoice_id: The invoice ID to check and activate licenses for
+
+        Returns:
+            Number of licenses activated
+        """
+        from app.models.invoice import InvoiceLine
+
+        # Get all invoice lines for this invoice
+        result = await self.db.execute(
+            select(InvoiceLine).where(InvoiceLine.invoice_id == invoice_id)
+        )
+        invoice_lines = result.scalars().all()
+
+        invoice_line_ids = [line.id for line in invoice_lines]
+
+        if not invoice_line_ids:
+            return 0
+
+        # Get all pending licenses for these invoice lines
+        licenses_result = await self.db.execute(
+            select(License).where(
+                License.invoice_line_id.in_(invoice_line_ids), License.status == "pending"
+            )
+        )
+        licenses = licenses_result.scalars().all()
+
+        # Activate them
+        activated_count = 0
+        for license_obj in licenses:
+            license_obj.status = "active"
+            activated_count += 1
+
+        if activated_count > 0:
+            await self.db.commit()
+
+        return activated_count

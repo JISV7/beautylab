@@ -457,6 +457,11 @@ class PaymentService:
                 )
                 invoice_line = line_result.scalar_one_or_none()
 
+                print(
+                    f"[DEBUG] Creating license for product {product_id}, "
+                    f"invoice_line: {invoice_line.id if invoice_line else None}"
+                )
+
                 license_request = LicensePurchaseRequest(
                     items=[
                         LicensePurchaseItem(
@@ -466,13 +471,44 @@ class PaymentService:
                         )
                     ]
                 )
-                await license_service.purchase_licenses(
+                licenses = await license_service.purchase_licenses(
                     request=license_request,
                     purchased_by_user_id=user_id,
                     invoice_line_id=invoice_line.id if invoice_line else None,
                 )
-            except Exception:
-                # License creation might fail, but don't fail the purchase
-                pass
+                license_codes = [str(lic.license_code) for lic in licenses]
+                print(f"[DEBUG] Created {len(licenses)} licenses: {license_codes}")
+
+                # Check if invoice is fully paid and activate licenses if so
+                invoice_result = await self.db.execute(
+                    select(Invoice).where(Invoice.id == request.invoice_id)
+                )
+                invoice = invoice_result.scalar_one_or_none()
+
+                if invoice:
+                    # Calculate total paid
+                    pay_result = await self.db.execute(
+                        select(Payment).where(Payment.invoice_id == request.invoice_id)
+                    )
+                    payments_list = pay_result.scalars().all()
+                    total_paid = sum(p.amount for p in payments_list)
+
+                    print(
+                        f"[DEBUG] Invoice {request.invoice_id}: "
+                        f"total={invoice.total}, paid={total_paid}"
+                    )
+
+                    # Activate licenses if fully paid
+                    if total_paid >= invoice.total:
+                        activated = await license_service.activate_licenses_for_invoice(
+                            request.invoice_id
+                        )
+                        print(f"[DEBUG] Activated {activated} licenses")
+            except Exception as e:
+                # Log error but don't fail the purchase
+                print(f"[ERROR] License creation failed: {e}")
+                import traceback
+
+                traceback.print_exc()
 
         return payments, receipt_data

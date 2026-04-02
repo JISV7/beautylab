@@ -11,6 +11,7 @@ from sqlalchemy.orm import selectinload
 from app.models.company_info import CompanyInfo
 from app.models.control_number_range import ControlNumberRange
 from app.models.invoice import Invoice, InvoiceAdjustment, InvoiceLine
+from app.models.payment import Payment
 from app.models.product import Product
 from app.schemas.invoice import InvoiceAdjustmentCreate, InvoiceCreate, InvoiceLineCreate
 
@@ -382,7 +383,7 @@ class InvoiceService:
             .options(
                 selectinload(Invoice.lines),
                 selectinload(Invoice.adjustments),
-                selectinload(Invoice.payments),
+                selectinload(Invoice.payments).selectinload(Payment.details),
                 selectinload(Invoice.company),
                 selectinload(Invoice.control_number_range).selectinload(ControlNumberRange.printer),
             )

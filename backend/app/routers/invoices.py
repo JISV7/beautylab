@@ -80,7 +80,55 @@ async def get_invoice(
             detail="Not authorized to view this invoice",
         )
 
-    return InvoiceWithDetails.model_validate(invoice)
+    # Manually construct payment responses with card details
+    from app.schemas.payment import PaymentResponse
+
+    payments_data = []
+    for payment in invoice.payments:
+        payment_dict = {
+            "id": payment.id,
+            "invoice_id": payment.invoice_id,
+            "method_type": payment.method_type,
+            "amount": payment.amount,
+            "status": payment.status,
+            "transaction_reference": payment.transaction_reference,
+            "created_at": payment.created_at,
+        }
+        # Add card details if available
+        if payment.details:
+            payment_dict["card_last4"] = payment.details.card_number_last4
+            payment_dict["card_brand"] = payment.details.card_brand
+            payment_dict["card_holder_name"] = payment.details.card_holder_name
+        payments_data.append(PaymentResponse(**payment_dict))
+
+    # Build response manually
+    return InvoiceWithDetails(
+        id=invoice.id,
+        invoice_number=invoice.invoice_number,
+        control_number=invoice.control_number,
+        issue_date=invoice.issue_date,
+        issue_time=invoice.issue_time,
+        client_id=invoice.client_id,
+        client_rif=invoice.client_rif,
+        client_business_name=invoice.client_business_name,
+        client_document_type=invoice.client_document_type,
+        client_document_number=invoice.client_document_number,
+        client_fiscal_address=invoice.client_fiscal_address,
+        company_info_id=invoice.company_info_id,
+        subtotal=invoice.subtotal,
+        discount_total=invoice.discount_total,
+        tax_total=invoice.tax_total,
+        total=invoice.total,
+        status=invoice.status,
+        notes=invoice.notes,
+        created_at=invoice.created_at,
+        updated_at=invoice.updated_at,
+        lines=invoice.lines,
+        adjustments=invoice.adjustments,
+        payments=payments_data,
+        company=invoice.company,
+        control_number_range=invoice.control_number_range,
+    )
 
 
 @router.get("/number/{invoice_number}", response_model=InvoiceWithDetails)
@@ -107,7 +155,55 @@ async def get_invoice_by_number(
             detail="Not authorized to view this invoice",
         )
 
-    return InvoiceWithDetails.model_validate(invoice)
+    # Manually construct payment responses with card details
+    from app.schemas.payment import PaymentResponse
+
+    payments_data = []
+    for payment in invoice.payments:
+        payment_dict = {
+            "id": payment.id,
+            "invoice_id": payment.invoice_id,
+            "method_type": payment.method_type,
+            "amount": payment.amount,
+            "status": payment.status,
+            "transaction_reference": payment.transaction_reference,
+            "created_at": payment.created_at,
+        }
+        # Add card details if available
+        if payment.details:
+            payment_dict["card_last4"] = payment.details.card_number_last4
+            payment_dict["card_brand"] = payment.details.card_brand
+            payment_dict["card_holder_name"] = payment.details.card_holder_name
+        payments_data.append(PaymentResponse(**payment_dict))
+
+    # Build response manually
+    return InvoiceWithDetails(
+        id=invoice.id,
+        invoice_number=invoice.invoice_number,
+        control_number=invoice.control_number,
+        issue_date=invoice.issue_date,
+        issue_time=invoice.issue_time,
+        client_id=invoice.client_id,
+        client_rif=invoice.client_rif,
+        client_business_name=invoice.client_business_name,
+        client_document_type=invoice.client_document_type,
+        client_document_number=invoice.client_document_number,
+        client_fiscal_address=invoice.client_fiscal_address,
+        company_info_id=invoice.company_info_id,
+        subtotal=invoice.subtotal,
+        discount_total=invoice.discount_total,
+        tax_total=invoice.tax_total,
+        total=invoice.total,
+        status=invoice.status,
+        notes=invoice.notes,
+        created_at=invoice.created_at,
+        updated_at=invoice.updated_at,
+        lines=invoice.lines,
+        adjustments=invoice.adjustments,
+        payments=payments_data,
+        company=invoice.company,
+        control_number_range=invoice.control_number_range,
+    )
 
 
 @router.post("/", response_model=InvoiceResponse, status_code=status.HTTP_201_CREATED)

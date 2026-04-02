@@ -240,11 +240,34 @@ class PaymentResponse(BaseModel):
 
     id: UUID
     invoice_id: UUID
-    payment_method_id: UUID | None = None
+    method_type: str | None = None
     amount: Decimal
     status: str
     transaction_reference: str | None = None
     created_at: datetime
+    # Payment details (if available) - populated from details relationship
+    card_last4: str | None = Field(None, description="Last 4 digits of card")
+    card_brand: str | None = Field(None, description="Card brand")
+    card_holder_name: str | None = Field(None, description="Card holder name")
+
+    @field_validator("card_last4", "card_brand", "card_holder_name", mode="before")
+    @classmethod
+    def get_from_details(cls, v, info):
+        """Get card details from payment.details relationship if not provided directly."""
+        if v is not None:
+            return v
+        # Try to get from details relationship
+        obj = info.data if hasattr(info, "data") else {}
+        details = obj.get("details")
+        if details:
+            field_name = info.field_name
+            if field_name == "card_last4":
+                return getattr(details, "card_number_last4", None)
+            elif field_name == "card_brand":
+                return getattr(details, "card_brand", None)
+            elif field_name == "card_holder_name":
+                return getattr(details, "card_holder_name", None)
+        return None
 
 
 class PaymentWithDetails(PaymentResponse):

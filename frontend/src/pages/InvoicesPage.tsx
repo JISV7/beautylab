@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
-import { FileText, X, Printer, DollarSign, Receipt, Percent } from 'lucide-react';
+import { FileText, X, Printer, DollarSign, Receipt, Percent, Search, Filter, ChevronUp, ChevronDown, ChevronsLeft, ChevronsRight, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const API_URL = 'http://localhost:8000';
 
@@ -21,6 +21,9 @@ interface Payment {
     status: string;
     created_at: string;
     method_type?: string;
+    card_last4?: string;
+    card_brand?: string;
+    card_holder_name?: string;
 }
 
 interface PrinterInfo {
@@ -87,11 +90,12 @@ interface InvoiceSummary {
     total_paid: string;
 }
 
+type SortableColumn = 'invoice_number' | 'control_number' | 'issue_date' | 'total' | 'status' | 'created_at';
+
 interface InvoicesResponse {
     invoices: Invoice[];
     total: number;
     page: number;
-    pageSize: number;
     totalPages: number;
 }
 
@@ -121,6 +125,12 @@ export default function InvoicesPage() {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [summary, setSummary] = useState<InvoiceSummary | null>(null);
+    
+    // Search, filter, and sort state
+    const [searchTerm, setSearchTerm] = useState('');
+    const [statusFilter, setStatusFilter] = useState<string>('all');
+    const [sortColumn, setSortColumn] = useState<SortableColumn>('issue_date');
+    const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
 
     const fetchSummary = async () => {
         try {
@@ -163,6 +173,48 @@ export default function InvoicesPage() {
         window.print();
     };
 
+    // Filter and sort invoices
+    const filteredAndSortedInvoices = useMemo(() => {
+        let result = [...invoices];
+        
+        // Search filter
+        if (searchTerm) {
+            const search = searchTerm.toLowerCase();
+            result = result.filter(invoice => 
+                invoice.invoice_number.toLowerCase().includes(search) ||
+                invoice.control_number.toLowerCase().includes(search) ||
+                invoice.client_rif?.toLowerCase().includes(search) ||
+                invoice.client_business_name?.toLowerCase().includes(search)
+            );
+        }
+        
+        // Status filter
+        if (statusFilter !== 'all') {
+            result = result.filter(invoice => invoice.status === statusFilter);
+        }
+        
+        // Sort
+        result.sort((a, b) => {
+            if (sortColumn === 'issue_date' || sortColumn === 'created_at') {
+                const aDate = new Date(a[sortColumn] as string).getTime();
+                const bDate = new Date(b[sortColumn] as string).getTime();
+                return sortDirection === 'asc' ? aDate - bDate : bDate - aDate;
+            } else if (sortColumn === 'total') {
+                const aTotal = parseFloat(a.total as string);
+                const bTotal = parseFloat(b.total as string);
+                return sortDirection === 'asc' ? aTotal - bTotal : bTotal - aTotal;
+            } else {
+                const aStr = String(a[sortColumn]).toLowerCase();
+                const bStr = String(b[sortColumn]).toLowerCase();
+                if (aStr < bStr) return sortDirection === 'asc' ? -1 : 1;
+                if (aStr > bStr) return sortDirection === 'asc' ? 1 : -1;
+                return 0;
+            }
+        });
+        
+        return result;
+    }, [invoices, searchTerm, statusFilter, sortColumn, sortDirection]);
+
     if (loading && invoices.length === 0) {
         return (
             <div className="flex items-center justify-center h-64">
@@ -172,7 +224,7 @@ export default function InvoicesPage() {
     }
 
     return (
-        <div className="flex h-screen palette-background text-p-font">
+        <div className="flex h-screen palette-background text-p-font print:block print:h-auto">
             {selectedInvoice ? (
                 <InvoiceDetail
                     invoice={selectedInvoice}
@@ -181,12 +233,20 @@ export default function InvoicesPage() {
                 />
             ) : (
                 <InvoiceList
-                    invoices={invoices}
+                    invoices={filteredAndSortedInvoices}
                     summary={summary}
                     currentPage={currentPage}
                     totalPages={totalPages}
                     onPageChange={fetchInvoices}
                     onViewDetails={(invoice) => fetchInvoiceDetails(invoice.id)}
+                    searchTerm={searchTerm}
+                    setSearchTerm={setSearchTerm}
+                    statusFilter={statusFilter}
+                    setStatusFilter={setStatusFilter}
+                    sortColumn={sortColumn}
+                    setSortColumn={setSortColumn}
+                    sortDirection={sortDirection}
+                    setSortDirection={setSortDirection}
                 />
             )}
         </div>
@@ -200,6 +260,14 @@ function InvoiceList({
     totalPages,
     onPageChange,
     onViewDetails,
+    searchTerm,
+    setSearchTerm,
+    statusFilter,
+    setStatusFilter,
+    sortColumn,
+    setSortColumn,
+    sortDirection,
+    setSortDirection,
 }: {
     invoices: Invoice[];
     summary: InvoiceSummary | null;
@@ -207,10 +275,34 @@ function InvoiceList({
     totalPages: number;
     onPageChange: (page: number) => void;
     onViewDetails: (invoice: Invoice) => void;
+    searchTerm: string;
+    setSearchTerm: (term: string) => void;
+    statusFilter: string;
+    setStatusFilter: (status: string) => void;
+    sortColumn: SortableColumn;
+    setSortColumn: (column: SortableColumn) => void;
+    sortDirection: 'asc' | 'desc';
+    setSortDirection: (dir: 'asc' | 'desc') => void;
 }) {
+    const handleSort = (column: SortableColumn) => {
+        if (sortColumn === column) {
+            setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+        } else {
+            setSortColumn(column);
+            setSortDirection('asc');
+        }
+    };
+
+    const SortIcon = ({ column }: { column: SortableColumn }) => {
+        if (sortColumn !== column) return <span className="w-4 h-4 ml-1 opacity-0"></span>;
+        return sortDirection === 'asc' 
+            ? <ChevronUp className="w-4 h-4 ml-1" />
+            : <ChevronDown className="w-4 h-4 ml-1" />;
+    };
+
     return (
         <main className="flex-1 p-8 overflow-auto print:p-0 print:overflow-visible">
-            <div className="max-w-6xl mx-auto">
+            <div className="max-w-7xl mx-auto">
                 <h2 className="text-3xl font-bold text-primary mb-6">My Invoices</h2>
 
                 {/* Summary Cards */}
@@ -261,6 +353,41 @@ function InvoiceList({
                     </div>
                 )}
 
+                {/* Controls - Search, Filter, Sort */}
+                <div className="palette-surface palette-border border rounded-xl p-4 mb-6 print:hidden">
+                    <div className="flex flex-wrap gap-4 items-center">
+                        {/* Search */}
+                        <div className="flex-1 min-w-64">
+                            <div className="relative">
+                                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-p-color opacity-50" />
+                                <input
+                                    type="text"
+                                    placeholder="Search by invoice #, control #, RIF..."
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    className="w-full pl-10 pr-4 py-2 theme-input"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Status Filter */}
+                        <div className="flex items-center gap-2">
+                            <Filter className="w-5 h-5 text-p-color opacity-50" />
+                            <select
+                                value={statusFilter}
+                                onChange={(e) => setStatusFilter(e.target.value)}
+                                className="theme-input min-w-32"
+                            >
+                                <option value="all">All Status</option>
+                                <option value="issued">Issued</option>
+                                <option value="paid">Paid</option>
+                                <option value="partial">Partial</option>
+                                <option value="cancelled">Cancelled</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
                 {invoices.length === 0 ? (
                     <div className="palette-surface palette-border border rounded-xl p-8 text-center">
                         <FileText className="w-16 h-16 mx-auto mb-4 opacity-50" />
@@ -275,11 +402,51 @@ function InvoiceList({
                             <table className="w-full text-left border-collapse">
                                 <thead>
                                     <tr className="palette-surface border-b palette-border text-p-color text-sm uppercase tracking-wider opacity-75">
-                                        <th className="p-4 font-semibold">Invoice #</th>
-                                        <th className="p-4 font-semibold">Control #</th>
-                                        <th className="p-4 font-semibold">Date</th>
-                                        <th className="p-4 font-semibold">Total</th>
-                                        <th className="p-4 font-semibold">Status</th>
+                                        <th 
+                                            className="p-4 font-semibold cursor-pointer hover:bg-[var(--palette-surface)] transition-colors"
+                                            onClick={() => handleSort('invoice_number')}
+                                        >
+                                            <div className="flex items-center">
+                                                Invoice #
+                                                <SortIcon column="invoice_number" />
+                                            </div>
+                                        </th>
+                                        <th 
+                                            className="p-4 font-semibold cursor-pointer hover:bg-[var(--palette-surface)] transition-colors"
+                                            onClick={() => handleSort('control_number')}
+                                        >
+                                            <div className="flex items-center">
+                                                Control #
+                                                <SortIcon column="control_number" />
+                                            </div>
+                                        </th>
+                                        <th 
+                                            className="p-4 font-semibold cursor-pointer hover:bg-[var(--palette-surface)] transition-colors"
+                                            onClick={() => handleSort('issue_date')}
+                                        >
+                                            <div className="flex items-center">
+                                                Date
+                                                <SortIcon column="issue_date" />
+                                            </div>
+                                        </th>
+                                        <th 
+                                            className="p-4 font-semibold cursor-pointer hover:bg-[var(--palette-surface)] transition-colors"
+                                            onClick={() => handleSort('total')}
+                                        >
+                                            <div className="flex items-center">
+                                                Total
+                                                <SortIcon column="total" />
+                                            </div>
+                                        </th>
+                                        <th 
+                                            className="p-4 font-semibold cursor-pointer hover:bg-[var(--palette-surface)] transition-colors"
+                                            onClick={() => handleSort('status')}
+                                        >
+                                            <div className="flex items-center">
+                                                Status
+                                                <SortIcon column="status" />
+                                            </div>
+                                        </th>
                                         <th className="p-4 font-semibold text-right">Actions</th>
                                     </tr>
                                 </thead>
@@ -328,24 +495,48 @@ function InvoiceList({
 
                         {/* Pagination */}
                         {totalPages > 1 && (
-                            <div className="flex items-center justify-center gap-2 mt-6">
-                                <button
-                                    onClick={() => onPageChange(currentPage - 1)}
-                                    disabled={currentPage === 1}
-                                    className="px-4 py-2 rounded-lg border border-[var(--palette-border)] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[var(--palette-surface)]"
-                                >
-                                    Previous
-                                </button>
+                            <div className="flex items-center justify-between gap-4 mt-6 print:hidden">
+                                <div className="flex items-center gap-2">
+                                    <button
+                                        onClick={() => onPageChange(1)}
+                                        disabled={currentPage === 1}
+                                        className="p-2 rounded-lg border border-[var(--palette-border)] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[var(--palette-surface)]"
+                                        title="First page"
+                                    >
+                                        <ChevronsLeft className="w-4 h-4" />
+                                    </button>
+                                    <button
+                                        onClick={() => onPageChange(currentPage - 1)}
+                                        disabled={currentPage === 1}
+                                        className="p-2 rounded-lg border border-[var(--palette-border)] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[var(--palette-surface)]"
+                                        title="Previous page"
+                                    >
+                                        <ChevronLeft className="w-4 h-4" />
+                                    </button>
+                                </div>
+                                
                                 <span className="text-p-color">
-                                    Page {currentPage} of {totalPages}
+                                    Page <strong>{currentPage}</strong> of <strong>{totalPages}</strong>
                                 </span>
-                                <button
-                                    onClick={() => onPageChange(currentPage + 1)}
-                                    disabled={currentPage === totalPages}
-                                    className="px-4 py-2 rounded-lg border border-[var(--palette-border)] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[var(--palette-surface)]"
-                                >
-                                    Next
-                                </button>
+                                
+                                <div className="flex items-center gap-2">
+                                    <button
+                                        onClick={() => onPageChange(currentPage + 1)}
+                                        disabled={currentPage === totalPages}
+                                        className="p-2 rounded-lg border border-[var(--palette-border)] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[var(--palette-surface)]"
+                                        title="Next page"
+                                    >
+                                        <ChevronRight className="w-4 h-4" />
+                                    </button>
+                                    <button
+                                        onClick={() => onPageChange(totalPages)}
+                                        disabled={currentPage === totalPages}
+                                        className="p-2 rounded-lg border border-[var(--palette-border)] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[var(--palette-surface)]"
+                                        title="Last page"
+                                    >
+                                        <ChevronsRight className="w-4 h-4" />
+                                    </button>
+                                </div>
                             </div>
                         )}
                     </>
@@ -396,19 +587,49 @@ function InvoiceDetail({
 
     return (
         <main className="flex-1 p-8 overflow-auto print:p-0 print:overflow-visible">
+            {/* Print Styles */}
+            <style>{`
+                @media print {
+                    /* Hide sidebar, header, and navigation */
+                    aside, header, nav {
+                        display: none !important;
+                    }
+                    /* Hide elements with specific classes */
+                    [class*="sidebar"], [class*="header"], [class*="nav"], 
+                    [class*="search"], [class*="theme-toggle"], [class*="user-menu"] {
+                        display: none !important;
+                    }
+                    /* Hide all buttons */
+                    button, .theme-button {
+                        display: none !important;
+                    }
+                    /* Show only invoice content */
+                    .invoice-content, .invoice-content * {
+                        visibility: visible !important;
+                    }
+                    /* Remove borders and shadows for clean print */
+                    .invoice-content {
+                        border: none !important;
+                        box-shadow: none !important;
+                        padding: 0 !important;
+                        margin: 0 !important;
+                        max-width: none !important;
+                    }
+                }
+            `}</style>
             <div className="max-w-6xl mx-auto">
                 {/* Header Actions - Hidden on Print */}
                 <div className="flex items-center justify-between mb-6 print:hidden">
                     <button
                         onClick={onBack}
-                        className="flex items-center gap-2 text-p-color hover:text-primary transition-colors"
+                        className="flex items-center gap-2 theme-button theme-button-secondary"
                     >
                         <X className="w-5 h-5" />
                         Volver a Facturas
                     </button>
                     <button
                         onClick={onPrint}
-                        className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-white hover:opacity-90 transition-opacity"
+                        className="flex items-center gap-2 px-4 py-2 rounded-lg theme-button theme-button-primary"
                     >
                         <Printer className="w-4 h-4" />
                         Imprimir Factura
@@ -416,7 +637,7 @@ function InvoiceDetail({
                 </div>
 
                 {/* Invoice Content - Venezuelan Compliance (Art. 7) */}
-                <div className="palette-surface palette-border border rounded-xl p-8 print:shadow-none print:border-0">
+                <div className="invoice-content palette-surface palette-border border rounded-xl p-8 print:shadow-none print:border-0 print:p-4">
                     {/* Art. 1: Denominación del documento "FACTURA" */}
                     {/* Art. 2: Numeración consecutiva y única */}
                     {/* Art. 3: Emisor info */}
@@ -624,7 +845,13 @@ function InvoiceDetail({
                                             <span className="font-medium capitalize">
                                                 {payment.method_type?.replace('_', ' ') || 'Pago'}
                                             </span>
-                                            <span className="text-sm text-p-color opacity-75 ml-2">
+                                            {payment.card_brand && (
+                                                <span className="text-sm text-p-color opacity-75 block">
+                                                    {payment.card_brand}
+                                                    {payment.card_last4 && ` •••• ${payment.card_last4}`}
+                                                </span>
+                                            )}
+                                            <span className="text-xs text-p-color opacity-50">
                                                 ({formatDateDisplay(payment.created_at)})
                                             </span>
                                         </div>

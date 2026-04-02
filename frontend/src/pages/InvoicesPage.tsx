@@ -328,7 +328,7 @@ function InvoiceList({
                             <div>
                                 <p className="text-sm text-p-color opacity-75">Base Total</p>
                                 <p className="text-2xl font-bold text-green-600 dark:text-green-400">
-                                    ${parseFloat(summary.total_subtotal).toFixed(2)}
+                                    Bs. {parseFloat(summary.total_subtotal).toFixed(2)}
                                 </p>
                             </div>
                         </div>
@@ -339,7 +339,7 @@ function InvoiceList({
                             <div>
                                 <p className="text-sm text-p-color opacity-75">Total IVA (16%)</p>
                                 <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                                    ${parseFloat(summary.total_iva).toFixed(2)}
+                                    Bs. {parseFloat(summary.total_iva).toFixed(2)}
                                 </p>
                             </div>
                         </div>
@@ -350,7 +350,7 @@ function InvoiceList({
                             <div>
                                 <p className="text-sm text-p-color opacity-75">Total Paid</p>
                                 <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">
-                                    ${parseFloat(summary.total_paid).toFixed(2)}
+                                    Bs. {parseFloat(summary.total_paid).toFixed(2)}
                                 </p>
                             </div>
                         </div>
@@ -469,7 +469,7 @@ function InvoiceList({
                                             <td className="p-4">
                                                 <div className="flex flex-col gap-1">
                                                     <span className="font-semibold text-primary">
-                                                        ${parseFloat(invoice.total).toFixed(2)}
+                                                        Bs. {parseFloat(invoice.total).toFixed(2)}
                                                     </span>
                                                     {invoice.payment_progress !== undefined && (
                                                         <div className="w-32">
@@ -799,13 +799,13 @@ function InvoiceDetail({
                                         </td>
                                         <td className="py-3 text-center">{line.quantity}</td>
                                         <td className="py-3 text-right">
-                                            ${parseFloat(line.unit_price).toFixed(2)}
+                                            Bs. {parseFloat(line.unit_price).toFixed(2)}
                                         </td>
                                         <td className="py-3 text-right text-p-color opacity-75">
                                             {line.tax_rate ? `${parseFloat(line.tax_rate).toFixed(2)}%` : '16%'}
                                         </td>
                                         <td className="py-3 text-right font-medium">
-                                            ${parseFloat(line.line_total).toFixed(2)}
+                                            Bs. {parseFloat(line.line_total).toFixed(2)}
                                         </td>
                                     </tr>
                                 ))}
@@ -823,7 +823,7 @@ function InvoiceDetail({
                                 <div key={adj.id} className="flex justify-between py-1 text-sm">
                                     <span>{adj.description}</span>
                                     <span className="font-medium">
-                                        {adj.adjustment_type === 'discount' ? '-' : ''}${parseFloat(adj.amount).toFixed(2)}
+                                        {adj.adjustment_type === 'discount' ? '-' : ''}Bs. {parseFloat(adj.amount).toFixed(2)}
                                     </span>
                                 </div>
                             ))}
@@ -838,27 +838,27 @@ function InvoiceDetail({
                             <div className="flex items-center justify-between py-2 border-b border-[var(--palette-border)]">
                                 <span className="text-p-color opacity-75">Base Imponible</span>
                                 <span className="font-medium">
-                                    ${parseFloat(invoice.subtotal).toFixed(2)}
+                                    Bs. {parseFloat(invoice.subtotal).toFixed(2)}
                                 </span>
                             </div>
                             <div className="flex items-center justify-between py-2 border-b border-[var(--palette-border)]">
                                 <span className="text-p-color opacity-75">IVA (16%)</span>
                                 <span className="font-medium">
-                                    ${parseFloat(invoice.tax_total).toFixed(2)}
+                                    Bs. {parseFloat(invoice.tax_total).toFixed(2)}
                                 </span>
                             </div>
                             {invoice.discount_total && parseFloat(invoice.discount_total) > 0 && (
                                 <div className="flex items-center justify-between py-2 border-b border-[var(--palette-border)]">
                                     <span className="text-p-color opacity-75">Descuentos</span>
                                     <span className="font-medium text-green-600">
-                                        -${parseFloat(invoice.discount_total).toFixed(2)}
+                                        -Bs. {parseFloat(invoice.discount_total).toFixed(2)}
                                     </span>
                                 </div>
                             )}
                             <div className="flex items-center justify-between py-3 bg-primary/10 px-3 rounded-lg mt-2">
                                 <span className="font-bold text-primary">Total</span>
                                 <span className="text-xl font-bold text-primary">
-                                    ${parseFloat(invoice.total).toFixed(2)}
+                                    Bs. {parseFloat(invoice.total).toFixed(2)}
                                 </span>
                             </div>
                         </div>
@@ -892,7 +892,7 @@ function InvoiceDetail({
                                         </div>
                                         <div className="flex items-center gap-3">
                                             <span className="font-medium">
-                                                ${parseFloat(payment.amount).toFixed(2)}
+                                                Bs. {parseFloat(payment.amount).toFixed(2)}
                                             </span>
                                             <span
                                                 className={`px-2 py-1 rounded-full text-xs font-medium ${

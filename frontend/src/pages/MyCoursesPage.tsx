@@ -162,7 +162,7 @@ export default function MyCoursesPage() {
                                             <div className="flex items-center justify-between text-sm mb-1">
                                                 <span className="text-p-color opacity-75">Payment Progress</span>
                                                 <span className="font-medium">
-                                                    ${course.total_paid} / ${course.total_required}
+                                                    Bs. {course.total_paid} / Bs. {course.total_required}
                                                 </span>
                                             </div>
                                             <div className="h-2 bg-[var(--palette-surface)] rounded-full overflow-hidden">
@@ -198,7 +198,7 @@ export default function MyCoursesPage() {
                                                         <div className="flex items-center gap-2">
                                                             {license.status === 'pending' && !course.is_fully_paid && (
                                                                 <span className="text-xs text-p-color opacity-50 mr-2">
-                                                                    Pay ${parseFloat(course.total_required) - parseFloat(course.total_paid)} more to activate
+                                                                    Pay Bs. {(parseFloat(course.total_required) - parseFloat(course.total_paid)).toFixed(2)} more to activate
                                                                 </span>
                                                             )}
                                                             {getLicenseStatusBadge(license)}

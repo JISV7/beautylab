@@ -440,11 +440,11 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
                             <div className="palette-surface palette-border border rounded-xl p-4 space-y-3">
                                 <div className="flex items-center justify-between text-p-color opacity-75">
                                     <span className="text-sm font-medium">Base Price</span>
-                                    <span className="text-sm font-medium">${courseBasePrice.toFixed(2)}</span>
+                                    <span className="text-sm font-medium">Bs. {courseBasePrice.toFixed(2)}</span>
                                 </div>
                                 <div className="flex items-center justify-between text-p-color opacity-75">
                                     <span className="text-sm font-medium">IVA ({courseTaxRate}%)</span>
-                                    <span className="text-sm font-medium">${courseTax.toFixed(2)}</span>
+                                    <span className="text-sm font-medium">Bs. {courseTax.toFixed(2)}</span>
                                 </div>
                                 <div className="border-t palette-border pt-3 flex items-center justify-between">
                                     <div className="flex items-center gap-2">
@@ -454,7 +454,7 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
                                         </span>
                                     </div>
                                     <span className="text-h3-font text-h3-size text-h3-color font-black text-[var(--palette-primary)]">
-                                        ${coursePrice.toFixed(2)}
+                                        Bs. {coursePrice.toFixed(2)}
                                     </span>
                                 </div>
                             </div>

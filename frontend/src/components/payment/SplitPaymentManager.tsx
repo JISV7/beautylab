@@ -125,10 +125,10 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
     };
 
     const formatAmount = (amount: number) => {
-        return amount.toLocaleString('en-US', {
-            style: 'currency',
-            currency: 'USD',
-        });
+        return `Bs. ${amount.toLocaleString('es-VE', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        })}`;
     };
 
     return (

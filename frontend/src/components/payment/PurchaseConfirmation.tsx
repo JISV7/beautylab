@@ -37,11 +37,11 @@ export const PurchaseConfirmation: React.FC<PurchaseConfirmationProps> = ({
 }) => {
     const formatCurrency = (value: string) => {
         const num = parseFloat(value);
-        if (isNaN(num)) return '$0.00';
-        return num.toLocaleString('en-US', {
-            style: 'currency',
-            currency: 'USD',
-        });
+        if (isNaN(num)) return 'Bs. 0.00';
+        return `Bs. ${num.toLocaleString('es-VE', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        })}`;
     };
 
     return (

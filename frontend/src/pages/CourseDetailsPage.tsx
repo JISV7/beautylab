@@ -75,6 +75,7 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
     const [purchaseError, setPurchaseError] = useState<string | null>(null);
     const [receiptData, setReceiptData] = useState<ReceiptData | null>(null);
     const [isPaymentValid, setIsPaymentValid] = useState(false);
+    const [totalAllocated, setTotalAllocated] = useState<number>(0);
 
     const fetchCourseDetails = async () => {
         try {
@@ -108,6 +109,8 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
 
     const handlePaymentsChange = (payments: SplitPaymentEntry[]) => {
         setSplitPayments(payments);
+        const total = payments.reduce((sum, p) => sum + p.amount, 0);
+        setTotalAllocated(total);
     };
 
     const formatPaymentDetails = (entry: SplitPaymentEntry) => {
@@ -483,7 +486,12 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
                                     disabled={!isPaymentValid}
                                     className="theme-button theme-button-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                    Complete Purchase - ${coursePrice.toFixed(2)}
+                                    Complete Purchase - ${totalAllocated.toFixed(2)}
+                                    {totalAllocated < coursePrice && (
+                                        <span className="block text-xs opacity-75 mt-1">
+                                            (Remaining: ${(coursePrice - totalAllocated).toFixed(2)})
+                                        </span>
+                                    )}
                                 </button>
                             </div>
                         </div>

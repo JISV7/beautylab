@@ -113,6 +113,7 @@ class PaymentService:
     ) -> list[Payment]:
         """
         Process multiple payments for a single invoice (split payment).
+        Supports partial payments - payments can be less than invoice total.
 
         Args:
             request: Split payment request with multiple payment items
@@ -121,7 +122,6 @@ class PaymentService:
             List of created payments
 
         Raises:
-            PaymentAmountMismatchError: If sum of payments doesn't match invoice total
             PaymentMethodNotFoundError: If invoice not found
         """
         # Verify invoice exists and get total
@@ -132,10 +132,17 @@ class PaymentService:
         # Calculate total payment amount
         total_payment = sum(item.amount for item in request.payments)
 
-        # Validate total matches invoice
-        if total_payment != invoice.total:
+        # Allow partial payments (total can be less than or equal to invoice total)
+        if total_payment > invoice.total:
             raise PaymentAmountMismatchError(
-                f"Payment total ({total_payment}) does not match invoice total ({invoice.total})"
+                f"Payment total ({total_payment}) exceeds invoice total ({invoice.total})"
+            )
+
+        # Log if this is a partial payment
+        if total_payment < invoice.total:
+            remaining = invoice.total - total_payment
+            print(
+                f"[INFO] Partial payment: {total_payment}/{invoice.total}, remaining: {remaining}"
             )
 
         payments = []

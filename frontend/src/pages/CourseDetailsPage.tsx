@@ -7,7 +7,7 @@ import {
     type SplitPaymentEntry,
     type PaymentBreakdown,
 } from '../components/payment';
-import { ArrowLeft, X, ShoppingCart, Loader2 } from 'lucide-react';
+import { ArrowLeft, X, ShoppingCart, Loader2, KeyRound, AlertTriangle } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 
 const API_URL = 'http://localhost:8000';
@@ -72,6 +72,11 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
     const [giftModalOpen, setGiftModalOpen] = useState(false);
     const [selectedLicenseId, setSelectedLicenseId] = useState<string | null>(null);
     const [addToCartMessage, setAddToCartMessage] = useState<string | null>(null);
+
+    // Redeem state
+    const [redeemModalOpen, setRedeemModalOpen] = useState(false);
+    const [redeemLicenseId, setRedeemLicenseId] = useState<string | null>(null);
+    const [redeemError, setRedeemError] = useState<string | null>(null);
 
     // Payment state - starts as 'idle' until user clicks Buy
     const [paymentStep, setPaymentStep] = useState<PaymentStep>('idle');
@@ -358,6 +363,35 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
         }
     };
 
+    const handleRedeem = (licenseId: string) => {
+        setRedeemLicenseId(licenseId);
+        setRedeemError(null);
+        setRedeemModalOpen(true);
+    };
+
+    const handleRedeemConfirm = async () => {
+        if (!redeemLicenseId) return;
+        try {
+            setRedeemError(null);
+            const token = localStorage.getItem('access_token');
+            await axios.post(
+                `${API_URL}/licenses/redeem`,
+                { license_code: redeemLicenseId },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            setRedeemModalOpen(false);
+            setRedeemLicenseId(null);
+            fetchCourseDetails();
+        } catch (err: any) {
+            const detail = err.response?.data?.detail;
+            setRedeemError(typeof detail === 'string' ? detail : 'Failed to redeem license');
+        }
+    };
+
     const parsePrice = (priceStr: string | null): number => {
         if (!priceStr) return 0;
         const cleaned = priceStr.replace(/[^0-9.]/g, '');
@@ -577,6 +611,7 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
                 <LicenseTable
                     licenses={course.user_licenses}
                     onGift={handleGift}
+                    onRedeem={handleRedeem}
                 />
             </div>
 
@@ -590,6 +625,56 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
                 onConfirm={handleGiftConfirm}
                 licenseCode={selectedLicenseId || undefined}
             />
+
+            {/* Redeem Confirmation Modal */}
+            {redeemModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                    <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setRedeemModalOpen(false)} />
+                    <div className="relative z-10 w-full max-w-md palette-surface palette-border border rounded-xl shadow-2xl">
+                        {/* Header */}
+                        <div className="flex items-center gap-3 p-6 border-b border-[var(--palette-border)]">
+                            <div className="p-2 bg-green-500/10 rounded-lg">
+                                <KeyRound size={20} className="text-green-600 dark:text-green-400" />
+                            </div>
+                            <h2 className="text-h4-font text-h4-size text-h4-color">
+                                Redeem License
+                            </h2>
+                        </div>
+
+                        {/* Body */}
+                        <div className="p-6 space-y-4">
+                            <div className="flex items-start gap-3 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+                                <AlertTriangle size={18} className="text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+                                <p className="text-p-font text-p-size text-p-color text-sm">
+                                    This will bind the license to your account. Once redeemed, the license cannot be transferred or gifted to another user.
+                                </p>
+                            </div>
+
+                            {redeemError && (
+                                <p className="text-red-600 dark:text-red-400 text-sm font-medium">
+                                    {redeemError}
+                                </p>
+                            )}
+                        </div>
+
+                        {/* Footer */}
+                        <div className="flex items-center gap-3 p-6 border-t border-[var(--palette-border)]">
+                            <button
+                                onClick={() => { setRedeemModalOpen(false); setRedeemLicenseId(null); setRedeemError(null); }}
+                                className="flex-1 theme-button theme-button-secondary"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleRedeemConfirm}
+                                className="flex-1 theme-button theme-button-primary"
+                            >
+                                Redeem License
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

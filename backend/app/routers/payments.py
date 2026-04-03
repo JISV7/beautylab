@@ -219,8 +219,8 @@ async def process_split_payment(
             invoice_line_id=il.id,
         )
 
-    # Activate all licenses for this invoice
-    await license_service.activate_licenses_for_invoice(request.invoice_id)
+    # DO NOT auto-activate licenses — they stay "pending" until the user
+    # manually redeems them (for personal use) or gifts them to someone else
 
     # Apply coupons — mark usage and increment counter
     from app.services.coupon_service import CouponService

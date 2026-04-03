@@ -400,7 +400,6 @@ class PaymentService:
             Tuple of (payments list, receipt data dict)
         """
         from app.services.email_service import get_email_service
-        from app.services.enrollment_service import EnrollmentService
         from app.services.invoice_service import InvoiceService
 
         # Process the split payment
@@ -433,18 +432,8 @@ class PaymentService:
                 tax_total=receipt_data.get("tax_total"),
             )
 
-            # Create enrollment
-            enrollment_service = EnrollmentService(self.db)
-            try:
-                await enrollment_service.create_enrollment(
-                    user_id=user_id,
-                    course_id=course_id,
-                    invoice_id=request.invoice_id,
-                    allow_duplicate=False,
-                )
-            except Exception:
-                # Enrollment might already exist, continue anyway
-                pass
+            # DO NOT auto-create enrollment — enrollment is created when user redeems a license
+            # Creating it here would prevent redeeming licenses for the same course
 
             # Create license for the course
             from app.models.invoice import InvoiceLine
@@ -485,32 +474,6 @@ class PaymentService:
                 )
                 license_codes = [str(lic.license_code) for lic in licenses]
                 print(f"[DEBUG] Created {len(licenses)} licenses: {license_codes}")
-
-                # Check if invoice is fully paid and activate licenses if so
-                invoice_result = await self.db.execute(
-                    select(Invoice).where(Invoice.id == request.invoice_id)
-                )
-                invoice = invoice_result.scalar_one_or_none()
-
-                if invoice:
-                    # Calculate total paid
-                    pay_result = await self.db.execute(
-                        select(Payment).where(Payment.invoice_id == request.invoice_id)
-                    )
-                    payments_list = pay_result.scalars().all()
-                    total_paid = sum(p.amount for p in payments_list)
-
-                    print(
-                        f"[DEBUG] Invoice {request.invoice_id}: "
-                        f"total={invoice.total}, paid={total_paid}"
-                    )
-
-                    # Activate licenses if fully paid
-                    if total_paid >= invoice.total:
-                        activated = await license_service.activate_licenses_for_invoice(
-                            request.invoice_id
-                        )
-                        print(f"[DEBUG] Activated {activated} licenses")
             except Exception as e:
                 # Log error but don't fail the purchase
                 print(f"[ERROR] License creation failed: {e}")

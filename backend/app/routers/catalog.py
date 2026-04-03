@@ -507,7 +507,7 @@ async def get_course_details(
                 redemption_date=lic.redeemed_at,
                 assigned_to_email=assigned_to_email,
                 assigned_to_name=assigned_to_name,
-                can_gift=lic.status == "active" and not lic.redeemed_at,
+                can_gift=lic.status in ("pending", "active") and not lic.redeemed_at,
             )
         )
 

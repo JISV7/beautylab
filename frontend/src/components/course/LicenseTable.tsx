@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { LicenseStatusBadge, type LicenseStatus } from './LicenseStatusBadge';
-import { Gift, Copy, Check, Search, Filter, X } from 'lucide-react';
+import { Gift, Copy, Check, Search, Filter, X, KeyRound } from 'lucide-react';
 
 export interface License {
     id: string;
@@ -18,13 +18,14 @@ export interface License {
 export interface LicenseTableProps {
     licenses: License[];
     onGift?: (licenseId: string) => void;
+    onRedeem?: (licenseId: string) => void;
 }
 
 type SortField = 'license_code' | 'status' | 'amount_paid' | 'amount_remaining' | 'purchase_date' | 'redemption_date';
 type SortDirection = 'asc' | 'desc';
 type PaymentFilter = 'all' | 'paid' | 'unpaid' | 'partial';
 
-export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift }) => {
+export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, onRedeem }) => {
     const [copiedCode, setCopiedCode] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState<LicenseStatus | 'all'>('all');
@@ -389,15 +390,26 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift }) 
                                     {license.assigned_to_name || license.assigned_to_email || '-'}
                                 </td>
                                 <td className="px-4 py-3 text-right">
-                                    {license.can_gift && (
-                                        <button
-                                            onClick={() => onGift?.(license.id)}
-                                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[var(--palette-primary)] hover:bg-[var(--palette-primary)]/10 rounded-lg transition-colors"
-                                        >
-                                            <Gift size={14} />
-                                            Gift
-                                        </button>
-                                    )}
+                                    <div className="flex items-center justify-end gap-1">
+                                        {license.status === 'pending' && (
+                                            <button
+                                                onClick={() => onRedeem?.(license.license_code)}
+                                                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-colors"
+                                            >
+                                                <KeyRound size={14} />
+                                                Redeem
+                                            </button>
+                                        )}
+                                        {license.can_gift && (
+                                            <button
+                                                onClick={() => onGift?.(license.id)}
+                                                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[var(--palette-primary)] hover:bg-[var(--palette-primary)]/10 rounded-lg transition-colors"
+                                            >
+                                                <Gift size={14} />
+                                                Gift
+                                            </button>
+                                        )}
+                                    </div>
                                 </td>
                             </tr>
                         ))}
@@ -487,15 +499,28 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift }) 
                             </div>
                         )}
 
-                        {/* Gift Button */}
-                        {license.can_gift && (
-                            <button
-                                onClick={() => onGift?.(license.id)}
-                                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-[var(--palette-primary)] bg-[var(--palette-primary)]/10 hover:bg-[var(--palette-primary)]/20 rounded-lg transition-colors"
-                            >
-                                <Gift size={16} />
-                                Gift License
-                            </button>
+                        {/* Action Buttons */}
+                        {(license.status === 'pending' || license.can_gift) && (
+                            <div className="flex gap-2">
+                                {license.status === 'pending' && (
+                                    <button
+                                        onClick={() => onRedeem?.(license.license_code)}
+                                        className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/30 rounded-lg transition-colors"
+                                    >
+                                        <KeyRound size={16} />
+                                        Redeem
+                                    </button>
+                                )}
+                                {license.can_gift && (
+                                    <button
+                                        onClick={() => onGift?.(license.id)}
+                                        className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-[var(--palette-primary)] bg-[var(--palette-primary)]/10 hover:bg-[var(--palette-primary)]/20 rounded-lg transition-colors"
+                                    >
+                                        <Gift size={16} />
+                                        Gift License
+                                    </button>
+                                )}
+                            </div>
                         )}
                     </div>
                 ))}

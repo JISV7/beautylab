@@ -1,13 +1,14 @@
 """Licenses router for gift and corporate license management."""
 
+from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Body, Depends, HTTPException, Query, status
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.dependencies import CurrentUser
 from app.database import get_db
-from app.models.user import User
 from app.schemas.license import (
     CorporateDashboardResponse,
     LicenseAssignRequest,
@@ -33,7 +34,7 @@ router = APIRouter(prefix="/licenses", tags=["Licenses"])
 @router.post("/purchase", response_model=list[LicenseResponse], status_code=status.HTTP_201_CREATED)
 async def purchase_licenses(
     request: LicensePurchaseRequest,
-    current_user: User = Depends(CurrentUser),
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> list[LicenseResponse]:
     """
@@ -77,7 +78,7 @@ async def purchase_licenses(
 @router.post("/redeem", response_model=LicenseResponse)
 async def redeem_license(
     request: LicenseRedeemRequest,
-    current_user: User = Depends(CurrentUser),
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> LicenseResponse:
     """
@@ -96,7 +97,32 @@ async def redeem_license(
     enrollment_service = EnrollmentService(db)
 
     try:
-        # Redeem the license
+        # First, check the license exists and is valid
+        license_obj = await license_service.get_license_by_code(request.license_code)
+
+        if not license_obj:
+            raise LicenseNotFoundError(f"License {request.license_code} not found")
+
+        if license_obj.status == "redeemed":
+            raise LicenseAlreadyRedeemedError("License has already been redeemed")
+
+        if license_obj.status in ["cancelled", "expired"]:
+            raise LicenseInvalidError(f"License is {license_obj.status} and cannot be redeemed")
+
+        # Check if user already has an active enrollment for this course
+        if license_obj.course_id:
+            enrollments = await enrollment_service.get_user_enrollments(
+                user_id=current_user.id,
+                status="active",
+            )
+            has_enrollment = any(e.course_id == license_obj.course_id for e in enrollments)
+            if has_enrollment:
+                raise LicenseInvalidError(
+                    "You already have an active enrollment for this course. "
+                    "This license can be gifted to another user instead."
+                )
+
+        # Now redeem the license — we know it won't create a duplicate
         license_obj = await license_service.redeem_license(
             license_code=request.license_code,
             user_id=current_user.id,
@@ -131,10 +157,10 @@ async def redeem_license(
 
 @router.get("/", response_model=LicenseListResponse)
 async def list_user_licenses(
+    current_user: CurrentUser,
+    db: AsyncSession = Depends(get_db),
     page: int = Query(1, ge=1),
     page_size: int = Query(10, ge=1, le=100),
-    current_user: User = Depends(CurrentUser),
-    db: AsyncSession = Depends(get_db),
 ) -> LicenseListResponse:
     """Get all licenses purchased by the current user."""
     license_service = LicenseService(db)
@@ -158,7 +184,7 @@ async def list_user_licenses(
 
 @router.get("/redeemable", response_model=list[LicenseResponse])
 async def list_redeemable_licenses(
-    current_user: User = Depends(CurrentUser),
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> list[LicenseResponse]:
     """Get licenses that haven't been redeemed yet (ready to gift)."""
@@ -190,7 +216,7 @@ async def check_license_status(
 @router.get("/{license_id}", response_model=LicenseWithDetails)
 async def get_license(
     license_id: UUID,
-    current_user: User = Depends(CurrentUser),
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> LicenseWithDetails:
     """Get a specific license by ID."""
@@ -218,7 +244,7 @@ async def get_license(
 async def assign_license(
     license_id: UUID,
     request: LicenseAssignRequest,
-    current_user: User = Depends(CurrentUser),
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> LicenseWithDetails:
     """
@@ -255,7 +281,7 @@ async def assign_license(
 async def revoke_license(
     license_id: UUID,
     request: LicenseRevokeRequest,
-    current_user: User = Depends(CurrentUser),
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> LicenseResponse:
     """
@@ -285,9 +311,96 @@ async def revoke_license(
     return LicenseResponse.model_validate(license_obj)
 
 
+@router.post("/{license_id}/gift", response_model=LicenseResponse)
+async def gift_license(
+    license_id: UUID,
+    request: Annotated[dict, Body(...)],
+    current_user: CurrentUser,
+    db: AsyncSession = Depends(get_db),
+) -> LicenseResponse:
+    """
+    Gift a license to another user.
+
+    Transfers ownership of the license to the target user.
+    License status is reset to 'pending' so the recipient can redeem it.
+
+    **Body:**
+    ```json
+    {
+        "email": "friend@example.com",
+        "message": "Enjoy the course!"
+    }
+    ```
+    """
+    from app.models.user import User as UserModel
+    from app.services.email_service import get_email_service
+
+    email = request.get("email", "").strip()
+    if not email or "@" not in email:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Valid email address is required",
+        )
+
+    # Find target user
+    result = await db.execute(select(UserModel).where(UserModel.email == email))
+    target_user = result.scalar_one_or_none()
+    if not target_user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"No user found with email {email}",
+        )
+
+    # Find license and verify ownership
+    from app.models.license import License as LicenseModel
+
+    lic_result = await db.execute(select(LicenseModel).where(LicenseModel.id == license_id))
+    license_obj = lic_result.scalar_one_or_none()
+    if not license_obj:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="License not found",
+        )
+
+    if license_obj.purchased_by_user_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You can only gift licenses you own",
+        )
+
+    if license_obj.status not in ["pending", "active"]:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Cannot gift a license with status '{license_obj.status}'",
+        )
+
+    # Transfer ownership
+    license_obj.purchased_by_user_id = target_user.id
+    license_obj.status = "pending"
+    await db.commit()
+    await db.refresh(license_obj)
+
+    # Send gift email (best effort)
+    try:
+        from app.services.email_service import get_email_service
+
+        email_service = get_email_service()
+        if hasattr(email_service, "send_gift_notification"):
+            email_service.send_gift_notification(
+                to_email=email,
+                license_code=str(license_obj.license_code),
+                message=request.get("message", ""),
+                course_name="Course",
+            )
+    except Exception:
+        pass  # Don't fail the gift if email fails
+
+    return LicenseResponse.model_validate(license_obj)
+
+
 @router.get("/corporate/dashboard", response_model=CorporateDashboardResponse)
 async def corporate_dashboard(
-    current_user: User = Depends(CurrentUser),
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> CorporateDashboardResponse:
     """

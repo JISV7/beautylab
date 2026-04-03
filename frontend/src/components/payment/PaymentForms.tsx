@@ -59,6 +59,25 @@ const MONTHS = [
     { value: '12', label: '12 - December' },
 ];
 
+const getAvailableMonths = (selectedYear?: string) => {
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth() + 1;
+
+    if (!selectedYear || parseInt(selectedYear) > currentYear) {
+        return MONTHS;
+    }
+
+    return MONTHS.filter((m) => parseInt(m.value) >= currentMonth);
+};
+
+const isCardExpired = (month?: string, year?: string): boolean => {
+    if (!month || !year) return false;
+    const now = new Date();
+    const expDate = new Date(parseInt(year), parseInt(month) - 1);
+    return expDate < new Date(now.getFullYear(), now.getMonth());
+};
+
 const YEARS = Array.from({ length: 10 }, (_, i) => {
     const year = new Date().getFullYear() + i;
     return { value: year.toString(), label: year.toString() };
@@ -135,7 +154,7 @@ export const CreditCardForm: React.FC<PaymentFormProps> = ({
                         className="theme-input w-full"
                     >
                         <option value="">Select</option>
-                        {MONTHS.map((month) => (
+                        {getAvailableMonths(value.expiry_year).map((month) => (
                             <option key={month.value} value={month.value}>
                                 {month.label}
                             </option>
@@ -155,7 +174,13 @@ export const CreditCardForm: React.FC<PaymentFormProps> = ({
                     </label>
                     <select
                         value={value.expiry_year || ''}
-                        onChange={(e) => handleChange('expiry_year', e.target.value)}
+                        onChange={(e) => {
+                            handleChange('expiry_year', e.target.value);
+                            // Clear month if new year would invalidate current selection
+                            if (isCardExpired(value.expiry_month, e.target.value)) {
+                                handleChange('expiry_month', '');
+                            }
+                        }}
                         className="theme-input w-full"
                     >
                         <option value="">Select</option>
@@ -170,6 +195,12 @@ export const CreditCardForm: React.FC<PaymentFormProps> = ({
                     )}
                 </div>
             </div>
+
+            {isCardExpired(value.expiry_month, value.expiry_year) && (
+                <p className="text-red-500 text-sm font-medium">
+                    This card has expired. Please use a valid card.
+                </p>
+            )}
 
             <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -282,7 +313,7 @@ export const DebitCardForm: React.FC<PaymentFormProps> = ({
                         className="theme-input w-full"
                     >
                         <option value="">Select</option>
-                        {MONTHS.map((month) => (
+                        {getAvailableMonths(value.expiry_year).map((month) => (
                             <option key={month.value} value={month.value}>{month.label}</option>
                         ))}
                     </select>
@@ -298,7 +329,12 @@ export const DebitCardForm: React.FC<PaymentFormProps> = ({
                     </label>
                     <select
                         value={value.expiry_year || ''}
-                        onChange={(e) => handleChange('expiry_year', e.target.value)}
+                        onChange={(e) => {
+                            handleChange('expiry_year', e.target.value);
+                            if (isCardExpired(value.expiry_month, e.target.value)) {
+                                handleChange('expiry_month', '');
+                            }
+                        }}
                         className="theme-input w-full"
                     >
                         <option value="">Select</option>
@@ -311,6 +347,12 @@ export const DebitCardForm: React.FC<PaymentFormProps> = ({
                     )}
                 </div>
             </div>
+
+            {isCardExpired(value.expiry_month, value.expiry_year) && (
+                <p className="text-red-500 text-sm font-medium">
+                    This card has expired. Please use a valid card.
+                </p>
+            )}
 
             <div className="grid grid-cols-2 gap-4">
                 <div>

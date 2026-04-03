@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Book, Key, Share2, CheckCircle, Clock, ChevronDown, Gift } from 'lucide-react';
+import { Book, Key, Share2, CheckCircle, Clock, ChevronDown, Gift, KeyRound, AlertTriangle, X } from 'lucide-react';
 import { MyCoursesFilters, type Category } from '../components/user/MyCoursesFilters';
 
 const API_URL = 'http://localhost:8000';
@@ -52,6 +52,12 @@ export default function MyCoursesPage({ onViewCourse }: { onViewCourse?: (course
     const [loading, setLoading] = useState(true);
     const [expandedLicenses, setExpandedLicenses] = useState<string[]>([]);
 
+    // Redeem license modal
+    const [redeemModalOpen, setRedeemModalOpen] = useState(false);
+    const [redeemCode, setRedeemCode] = useState('');
+    const [redeemError, setRedeemError] = useState<string | null>(null);
+    const [redeemLoading, setRedeemLoading] = useState(false);
+
     // Filter states
     const [searchQuery, setSearchQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
@@ -91,6 +97,31 @@ export default function MyCoursesPage({ onViewCourse }: { onViewCourse?: (course
         fetchCourses();
         fetchCategories();
     }, []);
+
+    const handleRedeemLicense = async () => {
+        if (!redeemCode.trim()) {
+            setRedeemError('Please enter a license code.');
+            return;
+        }
+        try {
+            setRedeemLoading(true);
+            setRedeemError(null);
+            const token = localStorage.getItem('access_token');
+            await axios.post(
+                `${API_URL}/licenses/redeem`,
+                { license_code: redeemCode.trim() },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            setRedeemModalOpen(false);
+            setRedeemCode('');
+            fetchCourses();
+        } catch (err: any) {
+            const detail = err.response?.data?.detail;
+            setRedeemError(typeof detail === 'string' ? detail : 'Failed to redeem license. Check the code and try again.');
+        } finally {
+            setRedeemLoading(false);
+        }
+    };
 
     const getStatusBadge = (course: UserCourse) => {
         if (course.is_fully_paid) {
@@ -168,7 +199,17 @@ export default function MyCoursesPage({ onViewCourse }: { onViewCourse?: (course
     return (
         <main className="flex-1 p-8 overflow-auto">
             <div className="max-w-7xl mx-auto">
-                <h2 className="text-3xl font-bold text-primary mb-6">My Courses</h2>
+                {/* Header */}
+                <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-h2-font text-h2-size text-h2-color text-h2-weight">My Courses</h2>
+                    <button
+                        onClick={() => { setRedeemModalOpen(true); setRedeemError(null); setRedeemCode(''); }}
+                        className="theme-button theme-button-primary inline-flex items-center gap-2"
+                    >
+                        <KeyRound className="w-4 h-4" />
+                        Redeem License
+                    </button>
+                </div>
 
                 {/* Filters */}
                 <MyCoursesFilters
@@ -315,12 +356,6 @@ export default function MyCoursesPage({ onViewCourse }: { onViewCourse?: (course
                                             <>
                                                 <button
                                                     className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg theme-button theme-button-secondary text-sm"
-                                                    title="Redeem license"
-                                                >
-                                                    <Key className="w-4 h-4" />
-                                                </button>
-                                                <button
-                                                    className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg theme-button theme-button-secondary text-sm"
                                                     title="Gift license"
                                                 >
                                                     <Share2 className="w-4 h-4" />
@@ -334,6 +369,81 @@ export default function MyCoursesPage({ onViewCourse }: { onViewCourse?: (course
                     </div>
                 )}
             </div>
+
+            {/* Redeem License Modal */}
+            {redeemModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                    <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => { setRedeemModalOpen(false); setRedeemCode(''); setRedeemError(null); }} />
+                    <div className="relative z-10 w-full max-w-md palette-surface palette-border border rounded-xl shadow-2xl" onClick={(e) => e.stopPropagation()}>
+                        {/* Header */}
+                        <div className="flex items-center justify-between p-6 border-b border-[var(--palette-border)]">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 bg-green-500/10 rounded-lg">
+                                    <KeyRound size={20} className="text-green-600 dark:text-green-400" />
+                                </div>
+                                <h3 className="text-h4-font text-h4-size text-h4-color">
+                                    Redeem License
+                                </h3>
+                            </div>
+                            <button onClick={() => { setRedeemModalOpen(false); setRedeemCode(''); setRedeemError(null); }} className="p-2 hover:bg-[var(--palette-border)] rounded-lg transition-colors">
+                                <X size={18} className="text-p-color" />
+                            </button>
+                        </div>
+
+                        {/* Body */}
+                        <div className="p-6 space-y-4">
+                            <div className="flex items-start gap-3 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+                                <AlertTriangle size={18} className="text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+                                <p className="text-p-font text-p-size text-p-color text-sm">
+                                    Enter the license code to redeem it. This will bind the license to your account and cannot be undone.
+                                </p>
+                            </div>
+
+                            {/* License Code Input */}
+                            <div>
+                                <label className="block text-xs font-bold text-p-color uppercase tracking-wider mb-2">
+                                    License Code
+                                </label>
+                                <input
+                                    type="text"
+                                    value={redeemCode}
+                                    onChange={(e) => { setRedeemCode(e.target.value); setRedeemError(null); }}
+                                    onKeyDown={(e) => { if (e.key === 'Enter') handleRedeemLicense(); }}
+                                    placeholder="Paste your license code here..."
+                                    className="theme-input w-full font-mono text-sm"
+                                    autoFocus
+                                    disabled={redeemLoading}
+                                />
+                            </div>
+
+                            {/* Error */}
+                            {redeemError && (
+                                <p className="text-red-600 dark:text-red-400 text-sm font-medium">
+                                    {redeemError}
+                                </p>
+                            )}
+                        </div>
+
+                        {/* Footer */}
+                        <div className="flex items-center gap-3 p-6 border-t border-[var(--palette-border)]">
+                            <button
+                                onClick={() => { setRedeemModalOpen(false); setRedeemCode(''); setRedeemError(null); }}
+                                className="flex-1 theme-button theme-button-secondary"
+                                disabled={redeemLoading}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleRedeemLicense}
+                                disabled={redeemLoading || !redeemCode.trim()}
+                                className="flex-1 theme-button theme-button-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {redeemLoading ? 'Redeeming...' : 'Redeem'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </main>
     );
 }

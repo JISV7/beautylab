@@ -3,10 +3,10 @@
 from decimal import Decimal
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Body, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.dependencies import CurrentUser
+from app.core.dependencies import CurrentUser, RequireAdmin
 from app.database import get_db
 from app.models.user import User
 from app.schemas.coupon import (
@@ -32,11 +32,12 @@ router = APIRouter(prefix="/coupons", tags=["Coupons"])
 
 @router.get("/", response_model=CouponListResponse)
 async def list_coupons(
+    current_user: CurrentUser,
+    db: AsyncSession = Depends(get_db),
+    _admin_user: User = Depends(RequireAdmin),
     page: int = Query(1, ge=1),
     page_size: int = Query(10, ge=1, le=100),
     is_active: bool | None = None,
-    current_user: User = Depends(CurrentUser),
-    db: AsyncSession = Depends(get_db),
 ) -> CouponListResponse:
     """
     List all coupons (admin only).
@@ -64,9 +65,10 @@ async def list_coupons(
 
 @router.post("/", response_model=CouponResponse, status_code=status.HTTP_201_CREATED)
 async def create_coupon(
-    coupon_data: CouponCreate,
-    current_user: User = Depends(CurrentUser),
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
+    _admin_user: User = Depends(RequireAdmin),
+    coupon_data: CouponCreate = Body(...),
 ) -> CouponResponse:
     """
     Create a new coupon (admin only).
@@ -100,8 +102,9 @@ async def create_coupon(
 @router.get("/{coupon_id}", response_model=CouponResponse)
 async def get_coupon(
     coupon_id: UUID,
-    current_user: User = Depends(CurrentUser),
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
+    _admin_user: User = Depends(RequireAdmin),
 ) -> CouponResponse:
     """Get a specific coupon by ID (admin only)."""
     coupon_service = CouponService(db)
@@ -120,9 +123,10 @@ async def get_coupon(
 @router.put("/{coupon_id}", response_model=CouponResponse)
 async def update_coupon(
     coupon_id: UUID,
-    coupon_data: CouponUpdate,
-    current_user: User = Depends(CurrentUser),
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
+    _admin_user: User = Depends(RequireAdmin),
+    coupon_data: CouponUpdate = Body(...),
 ) -> CouponResponse:
     """Update an existing coupon (admin only)."""
     coupon_service = CouponService(db)
@@ -144,8 +148,9 @@ async def update_coupon(
 @router.delete("/{coupon_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_coupon(
     coupon_id: UUID,
-    current_user: User = Depends(CurrentUser),
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
+    _admin_user: User = Depends(RequireAdmin),
 ) -> None:
     """
     Delete (deactivate) a coupon (admin only).
@@ -166,7 +171,7 @@ async def delete_coupon(
 @router.post("/validate", response_model=CouponValidateResponse)
 async def validate_coupon(
     request: CouponValidateRequest,
-    current_user: User = Depends(CurrentUser),
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> CouponValidateResponse:
     """
@@ -242,7 +247,7 @@ async def validate_coupon(
 
 @router.get("/my/usage", response_model=list[CouponUsageResponse])
 async def get_my_coupon_usage(
-    current_user: User = Depends(CurrentUser),
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> list[CouponUsageResponse]:
     """Get all coupons used by the current user."""

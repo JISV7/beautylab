@@ -5,11 +5,12 @@ import { UnifiedThemeConfig } from '../components/admin/UnifiedThemeConfig';
 import { CourseList } from '../components/admin/CourseList';
 import { CourseManagement } from '../components/admin/CourseManagement';
 import { CategoryManagementPage } from '../pages/CategoryManagementPage';
+import { CouponManagement } from '../components/admin/CouponManagement';
 import InvoicesPage from '../pages/InvoicesPage';
 import CompanyInfoPage from '../pages/CompanyInfoPage';
 import PrinterInfoPage from '../pages/PrinterInfoPage';
 
-type AdminTab = 'dashboard' | 'themes' | 'categories' | 'users' | 'content' | 'invoices' | 'company-info' | 'printer-info';
+type AdminTab = 'dashboard' | 'themes' | 'categories' | 'users' | 'content' | 'invoices' | 'coupons' | 'company-info' | 'printer-info';
 
 type ContentView = 'list' | 'create' | 'edit';
 
@@ -121,6 +122,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToDash
                     {activeTab === 'invoices' && (
                         <div>
                             <InvoicesPage />
+                        </div>
+                    )}
+                    {activeTab === 'coupons' && (
+                        <div>
+                            <CouponManagement />
                         </div>
                     )}
                     {activeTab === 'company-info' && (

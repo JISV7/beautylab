@@ -1,6 +1,6 @@
 """Coupon service for discount code management."""
 
-from datetime import datetime
+from datetime import datetime, timezone
 from decimal import Decimal
 from uuid import UUID
 
@@ -93,7 +93,7 @@ class CouponService:
             raise CouponInvalidError("Coupon is no longer active")
 
         # Check expiration
-        if coupon.expires_at and coupon.expires_at < datetime.now():
+        if coupon.expires_at and coupon.expires_at < datetime.now(timezone.utc):
             raise CouponInvalidError("Coupon has expired")
 
         # Check max uses
@@ -124,6 +124,57 @@ class CouponService:
             "discount_amount": discount_amount,
             "message": "Coupon is valid",
             "final_total": final_total,
+        }
+
+    async def validate_multiple_coupons(
+        self,
+        codes: list[str],
+        cart_total: Decimal,
+        user_id: UUID | None = None,
+    ) -> dict:
+        """
+        Validate multiple coupon codes for combined discount.
+
+        Args:
+            codes: List of coupon codes
+            cart_total: Cart subtotal before discounts
+            user_id: User ID for usage checks
+
+        Returns:
+            dict with valid_coupons (list of {code, coupon, discount_amount}),
+            total_discount, final_total, errors (list of {code, message})
+        """
+        valid_coupons = []
+        errors = []
+        running_total = cart_total
+
+        for code in codes:
+            try:
+                request = CouponValidateRequest(code=code, cart_total=running_total)
+                result = await self.validate_coupon(request=request, user_id=user_id)
+                valid_coupons.append(
+                    {
+                        "code": code.upper(),
+                        "coupon": result["coupon"],
+                        "discount_amount": result["discount_amount"],
+                    }
+                )
+                running_total -= result["discount_amount"]
+            except (
+                CouponNotFoundError,
+                CouponInvalidError,
+                CouponMaxUsesError,
+                CouponMinPurchaseError,
+                CouponAlreadyUsedError,
+            ) as e:
+                errors.append({"code": code.upper(), "message": str(e)})
+
+        total_discount = cart_total - running_total
+        return {
+            "valid_coupons": valid_coupons,
+            "total_discount": total_discount,
+            "final_total": running_total,
+            "errors": errors,
         }
 
     async def calculate_discount(

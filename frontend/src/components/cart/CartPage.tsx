@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShoppingCart, Trash2, Plus, Minus, ArrowLeft, CreditCard } from 'lucide-react';
+import { ShoppingCart, Trash2, Plus, Minus, ArrowLeft, CreditCard, Tag, X as XIcon } from 'lucide-react';
 import { useCart } from '../../contexts/CartContext';
 import { SplitPaymentManager, PurchaseConfirmation, type SplitPaymentEntry } from '../payment';
 import axios from 'axios';
@@ -27,6 +27,11 @@ api.interceptors.request.use((config) => {
 
 type CheckoutStep = 'review' | 'payment' | 'processing' | 'confirmation';
 
+interface AppliedCoupon {
+    code: string;
+    discountAmount: number;
+}
+
 interface CartPageProps {
     onBack?: () => void;
 }
@@ -40,11 +45,63 @@ export const CartPage: React.FC<CartPageProps> = ({ onBack }) => {
     const [purchaseError, setPurchaseError] = useState<string | null>(null);
     const [receiptData, setReceiptData] = useState<any>(null);
 
-    const formatPrice = (price: string) => {
-        const numericPrice = parseFloat(price);
+    // Coupon state
+    const [couponInput, setCouponInput] = useState('');
+    const [appliedCoupons, setAppliedCoupons] = useState<AppliedCoupon[]>([]);
+    const [couponError, setCouponError] = useState<string | null>(null);
+    const [couponLoading, setCouponLoading] = useState(false);
+
+    const formatPrice = (price: string | number) => {
+        const numericPrice = typeof price === 'string' ? parseFloat(price) : price;
         if (isNaN(numericPrice)) return 'Bs. 0,00';
         return `Bs. ${numericPrice.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     };
+
+    const handleApplyCoupon = async () => {
+        const code = couponInput.trim().toUpperCase();
+        if (!code) return;
+
+        // Check if already applied
+        if (appliedCoupons.some((c) => c.code === code)) {
+            setCouponError('This coupon is already applied.');
+            return;
+        }
+
+        if (!cart) return;
+
+        try {
+            setCouponLoading(true);
+            setCouponError(null);
+
+            const token = getAuthToken();
+            const response = await api.post(
+                '/coupons/validate',
+                { code, cart_total: parseFloat(cart.total) },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+
+            const data = response.data;
+            if (data.valid) {
+                const discount = Math.round(parseFloat(data.discount_amount) * 100) / 100;
+                setAppliedCoupons([...appliedCoupons, { code, discountAmount: discount }]);
+                setCouponInput('');
+            } else {
+                setCouponError(data.message || 'Invalid coupon.');
+            }
+        } catch (err: any) {
+            setCouponError(err.response?.data?.detail || 'Failed to validate coupon.');
+        } finally {
+            setCouponLoading(false);
+        }
+    };
+
+    const handleRemoveCoupon = (code: string) => {
+        setAppliedCoupons(appliedCoupons.filter((c) => c.code !== code));
+        setCouponError(null);
+    };
+
+    const totalCouponDiscount = appliedCoupons.reduce((sum, c) => sum + c.discountAmount, 0);
+    const totalAfterCoupons = Math.round((parseFloat(cart?.total || '0') - totalCouponDiscount) * 100) / 100;
 
     const handleCheckout = () => {
         setCheckoutStep('payment');
@@ -52,7 +109,7 @@ export const CartPage: React.FC<CartPageProps> = ({ onBack }) => {
 
     const handlePaymentsChange = (payments: SplitPaymentEntry[]) => {
         setSplitPayments(payments);
-        const total = payments.reduce((sum, p) => sum + p.amount, 0);
+        const total = Math.round(payments.reduce((sum, p) => sum + p.amount, 0) * 100) / 100;
         setTotalAllocated(total);
     };
 
@@ -187,6 +244,7 @@ export const CartPage: React.FC<CartPageProps> = ({ onBack }) => {
                 {
                     license_type: 'gift',
                     payment_method: splitPayments.length > 1 ? 'split' : 'single',
+                    coupon_codes: appliedCoupons.map((c) => c.code),
                 },
                 {
                     headers: {
@@ -226,6 +284,7 @@ export const CartPage: React.FC<CartPageProps> = ({ onBack }) => {
                     amount: p.amount.toFixed(2),
                     reference: p.values.confirmation_code || p.values.reference_code || p.values.transaction_id || '',
                 })),
+                applied_coupons: appliedCoupons,
             });
 
             setCheckoutStep('confirmation');
@@ -353,7 +412,7 @@ export const CartPage: React.FC<CartPageProps> = ({ onBack }) => {
                                 </div>
                             ))}
                         </div>
-                    )} 
+                    )}
 
                     {/* Order Summary */}
                     {cart && cart.items.length > 0 && (
@@ -372,13 +431,90 @@ export const CartPage: React.FC<CartPageProps> = ({ onBack }) => {
                                         {formatPrice(cart.tax_total)}
                                     </span>
                                 </div>
+
+                                {/* Coupon Discounts */}
+                                {appliedCoupons.length > 0 && appliedCoupons.map((cp) => (
+                                    <div key={cp.code} className="flex justify-between text-p-font text-p-size">
+                                        <span className="text-green-600 dark:text-green-400 font-medium flex items-center gap-1">
+                                            <Tag className="w-3 h-3" />
+                                            {cp.code}
+                                        </span>
+                                        <span className="text-green-600 dark:text-green-400 font-medium">
+                                            −{formatPrice(cp.discountAmount)}
+                                        </span>
+                                    </div>
+                                ))}
+
+                                {/* Total after coupons */}
                                 <div className="flex justify-between text-h4-font text-h4-size pt-3 border-t palette-border">
                                     <span className="text-h4-color font-bold">Total</span>
                                     <span className="text-[var(--palette-primary)] font-bold">
-                                        {formatPrice(cart.total)}
+                                        {appliedCoupons.length > 0
+                                            ? formatPrice(Math.max(0, totalAfterCoupons))
+                                            : formatPrice(cart.total)}
                                     </span>
                                 </div>
                             </div>
+
+                            {/* Coupon Input */}
+                            <div className="pt-3 border-t palette-border">
+                                <p className="text-p-font text-p-size text-p-color font-medium mb-2">
+                                    Have a coupon?
+                                </p>
+                                <div className="flex gap-2">
+                                    <input
+                                        type="text"
+                                        value={couponInput}
+                                        onChange={(e) => {
+                                            setCouponInput(e.target.value.toUpperCase());
+                                            setCouponError(null);
+                                        }}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter') handleApplyCoupon();
+                                        }}
+                                        placeholder="Enter code"
+                                        className="theme-input flex-1 !py-2 !px-3 text-sm"
+                                        disabled={couponLoading}
+                                    />
+                                    <button
+                                        onClick={handleApplyCoupon}
+                                        disabled={couponLoading || !couponInput.trim()}
+                                        className="theme-button theme-button-secondary !py-2 !px-3 text-sm disabled:opacity-50"
+                                    >
+                                        {couponLoading ? '...' : 'Apply'}
+                                    </button>
+                                </div>
+                                {couponError && (
+                                    <p className="text-red-500 text-sm mt-1">{couponError}</p>
+                                )}
+                            </div>
+
+                            {/* Applied Coupon Chips */}
+                            {appliedCoupons.length > 0 && (
+                                <div className="flex flex-wrap gap-2">
+                                    {appliedCoupons.map((cp) => (
+                                        <div
+                                            key={cp.code}
+                                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-100 dark:bg-green-900/30 border border-green-300 dark:border-green-700 rounded-full"
+                                        >
+                                            <Tag className="w-3 h-3 text-green-600 dark:text-green-400" />
+                                            <span className="text-sm font-semibold text-green-700 dark:text-green-400">
+                                                {cp.code}
+                                            </span>
+                                            <span className="text-xs text-green-600 dark:text-green-500">
+                                                −{formatPrice(cp.discountAmount)}
+                                            </span>
+                                            <button
+                                                onClick={() => handleRemoveCoupon(cp.code)}
+                                                className="ml-0.5 p-0.5 hover:bg-green-200 dark:hover:bg-green-800/50 rounded-full transition-colors"
+                                            >
+                                                <XIcon className="w-3 h-3 text-green-600 dark:text-green-400" />
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
                             <button
                                 onClick={handleCheckout}
                                 className="theme-button theme-button-primary w-full"
@@ -405,10 +541,23 @@ export const CartPage: React.FC<CartPageProps> = ({ onBack }) => {
                                 <span className="text-p-color opacity-75">IVA (16%)</span>
                                 <span className="text-p-color">{formatPrice(cart.tax_total)}</span>
                             </div>
+                            {appliedCoupons.length > 0 && appliedCoupons.map((cp) => (
+                                <div key={cp.code} className="flex justify-between text-p-font text-p-size">
+                                    <span className="text-green-600 dark:text-green-400 font-medium flex items-center gap-1">
+                                        <Tag className="w-3 h-3" />
+                                        {cp.code}
+                                    </span>
+                                    <span className="text-green-600 dark:text-green-400 font-medium">
+                                        −{formatPrice(cp.discountAmount)}
+                                    </span>
+                                </div>
+                            ))}
                             <div className="flex justify-between text-h4-font text-h4-size pt-3 border-t palette-border">
                                 <span className="text-h4-color font-bold">Total</span>
                                 <span className="text-[var(--palette-primary)] font-bold">
-                                    {formatPrice(cart.total)}
+                                    {appliedCoupons.length > 0
+                                        ? formatPrice(Math.max(0, totalAfterCoupons))
+                                        : formatPrice(cart.total)}
                                 </span>
                             </div>
                         </div>
@@ -416,7 +565,7 @@ export const CartPage: React.FC<CartPageProps> = ({ onBack }) => {
 
                     {/* Payment Methods */}
                     <SplitPaymentManager
-                        totalAmount={Math.round(parseFloat(cart.total) * 100) / 100}
+                        totalAmount={Math.max(0, Math.round(totalAfterCoupons * 100) / 100)}
                         onPaymentsChange={handlePaymentsChange}
                         onValid={setIsPaymentValid}
                     />
@@ -436,7 +585,7 @@ export const CartPage: React.FC<CartPageProps> = ({ onBack }) => {
                         disabled={!isPaymentValid}
                         className="theme-button theme-button-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        Complete Purchase - Bs. {totalAllocated.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        Complete Purchase - {formatPrice(totalAllocated)}
                     </button>
                 </div>
             )}

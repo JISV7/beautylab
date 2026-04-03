@@ -58,7 +58,10 @@ class CheckoutRequest(BaseModel):
 
     license_type: str = Field(default="gift", description="gift or corporate")
     payment_method: str = Field(default="split", description="single or split")
-    coupon_code: str | None = Field(None, description="Optional coupon code")
+    coupon_code: str | None = Field(None, description="Optional single coupon code (legacy)")
+    coupon_codes: list[str] | None = Field(
+        None, description="Optional list of coupon codes for multi-coupon discounts"
+    )
 
 
 class CheckoutResponse(BaseModel):

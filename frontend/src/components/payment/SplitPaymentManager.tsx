@@ -32,8 +32,8 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
         },
     ]);
 
-    const totalAllocated = payments.reduce((sum, p) => sum + p.amount, 0);
-    const remaining = totalAmount - totalAllocated;
+    const totalAllocated = Math.round(payments.reduce((sum, p) => sum + p.amount, 0) * 100) / 100;
+    const remaining = Math.round((totalAmount - totalAllocated) * 100) / 100;
     const isOverAllocated = remaining < -0.001;
     // Allow partial payments - any amount > 0 is valid
     const hasAnyPayment = totalAllocated > 0;
@@ -79,10 +79,10 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
 
         // Redistribute the amount if removing a payment with allocated funds
         if (paymentToRemove && paymentToRemove.amount > 0 && newPayments.length > 0) {
-            // Add the freed amount to the first payment
+            const newAmount = Math.round((newPayments[0].amount + paymentToRemove.amount) * 100) / 100;
             newPayments[0] = {
                 ...newPayments[0],
-                amount: Math.min(totalAmount, newPayments[0].amount + paymentToRemove.amount),
+                amount: Math.min(totalAmount, newAmount),
             };
         }
 
@@ -100,17 +100,15 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
     };
 
     const updatePaymentAmount = (id: string, amount: number) => {
-        // Calculate the maximum allowed for this specific payment
-        // (remaining balance + this payment's current amount = max this payment can be)
         const otherPaymentsTotal = payments
             .filter((p) => p.id !== id)
             .reduce((sum, p) => sum + p.amount, 0);
-        const maxForThisPayment = totalAmount - otherPaymentsTotal;
-        
+        const maxForThisPayment = Math.round((totalAmount - otherPaymentsTotal) * 100) / 100;
+
         setPayments(
             payments.map((p) =>
                 p.id === id
-                    ? { ...p, amount: Math.max(0, Math.min(maxForThisPayment, amount)) }
+                    ? { ...p, amount: Math.round(Math.max(0, Math.min(maxForThisPayment, amount)) * 100) / 100 }
                     : p
             )
         );

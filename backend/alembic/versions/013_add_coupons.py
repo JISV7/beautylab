@@ -110,16 +110,6 @@ def upgrade() -> None:
     op.execute("COMMENT ON COLUMN coupons.max_uses IS 'Maximum total uses (NULL = unlimited)';")
     op.execute("COMMENT ON TABLE coupon_usages IS 'Track which users have used which coupons';")
 
-    # Insert sample coupons
-    op.execute(
-        "INSERT INTO coupons "
-        "(code, discount_type, discount_value, min_purchase, max_uses, expires_at) "
-        "VALUES "
-        "('WELCOME10', 'percentage', 10.00, 50.00, 100, NOW() + INTERVAL '30 days'), "
-        "('SAVE20', 'fixed', 20.00, 100.00, 50, NOW() + INTERVAL '60 days'), "
-        "('HALFOFF', 'percentage', 50.00, 200.00, 10, NOW() + INTERVAL '14 days')"
-    )
-
 
 def downgrade() -> None:
     op.execute("DROP TRIGGER IF EXISTS update_coupons_updated_at ON coupons")

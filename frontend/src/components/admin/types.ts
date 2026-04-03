@@ -213,3 +213,37 @@ export interface CoursePreviewCardProps {
     categoryName: string;
     levelName: string;
 }
+
+// ==================== Coupon Management Types ====================
+
+export interface Coupon {
+    id: string;
+    code: string;
+    discount_type: 'percentage' | 'fixed';
+    discount_value: number;
+    min_purchase: number;
+    max_uses: number | null;
+    used_count: number;
+    expires_at: string | null;
+    is_active: boolean;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface CouponFormData {
+    code: string;
+    discount_type: 'percentage' | 'fixed';
+    discount_value: string;
+    min_purchase: string;
+    max_uses: string;
+    expires_at: string;
+    is_active: boolean;
+}
+
+export interface CouponValidateResponse {
+    valid: boolean;
+    coupon: Coupon | null;
+    discount_amount: string;
+    message: string;
+    final_total: string | null;
+}

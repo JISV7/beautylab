@@ -214,13 +214,13 @@ async def checkout(
         from app.services.product_service import ProductService
 
         product_service = ProductService(db)
-        product = await product_service.get_product_by_id(item.product_id)
+        product = await product_service.get_product_by_id(item["product_id"])
 
         if product:
             line = InvoiceLineCreate(
                 product_id=product.id,
                 description=f"{product.name} ({product.sku})",
-                quantity=item.quantity,
+                quantity=item["quantity"],
                 unit_price=product.price,
                 tax_rate=product.tax_rate,
                 is_exempt=(product.tax_type == "exento"),
@@ -259,25 +259,26 @@ async def checkout(
                 invoice_id=invoice.id,
             )
 
-    # Create license purchase request
-    license_items = []
+    # Generate licenses - link to invoice lines
+    licenses = []
+    line_map = {line.product_id: line.id for line in lines}
     for item in cart_items:
-        license_item = LicensePurchaseItem(
-            product_id=item.product_id,
-            quantity=item.quantity,
-            license_type=request.license_type,
+        item_license_request = LicensePurchaseRequest(
+            items=[
+                LicensePurchaseItem(
+                    product_id=item["product_id"],
+                    quantity=item["quantity"],
+                    license_type=request.license_type,
+                )
+            ]
         )
-        license_items.append(license_item)
-
-    license_request = LicensePurchaseRequest(
-        items=license_items,
-    )
-
-    # Generate licenses
-    licenses = await license_service.purchase_licenses(
-        request=license_request,
-        purchased_by_user_id=current_user.id,
-    )
+        invoice_line_id = line_map.get(item["product_id"])
+        item_licenses = await license_service.purchase_licenses(
+            request=item_license_request,
+            purchased_by_user_id=current_user.id,
+            invoice_line_id=invoice_line_id,
+        )
+        licenses.extend(item_licenses)
 
     # Clear cart
     await cart_service.clear_cart(user_id=current_user.id)

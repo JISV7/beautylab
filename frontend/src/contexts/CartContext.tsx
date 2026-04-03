@@ -83,6 +83,13 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         refreshCart();
     }, [refreshCart]);
 
+    // Refresh cart after login
+    useEffect(() => {
+        const handleRefresh = () => refreshCart();
+        window.addEventListener('cart:refresh', handleRefresh);
+        return () => window.removeEventListener('cart:refresh', handleRefresh);
+    }, [refreshCart]);
+
     const addToCart = async (productId: string, quantity: number) => {
         try {
             await api.post('/cart/items', { product_id: productId, quantity });

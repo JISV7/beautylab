@@ -416,7 +416,7 @@ export const CartPage: React.FC<CartPageProps> = ({ onBack }) => {
 
                     {/* Payment Methods */}
                     <SplitPaymentManager
-                        totalAmount={parseFloat(cart.total)}
+                        totalAmount={Math.round(parseFloat(cart.total) * 100) / 100}
                         onPaymentsChange={handlePaymentsChange}
                         onValid={setIsPaymentValid}
                     />

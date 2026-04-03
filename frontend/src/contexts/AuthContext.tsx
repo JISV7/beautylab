@@ -190,6 +190,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             localStorage.setItem('currentPage', 'dashboard');
 
             await fetchUser(data.access_token);
+
+            // Notify cart to refresh after login
+            window.dispatchEvent(new CustomEvent('cart:refresh'));
         } catch (error: any) {
             if (axios.isAxiosError(error) && error.response) {
                 throw new Error(error.response.data.detail || 'Login failed');

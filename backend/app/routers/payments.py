@@ -158,11 +158,17 @@ async def process_split_payment(
 
     # Get invoice to calculate remaining
     from app.services.invoice_service import InvoiceService
+    from app.services.license_service import LicenseService
 
     invoice_service = InvoiceService(db)
     invoice = await invoice_service.get_invoice_by_id(request.invoice_id)
 
     remaining_balance = invoice.total - total_paid if invoice else Decimal("0.00")
+
+    # Activate licenses if invoice is fully paid
+    if remaining_balance <= 0 and invoice:
+        license_service = LicenseService(db)
+        await license_service.activate_licenses_for_invoice(request.invoice_id)
 
     return SplitPaymentResponse(
         payments=[PaymentResponse.model_validate(p) for p in payments],

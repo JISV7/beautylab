@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { DashboardLayout } from '../components/layout/DashboardLayout';
 import { ExplorePage } from './ExplorePage';
 import { CourseDetailsPage } from './CourseDetailsPage';
+import { CartPage } from '../components/cart/CartPage';
 import InvoicesPage from './InvoicesPage';
 import MyCoursesPage from './MyCoursesPage';
 
@@ -65,6 +66,8 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigateToAdmin, onLogou
                 <MyCoursesPage onViewCourse={handleViewCourse} />
             ) : activeItem === 'invoices' ? (
                 <InvoicesPage />
+            ) : activeItem === 'cart' ? (
+                <CartPage onBack={() => handleNavigate('explore')} />
             ) : (
                 <div className="mx-auto p-6">
                     <h1 className="text-h1-size text-h1-color text-h1-font text-h1-weight">Hello World</h1>

@@ -8,6 +8,7 @@ import {
     type PaymentBreakdown,
 } from '../components/payment';
 import { ArrowLeft, X, ShoppingCart, Loader2 } from 'lucide-react';
+import { useCart } from '../contexts/CartContext';
 
 const API_URL = 'http://localhost:8000';
 
@@ -25,6 +26,7 @@ interface CourseDetails {
     duration_hours: number | null;
     level_name: string | null;
     category_name: string | null;
+    product_id: string | null;
     product_name: string | null;
     product_sku: string | null;
     product_price: string | null;
@@ -63,11 +65,13 @@ interface ReceiptData {
 type PaymentStep = 'idle' | 'payment_details' | 'processing' | 'confirmation';
 
 export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, onBack }) => {
+    const { addToCart, isInCart, getQuantityInCart } = useCart();
     const [course, setCourse] = useState<CourseDetails | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [giftModalOpen, setGiftModalOpen] = useState(false);
     const [selectedLicenseId, setSelectedLicenseId] = useState<string | null>(null);
+    const [addToCartMessage, setAddToCartMessage] = useState<string | null>(null);
 
     // Payment state - starts as 'idle' until user clicks Buy
     const [paymentStep, setPaymentStep] = useState<PaymentStep>('idle');
@@ -105,6 +109,26 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
     const handleBuy = () => {
         setPaymentStep('payment_details');
         setPurchaseError(null);
+    };
+
+    const handleAddToCart = async (quantity: number) => {
+        if (!course || !course.product_id) return;
+        
+        setAddToCartMessage(null);
+        
+        try {
+            await addToCart(course.product_id, quantity);
+            setAddToCartMessage(`Added ${quantity} x "${course.title}" to cart!`);
+            setTimeout(() => setAddToCartMessage(null), 3000);
+        } catch (error: any) {
+            const detail = error?.response?.data?.detail;
+            const message = typeof detail === 'string'
+                ? detail
+                : Array.isArray(detail)
+                    ? detail.map((e: any) => e.msg).join(', ')
+                    : 'Failed to add to cart';
+            setAddToCartMessage(message);
+        }
     };
 
     const handlePaymentsChange = (payments: SplitPaymentEntry[]) => {
@@ -527,7 +551,23 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
                 price={course.product_price}
                 video_url={course.video_url}
                 onBuy={handleBuy}
+                onAddToCart={handleAddToCart}
+                isInCart={course.product_id ? isInCart(course.product_id) : false}
+                cartQuantity={course.product_id ? getQuantityInCart(course.product_id) : 0}
             />
+
+            {/* Add to Cart Message */}
+            {addToCartMessage && (
+                <div className={`mb-6 p-4 rounded-xl border ${
+                    addToCartMessage.includes('Failed') 
+                        ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800'
+                        : 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800'
+                }`}>
+                    <p className={addToCartMessage.includes('Failed') ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'}>
+                        {addToCartMessage}
+                    </p>
+                </div>
+            )}
 
             {/* Licenses Section */}
             <div className="mb-8">

@@ -176,6 +176,11 @@ class CartService:
                 line_subtotal = product.price * item.quantity
                 subtotal += line_subtotal
 
+                # Attach product info to cart item for response
+                item.product_name = product.name
+                item.product_price = product.price
+                item.product_sku = product.sku
+
                 if product.tax_type != "exento":
                     tax_amount = line_subtotal * (product.tax_rate / Decimal("100"))
                     tax_total += tax_amount

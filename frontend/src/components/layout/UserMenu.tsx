@@ -77,12 +77,12 @@ export const UserMenu: React.FC<UserMenuProps> = ({
             </button>
 
             {isMenuOpen && (
-                <div className="absolute right-0 mt-2 w-64 palette-surface palette-border border rounded-xl shadow-lg py-1 z-50">
+                <div className="absolute right-0 mt-2 w-fit palette-surface palette-border border rounded-xl shadow-lg py-1 z-50">
                     <div className="px-4 py-2 border-b palette-border">
-                        <p className="text-p-font text-p-size text-p-color font-semibold break-all">
+                        <p className="text-p-font text-p-size text-p-color font-semibold whitespace-nowrap">
                             {userName}
                         </p>
-                        <p className="text-p-font text-p-size text-p-color break-all opacity-75">
+                        <p className="text-p-font text-p-size text-p-color whitespace-nowrap opacity-75">
                             {user?.email}
                         </p>
                     </div>

@@ -3,6 +3,7 @@ import { Menu, Search, Bell, Sun, Moon, Eye, Code2 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { UserMenu } from './UserMenu';
+import { CartIcon } from '../cart/CartIcon';
 
 interface DashboardHeaderProps {
     onNavigate?: (page: string) => void;
@@ -124,15 +125,18 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNavigate, on
                 </div>
 
                 {/* User Menu */}
-                <UserMenu
-                    user={user}
-                    onNavigate={onNavigate}
-                    onNavigateToAdmin={onNavigateToAdmin}
-                    onNavigateToDashboard={onNavigateToHome}
-                    onNavigateToHome={onNavigateToHome}
-                    onLogout={handleLogout}
-                    isOnHome={false}
-                />
+                <div className="flex items-center gap-2">
+                    <CartIcon onClick={() => onNavigate?.('cart')} />
+                    <UserMenu
+                        user={user}
+                        onNavigate={onNavigate}
+                        onNavigateToAdmin={onNavigateToAdmin}
+                        onNavigateToDashboard={onNavigateToHome}
+                        onNavigateToHome={onNavigateToHome}
+                        onLogout={handleLogout}
+                        isOnHome={false}
+                    />
+                </div>
             </div>
         </header>
     );

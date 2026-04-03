@@ -1,5 +1,5 @@
-import React from 'react';
-import { Clock, PlayCircle, ExternalLink } from 'lucide-react';
+import React, { useState } from 'react';
+import { Clock, PlayCircle, ExternalLink, Plus, Minus, ShoppingCart } from 'lucide-react';
 
 export interface CourseHeroProps {
     title: string;
@@ -13,6 +13,9 @@ export interface CourseHeroProps {
     price: string | null;
     video_url: string | null;
     onBuy?: () => void;
+    onAddToCart?: (quantity: number) => void;
+    isInCart?: boolean;
+    cartQuantity?: number;
 }
 
 export const CourseHero: React.FC<CourseHeroProps> = ({
@@ -27,7 +30,12 @@ export const CourseHero: React.FC<CourseHeroProps> = ({
     price,
     video_url,
     onBuy,
+    onAddToCart,
+    isInCart = false,
+    cartQuantity = 0,
 }) => {
+    const [quantity, setQuantity] = useState(1);
+
     const formatPrice = (priceStr: string | null) => {
         if (!priceStr) return 'Bs. 0,00';
         const numericPrice = parseFloat(priceStr);
@@ -106,7 +114,7 @@ export const CourseHero: React.FC<CourseHeroProps> = ({
                     </a>
                 )}
 
-                {/* Price and Buy Button */}
+                {/* Price and Actions */}
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-6 border-t border-[var(--palette-border)]">
                     <div className="space-y-2">
                         {/* Product Name */}
@@ -141,12 +149,64 @@ export const CourseHero: React.FC<CourseHeroProps> = ({
                             </p>
                         </div>
                     </div>
-                    <button
-                        onClick={onBuy}
-                        className="theme-button theme-button-primary w-full sm:w-auto"
-                    >
-                        Buy Now
-                    </button>
+                    <div className="flex flex-col gap-3 w-full sm:w-auto">
+                        {/* Quantity Selector */}
+                        {onAddToCart && (
+                            <div className="flex items-center gap-2">
+                                <span className="text-sm font-semibold text-p-color opacity-75">Qty:</span>
+                                <button
+                                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                                    className="p-1.5 hover:bg-[var(--palette-border)] rounded transition-colors"
+                                >
+                                    <Minus className="w-4 h-4" />
+                                </button>
+                                <input
+                                    type="number"
+                                    min={1}
+                                    max={999}
+                                    value={quantity}
+                                    onChange={(e) => {
+                                        const val = parseInt(e.target.value, 10);
+                                        if (!isNaN(val) && val >= 1) setQuantity(Math.min(999, val));
+                                    }}
+                                    onBlur={() => {
+                                        if (quantity < 1) setQuantity(1);
+                                    }}
+                                    className="w-16 text-center font-bold text-p-color theme-input !py-1 !px-2 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                />
+                                <button
+                                    onClick={() => setQuantity(Math.min(999, quantity + 1))}
+                                    className="p-1.5 hover:bg-[var(--palette-border)] rounded transition-colors"
+                                >
+                                    <Plus className="w-4 h-4" />
+                                </button>
+                            </div>
+                        )}
+                        {/* Action Buttons */}
+                        <div className="flex gap-2">
+                            {onAddToCart && (
+                                <button
+                                    onClick={() => onAddToCart(quantity)}
+                                    className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-bold transition-colors ${
+                                        isInCart
+                                            ? 'bg-green-500/10 text-green-600 border border-green-500/20'
+                                            : 'bg-[var(--palette-secondary)] text-white hover:opacity-90'
+                                    }`}
+                                >
+                                    <ShoppingCart className="w-4 h-4" />
+                                    {isInCart ? `In Cart (${cartQuantity})` : 'Add to Cart'}
+                                </button>
+                            )}
+                            {onBuy && (
+                                <button
+                                    onClick={onBuy}
+                                    className="flex-1 sm:flex-none theme-button theme-button-primary"
+                                >
+                                    Buy Now
+                                </button>
+                            )}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

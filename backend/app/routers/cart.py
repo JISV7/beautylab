@@ -7,7 +7,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.dependencies import CurrentUser
 from app.database import get_db
-from app.models.user import User
 from app.schemas.cart_item import (
     CartItemCreate,
     CartItemResponse,
@@ -27,7 +26,7 @@ router = APIRouter(prefix="/cart", tags=["Cart"])
 
 @router.get("/", response_model=CartResponse)
 async def get_cart(
-    current_user: User = Depends(CurrentUser),
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> CartResponse:
     """Get current user's shopping cart with totals."""
@@ -47,7 +46,7 @@ async def get_cart(
 @router.post("/items", response_model=CartItemResponse, status_code=status.HTTP_201_CREATED)
 async def add_to_cart(
     item_data: CartItemCreate,
-    current_user: User = Depends(CurrentUser),
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> CartItemResponse:
     """
@@ -85,7 +84,7 @@ async def add_to_cart(
 async def update_cart_item(
     item_id: UUID,
     item_data: CartItemUpdate,
-    current_user: User = Depends(CurrentUser),
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> CartItemResponse:
     """
@@ -117,7 +116,7 @@ async def update_cart_item(
 @router.delete("/items/{item_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def remove_from_cart(
     item_id: UUID,
-    current_user: User = Depends(CurrentUser),
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> None:
     """Remove item from cart."""
@@ -134,7 +133,7 @@ async def remove_from_cart(
 
 @router.delete("/", status_code=status.HTTP_204_NO_CONTENT)
 async def clear_cart(
-    current_user: User = Depends(CurrentUser),
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> None:
     """Clear all items from cart."""
@@ -145,7 +144,7 @@ async def clear_cart(
 @router.post("/checkout", response_model=CheckoutResponse)
 async def checkout(
     request: CheckoutRequest,
-    current_user: User = Depends(CurrentUser),
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> CheckoutResponse:
     """

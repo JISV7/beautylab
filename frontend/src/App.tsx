@@ -4,10 +4,12 @@ import { Dashboard } from './pages/Dashboard';
 import { AdminDashboard } from './pages/AdminDashboard';
 import { ExplorePage } from './pages/ExplorePage';
 import { CourseDetailsPage } from './pages/CourseDetailsPage';
+import { CartPage } from './components/cart/CartPage';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { AuthProvider } from './contexts/AuthContext';
+import { CartProvider } from './contexts/CartContext';
 
-type Page = 'home' | 'dashboard' | 'admin' | 'explore' | 'course-details';
+type Page = 'home' | 'dashboard' | 'admin' | 'explore' | 'course-details' | 'cart';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<Page>(() => {
@@ -68,22 +70,26 @@ function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        {currentPage === 'course-details' && selectedCourseId ? (
-          <CourseDetailsPage courseId={selectedCourseId} onBack={handleBackToExplore} />
-        ) : currentPage === 'explore' ? (
-          <ExplorePage onViewCourse={handleViewCourse} />
-        ) : currentPage === 'dashboard' ? (
-          <Dashboard onNavigateToAdmin={handleNavigateToAdmin} onLogout={handleLogout} />
-        ) : currentPage === 'admin' ? (
-          <AdminDashboard onNavigateToDashboard={handleNavigateToDashboard} onLogout={handleLogout} />
-        ) : (
-          <Home
-            onNavigateToDashboard={handleNavigateToDashboard}
-            onNavigateToAdmin={handleNavigateToAdmin}
-            onNavigateToHome={handleNavigateToHome}
-            onLogout={handleLogout}
-          />
-        )}
+        <CartProvider>
+          {currentPage === 'course-details' && selectedCourseId ? (
+            <CourseDetailsPage courseId={selectedCourseId} onBack={handleBackToExplore} />
+          ) : currentPage === 'cart' ? (
+            <CartPage />
+          ) : currentPage === 'explore' ? (
+            <ExplorePage onViewCourse={handleViewCourse} />
+          ) : currentPage === 'dashboard' ? (
+            <Dashboard onNavigateToAdmin={handleNavigateToAdmin} onLogout={handleLogout} />
+          ) : currentPage === 'admin' ? (
+            <AdminDashboard onNavigateToDashboard={handleNavigateToDashboard} onLogout={handleLogout} />
+          ) : (
+            <Home
+              onNavigateToDashboard={handleNavigateToDashboard}
+              onNavigateToAdmin={handleNavigateToAdmin}
+              onNavigateToHome={handleNavigateToHome}
+              onLogout={handleLogout}
+            />
+          )}
+        </CartProvider>
       </AuthProvider>
     </ThemeProvider>
   );

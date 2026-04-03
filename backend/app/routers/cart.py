@@ -3,12 +3,10 @@
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.dependencies import CurrentUser
 from app.database import get_db
-from app.models.invoice import InvoiceLine
 from app.schemas.cart_item import (
     CartItemCreate,
     CartItemResponse,
@@ -18,10 +16,8 @@ from app.schemas.cart_item import (
     CheckoutResponse,
 )
 from app.schemas.invoice import InvoiceCreate, InvoiceLineCreate
-from app.schemas.license import LicensePurchaseItem, LicensePurchaseRequest
 from app.services.cart_service import CartItemNotFoundError, CartService, ProductNotFoundError
 from app.services.invoice_service import InvoiceService
-from app.services.license_service import LicenseService
 
 router = APIRouter(prefix="/cart", tags=["Cart"])
 
@@ -172,7 +168,6 @@ async def checkout(
 
     cart_service = CartService(db)
     invoice_service = InvoiceService(db)
-    license_service = LicenseService(db)
 
     # Get cart items
     summary = await cart_service.get_cart_summary(user_id=current_user.id)
@@ -252,38 +247,14 @@ async def checkout(
     await db.commit()
     await db.refresh(invoice)
 
-    # DO NOT apply coupons here — wait until payment is fully completed
-    # Coupons are applied in /payments/split when remaining_balance <= 0
-
-    # Generate licenses - link to invoice lines
-    licenses = []
-    # Fetch actual invoice lines from DB to get their IDs
-    line_result = await db.execute(select(InvoiceLine).where(InvoiceLine.invoice_id == invoice.id))
-    invoice_lines = line_result.scalars().all()
-    line_map = {line.product_id: line.id for line in invoice_lines}
-    for item in cart_items:
-        item_license_request = LicensePurchaseRequest(
-            items=[
-                LicensePurchaseItem(
-                    product_id=item["product_id"],
-                    quantity=item["quantity"],
-                    license_type=request.license_type,
-                )
-            ]
-        )
-        invoice_line_id = line_map.get(item["product_id"])
-        item_licenses = await license_service.purchase_licenses(
-            request=item_license_request,
-            purchased_by_user_id=current_user.id,
-            invoice_line_id=invoice_line_id,
-        )
-        licenses.extend(item_licenses)
-
     # Clear cart
     await cart_service.clear_cart(user_id=current_user.id)
 
+    # DO NOT create licenses here — they are created after successful payment
+    # in /payments/split, so failed payments don't leave orphan licenses
+
     return CheckoutResponse(
         invoice_id=invoice.id,
-        licenses=[lic.license_code for lic in licenses],
+        licenses=[],
         message="Invoice created. Complete payment to activate your licenses.",
     )

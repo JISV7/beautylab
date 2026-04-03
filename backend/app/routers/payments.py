@@ -22,6 +22,8 @@ from app.schemas.payment import (
     SplitPaymentRequest,
     SplitPaymentResponse,
 )
+from app.services.invoice_service import InvoiceService
+from app.services.license_service import LicenseService
 from app.services.payment_service import (
     PaymentAmountMismatchError,
     PaymentMethodNotFoundError,
@@ -136,11 +138,47 @@ async def process_split_payment(
     ```
 
     **Validation:**
-    - Sum of all payments MUST equal invoice total
-    - At least one payment required
+    - Sum of all payments MUST equal the effective invoice total (after discounts)
+    - Partial payments are NOT accepted — full payment required
     - Card numbers and CVV are hashed for security
     """
     payment_service = PaymentService(db)
+    invoice_service = InvoiceService(db)
+    invoice = await invoice_service.get_invoice_by_id(request.invoice_id)
+
+    if not invoice:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Invoice {request.invoice_id} not found",
+        )
+
+    # Calculate effective total — discounts reduce what the user actually owes
+    from app.models.invoice import InvoiceAdjustment
+
+    adj_result = await db.execute(
+        select(InvoiceAdjustment).where(
+            InvoiceAdjustment.invoice_id == invoice.id,
+            InvoiceAdjustment.adjustment_type == "discount",
+        )
+    )
+    adjustments = adj_result.scalars().all()
+    total_discount = Decimal("0.00")
+    for adj in adjustments:
+        total_discount += adj.amount
+
+    effective_total = max(Decimal("0.00"), invoice.total - total_discount)
+    total_paid = sum(p.amount for p in request.payments)
+
+    # Full payment required — reject if amounts don't match
+    if total_paid != effective_total:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=(
+                f"Payment amount ({total_paid}) does not match the effective "
+                f"invoice total ({effective_total}). "
+                f"Full payment is required."
+            ),
+        )
 
     try:
         payments = await payment_service.process_split_payment(request=request)
@@ -155,118 +193,96 @@ async def process_split_payment(
             detail=str(e),
         ) from e
 
-    # Calculate totals
-    total_paid = sum(p.amount for p in payments)
+    # Full payment confirmed — issue invoice, create licenses, consume coupons
+    invoice.status = "issued"
 
-    # Get invoice to calculate remaining
-    from app.services.invoice_service import InvoiceService
-    from app.services.license_service import LicenseService
+    # Create licenses from invoice lines
+    from app.models.invoice import InvoiceLine
+    from app.schemas.license import LicensePurchaseItem, LicensePurchaseRequest
 
-    invoice_service = InvoiceService(db)
-    invoice = await invoice_service.get_invoice_by_id(request.invoice_id)
-
-    # Calculate effective remaining — discounts reduce what the user actually owes
-    if invoice:
-        from app.models.invoice import InvoiceAdjustment
-
-        adj_result = await db.execute(
-            select(InvoiceAdjustment).where(
-                InvoiceAdjustment.invoice_id == invoice.id,
-                InvoiceAdjustment.adjustment_type == "discount",
-            )
-        )
-        adjustments = adj_result.scalars().all()
-        total_discount = Decimal("0.00")
-        for adj in adjustments:
-            print(f"[DEBUG] Found discount adjustment: {adj.description} = {adj.amount}")
-            total_discount += adj.amount
-        print(f"[DEBUG] Invoice total: {invoice.total}, Total discount: {total_discount}, Total paid: {total_paid}")
-        effective_total = max(Decimal("0.00"), invoice.total - total_discount)
-        remaining_balance = max(Decimal("0.00"), effective_total - total_paid)
-        print(f"[DEBUG] Effective total: {effective_total}, Remaining: {remaining_balance}")
-    else:
-        remaining_balance = Decimal("0.00")
-
-    # Finalize invoice when fully paid: draft → issued + coupons + email
-    if remaining_balance <= 0 and invoice:
-        # Change invoice status from draft to issued
-        invoice.status = "issued"
-
-        # Activate licenses
-        license_service = LicenseService(db)
-        await license_service.activate_licenses_for_invoice(request.invoice_id)
-
-        # Apply coupons — mark usage and increment counter
-        from app.models.invoice import InvoiceAdjustment
-        from app.services.coupon_service import CouponService
-
-        coupon_service = CouponService(db)
-        adj_result = await db.execute(
-            select(InvoiceAdjustment).where(
-                InvoiceAdjustment.invoice_id == request.invoice_id,
-                InvoiceAdjustment.adjustment_type == "discount",
-            )
-        )
-        adjustments = adj_result.scalars().all()
-        for adj in adjustments:
-            if adj.description and adj.description.startswith("Coupon: "):
-                code = adj.description.replace("Coupon: ", "").strip()
-                coupon = await coupon_service.get_coupon_by_code(code)
-                if coupon:
-                    usage_check = await db.execute(
-                        select(CouponUsage).where(
-                            CouponUsage.coupon_id == coupon.id,
-                            CouponUsage.user_id == current_user.id,
-                            CouponUsage.invoice_id == request.invoice_id,
-                        )
-                    )
-                    if not usage_check.scalar_one_or_none():
-                        coupon.used_count += 1
-                        usage = CouponUsage(
-                            coupon_id=coupon.id,
-                            user_id=current_user.id,
-                            invoice_id=request.invoice_id,
-                        )
-                        db.add(usage)
-
-        # Send confirmation email — only on successful payment
-        try:
-            from app.services.email_service import get_email_service
-            from app.services.invoice_service import InvoiceService
-
-            email_service = get_email_service()
-            invoice_service = InvoiceService(db)
-            receipt_data = await invoice_service.get_invoice_receipt_data(request.invoice_id)
-
-            if receipt_data:
-                user_email = current_user.email
-                invoice_items = [
-                    {
-                        "description": line.description,
-                        "quantity": int(line.quantity),
-                        "unit_price": str(line.unit_price),
-                        "line_total": str(line.line_total),
-                    }
-                    for line in invoice.lines
-                ]
-                email_service.send_invoice_email(
-                    to_email=user_email,
-                    invoice_number=invoice.invoice_number,
-                    total=str(invoice.total),
-                    issue_date=invoice.issue_date.isoformat(),
-                    items=invoice_items,
-                    download_url=f"https://beautylab.com/invoices/{invoice.id}/download",
+    license_service = LicenseService(db)
+    line_result = await db.execute(select(InvoiceLine).where(InvoiceLine.invoice_id == invoice.id))
+    invoice_lines = line_result.scalars().all()
+    for il in invoice_lines:
+        item_license_request = LicensePurchaseRequest(
+            items=[
+                LicensePurchaseItem(
+                    product_id=il.product_id,
+                    quantity=int(il.quantity),
+                    license_type="gift",
                 )
-        except Exception as e:
-            print(f"Failed to send invoice email: {e}")
+            ]
+        )
+        await license_service.purchase_licenses(
+            request=item_license_request,
+            purchased_by_user_id=current_user.id,
+            invoice_line_id=il.id,
+        )
 
-        await db.commit()
+    # Activate all licenses for this invoice
+    await license_service.activate_licenses_for_invoice(request.invoice_id)
+
+    # Apply coupons — mark usage and increment counter
+    from app.services.coupon_service import CouponService
+
+    coupon_service = CouponService(db)
+    for adj in adjustments:
+        if adj.description and adj.description.startswith("Coupon: "):
+            code = adj.description.replace("Coupon: ", "").strip()
+            coupon = await coupon_service.get_coupon_by_code(code)
+            if coupon:
+                usage_check = await db.execute(
+                    select(CouponUsage).where(
+                        CouponUsage.coupon_id == coupon.id,
+                        CouponUsage.user_id == current_user.id,
+                        CouponUsage.invoice_id == request.invoice_id,
+                    )
+                )
+                if not usage_check.scalar_one_or_none():
+                    coupon.used_count += 1
+                    usage = CouponUsage(
+                        coupon_id=coupon.id,
+                        user_id=current_user.id,
+                        invoice_id=request.invoice_id,
+                    )
+                    db.add(usage)
+
+    # Send confirmation email
+    try:
+        from app.services.email_service import get_email_service
+
+        email_service = get_email_service()
+        receipt_data = await invoice_service.get_invoice_receipt_data(request.invoice_id)
+
+        if receipt_data:
+            user_email = current_user.email
+            invoice_items = [
+                {
+                    "description": line.description,
+                    "quantity": int(line.quantity),
+                    "unit_price": str(line.unit_price),
+                    "line_total": str(line.line_total),
+                }
+                for line in invoice.lines
+            ]
+            email_service.send_invoice_email(
+                to_email=user_email,
+                invoice_number=invoice.invoice_number,
+                total=str(invoice.total),
+                issue_date=invoice.issue_date.isoformat(),
+                items=invoice_items,
+                download_url=f"https://beautylab.com/invoices/{invoice.id}/download",
+            )
+    except Exception as e:
+        print(f"Failed to send invoice email: {e}")
+
+    await db.commit()
 
     return SplitPaymentResponse(
         payments=[PaymentResponse.model_validate(p) for p in payments],
         total_paid=total_paid,
-        remaining_balance=remaining_balance,
-        is_fully_paid=remaining_balance <= 0,
+        remaining_balance=Decimal("0.00"),
+        is_fully_paid=True,
     )
 
 

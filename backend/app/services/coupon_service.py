@@ -1,6 +1,6 @@
 """Coupon service for discount code management."""
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from decimal import Decimal
 from uuid import UUID
 
@@ -93,7 +93,7 @@ class CouponService:
             raise CouponInvalidError("Coupon is no longer active")
 
         # Check expiration
-        if coupon.expires_at and coupon.expires_at < datetime.now(timezone.utc):
+        if coupon.expires_at and coupon.expires_at < datetime.now(UTC):
             raise CouponInvalidError("Coupon has expired")
 
         # Check max uses
@@ -135,6 +135,10 @@ class CouponService:
         """
         Validate multiple coupon codes for combined discount.
 
+        Each coupon discount is calculated against the ORIGINAL cart total
+        (not a running total), matching the frontend validation behavior.
+        Percentage discounts are evaluated first to maximize user savings.
+
         Args:
             codes: List of coupon codes
             cart_total: Cart subtotal before discounts
@@ -146,11 +150,24 @@ class CouponService:
         """
         valid_coupons = []
         errors = []
-        running_total = cart_total
 
+        # Sort: percentage first, then fixed — maximizes user discount
+        sorted_codes = []
+        fixed_codes = []
         for code in codes:
             try:
-                request = CouponValidateRequest(code=code, cart_total=running_total)
+                coupon = await self.get_coupon_by_code(code.upper())
+                if coupon and coupon.discount_type == "percentage":
+                    sorted_codes.append(code)
+                else:
+                    fixed_codes.append(code)
+            except Exception:
+                fixed_codes.append(code)
+        sorted_codes.extend(fixed_codes)
+
+        for code in sorted_codes:
+            try:
+                request = CouponValidateRequest(code=code, cart_total=cart_total)
                 result = await self.validate_coupon(request=request, user_id=user_id)
                 valid_coupons.append(
                     {
@@ -159,7 +176,6 @@ class CouponService:
                         "discount_amount": result["discount_amount"],
                     }
                 )
-                running_total -= result["discount_amount"]
             except (
                 CouponNotFoundError,
                 CouponInvalidError,
@@ -169,11 +185,15 @@ class CouponService:
             ) as e:
                 errors.append({"code": code.upper(), "message": str(e)})
 
-        total_discount = cart_total - running_total
+        total_discount = sum(vc["discount_amount"] for vc in valid_coupons)
+        # Cap discount at cart total
+        total_discount = min(total_discount, cart_total)
+        final_total = cart_total - total_discount
+
         return {
             "valid_coupons": valid_coupons,
             "total_discount": total_discount,
-            "final_total": running_total,
+            "final_total": final_total,
             "errors": errors,
         }
 

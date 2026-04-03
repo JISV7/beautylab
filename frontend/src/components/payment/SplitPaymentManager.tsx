@@ -35,15 +35,12 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
     const totalAllocated = Math.round(payments.reduce((sum, p) => sum + p.amount, 0) * 100) / 100;
     const remaining = Math.round((totalAmount - totalAllocated) * 100) / 100;
     const isOverAllocated = remaining < -0.001;
-    // Allow partial payments - any amount > 0 is valid
-    const hasAnyPayment = totalAllocated > 0;
     const isFullyAllocated = Math.abs(remaining) < 0.001;
 
-    // Notify parent of validity changes
+    // Only valid when payment matches the total exactly — no partial payments
     React.useEffect(() => {
-        // Valid if: has some payment AND not over-allocated
-        onValid?.(hasAnyPayment && !isOverAllocated);
-    }, [hasAnyPayment, isOverAllocated, onValid]);
+        onValid?.(isFullyAllocated);
+    }, [isFullyAllocated, onValid]);
 
     // Notify parent of payment changes
     React.useEffect(() => {
@@ -180,17 +177,16 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
                     </div>
                 )}
 
-                {!isFullyAllocated && !isOverAllocated && hasAnyPayment && remaining > 0.001 && (
+                {!isFullyAllocated && !isOverAllocated && totalAllocated > 0 && remaining > 0.001 && (
                     <div className="mt-3 flex items-center gap-2 text-amber-500 text-sm">
                         <AlertCircle size={16} />
                         <span>
-                            Paying {formatAmount(totalAllocated)} now.{' '}
-                            <strong>Remaining: {formatAmount(remaining)}</strong> - Complete payment later to activate license
+                            {formatAmount(remaining)} remaining — full payment required
                         </span>
                     </div>
                 )}
 
-                {!hasAnyPayment && !isOverAllocated && (
+                {totalAllocated <= 0 && !isOverAllocated && (
                     <div className="mt-3 flex items-center gap-2 text-amber-500 text-sm">
                         <AlertCircle size={16} />
                         <span>Enter an amount to allocate</span>
@@ -302,7 +298,7 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
                 <p className="text-p-font text-p-size text-p-color text-sm">
                     💡 <strong>Tip:</strong> You can split your payment across multiple methods.
                     Just add another payment method and allocate the desired amount to each.
-                    The total must equal the course price.
+                    The total must equal the course price exactly.
                 </p>
             </div>
         </div>

@@ -163,32 +163,62 @@ class CartService:
         Returns:
             dict with items, total_items, subtotal, tax_total, total
         """
-        items = await self.get_cart_items(user_id)
+        # Single query with JOIN — no N+1
+        result = await self.db.execute(
+            select(CartItem, Product)
+            .outerjoin(Product, CartItem.product_id == Product.id)
+            .where(CartItem.user_id == user_id)
+        )
+        rows = result.all()
 
         total_items = 0
         subtotal = Decimal("0.00")
         tax_total = Decimal("0.00")
+        enriched_items = []
 
-        for item in items:
-            product = await self._get_product_by_id(item.product_id)
+        for item, product in rows:
             if product:
                 total_items += item.quantity
                 line_subtotal = product.price * item.quantity
                 subtotal += line_subtotal
 
-                # Attach product info to cart item for response
-                item.product_name = product.name
-                item.product_price = product.price
-                item.product_sku = product.sku
-
                 if product.tax_type != "exento":
                     tax_amount = line_subtotal * (product.tax_rate / Decimal("100"))
                     tax_total += tax_amount
 
+                enriched_items.append(
+                    {
+                        "id": item.id,
+                        "user_id": item.user_id,
+                        "product_id": item.product_id,
+                        "quantity": item.quantity,
+                        "created_at": item.created_at,
+                        "updated_at": item.updated_at,
+                        "product_name": product.name,
+                        "product_price": product.price,
+                        "product_sku": product.sku,
+                    }
+                )
+            else:
+                # Product deleted but cart item still exists
+                enriched_items.append(
+                    {
+                        "id": item.id,
+                        "user_id": item.user_id,
+                        "product_id": item.product_id,
+                        "quantity": item.quantity,
+                        "created_at": item.created_at,
+                        "updated_at": item.updated_at,
+                        "product_name": None,
+                        "product_price": None,
+                        "product_sku": None,
+                    }
+                )
+
         total = subtotal + tax_total
 
         return {
-            "items": items,
+            "items": enriched_items,
             "total_items": total_items,
             "subtotal": subtotal,
             "tax_total": tax_total,

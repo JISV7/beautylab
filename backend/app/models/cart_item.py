@@ -1,6 +1,5 @@
 """Cart Item model."""
 
-from decimal import Decimal
 from typing import TYPE_CHECKING
 from uuid import UUID
 
@@ -40,11 +39,6 @@ class CartItem(Base, TimestampMixin):
     # Relationships
     user: Mapped["User"] = relationship("User", back_populates="cart_items")
     product: Mapped["Product"] = relationship("Product", back_populates="cart_items")
-
-    # Transient attributes (populated from product join, not stored in DB)
-    product_name: str | None = None
-    product_price: Decimal | None = None
-    product_sku: str | None = None
 
     def __repr__(self) -> str:
         return f"<CartItem(id={self.id}, user={self.user_id}, product={self.product_id})>"

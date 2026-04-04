@@ -1,5 +1,6 @@
 import React from 'react';
 import { Clock } from 'lucide-react';
+import { ShareModal } from './ShareModal';
 
 export interface Course {
     id: string;
@@ -29,12 +30,12 @@ export const ExploreCard: React.FC<ExploreCardProps> = ({ course, onViewDetails 
     const formatPrice = (price: string) => {
         const numericPrice = parseFloat(price);
         if (isNaN(numericPrice)) return 'Bs. 0,00';
-        
+
         const formatted = numericPrice.toLocaleString('es-VE', {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
         });
-        
+
         return `Bs. ${formatted}`;
     };
 
@@ -42,13 +43,13 @@ export const ExploreCard: React.FC<ExploreCardProps> = ({ course, onViewDetails 
         const createdDate = new Date(course.created_at);
         const now = new Date();
         const minutesDiff = (now.getTime() - createdDate.getTime()) / (1000 * 60);
-        return minutesDiff < 3;  // Shows for 3 minutes
+        return minutesDiff < 3;
     };
 
     const isFeatured = course.published;
 
     return (
-        <div className="palette-surface palette-border border rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group min-h-[480px] flex flex-col">
+        <div className="palette-surface palette-border border rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden group flex flex-col">
             {/* Image Container */}
             <div className="h-48 w-full overflow-hidden relative">
                 {course.image_url ? (
@@ -61,40 +62,45 @@ export const ExploreCard: React.FC<ExploreCardProps> = ({ course, onViewDetails 
                         }}
                     />
                 ) : null}
-                
+
                 {/* Placeholder when no image */}
                 <div className={`w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-800 ${course.image_url ? 'hidden' : ''}`}>
                     <span className="text-p-color opacity-40 text-sm">No image</span>
                 </div>
 
-                {/* Badges */}
-                <div className="absolute top-4 left-4 flex gap-2">
+                {/* Top-left Badges */}
+                <div className="absolute top-3 left-3 flex gap-1.5">
                     {isNew() && (
-                        <span className="bg-emerald-500/90 text-white text-[10px] font-black px-2 py-1 rounded-full uppercase tracking-widest shadow-sm">
+                        <span className="bg-emerald-500/90 text-white text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm">
                             New
                         </span>
                     )}
                     {isFeatured && (
-                        <span className="bg-[var(--palette-primary)]/90 text-white text-[10px] font-black px-2 py-1 rounded-full uppercase tracking-widest shadow-sm">
+                        <span className="bg-[var(--palette-primary)]/90 text-white text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm">
                             Featured
                         </span>
                     )}
                 </div>
 
-                {/* Duration Badge */}
-                {course.duration_hours && (
-                    <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm palette-primary font-bold px-3 py-1 rounded-full text-sm flex items-center gap-1 shadow-sm">
-                        <Clock className="w-4 h-4" />
-                        <span>{course.duration_hours}h</span>
-                    </div>
-                )}
+                {/* Top-right: Share Icon */}
+                <div className="absolute top-3 right-3">
+                    <ShareModal
+                        courseTitle={course.title}
+                        courseId={course.id}
+                        description={course.description}
+                        imageUrl={course.image_url}
+                        durationHours={course.duration_hours}
+                        levelName={course.level_name}
+                        price={course.price}
+                    />
+                </div>
             </div>
 
             {/* Content */}
-            <div className="p-6 flex flex-col flex-grow">
+            <div className="p-4 flex flex-col flex-grow">
                 {/* Category */}
                 {course.category_name && (
-                    <div className="mb-3">
+                    <div className="mb-2">
                         <span className="text-[var(--palette-primary)] text-[10px] font-black uppercase tracking-widest">
                             {course.category_name}
                         </span>
@@ -102,28 +108,32 @@ export const ExploreCard: React.FC<ExploreCardProps> = ({ course, onViewDetails 
                 )}
 
                 {/* Title */}
-                <h3 className="text-h3-font text-h3-size text-h3-color mb-3 line-clamp-2 min-h-[3.2rem]">
+                <h3 className="text-h3-font text-h3-size text-h3-color mb-2 line-clamp-2 min-h-[2.8rem]">
                     {course.title}
                 </h3>
 
-                {/* Description */}
-                <p className="text-p-font text-p-size text-p-color mb-6 flex-grow line-clamp-2">
+                {/* Description - 2 lines max */}
+                <p className="text-p-font text-p-size text-p-color mb-4 flex-grow line-clamp-2 opacity-75 text-sm leading-relaxed">
                     {course.description || 'Discover this amazing course and expand your knowledge with our expert-led content.'}
                 </p>
 
-                {/* Course Meta - Level */}
-                {course.level_name && (
-                    <div className="flex items-center gap-4 mb-6 text-p-size">
-                        <div className="flex items-center gap-2">
-                            <span className="bg-[var(--palette-primary)]/10 text-[var(--palette-primary)] font-bold px-3 py-1 rounded-lg text-xs">
-                                {course.level_name}
-                            </span>
-                        </div>
-                    </div>
-                )}
+                {/* Meta Row: Level + Duration */}
+                <div className="flex items-center gap-2 mb-3">
+                    {course.level_name && (
+                        <span className="bg-[var(--palette-primary)]/10 text-[var(--palette-primary)] font-bold px-2.5 py-0.5 rounded-md text-[11px]">
+                            {course.level_name}
+                        </span>
+                    )}
+                    {course.duration_hours && (
+                        <span className="bg-[var(--palette-primary)]/10 text-[var(--palette-primary)] font-bold px-2.5 py-0.5 rounded-md text-[11px] flex items-center gap-1">
+                            <Clock className="w-3 h-3" />
+                            {course.duration_hours}h
+                        </span>
+                    )}
+                </div>
 
                 {/* Footer: Price & CTA */}
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center justify-between mb-3">
                     <div>
                         <p className="text-[10px] font-bold text-p-color opacity-40 uppercase tracking-wider">
                             Price

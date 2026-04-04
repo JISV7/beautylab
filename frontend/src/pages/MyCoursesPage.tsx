@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router';
 import axios from 'axios';
 import { Book, Key, Share2, CheckCircle, Clock, ChevronDown, Gift, KeyRound, AlertTriangle, X } from 'lucide-react';
 import { MyCoursesFilters, type Category } from '../components/user/MyCoursesFilters';
@@ -46,7 +47,8 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
-export default function MyCoursesPage({ onViewCourse }: { onViewCourse?: (courseId: string) => void }) {
+export default function MyCoursesPage() {
+    const navigate = useNavigate();
     const [courses, setCourses] = useState<UserCourse[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
     const [loading, setLoading] = useState(true);
@@ -65,8 +67,8 @@ export default function MyCoursesPage({ onViewCourse }: { onViewCourse?: (course
     const [includeChildren, setIncludeChildren] = useState(false);
 
     const toggleLicenses = (courseId: string) => {
-        setExpandedLicenses(prev => 
-            prev.includes(courseId) 
+        setExpandedLicenses(prev =>
+            prev.includes(courseId)
                 ? prev.filter(id => id !== courseId)
                 : [...prev, courseId]
         );
@@ -155,7 +157,7 @@ export default function MyCoursesPage({ onViewCourse }: { onViewCourse?: (course
     const filteredCourses = courses.filter((course) => {
         // Search filter
         const matchesSearch = course.course_title.toLowerCase().includes(searchQuery.toLowerCase());
-        
+
         // Category filter with includeChildren support
         const matchesCategory = (() => {
             if (!categoryFilter) return true;
@@ -171,7 +173,7 @@ export default function MyCoursesPage({ onViewCourse }: { onViewCourse?: (course
             }
             return course.category_id?.toString() === categoryFilter;
         })();
-        
+
         // Status filter
         const matchesStatus = (() => {
             if (statusFilter === 'all') return true;
@@ -184,7 +186,7 @@ export default function MyCoursesPage({ onViewCourse }: { onViewCourse?: (course
             }
             return true;
         })();
-        
+
         return matchesSearch && matchesCategory && matchesStatus;
     });
 
@@ -301,11 +303,10 @@ export default function MyCoursesPage({ onViewCourse }: { onViewCourse?: (course
                                                         Licenses ({course.licenses.length})
                                                     </span>
                                                 </div>
-                                                <ChevronDown className={`w-4 h-4 transition-transform ${
-                                                    expandedLicenses.includes(course.course_id) ? 'rotate-180' : ''
-                                                }`} />
+                                                <ChevronDown className={`w-4 h-4 transition-transform ${expandedLicenses.includes(course.course_id) ? 'rotate-180' : ''
+                                                    }`} />
                                             </button>
-                                            
+
                                             {/* Expanded Summary */}
                                             {expandedLicenses.includes(course.course_id) && (
                                                 <div className="mt-2 space-y-2">
@@ -347,7 +348,7 @@ export default function MyCoursesPage({ onViewCourse }: { onViewCourse?: (course
                                     <div className="flex gap-2 pt-4 border-t border-[var(--palette-border)]">
                                         <button
                                             className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg theme-button theme-button-primary text-sm"
-                                            onClick={() => onViewCourse?.(course.course_id)}
+                                            onClick={() => navigate(`/dashboard?tab=course-details&courseId=${course.course_id}`)}
                                         >
                                             <Book className="w-4 h-4" />
                                             View Course

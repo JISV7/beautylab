@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, useParams, useNavigate } from 'react-router';
 import { Home } from './pages/Home';
 import { Dashboard } from './pages/Dashboard';
 import { AdminDashboard } from './pages/AdminDashboard';
@@ -6,89 +6,142 @@ import { ExplorePage } from './pages/ExplorePage';
 import { CourseDetailsPage } from './pages/CourseDetailsPage';
 import { CartPage } from './components/cart/CartPage';
 import { ThemeProvider } from './contexts/ThemeContext';
-import { AuthProvider } from './contexts/AuthContext';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { CartProvider } from './contexts/CartContext';
 
-type Page = 'home' | 'dashboard' | 'admin' | 'explore' | 'course-details' | 'cart';
+// Protected route — redirects to home if not authenticated
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const { isAuthenticated, isLoading } = useAuth();
+  if (isLoading) return null;
+  if (!isAuthenticated) return <Navigate to="/" replace />;
+  return <>{children}</>;
+};
 
-function App() {
-  const [currentPage, setCurrentPage] = useState<Page>(() => {
-    const saved = localStorage.getItem('currentPage') as Page;
-    console.log('[App] Initial currentPage from localStorage:', saved);
-    return saved || 'home';
-  });
-  const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
+// Dashboard wrapper
+const DashboardRoute = () => {
+  const { logout: authLogout } = useAuth();
 
-  const handleNavigateToDashboard = () => {
-    console.log('[App] Navigating to dashboard');
-    setCurrentPage('dashboard');
+  const handleLogout = () => {
+    authLogout();
+    window.location.href = '/';
   };
 
   const handleNavigateToAdmin = () => {
-    console.log('[App] Navigating to admin');
-    setCurrentPage('admin');
+    window.location.href = '/admin';
   };
 
-  const handleNavigateToHome = () => {
-    console.log('[App] Navigating to home');
-    setCurrentPage('home');
-  };
+  return (
+    <Dashboard
+      onNavigateToAdmin={handleNavigateToAdmin}
+      onLogout={handleLogout}
+    />
+  );
+};
 
-  const handleViewCourse = (courseId: string) => {
-    console.log('[App] Viewing course:', courseId);
-    setSelectedCourseId(courseId);
-    setCurrentPage('course-details');
-  };
+// Admin route — requires admin/root role
+const AdminRoute = () => {
+  const { user, isAuthenticated, isLoading, logout: authLogout } = useAuth();
 
-  const handleBackToExplore = () => {
-    console.log('[App] Back to explore');
-    setSelectedCourseId(null);
-    setCurrentPage('explore');
-  };
+  if (isLoading) return null;
+
+  if (!isAuthenticated) {
+    authLogout();
+    return <Navigate to="/" replace />;
+  }
+
+  const roles = user?.roles ?? [];
+  const isAdmin = roles.includes('admin') || roles.includes('root');
+
+  if (!isAdmin) {
+    authLogout();
+    return <Navigate to="/" replace />;
+  }
 
   const handleLogout = () => {
-    console.log('[App] Logging out, redirecting to home');
-    setSelectedCourseId(null);
-    setCurrentPage('home');
+    authLogout();
+    window.location.href = '/';
   };
 
-  // Listen for navigate-to-home events from Dashboard
-  useEffect(() => {
-    const handleNavigateToHomeEvent = () => {
-      handleNavigateToHome();
-    };
-    window.addEventListener('navigate-to-home', handleNavigateToHomeEvent);
-    return () => window.removeEventListener('navigate-to-home', handleNavigateToHomeEvent);
-  }, []);
+  const handleNavigateToDashboard = () => {
+    window.location.href = '/dashboard';
+  };
 
-  // Persist page state to localStorage
-  useEffect(() => {
-    console.log('[App] Saving currentPage to localStorage:', currentPage);
-    localStorage.setItem('currentPage', currentPage);
-  }, [currentPage]);
+  return (
+    <AdminDashboard
+      onNavigateToDashboard={handleNavigateToDashboard}
+      onLogout={handleLogout}
+    />
+  );
+};
 
+// Cart wrapper
+const CartPageWrapper = () => {
+  const navigate = useNavigate();
+  return <CartPage onBack={() => navigate('/explore')} />;
+};
+
+// Course detail — renders inside DashboardLayout when authenticated, standalone when not
+const CourseDetailRoute = () => {
+  const params = useParams();
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
+
+  if (!isAuthenticated) {
+    // Public: standalone page, no dashboard wrapper
+    return (
+      <CourseDetailsPage
+        courseId={params.id || ''}
+        onBack={() => navigate('/explore')}
+        isAuthenticated={false}
+      />
+    );
+  }
+
+  // Authenticated: redirect to Dashboard with course-details tab
+  navigate(`/dashboard?tab=course-details&courseId=${params.id}`, { replace: true });
+  return null;
+};
+
+// Explore route — redirects authenticated users to dashboard
+const ExploreRoute = () => {
+  const { isAuthenticated } = useAuth();
+  if (isAuthenticated) return <Navigate to="/dashboard" replace />;
+  return <ExplorePage />;
+};
+
+function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
         <CartProvider>
-          {currentPage === 'course-details' && selectedCourseId ? (
-            <CourseDetailsPage courseId={selectedCourseId} onBack={handleBackToExplore} />
-          ) : currentPage === 'cart' ? (
-            <CartPage />
-          ) : currentPage === 'explore' ? (
-            <ExplorePage onViewCourse={handleViewCourse} />
-          ) : currentPage === 'dashboard' ? (
-            <Dashboard onNavigateToAdmin={handleNavigateToAdmin} onLogout={handleLogout} />
-          ) : currentPage === 'admin' ? (
-            <AdminDashboard onNavigateToDashboard={handleNavigateToDashboard} onLogout={handleLogout} />
-          ) : (
-            <Home
-              onNavigateToDashboard={handleNavigateToDashboard}
-              onNavigateToAdmin={handleNavigateToAdmin}
-              onNavigateToHome={handleNavigateToHome}
-              onLogout={handleLogout}
-            />
-          )}
+          <BrowserRouter>
+            <Routes>
+              {/* Public routes */}
+              <Route path="/" element={<Home />} />
+              <Route path="/explore" element={<ExploreRoute />} />
+              <Route path="/course/:id" element={<CourseDetailRoute />} />
+
+              {/* Protected routes */}
+              <Route path="/dashboard" element={
+                <ProtectedRoute>
+                  <DashboardRoute />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin" element={
+                <ProtectedRoute>
+                  <AdminRoute />
+                </ProtectedRoute>
+              } />
+              <Route path="/cart" element={
+                <ProtectedRoute>
+                  <CartPageWrapper />
+                </ProtectedRoute>
+              } />
+
+              {/* Catch all */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </BrowserRouter>
         </CartProvider>
       </AuthProvider>
     </ThemeProvider>
@@ -96,4 +149,3 @@ function App() {
 }
 
 export default App;
-

@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router';
 import axios from 'axios';
 import { ExploreFilters, ExploreGrid, type Course, type Category, type Level } from '../components/explore';
 
 const API_URL = 'http://localhost:8000';
 
-interface ExplorePageProps {
-    onViewCourse?: (courseId: string) => void;
-}
-
-export const ExplorePage: React.FC<ExplorePageProps> = ({ onViewCourse }) => {
+export const ExplorePage: React.FC = () => {
+    const navigate = useNavigate();
     const [courses, setCourses] = useState<Course[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
     const [levels, setLevels] = useState<Level[]>([]);
@@ -144,7 +142,7 @@ export const ExplorePage: React.FC<ExplorePageProps> = ({ onViewCourse }) => {
                 )}
 
                 {/* Course Grid */}
-                <ExploreGrid courses={courses} isLoading={isLoading} onViewDetails={onViewCourse} />
+                <ExploreGrid courses={courses} isLoading={isLoading} onViewDetails={(id) => navigate(`/dashboard?tab=course-details&courseId=${id}`)} />
             </main>
         </div>
     );

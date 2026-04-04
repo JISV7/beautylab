@@ -1,29 +1,24 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router';
 import { Code2, Moon, Sun, LogIn, Eye } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { LoginDialog } from './LoginDialog';
 import { UserMenu } from './UserMenu';
 
-interface HeaderProps {
-  onNavigateToDashboard?: () => void;
-  onNavigateToAdmin?: () => void;
-  onNavigateToHome?: () => void;
-  onLogout?: () => void;
-  isOnHome?: boolean;
-}
-
-export const Header: React.FC<HeaderProps> = ({ onNavigateToDashboard, onNavigateToAdmin, onNavigateToHome, onLogout, isOnHome = false }) => {
+export const Header: React.FC = () => {
+  const navigate = useNavigate();
   const { currentMode, setPaletteMode } = useTheme();
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, logout: authLogout } = useAuth();
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
 
   const handleLoginSuccess = () => {
-    onNavigateToDashboard?.();
+    navigate('/dashboard');
   };
 
   const handleLogout = () => {
-    onLogout?.();
+    authLogout();
+    navigate('/');
   };
 
   return (
@@ -43,16 +38,19 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateToDashboard, onNavigat
 
           {/* Navigation */}
           <nav className="hidden md:flex items-center gap-6">
-            <a href="#courses" className="text-p-font text-p-size text-p-color hover:palette-primary transition-colors">
+            <a href={isAuthenticated ? '/dashboard?tab=explore' : '/explore'} className="text-p-font text-p-size text-p-color hover:palette-primary transition-colors">
+              Explore
+            </a>
+            <a href="/#courses" className="text-p-font text-p-size text-p-color hover:palette-primary transition-colors">
               Courses
             </a>
-            <a href="#services" className="text-p-font text-p-size text-p-color hover:palette-primary transition-colors">
+            <a href="/#services" className="text-p-font text-p-size text-p-color hover:palette-primary transition-colors">
               Services
             </a>
-            <a href="#about" className="text-p-font text-p-size text-p-color hover:palette-primary transition-colors">
+            <a href="/#about" className="text-p-font text-p-size text-p-color hover:palette-primary transition-colors">
               About
             </a>
-            <a href="#contact" className="text-p-font text-p-size text-p-color hover:palette-primary transition-colors">
+            <a href="/#contact" className="text-p-font text-p-size text-p-color hover:palette-primary transition-colors">
               Contact
             </a>
           </nav>
@@ -95,13 +93,13 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateToDashboard, onNavigat
 
             {/* Authentication */}
             {isAuthenticated ? (
-              <UserMenu 
-                user={user} 
-                onNavigateToDashboard={onNavigateToDashboard}
-                onNavigateToAdmin={onNavigateToAdmin} 
-                onNavigateToHome={onNavigateToHome}
-                isOnHome={isOnHome}
-                onLogout={handleLogout} 
+              <UserMenu
+                user={user}
+                onNavigateToDashboard={() => navigate('/dashboard')}
+                onNavigateToAdmin={() => navigate('/admin')}
+                onNavigateToHome={() => navigate('/')}
+                isOnHome={window.location.pathname === '/'}
+                onLogout={handleLogout}
               />
             ) : (
               <button

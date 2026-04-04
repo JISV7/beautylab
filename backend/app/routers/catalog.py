@@ -9,7 +9,7 @@ from pydantic import BaseModel, ConfigDict
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.dependencies import CurrentUser
+from app.core.dependencies import CurrentUser, OptionalUser
 from app.database import get_db
 from app.models.user import User
 from app.schemas.catalog import (
@@ -440,10 +440,10 @@ async def list_public_courses(
 @router.get("/courses/{course_id}/details", response_model=CourseDetailsWithLicenses)
 async def get_course_details(
     course_id: UUID,
-    current_user: CurrentUser,
+    current_user: OptionalUser,
     db: AsyncSession = Depends(get_db),
 ) -> CourseDetailsWithLicenses:
-    """Get course details with user's licenses for that course."""
+    """Get course details with user's licenses for that course (public endpoint)."""
     from sqlalchemy import select
     from sqlalchemy.orm import selectinload
 
@@ -458,58 +458,59 @@ async def get_course_details(
             detail=f"Course with ID {course_id} not found",
         )
 
-    # Get user's licenses for this course
-    license_query = (
-        select(License)
-        .where(License.course_id == course_id, License.purchased_by_user_id == current_user.id)
-        .options(selectinload(License.assignments))
-        .order_by(License.created_at.desc())
-    )
-    license_result = await db.execute(license_query)
-    licenses = list(license_result.scalars().all())
-
-    # Build license responses with payment details
+    # Get user's licenses for this course (only if authenticated)
     license_responses = []
-    for lic in licenses:
-        # Calculate payment amounts (simplified - in real app would calculate from invoice)
-        total_price = course.product.price if course.product else Decimal("0.00")
-        amount_paid = total_price  # Assuming fully paid for now
-        amount_remaining = Decimal("0.00")
-
-        # Get assigned user info if gifted
-        assigned_to_email = None
-        assigned_to_name = None
-        if lic.assignments and lic.assignments[0].assigned_to_user_id:
-            # Would need to join with User table in real implementation
-            pass
-
-        license_responses.append(
-            LicenseWithCourseDetails(
-                id=lic.id,
-                license_code=lic.license_code,
-                product_id=lic.product_id,
-                product_name=course.product.name if course.product else None,
-                course_id=lic.course_id,
-                course_title=course.title,
-                learning_path_id=lic.learning_path_id,
-                learning_path_title=None,
-                license_type=lic.license_type,
-                status=lic.status,
-                quantity=lic.quantity,
-                purchased_by_user_id=lic.purchased_by_user_id,
-                redeemed_by_user_id=lic.redeemed_by_user_id,
-                redeemed_at=lic.redeemed_at,
-                created_at=lic.created_at,
-                updated_at=lic.updated_at,
-                amount_paid=amount_paid,
-                amount_remaining=amount_remaining,
-                purchase_date=lic.created_at,
-                redemption_date=lic.redeemed_at,
-                assigned_to_email=assigned_to_email,
-                assigned_to_name=assigned_to_name,
-                can_gift=lic.status in ("pending", "active") and not lic.redeemed_at,
-            )
+    if current_user:
+        license_query = (
+            select(License)
+            .where(License.course_id == course_id, License.purchased_by_user_id == current_user.id)
+            .options(selectinload(License.assignments))
+            .order_by(License.created_at.desc())
         )
+        license_result = await db.execute(license_query)
+        licenses = list(license_result.scalars().all())
+
+        # Build license responses with payment details
+        for lic in licenses:
+            # Calculate payment amounts (simplified - in real app would calculate from invoice)
+            total_price = course.product.price if course.product else Decimal("0.00")
+            amount_paid = total_price  # Assuming fully paid for now
+            amount_remaining = Decimal("0.00")
+
+            # Get assigned user info if gifted
+            assigned_to_email = None
+            assigned_to_name = None
+            if lic.assignments and lic.assignments[0].assigned_to_user_id:
+                # Would need to join with User table in real implementation
+                pass
+
+            license_responses.append(
+                LicenseWithCourseDetails(
+                    id=lic.id,
+                    license_code=lic.license_code,
+                    product_id=lic.product_id,
+                    product_name=course.product.name if course.product else None,
+                    course_id=lic.course_id,
+                    course_title=course.title,
+                    learning_path_id=lic.learning_path_id,
+                    learning_path_title=None,
+                    license_type=lic.license_type,
+                    status=lic.status,
+                    quantity=lic.quantity,
+                    purchased_by_user_id=lic.purchased_by_user_id,
+                    redeemed_by_user_id=lic.redeemed_by_user_id,
+                    redeemed_at=lic.redeemed_at,
+                    created_at=lic.created_at,
+                    updated_at=lic.updated_at,
+                    amount_paid=amount_paid,
+                    amount_remaining=amount_remaining,
+                    purchase_date=lic.created_at,
+                    redemption_date=lic.redeemed_at,
+                    assigned_to_email=assigned_to_email,
+                    assigned_to_name=assigned_to_name,
+                    can_gift=lic.status in ("pending", "active") and not lic.redeemed_at,
+                )
+            )
 
     # Build course details response
     level_name = course.level.name if course.level else None

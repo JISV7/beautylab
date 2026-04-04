@@ -15,6 +15,7 @@ const API_URL = 'http://localhost:8000';
 interface CourseDetailsPageProps {
     courseId: string;
     onBack?: () => void;
+    isAuthenticated?: boolean;
 }
 
 interface CourseDetails {
@@ -64,7 +65,7 @@ interface ReceiptData {
 
 type PaymentStep = 'idle' | 'payment_details' | 'processing' | 'confirmation';
 
-export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, onBack }) => {
+export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, onBack, isAuthenticated = false }) => {
     const { addToCart, isInCart, getQuantityInCart } = useCart();
     const [course, setCourse] = useState<CourseDetails | null>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -118,9 +119,9 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
 
     const handleAddToCart = async (quantity: number) => {
         if (!course || !course.product_id) return;
-        
+
         setAddToCartMessage(null);
-        
+
         try {
             await addToCart(course.product_id, quantity);
             setAddToCartMessage(`Added ${quantity} x "${course.title}" to cart!`);
@@ -584,36 +585,55 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
                 product_sku={course.product_sku}
                 price={course.product_price}
                 video_url={course.video_url}
-                onBuy={handleBuy}
-                onAddToCart={handleAddToCart}
+                onBuy={isAuthenticated ? handleBuy : undefined}
+                onAddToCart={isAuthenticated ? handleAddToCart : undefined}
                 isInCart={course.product_id ? isInCart(course.product_id) : false}
                 cartQuantity={course.product_id ? getQuantityInCart(course.product_id) : 0}
             />
 
+            {/* Auth prompt for unauthenticated users */}
+            {!isAuthenticated && (
+                <div className="mb-8 p-6 palette-surface palette-border border rounded-xl text-center">
+                    <h3 className="text-h4-font text-h4-size text-h4-color mb-2">
+                        Interested in this course?
+                    </h3>
+                    <p className="text-p-font text-p-size text-p-color opacity-75 mb-4">
+                        Sign in to purchase and start learning.
+                    </p>
+                    <a
+                        href="/"
+                        className="theme-button theme-button-primary inline-flex"
+                    >
+                        Sign In
+                    </a>
+                </div>
+            )}
+
             {/* Add to Cart Message */}
             {addToCartMessage && (
-                <div className={`mb-6 p-4 rounded-xl border ${
-                    addToCartMessage.includes('Failed') 
+                <div className={`mb-6 p-4 rounded-xl border ${addToCartMessage.includes('Failed')
                         ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800'
                         : 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800'
-                }`}>
+                    }`}>
                     <p className={addToCartMessage.includes('Failed') ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'}>
                         {addToCartMessage}
                     </p>
                 </div>
             )}
 
-            {/* Licenses Section */}
-            <div className="mb-8">
-                <h2 className="text-h3-font text-h3-size text-h3-color mb-4">
-                    Your Licenses
-                </h2>
-                <LicenseTable
-                    licenses={course.user_licenses}
-                    onGift={handleGift}
-                    onRedeem={handleRedeem}
-                />
-            </div>
+            {/* Licenses Section — only for authenticated users */}
+            {isAuthenticated && (
+                <div className="mb-8">
+                    <h2 className="text-h3-font text-h3-size text-h3-color mb-4">
+                        Your Licenses
+                    </h2>
+                    <LicenseTable
+                        licenses={course.user_licenses}
+                        onGift={handleGift}
+                        onRedeem={handleRedeem}
+                    />
+                </div>
+            )}
 
             {/* Gift License Modal */}
             <GiftLicenseModal

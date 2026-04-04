@@ -1,31 +1,32 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useNavigate, useSearchParams } from 'react-router';
 import { DashboardLayout } from '../components/layout/DashboardLayout';
 import { ExplorePage } from './ExplorePage';
-import { CourseDetailsPage } from './CourseDetailsPage';
 import { CartPage } from '../components/cart/CartPage';
 import InvoicesPage from './InvoicesPage';
 import MyCoursesPage from './MyCoursesPage';
+import { CourseDetailsPage } from './CourseDetailsPage';
 
 interface DashboardProps {
     onNavigateToAdmin?: () => void;
     onLogout?: () => void;
+    defaultTab?: string;
 }
 
-export const Dashboard: React.FC<DashboardProps> = ({ onNavigateToAdmin, onLogout }) => {
-    const [activeItem, setActiveItem] = useState('home');
-    const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
+export const Dashboard: React.FC<DashboardProps> = ({
+    onNavigateToAdmin,
+    onLogout,
+    defaultTab = 'home',
+}) => {
+    const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+
+    // Read tab and courseId from URL
+    const activeTab = searchParams.get('tab') || defaultTab;
+    const courseId = searchParams.get('courseId');
 
     const handleNavigate = (item: string) => {
-        setActiveItem(item);
-        setSelectedCourseId(null);
-    };
-
-    const handleViewCourse = (courseId: string) => {
-        setSelectedCourseId(courseId);
-    };
-
-    const handleBackToExplore = () => {
-        setSelectedCourseId(null);
+        navigate(`?tab=${item}`, { replace: true });
     };
 
     const handleAdminNavigate = () => {
@@ -33,40 +34,45 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigateToAdmin, onLogou
     };
 
     const handleNavigateToHome = () => {
-        // Navigate to home by triggering a page state change through a custom event
-        const event = new CustomEvent('navigate-to-home');
-        window.dispatchEvent(event);
+        navigate('/');
     };
 
-    // Show course details if a course is selected
-    if (selectedCourseId) {
+    // Course details view
+    if (activeTab === 'course-details' && courseId) {
         return (
             <DashboardLayout
-                activeItem={activeItem}
+                activeItem="course-details"
                 onNavigate={handleNavigate}
                 onAdminNavigate={handleAdminNavigate}
+                onNavigateToHome={handleNavigateToHome}
                 onLogout={onLogout}
             >
-                <CourseDetailsPage courseId={selectedCourseId} onBack={handleBackToExplore} />
+                <CourseDetailsPage
+                    courseId={courseId}
+                    onBack={() => handleNavigate('explore')}
+                    isAuthenticated={true}
+                />
             </DashboardLayout>
         );
     }
 
     return (
         <DashboardLayout
-            activeItem={activeItem}
+            activeItem={activeTab}
             onNavigate={handleNavigate}
             onAdminNavigate={handleAdminNavigate}
             onNavigateToHome={handleNavigateToHome}
             onLogout={onLogout}
         >
-            {activeItem === 'explore' ? (
-                <ExplorePage onViewCourse={handleViewCourse} />
-            ) : activeItem === 'my-courses' ? (
-                <MyCoursesPage onViewCourse={handleViewCourse} />
-            ) : activeItem === 'invoices' ? (
+            {activeTab === 'explore' ? (
+                <div className="p-6">
+                    <ExplorePage />
+                </div>
+            ) : activeTab === 'my-courses' ? (
+                <MyCoursesPage />
+            ) : activeTab === 'invoices' ? (
                 <InvoicesPage />
-            ) : activeItem === 'cart' ? (
+            ) : activeTab === 'cart' ? (
                 <CartPage onBack={() => handleNavigate('explore')} />
             ) : (
                 <div className="mx-auto p-6">

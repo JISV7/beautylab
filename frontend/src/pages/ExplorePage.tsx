@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import axios from 'axios';
 import { ExploreFilters, ExploreGrid, type Course, type Category, type Level } from '../components/explore';
+import { useAuth } from '../contexts/AuthContext';
 
 const API_URL = 'http://localhost:8000';
 
 export const ExplorePage: React.FC = () => {
     const navigate = useNavigate();
+    const { isAuthenticated } = useAuth();
     const [courses, setCourses] = useState<Course[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
     const [levels, setLevels] = useState<Level[]>([]);
@@ -142,7 +144,7 @@ export const ExplorePage: React.FC = () => {
                 )}
 
                 {/* Course Grid */}
-                <ExploreGrid courses={courses} isLoading={isLoading} onViewDetails={(id) => navigate(`/dashboard?tab=course-details&courseId=${id}`)} />
+                <ExploreGrid courses={courses} isLoading={isLoading} onViewDetails={(id) => navigate(isAuthenticated ? `/dashboard?tab=course-details&courseId=${id}` : `/course/${id}`)} />
             </main>
         </div>
     );

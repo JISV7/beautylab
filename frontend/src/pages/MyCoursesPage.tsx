@@ -246,10 +246,10 @@ export default function MyCoursesPage() {
                         {filteredCourses.map((course) => (
                             <div
                                 key={course.course_id}
-                                className="palette-surface palette-border border rounded-xl overflow-hidden hover:shadow-lg transition-shadow"
+                                className="palette-surface palette-border border rounded-xl overflow-hidden hover:shadow-lg transition-shadow flex flex-col"
                             >
-                                {/* Course Image */}
-                                <div className="h-48 bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
+                                {/* Course Image — fixed height */}
+                                <div className="h-48 bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center flex-shrink-0">
                                     {course.course_image_url ? (
                                         <img
                                             src={course.course_image_url}
@@ -261,15 +261,16 @@ export default function MyCoursesPage() {
                                     )}
                                 </div>
 
-                                {/* Course Info */}
-                                <div className="p-4">
-                                    <div className="mb-2">
-                                        <h3 className="font-semibold text-lg line-clamp-2 mb-2">
-                                            {course.course_title}
-                                        </h3>
-                                        <div className="mt-2">
-                                            {getStatusBadge(course)}
-                                        </div>
+                                {/* Course Info — flex-grow to fill space */}
+                                <div className="p-4 flex flex-col flex-1">
+                                    {/* Title — max 3 lines, fixed min-height */}
+                                    <h3 className="font-semibold text-lg line-clamp-3 min-h-[5.4rem] mb-2">
+                                        {course.course_title}
+                                    </h3>
+
+                                    {/* Status Badge */}
+                                    <div className="mb-3">
+                                        {getStatusBadge(course)}
                                     </div>
 
                                     {/* Payment Progress */}
@@ -344,11 +345,14 @@ export default function MyCoursesPage() {
                                         </div>
                                     )}
 
-                                    {/* Actions */}
+                                    {/* Spacer — pushes button to bottom */}
+                                    <div className="flex-1" />
+
+                                    {/* Actions — always at bottom */}
                                     <div className="flex gap-2 pt-4 border-t border-[var(--palette-border)]">
                                         <button
-                                            className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg theme-button theme-button-primary text-sm"
                                             onClick={() => navigate(`/dashboard?tab=course-details&courseId=${course.course_id}`)}
+                                            className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg theme-button theme-button-primary text-sm"
                                         >
                                             <Book className="w-4 h-4" />
                                             View Course

@@ -1,7 +1,7 @@
 # BeautyLab Backend Dockerfile
 # Python 3.13 with uv for dependency management
 
-FROM python:3.13
+FROM python:3.13-slim
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -10,10 +10,17 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PIP_NO_CACHE_DIR=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1
 
-# Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    libffi-dev \
     netcat-openbsd \
-    && rm -rf /var/lib/apt/lists/*
+    libpango-1.0-0 \
+    libharfbuzz0b \
+    libpangoft2-1.0-0 \
+    libpangocairo-1.0-0 \
+    libgdk-pixbuf-2.0-0 \
+    shared-mime-info \
+    && rm -rf /var/lib/apt/lists/*s
 
 # Set work directory
 WORKDIR /app

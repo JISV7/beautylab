@@ -399,8 +399,12 @@ class PaymentService:
         Returns:
             Tuple of (payments list, receipt data dict)
         """
+        import logging
+
         from app.services.email_service import get_email_service
         from app.services.invoice_service import InvoiceService
+
+        logger = logging.getLogger("beautylab.email")
 
         # Process the split payment
         payments = await self.process_split_payment(request)
@@ -420,7 +424,7 @@ class PaymentService:
 
             # Send confirmation email
             email_service = get_email_service()
-            email_service.send_purchase_confirmation_email(
+            success = email_service.send_purchase_confirmation_email(
                 to_email=user_email,
                 invoice_number=receipt_data["invoice_number"],
                 course_name=course_name,
@@ -431,6 +435,18 @@ class PaymentService:
                 subtotal=receipt_data.get("subtotal"),
                 tax_total=receipt_data.get("tax_total"),
             )
+            if not success:
+                logger.error(
+                    "Failed to send purchase confirmation email for invoice %s to %s",
+                    receipt_data["invoice_number"],
+                    user_email,
+                )
+            else:
+                logger.info(
+                    "Purchase confirmation email sent successfully for invoice %s to %s",
+                    receipt_data["invoice_number"],
+                    user_email,
+                )
 
             # DO NOT auto-create enrollment — enrollment is created when user redeems a license
             # Creating it here would prevent redeeming licenses for the same course

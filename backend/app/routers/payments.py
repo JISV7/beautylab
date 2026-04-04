@@ -248,9 +248,14 @@ async def process_split_payment(
                     db.add(usage)
 
     # Send confirmation email
+    email_sent = True
+    email_error = None
     try:
+        import logging
+
         from app.services.email_service import get_email_service
 
+        logger = logging.getLogger("beautylab.email")
         email_service = get_email_service()
         receipt_data = await invoice_service.get_invoice_receipt_data(request.invoice_id)
 
@@ -265,7 +270,7 @@ async def process_split_payment(
                 }
                 for line in invoice.lines
             ]
-            email_service.send_invoice_email(
+            success = email_service.send_invoice_email(
                 to_email=user_email,
                 invoice_number=invoice.invoice_number,
                 total=str(invoice.total),
@@ -273,17 +278,50 @@ async def process_split_payment(
                 items=invoice_items,
                 download_url=f"https://beautylab.com/invoices/{invoice.id}/download",
             )
+            if not success:
+                email_sent = False
+                email_error = (
+                    "Email service returned false — invoice email may not have been delivered."
+                )
+                logger.error(
+                    "Failed to send invoice email for invoice %s to %s",
+                    invoice.invoice_number,
+                    user_email,
+                )
+            else:
+                logger.info(
+                    "Invoice email sent successfully for invoice %s to %s",
+                    invoice.invoice_number,
+                    user_email,
+                )
     except Exception as e:
-        print(f"Failed to send invoice email: {e}")
+        import logging
+        import traceback
+
+        logger = logging.getLogger("beautylab.email")
+        email_sent = False
+        email_error = f"Exception while sending invoice email: {e}"
+        logger.error(
+            "Exception sending invoice email for invoice %s: %s\n%s",
+            request.invoice_id,
+            e,
+            traceback.format_exc(),
+        )
 
     await db.commit()
 
-    return SplitPaymentResponse(
-        payments=[PaymentResponse.model_validate(p) for p in payments],
-        total_paid=total_paid,
-        remaining_balance=Decimal("0.00"),
-        is_fully_paid=True,
-    )
+    response_data = {
+        "payments": [PaymentResponse.model_validate(p) for p in payments],
+        "total_paid": total_paid,
+        "remaining_balance": Decimal("0.00"),
+        "is_fully_paid": True,
+    }
+
+    # Include email status so frontend can warn the user if needed
+    if not email_sent:
+        response_data["email_warning"] = email_error
+
+    return SplitPaymentResponse(**response_data)
 
 
 @router.get("/{payment_id}", response_model=PaymentWithDetails)

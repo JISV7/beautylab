@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
-import { FileText, X, Printer, DollarSign, Receipt, Percent, Search, Filter, ChevronUp, ChevronDown, ChevronsLeft, ChevronsRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import { FileText, X, Printer, DollarSign, Receipt, Percent, Search, Filter, ChevronUp, ChevronDown, ChevronsLeft, ChevronsRight, ChevronLeft, ChevronRight, Download, Loader2, AlertTriangle } from 'lucide-react';
 
 const API_URL = 'http://localhost:8000';
 
@@ -127,9 +127,14 @@ export default function InvoicesPage() {
     const [loading, setLoading] = useState(true);
     const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
     const [totalPages, setTotalPages] = useState(1);
     const [summary, setSummary] = useState<InvoiceSummary | null>(null);
-    
+
+    // Download all state
+    const [downloadingAll, setDownloadingAll] = useState(false);
+    const [downloadError, setDownloadError] = useState<string | null>(null);
+
     // Search, filter, and sort state
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -148,7 +153,7 @@ export default function InvoicesPage() {
     const fetchInvoices = async (page: number = 1) => {
         try {
             setLoading(true);
-            const response = await api.get<InvoicesResponse>(`/invoices/?page=${page}&page_size=10`);
+            const response = await api.get<InvoicesResponse>(`/invoices/?page=${page}&page_size=${pageSize}`);
             setInvoices(response.data.invoices);
             setTotalPages(response.data.totalPages);
             setCurrentPage(response.data.page);
@@ -175,6 +180,36 @@ export default function InvoicesPage() {
 
     const handlePrint = () => {
         window.print();
+    };
+
+    const handleDownloadAll = async () => {
+        try {
+            setDownloadingAll(true);
+            setDownloadError(null);
+            const response = await api.get('/invoices/download-all', {
+                responseType: 'blob',
+            });
+            // Create a blob and trigger download
+            const blob = new Blob([response.data], { type: 'application/zip' });
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            // Extract filename from Content-Disposition header
+            const disposition = response.headers['content-disposition'];
+            const match = disposition?.match(/filename="?(.+?)"?$/i);
+            const filename = match ? match[1] : 'facturas_beautylab.zip';
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+        } catch (err: any) {
+            console.error('Failed to download all invoices:', err);
+            setDownloadError(err.response?.data?.detail || 'Failed to download invoices. Please try again.');
+            setTimeout(() => setDownloadError(null), 5000);
+        } finally {
+            setDownloadingAll(false);
+        }
     };
 
     // Filter and sort invoices
@@ -241,8 +276,14 @@ export default function InvoicesPage() {
                     summary={summary}
                     currentPage={currentPage}
                     totalPages={totalPages}
+                    pageSize={pageSize}
                     onPageChange={fetchInvoices}
+                    onPageSizeChange={(size) => { setPageSize(size); fetchInvoices(1); }}
                     onViewDetails={(invoice) => fetchInvoiceDetails(invoice.id)}
+                    onDownloadAll={handleDownloadAll}
+                    onDismissDownloadError={() => setDownloadError(null)}
+                    downloadingAll={downloadingAll}
+                    downloadError={downloadError}
                     searchTerm={searchTerm}
                     setSearchTerm={setSearchTerm}
                     statusFilter={statusFilter}
@@ -262,8 +303,14 @@ function InvoiceList({
     summary,
     currentPage,
     totalPages,
+    pageSize,
     onPageChange,
+    onPageSizeChange,
     onViewDetails,
+    onDownloadAll,
+    onDismissDownloadError,
+    downloadingAll,
+    downloadError,
     searchTerm,
     setSearchTerm,
     statusFilter,
@@ -277,8 +324,14 @@ function InvoiceList({
     summary: InvoiceSummary | null;
     currentPage: number;
     totalPages: number;
+    pageSize: number;
     onPageChange: (page: number) => void;
+    onPageSizeChange: (size: number) => void;
     onViewDetails: (invoice: Invoice) => void;
+    onDownloadAll: () => void;
+    onDismissDownloadError: () => void;
+    downloadingAll: boolean;
+    downloadError: string | null;
     searchTerm: string;
     setSearchTerm: (term: string) => void;
     statusFilter: string;
@@ -359,7 +412,41 @@ function InvoiceList({
 
                 {/* Controls - Search, Filter, Sort */}
                 <div className="palette-surface palette-border border rounded-xl p-4 mb-6 print:hidden">
+                    {/* Download error banner */}
+                    {downloadError && (
+                        <div className="mb-4 flex items-center gap-2 p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
+                            <AlertTriangle className="w-4 h-4 text-red-500 flex-shrink-0" />
+                            <p className="text-sm text-red-600 dark:text-red-400 flex-1">{downloadError}</p>
+                            <button onClick={onDismissDownloadError} className="text-red-400 hover:text-red-600">
+                                <X className="w-4 h-4" />
+                            </button>
+                        </div>
+                    )}
+
                     <div className="flex flex-wrap gap-4 items-center">
+                        {/* Download All Button */}
+                        <button
+                            onClick={onDownloadAll}
+                            disabled={downloadingAll}
+                            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            style={{
+                                backgroundColor: 'var(--palette-primary)',
+                                color: 'var(--decorator-color)',
+                            }}
+                        >
+                            {downloadingAll ? (
+                                <>
+                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                    Generating ZIP...
+                                </>
+                            ) : (
+                                <>
+                                    <Download className="w-4 h-4" />
+                                    Download All (PDF)
+                                </>
+                            )}
+                        </button>
+
                         {/* Search */}
                         <div className="flex-1 min-w-64">
                             <div className="relative">
@@ -387,6 +474,21 @@ function InvoiceList({
                                 <option value="paid">Paid</option>
                                 <option value="partial">Partial</option>
                                 <option value="cancelled">Cancelled</option>
+                            </select>
+                        </div>
+
+                        {/* Page Size Selector */}
+                        <div className="flex items-center gap-2">
+                            <span className="text-sm text-p-color opacity-75 whitespace-nowrap">Rows:</span>
+                            <select
+                                value={pageSize}
+                                onChange={(e) => onPageSizeChange(Number(e.target.value))}
+                                className="theme-input min-w-20"
+                            >
+                                <option value={5}>5</option>
+                                <option value={10}>10</option>
+                                <option value={25}>25</option>
+                                <option value={50}>50</option>
                             </select>
                         </div>
                     </div>

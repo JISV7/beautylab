@@ -103,9 +103,9 @@ class EmailService:
                 f'<td style="padding: 8px; border-bottom: 1px solid #ddd; '
                 f'text-align: center;">{qty}</td>'
                 f'<td style="padding: 8px; border-bottom: 1px solid #ddd; '
-                f'text-align: right;">${price}</td>'
+                f'text-align: right;">Bs. {price}</td>'
                 f'<td style="padding: 8px; border-bottom: 1px solid #ddd; '
-                f'text-align: right;">${total}</td>'
+                f'text-align: right;">Bs. {total}</td>'
                 f"</tr>"
             )
 
@@ -170,7 +170,7 @@ class EmailService:
                         </table>
 
                         <div class="total">
-                            Total: ${total}
+                            Total: Bs. {total}
                         </div>
                     </div>
 
@@ -197,7 +197,7 @@ class EmailService:
         Items:
         {self._format_items_text(items)}
 
-        Total: ${total}
+        Total: Bs. {total}
 
         Thank you for your purchase!
 
@@ -219,7 +219,7 @@ class EmailService:
             desc = item.get("description", "")
             qty = item.get("quantity", 1)
             total = item.get("line_total", "0.00")
-            lines.append(f"- {desc} x{qty}: ${total}")
+            lines.append(f"- {desc} x{qty}: Bs. {total}")
         return "\n".join(lines)
 
     def send_welcome_email(self, to_email: str, user_name: str) -> bool:
@@ -317,9 +317,9 @@ class EmailService:
                 f'<td style="padding: 8px; border-bottom: 1px solid #ddd; '
                 f'text-align: center;">{qty}</td>'
                 f'<td style="padding: 8px; border-bottom: 1px solid #ddd; '
-                f'text-align: right;">${price}</td>'
+                f'text-align: right;">Bs. {price}</td>'
                 f'<td style="padding: 8px; border-bottom: 1px solid #ddd; '
-                f'text-align: right;">${line_total}</td>'
+                f'text-align: right;">Bs. {line_total}</td>'
                 f"</tr>"
             )
 
@@ -352,7 +352,7 @@ class EmailService:
                     f'<td style="padding: 8px; border-bottom: 1px solid #ddd;">'
                     f"{method}{ref_display}</td>"
                     f'<td style="padding: 8px; border-bottom: 1px solid #ddd; '
-                    f'text-align: right;">${amount}</td>'
+                    f'text-align: right;">Bs. {amount}</td>'
                     f"</tr>"
                 )
             payment_html += """
@@ -429,15 +429,15 @@ class EmailService:
                             <div style="display: flex;
                                 justify-content: space-between; padding: 5px 0;">
                                 <span>Base Price:</span>
-                                <span>${subtotal or "0.00"}</span>
+                                <span>Bs. {subtotal or "0.00"}</span>
                             </div>
                             <div style="display: flex;
                                 justify-content: space-between; padding: 5px 0;">
                                 <span>IVA (16%):</span>
-                                <span>${tax_total or "0.00"}</span>
+                                <span>Bs. {tax_total or "0.00"}</span>
                             </div>
                             <div class="total">
-                                Total Paid: ${total}
+                                Total Paid: Bs. {total}
                             </div>
                         </div>
                     </div>
@@ -488,9 +488,9 @@ Items:
 {self._format_payments_text(payment_breakdown) if payment_breakdown else ""}
 
 Pricing:
-  Base Price: ${subtotal or "0.00"}
-  IVA (16%):  ${tax_total or "0.00"}
-  Total Paid: ${total}
+  Base Price: Bs. {subtotal or "0.00"}
+  IVA (16%):  Bs. {tax_total or "0.00"}
+  Total Paid: Bs. {total}
 
 ✓ Your payment was successful!
 
@@ -519,7 +519,7 @@ The Codyn Academy Team
             amount = payment.get("amount", "0.00")
             reference = payment.get("reference", "")
             ref_display = f" ({reference})" if reference else ""
-            lines.append(f"- {method}{ref_display}: ${amount}")
+            lines.append(f"- {method}{ref_display}: Bs. {amount}")
         return "\n".join(lines)
 
 

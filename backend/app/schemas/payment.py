@@ -350,6 +350,10 @@ class SplitPaymentResponse(BaseModel):
     total_paid: Decimal
     remaining_balance: Decimal
     is_fully_paid: bool
+    email_warning: str | None = Field(
+        default=None,
+        description="Warning message if invoice email failed to send",
+    )
 
 
 class PaymentListResponse(BaseModel):

@@ -3,6 +3,7 @@
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.dependencies import CurrentUser
@@ -270,23 +271,44 @@ async def download_all_invoices_as_pdfs(
                 "</div>"
             )
 
-        # Client info
-        client_name = invoice.client_business_name or (
-            f"{invoice.client_document_type}-{invoice.client_document_number}"
-            if invoice.client_document_type and invoice.client_document_number
-            else invoice.client_rif or "Cliente"
-        )
-        client_doc = ""
-        if invoice.client_document_type and invoice.client_document_number:
-            client_doc = f"{invoice.client_document_type}-{invoice.client_document_number}"
-        elif invoice.client_rif:
-            client_doc = invoice.client_rif
+        # Client info — fallback to user profile when invoice fields empty
+        _rif = invoice.client_rif
+        _dtype = invoice.client_document_type
+        _dnum = invoice.client_document_number
+        _biz = invoice.client_business_name
+        _addr = invoice.client_fiscal_address
+
+        if (not _rif or not _addr) and invoice.client_id:
+            from app.models.user import User
+
+            u_result = db.execute(select(User).where(User.id == invoice.client_id))
+            user = u_result.scalar_one_or_none()
+            if user:
+                _rif = _rif or user.rif
+                _dtype = _dtype or user.document_type
+                _dnum = _dnum or user.document_number
+                _biz = _biz or user.business_name
+                _addr = _addr or user.fiscal_address
+
+        if _biz:
+            client_name = _biz
+        elif _dtype and _dnum:
+            client_name = f"{_dtype}-{_dnum}"
+        elif _rif:
+            client_name = _rif
+        else:
+            client_name = "Cliente"
+
+        if _dtype and _dnum:
+            client_doc = f"{_dtype}-{_dnum}"
+        elif _rif:
+            client_doc = _rif
+        else:
+            client_doc = ""
 
         fiscal_addr_html = ""
-        if invoice.client_fiscal_address:
-            fiscal_addr_html = (
-                f'<p class="xs">  Domicilio Fiscal</p><p><b>{invoice.client_fiscal_address}</b></p>'
-            )
+        if _addr:
+            fiscal_addr_html = f'<p class="xs">  Domicilio Fiscal</p><p><b>{_addr}</b></p>'
 
         # Footer
         ft = ""

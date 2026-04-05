@@ -145,30 +145,6 @@ export const CreditCardForm: React.FC<PaymentFormProps> = ({
                     <label className="text-p-font text-p-size text-p-color font-medium block mb-2">
                         <div className="flex items-center gap-2">
                             <Calendar size={16} />
-                            Expiry Month
-                        </div>
-                    </label>
-                    <select
-                        value={value.expiry_month || ''}
-                        onChange={(e) => handleChange('expiry_month', e.target.value)}
-                        className="theme-input w-full"
-                    >
-                        <option value="">Select</option>
-                        {getAvailableMonths(value.expiry_year).map((month) => (
-                            <option key={month.value} value={month.value}>
-                                {month.label}
-                            </option>
-                        ))}
-                    </select>
-                    {errors.expiry_month && (
-                        <p className="text-red-500 text-sm mt-1">{errors.expiry_month}</p>
-                    )}
-                </div>
-
-                <div>
-                    <label className="text-p-font text-p-size text-p-color font-medium block mb-2">
-                        <div className="flex items-center gap-2">
-                            <Calendar size={16} />
                             Expiry Year
                         </div>
                     </label>
@@ -192,6 +168,30 @@ export const CreditCardForm: React.FC<PaymentFormProps> = ({
                     </select>
                     {errors.expiry_year && (
                         <p className="text-red-500 text-sm mt-1">{errors.expiry_year}</p>
+                    )}
+                </div>
+
+                <div>
+                    <label className="text-p-font text-p-size text-p-color font-medium block mb-2">
+                        <div className="flex items-center gap-2">
+                            <Calendar size={16} />
+                            Expiry Month
+                        </div>
+                    </label>
+                    <select
+                        value={value.expiry_month || ''}
+                        onChange={(e) => handleChange('expiry_month', e.target.value)}
+                        className="theme-input w-full"
+                    >
+                        <option value="">Select</option>
+                        {getAvailableMonths(value.expiry_year).map((month) => (
+                            <option key={month.value} value={month.value}>
+                                {month.label}
+                            </option>
+                        ))}
+                    </select>
+                    {errors.expiry_month && (
+                        <p className="text-red-500 text-sm mt-1">{errors.expiry_month}</p>
                     )}
                 </div>
             </div>
@@ -305,26 +305,6 @@ export const DebitCardForm: React.FC<PaymentFormProps> = ({
                 <div>
                     <label className="text-p-font text-p-size text-p-color font-medium block mb-2">
                         <Calendar size={16} />
-                        Expiry Month
-                    </label>
-                    <select
-                        value={value.expiry_month || ''}
-                        onChange={(e) => handleChange('expiry_month', e.target.value)}
-                        className="theme-input w-full"
-                    >
-                        <option value="">Select</option>
-                        {getAvailableMonths(value.expiry_year).map((month) => (
-                            <option key={month.value} value={month.value}>{month.label}</option>
-                        ))}
-                    </select>
-                    {errors.expiry_month && (
-                        <p className="text-red-500 text-sm mt-1">{errors.expiry_month}</p>
-                    )}
-                </div>
-
-                <div>
-                    <label className="text-p-font text-p-size text-p-color font-medium block mb-2">
-                        <Calendar size={16} />
                         Expiry Year
                     </label>
                     <select
@@ -344,6 +324,26 @@ export const DebitCardForm: React.FC<PaymentFormProps> = ({
                     </select>
                     {errors.expiry_year && (
                         <p className="text-red-500 text-sm mt-1">{errors.expiry_year}</p>
+                    )}
+                </div>
+
+                <div>
+                    <label className="text-p-font text-p-size text-p-color font-medium block mb-2">
+                        <Calendar size={16} />
+                        Expiry Month
+                    </label>
+                    <select
+                        value={value.expiry_month || ''}
+                        onChange={(e) => handleChange('expiry_month', e.target.value)}
+                        className="theme-input w-full"
+                    >
+                        <option value="">Select</option>
+                        {getAvailableMonths(value.expiry_year).map((month) => (
+                            <option key={month.value} value={month.value}>{month.label}</option>
+                        ))}
+                    </select>
+                    {errors.expiry_month && (
+                        <p className="text-red-500 text-sm mt-1">{errors.expiry_month}</p>
                     )}
                 </div>
             </div>

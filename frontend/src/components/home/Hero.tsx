@@ -1,7 +1,16 @@
 import React from 'react';
 import { ArrowRight, Sparkles } from 'lucide-react';
+import { useNavigate } from 'react-router';
+import { useAuth } from '../../contexts/AuthContext';
 
 export const Hero: React.FC = () => {
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
+
+  const handleBrowse = () => {
+    navigate(isAuthenticated ? '/dashboard?tab=explore' : '/explore');
+  };
+
   return (
     <section className="relative overflow-hidden py-20 lg:py-32 palette-background">
       {/* Background gradient */}
@@ -29,10 +38,10 @@ export const Hero: React.FC = () => {
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <button className="theme-button theme-button-primary">
-              Get Started Free
+              Get Started Now
               <ArrowRight className="w-4 h-4 decorator-color" />
             </button>
-            <button className="theme-button theme-button-secondary">
+            <button onClick={handleBrowse} className="theme-button theme-button-secondary">
               Browse Courses
             </button>
           </div>

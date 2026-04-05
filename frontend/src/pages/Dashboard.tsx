@@ -65,9 +65,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
             onLogout={onLogout}
         >
             {activeTab === 'explore' ? (
-                <div className="p-6">
-                    <ExplorePage />
-                </div>
+                <ExplorePage />
             ) : activeTab === 'my-courses' ? (
                 <MyCoursesPage />
             ) : activeTab === 'invoices' ? (

@@ -39,13 +39,13 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
             <aside className={`
                 fixed inset-y-0 left-0 z-40 w-64 transform transition-transform duration-200
                 lg:translate-x-0 lg:static
-                bg-[var(--palette-surface)]
+                bg-palette-surface
                 ${isOpen ? 'translate-x-0' : '-translate-x-full'}
             `}>
                 {/* Mobile Close Button */}
-                <div className="lg:hidden flex items-center justify-between p-4 border-b border-[var(--palette-border)]">
-                    <span className="text-[var(--text-h4-size)] text-[var(--text-h4-color)] font-bold">Menu</span>
-                    <button onClick={onClose} className="p-2 text-[var(--text-p-color)]">
+                <div className="lg:hidden flex items-center justify-between p-4 border-b palette-border">
+                    <span className="text-h4-size text-h4-color font-bold">Menu</span>
+                    <button onClick={onClose} className="p-2 text-p-color">
                         <X className="w-5 h-5" />
                     </button>
                 </div>
@@ -62,10 +62,10 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                                 onClick={() => handleClick(item.id)}
                                 className={`
                                     w-full flex items-center gap-3 px-4 py-3 rounded-lg
-                                    text-sm sm:text-base text-p-font transition-all
+                                    text-p-size text-p-color text-p-font transition-all
                                     ${isActive
-                                        ? 'bg-[var(--palette-primary)] text-[var(--text-p-color)]'
-                                        : 'text-[var(--text-p-color)] hover:bg-[var(--palette-border)]'
+                                        ? 'bg-palette-primary text-p-color'
+                                        : 'text-p-color hover:bg-palette-border'
                                     }
                                 `}
                             >

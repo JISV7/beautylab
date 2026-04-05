@@ -360,7 +360,10 @@ function InvoiceList({
     return (
         <main className="flex-1 p-8 overflow-auto print:p-0 print:overflow-visible">
             <div className="max-w-7xl mx-auto">
-                <h2 className="text-3xl font-bold text-primary mb-6">My Invoices</h2>
+                <h1 className="text-h1-size font-bold mb-1">My Invoices</h1>
+                <p className="text-p-font text-p-size text-p-color mb-6">
+                    View, search, and download all your purchase invoices.
+                </p>
 
                 {/* Summary Cards */}
                 {summary && (

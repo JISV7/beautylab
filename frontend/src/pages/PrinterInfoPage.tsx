@@ -180,6 +180,14 @@ export default function PrinterInfoPage() {
 
   return (
     <div className="p-6">
+      <div className="mb-6">
+        <h1 className="text-h1-size font-bold mb-1">Authorized Printer</h1>
+        <p className="text-p-font text-p-size text-p-color">
+          Manage your authorized digital printer and SENIAT providence
+          information for invoice generation.
+        </p>
+      </div>
+
       <PrinterTable
         printers={printers}
         searchQuery={searchQuery}

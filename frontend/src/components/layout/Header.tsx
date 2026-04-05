@@ -104,10 +104,10 @@ export const Header: React.FC = () => {
             ) : (
               <button
                 onClick={() => setLoginDialogOpen(true)}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--palette-primary)] decorator-color hover:bg-[var(--palette-accent)] transition-colors text-p-font"
+                className="theme-button theme-button-primary"
               >
-                <LogIn className="w-4 h-4 decorator-color" />
-                <span className="hidden sm:inline text-p-size">Sign In</span>
+                <LogIn className="w-4 h-4" />
+                <span className="hidden sm:inline">Sign In</span>
               </button>
             )}
           </div>

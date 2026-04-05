@@ -324,20 +324,22 @@ export const CartPage: React.FC<CartPageProps> = ({ onBack }) => {
     return (
         <div className="p-6 max-w-6xl mx-auto">
             {/* Header */}
-            <div className="flex items-center gap-4 mb-6">
-                <button
-                    onClick={handleGoBack}
-                    className="p-2 hover:bg-[var(--palette-border)] rounded-lg transition-colors"
-                >
-                    <ArrowLeft className="w-5 h-5 text-p-color" />
-                </button>
-                <div>
-                    <h2 className="text-h2-font text-h2-size text-h2-color text-h2-weight">
-                        Shopping Cart
-                    </h2>
-                    <p className="text-p-font text-p-size text-p-color opacity-60">
-                        Review your items and complete your purchase
-                    </p>
+            <div className="flex items-start justify-between mb-6">
+                <div className="flex items-center gap-4">
+                    <button
+                        onClick={handleGoBack}
+                        className="p-2 hover:bg-[var(--palette-border)] rounded-lg transition-colors"
+                    >
+                        <ArrowLeft className="w-5 h-5 text-p-color" />
+                    </button>
+                    <div>
+                        <h1 className="text-h1-size font-bold mb-1">
+                            Shopping Cart
+                        </h1>
+                        <p className="text-p-font text-p-size text-p-color">
+                            Review your items and complete your purchase
+                        </p>
+                    </div>
                 </div>
             </div>
 
@@ -461,7 +463,7 @@ export const CartPage: React.FC<CartPageProps> = ({ onBack }) => {
                                 <p className="text-p-font text-p-size text-p-color font-medium mb-2">
                                     Have a coupon?
                                 </p>
-                                <div className="flex gap-2">
+                                <div className="flex gap-2 items-center">
                                     <input
                                         type="text"
                                         value={couponInput}
@@ -473,13 +475,13 @@ export const CartPage: React.FC<CartPageProps> = ({ onBack }) => {
                                             if (e.key === 'Enter') handleApplyCoupon();
                                         }}
                                         placeholder="Enter code"
-                                        className="theme-input flex-1 !py-2 !px-3 text-sm"
+                                        className="theme-input flex-1 min-w-0 !py-2 !px-3 text-sm"
                                         disabled={couponLoading}
                                     />
                                     <button
                                         onClick={handleApplyCoupon}
                                         disabled={couponLoading || !couponInput.trim()}
-                                        className="theme-button theme-button-secondary !py-2 !px-3 text-sm disabled:opacity-50"
+                                        className="theme-button theme-button-secondary !py-2 !px-3 text-sm disabled:opacity-50 flex-shrink-0"
                                     >
                                         {couponLoading ? '...' : 'Apply'}
                                     </button>

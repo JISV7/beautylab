@@ -231,7 +231,7 @@ export const CourseList: React.FC<CourseListProps> = ({ onNavigateToCreate, onNa
                 {/* Header */}
                 <div className="flex items-center justify-between flex-wrap gap-4">
                     <div>
-                        <h2 className="text-h2-size text-h2-color text-h2-font text-h2-weight mb-2">Course Management</h2>
+                        <h1 className="text-h1-size font-bold mb-1">Course Management</h1>
                         <p className="text-p-font text-p-size text-p-color">
                             Create, edit, and manage your educational courses.
                         </p>

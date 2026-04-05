@@ -63,41 +63,40 @@ export const ExplorePage: React.FC = () => {
     };
 
     return (
-        <div className="p-6">
-            {/* Page Title */}
-            <div className="mb-8">
-                <h2 className="text-h2-size text-h2-color text-h2-font text-h2-weight mb-2">
-                    Explore Courses
-                </h2>
-                <p className="text-p-font text-p-size text-p-color">
-                    Discover amazing courses to boost your skills
-                </p>
-            </div>
+        <main className="flex-1 p-8 overflow-auto">
+            <div className="max-w-7xl mx-auto">
+                {/* Page Title */}
+                <div className="mb-6">
+                    <h1 className="text-h1-size font-bold mb-1">
+                        Explore Courses
+                    </h1>
+                    <p className="text-p-font text-p-size text-p-color">
+                        Discover amazing courses to boost your skills
+                    </p>
+                </div>
 
-            {/* Stats Bar */}
-            <div className="palette-surface palette-border border rounded-xl p-6 mb-8">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="text-center">
-                        <p className="text-3xl font-black text-p-color">{courses.length}</p>
-                        <p className="text-sm text-p-color opacity-60">Courses</p>
-                    </div>
-                    <div className="text-center">
-                        <p className="text-3xl font-black text-p-color">{categories.length}</p>
-                        <p className="text-sm text-p-color opacity-60">Categories</p>
-                    </div>
-                    <div className="text-center">
-                        <p className="text-3xl font-black text-p-color">{levels.length}</p>
-                        <p className="text-sm text-p-color opacity-60">Levels</p>
-                    </div>
-                    <div className="text-center">
-                        <p className="text-3xl font-black text-p-color">∞</p>
-                        <p className="text-sm text-p-color opacity-60">Knowledge</p>
+                {/* Stats Bar */}
+                <div className="palette-surface palette-border border rounded-xl p-6 mb-6">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div className="text-center">
+                            <p className="text-3xl font-black text-p-color">{courses.length}</p>
+                            <p className="text-sm text-p-color opacity-60">Courses</p>
+                        </div>
+                        <div className="text-center">
+                            <p className="text-3xl font-black text-p-color">{categories.length}</p>
+                            <p className="text-sm text-p-color opacity-60">Categories</p>
+                        </div>
+                        <div className="text-center">
+                            <p className="text-3xl font-black text-p-color">{levels.length}</p>
+                            <p className="text-sm text-p-color opacity-60">Levels</p>
+                        </div>
+                        <div className="text-center">
+                            <p className="text-3xl font-black text-p-color">∞</p>
+                            <p className="text-sm text-p-color opacity-60">Knowledge</p>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            {/* Main Content */}
-            <main className="max-w-7xl mx-auto">
                 {/* Filters */}
                 <ExploreFilters
                     categories={categories}
@@ -145,7 +144,7 @@ export const ExplorePage: React.FC = () => {
 
                 {/* Course Grid */}
                 <ExploreGrid courses={courses} isLoading={isLoading} onViewDetails={(id) => navigate(isAuthenticated ? `/dashboard?tab=course-details&courseId=${id}` : `/course/${id}`)} />
-            </main>
-        </div>
+            </div>
+        </main>
     );
 };

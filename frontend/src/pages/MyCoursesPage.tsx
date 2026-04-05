@@ -202,8 +202,13 @@ export default function MyCoursesPage() {
         <main className="flex-1 p-8 overflow-auto">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
-                <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-h2-font text-h2-size text-h2-color text-h2-weight">My Courses</h2>
+                <div className="flex items-start justify-between mb-6">
+                    <div>
+                        <h1 className="text-h1-size font-bold mb-1">My Courses</h1>
+                        <p className="text-p-font text-p-size text-p-color">
+                            Track your enrolled courses, licenses, and learning progress.
+                        </p>
+                    </div>
                     <button
                         onClick={() => { setRedeemModalOpen(true); setRedeemError(null); setRedeemCode(''); }}
                         className="theme-button theme-button-primary inline-flex items-center gap-2"

@@ -24,13 +24,13 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNavigate, on
     };
 
     return (
-        <header className="dashboard-header palette-surface z-40 px-4 lg:px-6 py-4 flex items-center justify-between gap-4 border-b border-[var(--palette-border)]">
+        <header className="dashboard-header palette-surface z-40 px-4 lg:px-6 py-4 flex items-center justify-between gap-4 border-b palette-border">
             {/* Left Side: Hamburger + Logo + Search */}
             <div className="flex items-center gap-2 lg:gap-4 flex-1 min-w-0">
                 {/* Mobile Hamburger Menu */}
                 <button
                     onClick={onMenuToggle}
-                    className="lg:hidden p-2 rounded-lg text-[var(--text-p-color)] hover:bg-[var(--palette-border)] transition-colors"
+                    className="lg:hidden p-2 rounded-lg text-p-color hover:bg-palette-border transition-colors"
                 >
                     <Menu className="w-6 h-6" />
                 </button>
@@ -48,12 +48,12 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNavigate, on
 
                 {/* Search Bar */}
                 <div className="flex-1 min-w-0 max-w-xs sm:max-w-xl">
-                    <div className="relative">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-p-color" />
+                    <div className="flex items-center palette-surface palette-border border rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-palette-primary">
+                        <Search className="w-4 h-4 text-p-color flex-shrink-0 ml-3" />
                         <input
                             type="text"
                             placeholder="Search..."
-                            className="w-full pl-10 pr-4 py-2 rounded-lg palette-surface palette-border border text-p-color placeholder-[var(--palette-text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
+                            className="flex-1 min-w-0 py-2 pl-2 pr-4 bg-transparent text-p-font text-p-size text-p-color text-p-line-height placeholder:text-p-color placeholder:opacity-60 focus:outline-none"
                         />
                     </div>
                 </div>
@@ -66,8 +66,8 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNavigate, on
                     <button
                         onClick={() => setPaletteMode('light')}
                         className={`p-2 rounded-lg transition-colors ${currentMode === 'light'
-                                ? 'palette-primary'
-                                : 'bg-transparent'
+                            ? 'palette-primary'
+                            : 'bg-transparent'
                             }`}
                         title="Light Mode"
                     >
@@ -76,8 +76,8 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNavigate, on
                     <button
                         onClick={() => setPaletteMode('dark')}
                         className={`p-2 rounded-lg transition-colors ${currentMode === 'dark'
-                                ? 'palette-primary'
-                                : 'bg-transparent'
+                            ? 'palette-primary'
+                            : 'bg-transparent'
                             }`}
                         title="Dark Mode"
                     >
@@ -86,8 +86,8 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNavigate, on
                     <button
                         onClick={() => setPaletteMode('accessibility')}
                         className={`p-2 rounded-lg transition-colors ${currentMode === 'accessibility'
-                                ? 'palette-primary'
-                                : 'bg-transparent'
+                            ? 'palette-primary'
+                            : 'bg-transparent'
                             }`}
                         title="Accessibility Mode"
                     >
@@ -111,13 +111,13 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNavigate, on
                                 <h3 className="font-medium text-p-color">Notifications</h3>
                             </div>
                             <div className="max-h-64 overflow-y-auto">
-                                <div className="group px-4 py-3 text-p-font text-p-size text-p-color hover:bg-[var(--palette-secondary)] hover:text-white cursor-pointer transition-colors">
+                                <div className="group px-4 py-3 text-p-font text-p-size text-p-color hover:bg-palette-secondary hover:text-white cursor-pointer transition-colors">
                                     <p className="text-p-font text-p-size">New lesson available in React Course</p>
-                                    <p className="text-xs palette-text-secondary mt-1 group-hover:[color:var(--palette-primary)]">2 hours ago</p>
+                                    <p className="text-xs text-p-color opacity-60 mt-1 group-hover:text-palette-primary">2 hours ago</p>
                                 </div>
-                                <div className="group px-4 py-3 text-p-font text-p-size text-p-color hover:bg-[var(--palette-secondary)] hover:text-white cursor-pointer transition-colors">
+                                <div className="group px-4 py-3 text-p-font text-p-size text-p-color hover:bg-palette-secondary hover:text-white cursor-pointer transition-colors">
                                     <p className="text-p-font text-p-size">You earned 100 XP!</p>
-                                    <p className="text-xs palette-text-secondary mt-1 group-hover:[color:var(--palette-primary)]">5 hours ago</p>
+                                    <p className="text-xs text-p-color opacity-60 mt-1 group-hover:text-palette-primary">5 hours ago</p>
                                 </div>
                             </div>
                         </div>

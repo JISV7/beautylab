@@ -193,6 +193,14 @@ export default function CompanyInfoPage() {
 
   return (
     <div className="p-6">
+      <div className="mb-6">
+        <h1 className="text-h1-size font-bold mb-1">Company Information</h1>
+        <p className="text-p-font text-p-size text-p-color">
+          Manage your company&apos;s legal name, RIF, fiscal address, and
+          branding details.
+        </p>
+      </div>
+
       <CompanyTable
         companies={companies}
         searchQuery={searchQuery}

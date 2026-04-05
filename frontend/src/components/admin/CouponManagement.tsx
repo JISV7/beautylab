@@ -205,9 +205,7 @@ export const CouponManagement: React.FC = () => {
         <div className="space-y-6">
             {/* Header */}
             <div>
-                <h2 className="text-h2-font text-h2-size text-h2-color text-h2-weight mb-2">
-                    Coupons
-                </h2>
+                <h1 className="text-h1-size font-bold mb-1">Coupons</h1>
                 <p className="text-p-font text-p-size text-p-color">
                     Create and manage discount codes. Each code can be used once per user.
                 </p>
@@ -311,11 +309,10 @@ export const CouponManagement: React.FC = () => {
                                         </td>
                                         <td className="py-3 px-4">
                                             <span
-                                                className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-bold ${
-                                                    coupon.is_active
+                                                className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-bold ${coupon.is_active
                                                         ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
                                                         : 'bg-gray-100 dark:bg-gray-800 text-gray-500'
-                                                }`}
+                                                    }`}
                                             >
                                                 {coupon.is_active ? 'Active' : 'Inactive'}
                                             </span>
@@ -362,11 +359,10 @@ export const CouponManagement: React.FC = () => {
                                     <button
                                         key={page}
                                         onClick={() => setCurrentPage(page)}
-                                        className={`w-8 h-8 rounded text-sm font-medium transition-colors ${
-                                            currentPage === page
+                                        className={`w-8 h-8 rounded text-sm font-medium transition-colors ${currentPage === page
                                                 ? 'bg-[var(--palette-primary)] text-white'
                                                 : 'hover:bg-[var(--palette-border)] text-p-color'
-                                        }`}
+                                            }`}
                                     >
                                         {page}
                                     </button>
@@ -518,7 +514,7 @@ export const CouponManagement: React.FC = () => {
             <ConfirmModal
                 isOpen={confirmModal.isOpen}
                 onClose={() => setConfirmModal((prev) => ({ ...prev, isOpen: false }))}
-                onConfirm={confirmModal.onConfirm || (() => {})}
+                onConfirm={confirmModal.onConfirm || (() => { })}
                 title={confirmModal.title}
                 message={confirmModal.message}
                 confirmText={confirmModal.confirmText}

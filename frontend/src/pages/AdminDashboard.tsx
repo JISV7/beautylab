@@ -73,8 +73,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToDash
                 <main className="flex-1 overflow-y-auto p-6">
                     {activeTab === 'dashboard' && (
                         <div>
-                            <h1 className="text-2xl font-bold text-[var(--text-h2-color)] mb-2">Admin Dashboard</h1>
-                            <p className="text-[var(--text-p-color)]">
+                            <h1 className="text-h1-size font-bold mb-1">Admin Dashboard</h1>
+                            <p className="text-p-font text-p-size text-p-color">
                                 Welcome to the Site Customizer.
                             </p>
                         </div>
@@ -91,8 +91,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToDash
                     )}
                     {activeTab === 'users' && (
                         <div>
-                            <h1 className="text-2xl font-bold text-[var(--text-h2-color)] mb-2">User Management</h1>
-                            <p className="text-[var(--text-p-color)]">
+                            <h1 className="text-h1-size font-bold mb-1">User Management</h1>
+                            <p className="text-p-font text-p-size text-p-color">
                                 User management features (Coming soon)...
                             </p>
                         </div>

@@ -351,9 +351,9 @@ export const CourseManagement: React.FC<CourseManagementProps> = ({ courseId, on
                                 {courseId ? 'Edit' : 'Create New'}
                             </span>
                         </nav>
-                        <h2 className="text-h2-size text-h2-color text-h2-font text-h2-weight">
+                        <h1 className="text-h1-size font-bold mb-1">
                             {courseId ? 'Edit Course' : 'Course Creation'}
-                        </h2>
+                        </h1>
                     </div>
                     <div className="flex gap-3">
                         <button

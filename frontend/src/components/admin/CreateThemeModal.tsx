@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
+import { Sparkles, Palette } from 'lucide-react';
 import { Modal } from './Modal';
 
 interface CreateThemeModalProps {
     isOpen: boolean;
     onClose: () => void;
     onSubmit: (name: string, description: string) => void;
-    onRandomSubmit: () => void;
+    onRandomSubmit: (baseColor: string) => void;
 }
 
 export const CreateThemeModal: React.FC<CreateThemeModalProps> = ({
@@ -16,6 +17,7 @@ export const CreateThemeModal: React.FC<CreateThemeModalProps> = ({
 }) => {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
+    const [baseColor, setBaseColor] = useState('');
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -23,12 +25,22 @@ export const CreateThemeModal: React.FC<CreateThemeModalProps> = ({
             onSubmit(name.trim(), description.trim());
             setName('');
             setDescription('');
+            setBaseColor('');
         }
+    };
+
+    const handleRandom = () => {
+        onRandomSubmit(baseColor);
+        setName('');
+        setDescription('');
+        setBaseColor('');
+        onClose();
     };
 
     const handleClose = () => {
         setName('');
         setDescription('');
+        setBaseColor('');
         onClose();
     };
 
@@ -52,10 +64,11 @@ export const CreateThemeModal: React.FC<CreateThemeModalProps> = ({
                         Create Theme
                     </button>
                     <button
-                        onClick={onRandomSubmit}
-                        className="px-4 py-2 text-sm font-medium text-white theme-button-primary rounded-lg flex items-center gap-2"
+                        onClick={handleRandom}
+                        className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-palette-primary to-palette-accent hover:opacity-90 rounded-lg shadow-sm transition-opacity flex items-center gap-2"
                     >
-                        Random
+                        <Sparkles className="w-4 h-4" />
+                        Generate Theme
                     </button>
                 </>
             }
@@ -88,6 +101,42 @@ export const CreateThemeModal: React.FC<CreateThemeModalProps> = ({
                         className="theme-input w-full min-h-[100px] resize-y"
                         rows={3}
                     />
+                </div>
+                <div>
+                    <label className="block text-paragraph mb-2">
+                        Base Color <span className="opacity-50">(Optional)</span>
+                    </label>
+                    <div className="flex items-center gap-3">
+                        <div className="relative flex-shrink-0">
+                            <input
+                                type="color"
+                                value={baseColor || '#888888'}
+                                onChange={(e) => setBaseColor(e.target.value)}
+                                className="w-12 h-12 rounded-lg border-2 border-palette-border cursor-pointer"
+                                style={{ padding: 0 }}
+                            />
+                        </div>
+                        <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                                <Palette className="w-4 h-4 text-paragraph opacity-60" />
+                                <input
+                                    type="text"
+                                    value={baseColor}
+                                    onChange={(e) => {
+                                        const v = e.target.value;
+                                        if (v === '' || /^#[0-9A-Fa-f]{0,6}$/.test(v)) {
+                                            setBaseColor(v);
+                                        }
+                                    }}
+                                    placeholder="Leave empty for random, or enter #F83A3A"
+                                    className="theme-input w-full py-2 px-3 font-mono text-sm"
+                                />
+                            </div>
+                            <p className="text-xs text-paragraph opacity-60 mt-1.5">
+                                Pick a color for analogous palette generation (±30° hue). Leave empty for a fully random hue.
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </form>
         </Modal>

@@ -22,6 +22,30 @@ function hslToHex(h: number, s: number, l: number): string {
     return `#${f(0)}${f(8)}${f(4)}`;
 }
 
+// Helper to convert HEX to HSL
+function hexToHsl(hex: string): { h: number; s: number; l: number } {
+    const r = parseInt(hex.slice(1, 3), 16) / 255;
+    const g = parseInt(hex.slice(3, 5), 16) / 255;
+    const b = parseInt(hex.slice(5, 7), 16) / 255;
+
+    const max = Math.max(r, g, b);
+    const min = Math.min(r, g, b);
+    let h = 0, s = 0;
+    const l = (max + min) / 2;
+
+    if (max !== min) {
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+            case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
+            case g: h = ((b - r) / d + 2) / 6; break;
+            case b: h = ((r - g) / d + 4) / 6; break;
+        }
+    }
+
+    return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
+}
+
 // Helper to create a complete default theme config with all required fields
 function createDefaultThemeConfig(
     defaultFontId: string,
@@ -188,10 +212,17 @@ const toThemePalette = (
 });
 
 export const UnifiedThemeConfig: React.FC = () => {
-    // Helper for random color generation (analogous colors for both modes)
-    const generateAnalogousColors = () => {
-        const h = Math.floor(Math.random() * 360);
-        const s = 75 + Math.floor(Math.random() * 15); // 75-90% (vibrant)
+    // Helper for generating analogous colors from an optional base color
+    const generateAnalogousColors = (baseColor: string) => {
+        let h: number, s: number;
+        if (baseColor && /^#[0-9A-Fa-f]{6}$/.test(baseColor)) {
+            const hsl = hexToHsl(baseColor);
+            h = hsl.h;
+            s = Math.max(hsl.s, 75);
+        } else {
+            h = Math.floor(Math.random() * 360);
+            s = 75 + Math.floor(Math.random() * 15);
+        }
 
         const getColors = (pL: number, sL: number, aL: number) => ({
             primary: hslToHex(h, s, pL),
@@ -327,8 +358,8 @@ export const UnifiedThemeConfig: React.FC = () => {
         }
     };
 
-    const handleCreateRandomTheme = async () => {
-        const dualModeColors = generateAnalogousColors();
+    const handleCreateRandomTheme = async (baseColor: string) => {
+        const dualModeColors = generateAnalogousColors(baseColor);
         const date = new Date().toLocaleDateString();
         const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         const name = `Random ${date} ${time}`;

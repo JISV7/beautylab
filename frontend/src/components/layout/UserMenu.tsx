@@ -71,7 +71,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({
                 <div className="w-8 h-8 rounded-full bg-palette-primary/10 flex items-center justify-center">
                     <User className="w-4 h-4 text-palette-primary" />
                 </div>
-                <span className="text-p-font text-p-size text-p-color hidden md:inline">
+                <span className="text-paragraph hidden md:inline">
                     {userName}
                 </span>
             </button>
@@ -79,17 +79,17 @@ export const UserMenu: React.FC<UserMenuProps> = ({
             {isMenuOpen && (
                 <div className="absolute right-0 mt-2 w-fit palette-surface palette-border border rounded-xl shadow-lg py-1 z-50">
                     <div className="px-4 py-2 border-b palette-border">
-                        <p className="text-p-font text-p-size text-p-color font-semibold whitespace-nowrap">
+                        <p className="text-paragraph font-semibold whitespace-nowrap">
                             {userName}
                         </p>
-                        <p className="text-p-font text-p-size text-p-color whitespace-nowrap opacity-75">
+                        <p className="text-paragraph whitespace-nowrap opacity-75">
                             {user?.email}
                         </p>
                     </div>
                     {isOnHome ? (
                         <button
                             onClick={handleGoToDashboard}
-                            className="w-full text-left px-4 py-2 text-p-font text-p-size text-p-color hover:bg-palette-primary hover:text-white flex items-center gap-2 transition-colors"
+                            className="w-full text-left px-4 py-2 text-paragraph hover:bg-palette-primary hover:text-white flex items-center gap-2 transition-colors"
                         >
                             <Home className="w-4 h-4 rotate-180" />
                             Go to Dashboard
@@ -97,7 +97,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({
                     ) : (
                         <button
                             onClick={handleGoToHome}
-                            className="w-full text-left px-4 py-2 text-p-font text-p-size text-p-color hover:bg-palette-primary hover:text-white flex items-center gap-2 transition-colors"
+                            className="w-full text-left px-4 py-2 text-paragraph hover:bg-palette-primary hover:text-white flex items-center gap-2 transition-colors"
                         >
                             <Home className="w-4 h-4" />
                             Go to Home
@@ -106,7 +106,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({
                     {user?.isAdmin && (
                         <button
                             onClick={handleAdminPanel}
-                            className="w-full text-left px-4 py-2 text-p-font text-p-size text-p-color hover:bg-palette-primary hover:text-white flex items-center gap-2 transition-colors"
+                            className="w-full text-left px-4 py-2 text-paragraph hover:bg-palette-primary hover:text-white flex items-center gap-2 transition-colors"
                         >
                             <Shield className="w-4 h-4" />
                             Admin Panel
@@ -117,7 +117,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({
                             setIsMenuOpen(false);
                             onLogout?.();
                         }}
-                        className="w-full text-left px-4 py-2 text-p-font text-p-size text-p-color hover:bg-palette-primary hover:text-white flex items-center gap-2 transition-colors rounded-b-xl"
+                        className="w-full text-left px-4 py-2 text-paragraph hover:bg-palette-primary hover:text-white flex items-center gap-2 transition-colors rounded-b-xl"
                     >
                         <LogOut className="w-4 h-4" />
                         Sign Out

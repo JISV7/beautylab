@@ -44,7 +44,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
             `}>
                 {/* Mobile Close Button */}
                 <div className="lg:hidden flex items-center justify-between p-4 border-b palette-border">
-                    <span className="text-h4-size text-h4-color font-bold">Menu</span>
+                    <span className="text-h4">Menu</span>
                     <button onClick={onClose} className="p-2 text-p-color">
                         <X className="w-5 h-5" />
                     </button>
@@ -62,7 +62,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                                 onClick={() => handleClick(item.id)}
                                 className={`
                                     w-full flex items-center gap-3 px-4 py-3 rounded-lg
-                                    text-p-size text-p-color text-p-font transition-all
+                                    text-paragraph transition-all
                                     ${isActive
                                         ? 'bg-palette-primary text-p-color'
                                         : 'text-p-color hover:bg-palette-border'

@@ -42,7 +42,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({ onBack, onMenuToggle, 
                     >
                         <Code2 className="w-5 h-5 text-white" />
                     </div>
-                    <span className="text-h4-font text-h4-size text-h4-color text-h4-weight font-bold hidden sm:inline">Codyn</span>
+                    <span className="text-h4 font-bold hidden sm:inline">Codyn</span>
                 </a>
 
                 {/* Search Bar */}
@@ -52,7 +52,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({ onBack, onMenuToggle, 
                         <input
                             type="text"
                             placeholder="Search..."
-                            className="flex-1 min-w-0 py-2 pl-2 pr-4 bg-transparent text-p-font text-p-size text-p-color text-p-line-height placeholder:text-p-color placeholder:opacity-60 focus:outline-none"
+                            className="flex-1 min-w-0 py-2 pl-2 pr-4 bg-transparent text-paragraph placeholder:text-p-color placeholder:opacity-60 focus:outline-none"
                         />
                     </div>
                 </div>
@@ -63,10 +63,10 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({ onBack, onMenuToggle, 
                 {/* Back to Dashboard */}
                 <button
                     onClick={onBack}
-                    className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-lg text-p-size text-p-color hover:bg-palette-border transition-colors text-p-font"
+                    className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-lg text-paragraph hover:bg-palette-border transition-colors"
                 >
                     <ArrowLeft className="w-4 h-4" />
-                    <span className="font-medium">Back to Dashboard</span>
+                    <span>Back to Dashboard</span>
                 </button>
 
                 {/* Theme Toggle */}
@@ -116,16 +116,16 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({ onBack, onMenuToggle, 
                     {isNotificationOpen && (
                         <div className="absolute right-0 mt-2 w-80 palette-surface palette-border border rounded-xl shadow-lg py-2 z-50">
                             <div className="px-4 py-2 border-b palette-border">
-                                <h3 className="font-medium text-p-color">Notifications</h3>
+                                <h3 className="text-h3">Notifications</h3>
                             </div>
                             <div className="max-h-64 overflow-y-auto">
-                                <div className="group px-4 py-3 text-p-font text-p-size text-p-color hover:bg-palette-secondary hover:text-white cursor-pointer transition-colors">
-                                    <p className="text-p-font text-p-size">Theme updated successfully</p>
-                                    <p className="text-xs text-p-color opacity-60 mt-1 group-hover:text-palette-primary">2 hours ago</p>
+                                <div className="group px-4 py-3 text-paragraph hover:bg-palette-secondary hover:text-white cursor-pointer transition-colors">
+                                    <p className="text-paragraph">Theme updated successfully</p>
+                                    <p className="text-paragraph opacity-60 mt-1 group-hover:text-palette-primary">2 hours ago</p>
                                 </div>
-                                <div className="group px-4 py-3 text-p-font text-p-size text-p-color hover:bg-palette-secondary hover:text-white cursor-pointer transition-colors">
-                                    <p className="text-p-font text-p-size">New user registered</p>
-                                    <p className="text-xs text-p-color opacity-60 mt-1 group-hover:text-palette-primary">5 hours ago</p>
+                                <div className="group px-4 py-3 text-paragraph hover:bg-palette-secondary hover:text-white cursor-pointer transition-colors">
+                                    <p className="text-paragraph">New user registered</p>
+                                    <p className="text-paragraph opacity-60 mt-1 group-hover:text-palette-primary">5 hours ago</p>
                                 </div>
                             </div>
                         </div>

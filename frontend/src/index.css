@@ -29,36 +29,51 @@
   .palette-background { background-color: var(--palette-background); }
   .palette-border { border-color: var(--palette-border); }
 
-  /* ==================== Typography Utilities ==================== */
+  /* ==================== Composite Typography Utilities ==================== */
+  .text-h1 { font-family: var(--text-h1-font); font-size: var(--text-h1-size); color: var(--text-h1-color); font-weight: var(--text-h1-weight); line-height: var(--text-h1-line-height); }
+  .text-h2 { font-family: var(--text-h2-font); font-size: var(--text-h2-size); color: var(--text-h2-color); font-weight: var(--text-h2-weight); line-height: var(--text-h2-line-height); }
+  .text-h3 { font-family: var(--text-h3-font); font-size: var(--text-h3-size); color: var(--text-h3-color); font-weight: var(--text-h3-weight); line-height: var(--text-h3-line-height); }
+  .text-h4 { font-family: var(--text-h4-font); font-size: var(--text-h4-size); color: var(--text-h4-color); font-weight: var(--text-h4-weight); line-height: var(--text-h4-line-height); }
+  .text-h5 { font-family: var(--text-h5-font); font-size: var(--text-h5-size); color: var(--text-h5-color); font-weight: var(--text-h5-weight); line-height: var(--text-h5-line-height); }
+  .text-h6 { font-family: var(--text-h6-font); font-size: var(--text-h6-size); color: var(--text-h6-color); font-weight: var(--text-h6-weight); line-height: var(--text-h6-line-height); }
+  .text-paragraph { font-family: var(--text-p-font); font-size: var(--text-p-size); color: var(--text-p-color); font-weight: var(--text-p-weight); line-height: var(--text-p-line-height); }
+
+  /* ==================== Individual Typography Utilities (legacy) ==================== */
   .text-h1-font { font-family: var(--text-h1-font); }
   .text-h1-size { font-size: var(--text-h1-size); }
   .text-h1-color { color: var(--text-h1-color); }
   .text-h1-weight { font-weight: var(--text-h1-weight); }
+  .text-h1-line-height { line-height: var(--text-h1-line-height); }
 
   .text-h2-font { font-family: var(--text-h2-font); }
   .text-h2-size { font-size: var(--text-h2-size); }
   .text-h2-color { color: var(--text-h2-color); }
   .text-h2-weight { font-weight: var(--text-h2-weight); }
+  .text-h2-line-height { line-height: var(--text-h2-line-height); }
 
   .text-h3-font { font-family: var(--text-h3-font); }
   .text-h3-size { font-size: var(--text-h3-size); }
   .text-h3-color { color: var(--text-h3-color); }
   .text-h3-weight { font-weight: var(--text-h3-weight); }
+  .text-h3-line-height { line-height: var(--text-h3-line-height); }
 
   .text-h4-font { font-family: var(--text-h4-font); }
   .text-h4-size { font-size: var(--text-h4-size); }
   .text-h4-color { color: var(--text-h4-color); }
   .text-h4-weight { font-weight: var(--text-h4-weight); }
+  .text-h4-line-height { line-height: var(--text-h4-line-height); }
 
   .text-h5-font { font-family: var(--text-h5-font); }
   .text-h5-size { font-size: var(--text-h5-size); }
   .text-h5-color { color: var(--text-h5-color); }
   .text-h5-weight { font-weight: var(--text-h5-weight); }
+  .text-h5-line-height { line-height: var(--text-h5-line-height); }
 
   .text-h6-font { font-family: var(--text-h6-font); }
   .text-h6-size { font-size: var(--text-h6-size); }
   .text-h6-color { color: var(--text-h6-color); }
   .text-h6-weight { font-weight: var(--text-h6-weight); }
+  .text-h6-line-height { line-height: var(--text-h6-line-height); }
 
   .text-title-font { font-family: var(--text-title-font); }
   .text-title-size { font-size: var(--text-title-size); }

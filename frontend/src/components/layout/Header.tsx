@@ -33,24 +33,24 @@ export const Header: React.FC = () => {
             >
               <Code2 className="w-6 h-6 text-white" />
             </div>
-            <span className="text-h4-font text-h4-size text-h4-color text-h4-weight font-bold">Codyn</span>
+            <span className="text-h4 font-bold">Codyn</span>
           </a>
 
           {/* Navigation */}
           <nav className="hidden md:flex items-center gap-6">
-            <a href={isAuthenticated ? '/dashboard?tab=explore' : '/explore'} className="text-p-font text-p-size text-p-color hover:palette-primary transition-colors">
+            <a href={isAuthenticated ? '/dashboard?tab=explore' : '/explore'} className="text-paragraph hover:palette-primary transition-colors">
               Explore
             </a>
-            <a href="/#courses" className="text-p-font text-p-size text-p-color hover:palette-primary transition-colors">
+            <a href="/#courses" className="text-paragraph hover:palette-primary transition-colors">
               Courses
             </a>
-            <a href="/#services" className="text-p-font text-p-size text-p-color hover:palette-primary transition-colors">
+            <a href="/#services" className="text-paragraph hover:palette-primary transition-colors">
               Services
             </a>
-            <a href="/#about" className="text-p-font text-p-size text-p-color hover:palette-primary transition-colors">
+            <a href="/#about" className="text-paragraph hover:palette-primary transition-colors">
               About
             </a>
-            <a href="/#contact" className="text-p-font text-p-size text-p-color hover:palette-primary transition-colors">
+            <a href="/#contact" className="text-paragraph hover:palette-primary transition-colors">
               Contact
             </a>
           </nav>

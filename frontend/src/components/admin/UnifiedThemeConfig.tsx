@@ -56,18 +56,18 @@ function hexToHsl(hex: string): { h: number; s: number; l: number } {
 const CVD_MATRICES: Record<string, number[][]> = {
     protanopia: [
         [0.152286, 1.052583, -0.204868],
-        [0.114503, 0.786281,  0.099216],
+        [0.114503, 0.786281, 0.099216],
         [-0.003882, -0.048116, 1.051998],
     ],
     deuteranopia: [
         [0.367322, 0.860646, -0.227968],
-        [0.280085, 0.672501,  0.047413],
-        [-0.011820, 0.042940,  0.968881],
+        [0.280085, 0.672501, 0.047413],
+        [-0.011820, 0.042940, 0.968881],
     ],
     tritanopia: [
         [1.255528, -0.076749, -0.178779],
-        [0.078212,  0.930766, -0.008979],
-        [0.004733,  0.691367,  0.303900],
+        [0.078212, 0.930766, -0.008979],
+        [0.004733, 0.691367, 0.303900],
     ],
 };
 
@@ -650,15 +650,22 @@ export const UnifiedThemeConfig: React.FC = () => {
         }
     };
 
-    const handleSaveTheme = async (colors: ColorPalette, styles: Record<string, TypographyStyle>) => {
+    const handleSaveTheme = async (
+        buffers: Record<string, { colors: ColorPalette; styles: Record<string, TypographyStyle> }>,
+        _activeMode: string
+    ) => {
         if (!activeTheme) return;
 
-        const currentPalette = activeTheme.config[activeMode];
-        const newPalette = toThemePalette(colors, styles, currentPalette);
-        const newConfig: ThemeConfig = {
-            ...activeTheme.config,
-            [activeMode]: newPalette
-        };
+        // Build the full config with ALL three modes from the editor buffers
+        const modes = ['light', 'dark', 'accessibility'] as const;
+        const newConfig: ThemeConfig = { ...activeTheme.config };
+
+        for (const mode of modes) {
+            const buf = buffers[mode];
+            if (buf) {
+                newConfig[mode] = toThemePalette(buf.colors, buf.styles, activeTheme.config[mode]);
+            }
+        }
 
         try {
             const updated = await updateTheme(activeTheme.id, { config: newConfig });

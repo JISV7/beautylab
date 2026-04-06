@@ -1,4 +1,4 @@
-import type { Theme, Font, ThemePalette } from '../../data/theme.types';
+import type { Theme, Font } from '../../data/theme.types';
 
 export interface TypographyStyle {
     fontFamily: string;
@@ -32,7 +32,7 @@ export interface ThemeEditorProps {
     theme: Theme;
     activeMode: 'light' | 'dark' | 'accessibility';
     onModeChange: (mode: 'light' | 'dark' | 'accessibility') => void;
-    onSave: (colors: ColorPalette, styles: Record<string, TypographyStyle>, currentPalette: ThemePalette) => void;
+    onSave: (buffers: Record<string, { colors: ColorPalette; styles: Record<string, TypographyStyle> }>, activeMode: string) => void;
     onPublish: () => void;
     onPreview: () => void;
     onBack: () => void;

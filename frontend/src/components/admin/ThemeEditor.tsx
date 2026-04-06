@@ -84,149 +84,154 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
         }));
     };
 
-    // Color state
-    const [colors, setColors] = React.useState<ColorPalette>({
-        primary: theme.config[activeMode].colors.primary,
-        secondary: theme.config[activeMode].colors.secondary,
-        accent: theme.config[activeMode].colors.accent,
-        background: theme.config[activeMode].colors.background,
-        surface: theme.config[activeMode].colors.surface,
-        border: theme.config[activeMode].colors.border,
-        decorator: theme.config[activeMode].colors.decorator || theme.config[activeMode].typography.decorator?.color || '#ffffff',
-    });
+    // Initialize from the theme's current active mode
+    const initialMode = activeMode;
+    const initialColors: ColorPalette = {
+        primary: theme.config[initialMode].colors.primary,
+        secondary: theme.config[initialMode].colors.secondary,
+        accent: theme.config[initialMode].colors.accent,
+        background: theme.config[initialMode].colors.background,
+        surface: theme.config[initialMode].colors.surface,
+        border: theme.config[initialMode].colors.border,
+        decorator: theme.config[initialMode].colors.decorator || theme.config[initialMode].typography.decorator?.color || '#ffffff',
+    };
 
-    // Typography state
-    const [styles, setStyles] = React.useState<Record<string, TypographyStyle>>({
+    const initialStyles: Record<string, TypographyStyle> = {
         h1: {
-            fontFamily: theme.config[activeMode].typography.h1?.fontName || 'Roboto',
-            fontId: theme.config[activeMode].typography.h1?.fontId || '',
-            size: parseFloat(theme.config[activeMode].typography.h1?.fontSize || '2.492'),
-            color: theme.config[activeMode].typography.h1?.color || '#000000',
-            fontWeight: theme.config[activeMode].typography.h1?.fontWeight || 400,
-            lineHeight: theme.config[activeMode].typography.h1?.lineHeight || '1.2'
+            fontFamily: theme.config[initialMode].typography.h1?.fontName || 'Roboto',
+            fontId: theme.config[initialMode].typography.h1?.fontId || '',
+            size: parseFloat(theme.config[initialMode].typography.h1?.fontSize || '2.492'),
+            color: theme.config[initialMode].typography.h1?.color || '#000000',
+            fontWeight: theme.config[initialMode].typography.h1?.fontWeight || 400,
+            lineHeight: theme.config[initialMode].typography.h1?.lineHeight || '1.2'
         },
         h2: {
-            fontFamily: theme.config[activeMode].typography.h2?.fontName || 'Roboto',
-            fontId: theme.config[activeMode].typography.h2?.fontId || '',
-            size: parseFloat(theme.config[activeMode].typography.h2?.fontSize || '2.074'),
-            color: theme.config[activeMode].typography.h2?.color || '#000000',
-            fontWeight: theme.config[activeMode].typography.h2?.fontWeight || 400,
-            lineHeight: theme.config[activeMode].typography.h2?.lineHeight || '1.2'
+            fontFamily: theme.config[initialMode].typography.h2?.fontName || 'Roboto',
+            fontId: theme.config[initialMode].typography.h2?.fontId || '',
+            size: parseFloat(theme.config[initialMode].typography.h2?.fontSize || '2.074'),
+            color: theme.config[initialMode].typography.h2?.color || '#000000',
+            fontWeight: theme.config[initialMode].typography.h2?.fontWeight || 400,
+            lineHeight: theme.config[initialMode].typography.h2?.lineHeight || '1.2'
         },
         h3: {
-            fontFamily: theme.config[activeMode].typography.h3?.fontName || 'Roboto',
-            fontId: theme.config[activeMode].typography.h3?.fontId || '',
-            size: parseFloat(theme.config[activeMode].typography.h3?.fontSize || '1.73'),
-            color: theme.config[activeMode].typography.h3?.color || '#000000',
-            fontWeight: theme.config[activeMode].typography.h3?.fontWeight || 400,
-            lineHeight: theme.config[activeMode].typography.h3?.lineHeight || '1.3'
+            fontFamily: theme.config[initialMode].typography.h3?.fontName || 'Roboto',
+            fontId: theme.config[initialMode].typography.h3?.fontId || '',
+            size: parseFloat(theme.config[initialMode].typography.h3?.fontSize || '1.73'),
+            color: theme.config[initialMode].typography.h3?.color || '#000000',
+            fontWeight: theme.config[initialMode].typography.h3?.fontWeight || 400,
+            lineHeight: theme.config[initialMode].typography.h3?.lineHeight || '1.3'
         },
         h4: {
-            fontFamily: theme.config[activeMode].typography.h4?.fontName || 'Roboto',
-            fontId: theme.config[activeMode].typography.h4?.fontId || '',
-            size: parseFloat(theme.config[activeMode].typography.h4?.fontSize || '1.44'),
-            color: theme.config[activeMode].typography.h4?.color || '#000000',
-            fontWeight: theme.config[activeMode].typography.h4?.fontWeight || 400,
-            lineHeight: theme.config[activeMode].typography.h4?.lineHeight || '1.4'
+            fontFamily: theme.config[initialMode].typography.h4?.fontName || 'Roboto',
+            fontId: theme.config[initialMode].typography.h4?.fontId || '',
+            size: parseFloat(theme.config[initialMode].typography.h4?.fontSize || '1.44'),
+            color: theme.config[initialMode].typography.h4?.color || '#000000',
+            fontWeight: theme.config[initialMode].typography.h4?.fontWeight || 400,
+            lineHeight: theme.config[initialMode].typography.h4?.lineHeight || '1.4'
         },
         h5: {
-            fontFamily: theme.config[activeMode].typography.h5?.fontName || 'Roboto',
-            fontId: theme.config[activeMode].typography.h5?.fontId || '',
-            size: parseFloat(theme.config[activeMode].typography.h5?.fontSize || '1.2'),
-            color: theme.config[activeMode].typography.h5?.color || '#000000',
-            fontWeight: theme.config[activeMode].typography.h5?.fontWeight || 400,
-            lineHeight: theme.config[activeMode].typography.h5?.lineHeight || '1.4'
+            fontFamily: theme.config[initialMode].typography.h5?.fontName || 'Roboto',
+            fontId: theme.config[initialMode].typography.h5?.fontId || '',
+            size: parseFloat(theme.config[initialMode].typography.h5?.fontSize || '1.2'),
+            color: theme.config[initialMode].typography.h5?.color || '#000000',
+            fontWeight: theme.config[initialMode].typography.h5?.fontWeight || 400,
+            lineHeight: theme.config[initialMode].typography.h5?.lineHeight || '1.4'
         },
         h6: {
-            fontFamily: theme.config[activeMode].typography.h6?.fontName || 'Roboto',
-            fontId: theme.config[activeMode].typography.h6?.fontId || '',
-            size: parseFloat(theme.config[activeMode].typography.h6?.fontSize || '1.0'),
-            color: theme.config[activeMode].typography.h6?.color || '#000000',
-            fontWeight: theme.config[activeMode].typography.h6?.fontWeight || 400,
-            lineHeight: theme.config[activeMode].typography.h6?.lineHeight || '1.5'
+            fontFamily: theme.config[initialMode].typography.h6?.fontName || 'Roboto',
+            fontId: theme.config[initialMode].typography.h6?.fontId || '',
+            size: parseFloat(theme.config[initialMode].typography.h6?.fontSize || '1.0'),
+            color: theme.config[initialMode].typography.h6?.color || '#000000',
+            fontWeight: theme.config[initialMode].typography.h6?.fontWeight || 400,
+            lineHeight: theme.config[initialMode].typography.h6?.lineHeight || '1.5'
         },
         p: {
-            fontFamily: theme.config[activeMode].typography.paragraph?.fontName || 'Roboto',
-            fontId: theme.config[activeMode].typography.paragraph?.fontId || '',
-            size: parseFloat(theme.config[activeMode].typography.paragraph?.fontSize || '1.0'),
-            color: theme.config[activeMode].typography.paragraph?.color || '#000000',
-            fontWeight: theme.config[activeMode].typography.paragraph?.fontWeight || 400,
-            lineHeight: theme.config[activeMode].typography.paragraph?.lineHeight || '1.6'
+            fontFamily: theme.config[initialMode].typography.paragraph?.fontName || 'Roboto',
+            fontId: theme.config[initialMode].typography.paragraph?.fontId || '',
+            size: parseFloat(theme.config[initialMode].typography.paragraph?.fontSize || '1.0'),
+            color: theme.config[initialMode].typography.paragraph?.color || '#000000',
+            fontWeight: theme.config[initialMode].typography.paragraph?.fontWeight || 400,
+            lineHeight: theme.config[initialMode].typography.paragraph?.lineHeight || '1.6'
         }
+    };
+
+    // Per-mode editing buffers: each mode has its own colors/styles that persist
+    // across mode switches. Only reset by Discard or on component unmount.
+    type EditBuffer = { colors: ColorPalette; styles: Record<string, TypographyStyle> };
+    const editBufferRef = React.useRef<Record<string, EditBuffer>>({
+        light: { colors: initialColors, styles: initialStyles },
+        dark: { colors: initialColors, styles: initialStyles },
+        accessibility: { colors: initialColors, styles: initialStyles },
     });
+    const lastModeRef = React.useRef<string>(initialMode);
 
-    // Sync when mode changes
+    // Active view state — mirrors the buffer for the current mode
+    const [colors, setColors] = React.useState<ColorPalette>(initialColors);
+    const [styles, setStyles] = React.useState<Record<string, TypographyStyle>>(initialStyles);
+
+    // When mode changes: save current edits to buffer, load the new mode's buffer
     React.useEffect(() => {
-        const modeData = theme.config[activeMode];
-        setColors({
-            primary: modeData.colors.primary,
-            secondary: modeData.colors.secondary,
-            accent: modeData.colors.accent,
-            background: modeData.colors.background,
-            surface: modeData.colors.surface,
-            border: modeData.colors.border,
-            decorator: modeData.colors.decorator || modeData.typography.decorator?.color || '#ffffff',
-        });
+        const prevMode = lastModeRef.current;
+        // Save current editing state to the previous mode's buffer
+        editBufferRef.current[prevMode] = {
+            colors: { ...colors },
+            styles: { ...styles },
+        };
+        lastModeRef.current = activeMode;
+        // Load the target mode's buffer
+        const buf = editBufferRef.current[activeMode];
+        setColors(buf.colors);
+        setStyles(buf.styles);
+    }, [activeMode]);
 
-        setStyles({
-            h1: {
-                fontFamily: modeData.typography.h1?.fontName || 'Roboto',
-                fontId: modeData.typography.h1?.fontId || '',
-                size: parseFloat(modeData.typography.h1?.fontSize || '2.492'),
-                color: modeData.typography.h1?.color || '#000000',
-                fontWeight: modeData.typography.h1?.fontWeight || 400,
-                lineHeight: modeData.typography.h1?.lineHeight || '1.2'
-            },
-            h2: {
-                fontFamily: modeData.typography.h2?.fontName || 'Roboto',
-                fontId: modeData.typography.h2?.fontId || '',
-                size: parseFloat(modeData.typography.h2?.fontSize || '2.074'),
-                color: modeData.typography.h2?.color || '#000000',
-                fontWeight: modeData.typography.h2?.fontWeight || 400,
-                lineHeight: modeData.typography.h2?.lineHeight || '1.2'
-            },
-            h3: {
-                fontFamily: modeData.typography.h3?.fontName || 'Roboto',
-                fontId: modeData.typography.h3?.fontId || '',
-                size: parseFloat(modeData.typography.h3?.fontSize || '1.73'),
-                color: modeData.typography.h3?.color || '#000000',
-                fontWeight: modeData.typography.h3?.fontWeight || 400,
-                lineHeight: modeData.typography.h3?.lineHeight || '1.3'
-            },
-            h4: {
-                fontFamily: modeData.typography.h4?.fontName || 'Roboto',
-                fontId: modeData.typography.h4?.fontId || '',
-                size: parseFloat(modeData.typography.h4?.fontSize || '1.44'),
-                color: modeData.typography.h4?.color || '#000000',
-                fontWeight: modeData.typography.h4?.fontWeight || 400,
-                lineHeight: modeData.typography.h4?.lineHeight || '1.4'
-            },
-            h5: {
-                fontFamily: modeData.typography.h5?.fontName || 'Roboto',
-                fontId: modeData.typography.h5?.fontId || '',
-                size: parseFloat(modeData.typography.h5?.fontSize || '1.2'),
-                color: modeData.typography.h5?.color || '#000000',
-                fontWeight: modeData.typography.h5?.fontWeight || 400,
-                lineHeight: modeData.typography.h5?.lineHeight || '1.4'
-            },
-            h6: {
-                fontFamily: modeData.typography.h6?.fontName || 'Roboto',
-                fontId: modeData.typography.h6?.fontId || '',
-                size: parseFloat(modeData.typography.h6?.fontSize || '1.0'),
-                color: modeData.typography.h6?.color || '#000000',
-                fontWeight: modeData.typography.h6?.fontWeight || 400,
-                lineHeight: modeData.typography.h6?.lineHeight || '1.5'
-            },
-            p: {
-                fontFamily: modeData.typography.paragraph?.fontName || 'Roboto',
-                fontId: modeData.typography.paragraph?.fontId || '',
-                size: parseFloat(modeData.typography.paragraph?.fontSize || '1.0'),
-                color: modeData.typography.paragraph?.color || '#000000',
-                fontWeight: modeData.typography.paragraph?.fontWeight || 400,
-                lineHeight: modeData.typography.paragraph?.lineHeight || '1.6'
-            }
+    // When the saved theme config changes (after a successful save),
+    // sync ALL mode buffers from the server state so they reflect
+    // the latest persisted values. Also update the current view.
+    React.useEffect(() => {
+        for (const mode of ['light', 'dark', 'accessibility'] as const) {
+            const md = theme.config[mode];
+            editBufferRef.current[mode] = {
+                colors: {
+                    primary: md.colors.primary,
+                    secondary: md.colors.secondary,
+                    accent: md.colors.accent,
+                    background: md.colors.background,
+                    surface: md.colors.surface,
+                    border: md.colors.border,
+                    decorator: md.colors.decorator || md.typography.decorator?.color || '#ffffff',
+                },
+                styles: {
+                    h1: { fontFamily: md.typography.h1?.fontName || 'Roboto', fontId: md.typography.h1?.fontId || '', size: parseFloat(md.typography.h1?.fontSize || '2.492'), color: md.typography.h1?.color || '#000000', fontWeight: md.typography.h1?.fontWeight || 400, lineHeight: md.typography.h1?.lineHeight || '1.2' },
+                    h2: { fontFamily: md.typography.h2?.fontName || 'Roboto', fontId: md.typography.h2?.fontId || '', size: parseFloat(md.typography.h2?.fontSize || '2.074'), color: md.typography.h2?.color || '#000000', fontWeight: md.typography.h2?.fontWeight || 400, lineHeight: md.typography.h2?.lineHeight || '1.2' },
+                    h3: { fontFamily: md.typography.h3?.fontName || 'Roboto', fontId: md.typography.h3?.fontId || '', size: parseFloat(md.typography.h3?.fontSize || '1.73'), color: md.typography.h3?.color || '#000000', fontWeight: md.typography.h3?.fontWeight || 400, lineHeight: md.typography.h3?.lineHeight || '1.3' },
+                    h4: { fontFamily: md.typography.h4?.fontName || 'Roboto', fontId: md.typography.h4?.fontId || '', size: parseFloat(md.typography.h4?.fontSize || '1.44'), color: md.typography.h4?.color || '#000000', fontWeight: md.typography.h4?.fontWeight || 400, lineHeight: md.typography.h4?.lineHeight || '1.4' },
+                    h5: { fontFamily: md.typography.h5?.fontName || 'Roboto', fontId: md.typography.h5?.fontId || '', size: parseFloat(md.typography.h5?.fontSize || '1.2'), color: md.typography.h5?.color || '#000000', fontWeight: md.typography.h5?.fontWeight || 400, lineHeight: md.typography.h5?.lineHeight || '1.4' },
+                    h6: { fontFamily: md.typography.h6?.fontName || 'Roboto', fontId: md.typography.h6?.fontId || '', size: parseFloat(md.typography.h6?.fontSize || '1.0'), color: md.typography.h6?.color || '#000000', fontWeight: md.typography.h6?.fontWeight || 400, lineHeight: md.typography.h6?.lineHeight || '1.5' },
+                    p: { fontFamily: md.typography.paragraph?.fontName || 'Roboto', fontId: md.typography.paragraph?.fontId || '', size: parseFloat(md.typography.paragraph?.fontSize || '1.0'), color: md.typography.paragraph?.color || '#000000', fontWeight: md.typography.paragraph?.fontWeight || 400, lineHeight: md.typography.paragraph?.lineHeight || '1.6' },
+                },
+            };
+        }
+        // Also sync the current view
+        const md = theme.config[activeMode];
+        setColors({
+            primary: md.colors.primary, secondary: md.colors.secondary, accent: md.colors.accent,
+            background: md.colors.background, surface: md.colors.surface, border: md.colors.border,
+            decorator: md.colors.decorator || md.typography.decorator?.color || '#ffffff',
         });
-    }, [activeMode, theme]);
+        setStyles({
+            h1: { fontFamily: md.typography.h1?.fontName || 'Roboto', fontId: md.typography.h1?.fontId || '', size: parseFloat(md.typography.h1?.fontSize || '2.492'), color: md.typography.h1?.color || '#000000', fontWeight: md.typography.h1?.fontWeight || 400, lineHeight: md.typography.h1?.lineHeight || '1.2' },
+            h2: { fontFamily: md.typography.h2?.fontName || 'Roboto', fontId: md.typography.h2?.fontId || '', size: parseFloat(md.typography.h2?.fontSize || '2.074'), color: md.typography.h2?.color || '#000000', fontWeight: md.typography.h2?.fontWeight || 400, lineHeight: md.typography.h2?.lineHeight || '1.2' },
+            h3: { fontFamily: md.typography.h3?.fontName || 'Roboto', fontId: md.typography.h3?.fontId || '', size: parseFloat(md.typography.h3?.fontSize || '1.73'), color: md.typography.h3?.color || '#000000', fontWeight: md.typography.h3?.fontWeight || 400, lineHeight: md.typography.h3?.lineHeight || '1.3' },
+            h4: { fontFamily: md.typography.h4?.fontName || 'Roboto', fontId: md.typography.h4?.fontId || '', size: parseFloat(md.typography.h4?.fontSize || '1.44'), color: md.typography.h4?.color || '#000000', fontWeight: md.typography.h4?.fontWeight || 400, lineHeight: md.typography.h4?.lineHeight || '1.4' },
+            h5: { fontFamily: md.typography.h5?.fontName || 'Roboto', fontId: md.typography.h5?.fontId || '', size: parseFloat(md.typography.h5?.fontSize || '1.2'), color: md.typography.h5?.color || '#000000', fontWeight: md.typography.h5?.fontWeight || 400, lineHeight: md.typography.h5?.lineHeight || '1.4' },
+            h6: { fontFamily: md.typography.h6?.fontName || 'Roboto', fontId: md.typography.h6?.fontId || '', size: parseFloat(md.typography.h6?.fontSize || '1.0'), color: md.typography.h6?.color || '#000000', fontWeight: md.typography.h6?.fontWeight || 400, lineHeight: md.typography.h6?.lineHeight || '1.5' },
+            p: { fontFamily: md.typography.paragraph?.fontName || 'Roboto', fontId: md.typography.paragraph?.fontId || '', size: parseFloat(md.typography.paragraph?.fontSize || '1.0'), color: md.typography.paragraph?.color || '#000000', fontWeight: md.typography.paragraph?.fontWeight || 400, lineHeight: md.typography.paragraph?.lineHeight || '1.6' },
+        });
+    }, [
+        theme.config.light.colors.primary, theme.config.light.colors.secondary, theme.config.light.colors.accent,
+        theme.config.dark.colors.primary, theme.config.dark.colors.secondary, theme.config.dark.colors.accent,
+        theme.config.accessibility.colors.primary, theme.config.accessibility.colors.secondary, theme.config.accessibility.colors.accent,
+    ]);
 
     const handleColorChange = (key: keyof ColorPalette, value: string) => {
         setColors(prev => ({ ...prev, [key]: value }));
@@ -294,13 +299,19 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
             alert('Please fix the following typography errors before saving:\n\n' + validationErrors.join('\n'));
             return;
         }
-        const currentPalette = theme.config[activeMode];
-        onSave(colors, styles, currentPalette);
+        // Save the current mode's edits to the buffer first
+        editBufferRef.current[activeMode] = {
+            colors: { ...colors },
+            styles: { ...styles },
+        };
+        // Pass ALL mode buffers to the parent for full save
+        onSave(editBufferRef.current, activeMode);
     };
 
     const handleDiscard = () => {
+        // Build fresh state from the persisted theme config for the current mode
         const modeData = theme.config[activeMode];
-        setColors({
+        const resetColors: ColorPalette = {
             primary: modeData.colors.primary,
             secondary: modeData.colors.secondary,
             accent: modeData.colors.accent,
@@ -308,9 +319,9 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
             surface: modeData.colors.surface,
             border: modeData.colors.border,
             decorator: modeData.colors.decorator || modeData.typography.decorator?.color || '#ffffff',
-        });
+        };
 
-        setStyles({
+        const resetStyles: Record<string, TypographyStyle> = {
             h1: {
                 fontFamily: modeData.typography.h1?.fontName || 'Roboto',
                 fontId: modeData.typography.h1?.fontId || '',
@@ -367,7 +378,12 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                 fontWeight: modeData.typography.paragraph?.fontWeight || 400,
                 lineHeight: modeData.typography.paragraph?.lineHeight || '1.6'
             }
-        });
+        };
+
+        // Update the buffer AND the view
+        editBufferRef.current[activeMode] = { colors: resetColors, styles: resetStyles };
+        setColors(resetColors);
+        setStyles(resetStyles);
     };
 
     return (
@@ -452,11 +468,10 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                             <button
                                 key={mode}
                                 onClick={() => onModeChange(mode)}
-                                className={`px-4 py-2 text-sm font-bold rounded-lg transition-colors capitalize ${
-                                    activeMode === mode
+                                className={`px-4 py-2 text-sm font-bold rounded-lg transition-colors capitalize ${activeMode === mode
                                         ? 'theme-button theme-button-primary'
                                         : 'text-paragraph hover:bg-black/5 dark:hover:bg-white/5'
-                                }`}
+                                    }`}
                             >
                                 {mode}
                             </button>
@@ -467,22 +482,20 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                     <div className="flex gap-4 border-b palette-border">
                         <button
                             onClick={() => setActiveTab('colors')}
-                            className={`pb-2 flex items-center gap-2 font-medium transition-colors ${
-                                activeTab === 'colors'
+                            className={`pb-2 flex items-center gap-2 font-medium transition-colors ${activeTab === 'colors'
                                     ? 'text-palette-primary border-b-2 border-palette-primary'
                                     : 'text-paragraph hover:text-slate-900 dark:hover:text-white'
-                            }`}
+                                }`}
                         >
                             <Palette className="w-4 h-4" />
                             Colors
                         </button>
                         <button
                             onClick={() => setActiveTab('typography')}
-                            className={`pb-2 flex items-center gap-2 font-medium transition-colors ${
-                                activeTab === 'typography'
+                            className={`pb-2 flex items-center gap-2 font-medium transition-colors ${activeTab === 'typography'
                                     ? 'text-palette-primary border-b-2 border-palette-primary'
                                     : 'text-paragraph hover:text-slate-900 dark:hover:text-white'
-                            }`}
+                                }`}
                         >
                             <Type className="w-4 h-4" />
                             Typography

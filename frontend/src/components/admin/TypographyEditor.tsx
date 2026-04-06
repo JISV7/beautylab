@@ -94,9 +94,15 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
                             }`}
                             type="number"
                             step="0.1"
-                            value={style.size}
-                            onChange={(e) => onStyleChange('size', parseFloat(e.target.value) || 1)}
-                            min={minRequired || 0}
+                            min="0.1"
+                            max="10"
+                            value={Math.min(Math.max(style.size, 0.1), 10)}
+                            onChange={(e) => {
+                                const v = parseFloat(e.target.value);
+                                if (!isNaN(v)) {
+                                    onStyleChange('size', Math.min(Math.max(v, 0.1), 10));
+                                }
+                            }}
                         />
                         <span className={`absolute right-4 text-sm font-medium ${
                             hasError ? 'text-red-500' : 'text-slate-500'
@@ -121,8 +127,8 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
                             min="100"
                             max="900"
                             step="100"
-                            value={style.fontWeight || 400}
-                            onChange={(e) => onStyleChange('fontWeight', parseInt(e.target.value) || 400)}
+                            value={Math.min(Math.max(style.fontWeight || 400, 100), 900)}
+                            onChange={(e) => onStyleChange('fontWeight', Math.min(Math.max(parseInt(e.target.value) || 400, 100), 900))}
                         />
                         <span className="absolute right-4 text-sm text-slate-500 font-medium">wght</span>
                     </div>
@@ -140,8 +146,13 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
                             min="0.5"
                             max="3.0"
                             step="0.1"
-                            value={style.lineHeight || '1.5'}
-                            onChange={(e) => onStyleChange('lineHeight', e.target.value)}
+                            value={Math.min(Math.max(parseFloat(String(style.lineHeight || '1.5')), 0.5), 3.0)}
+                            onChange={(e) => {
+                                const v = parseFloat(e.target.value);
+                                if (!isNaN(v)) {
+                                    onStyleChange('lineHeight', String(Math.min(Math.max(v, 0.5), 3.0)));
+                                }
+                            }}
                         />
                         <span className="absolute right-4 text-sm text-slate-500 font-medium">lh</span>
                     </div>

@@ -173,7 +173,7 @@ export default function PrinterInfoPage() {
   if (loading && printers.length === 0) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="text-p-color">Loading...</div>
+        <div className="text-paragraph">Loading...</div>
       </div>
     );
   }
@@ -181,8 +181,8 @@ export default function PrinterInfoPage() {
   return (
     <div className="p-6">
       <div className="mb-6">
-        <h1 className="text-h1-size font-bold mb-1">Authorized Printer</h1>
-        <p className="text-p-font text-p-size text-p-color">
+        <h1 className="text-h1 mb-1">Authorized Printer</h1>
+        <p className="text-paragraph">
           Manage your authorized digital printer and SENIAT providence
           information for invoice generation.
         </p>
@@ -228,7 +228,7 @@ export default function PrinterInfoPage() {
         title="Set Active Printer"
         message={
           <>
-            <p className="text-p-color mb-3">
+            <p className="text-paragraph mb-3">
               Are you sure you want to set <strong>"{setActiveModal.printer?.businessName}"</strong> as the active printer?
             </p>
             <div
@@ -238,7 +238,7 @@ export default function PrinterInfoPage() {
                 borderColor: 'var(--palette-border)',
               }}
             >
-              <p className="text-sm text-[var(--text-p-color)] opacity-80">
+              <p className="text-sm text-[var(--text-paragraph)] opacity-80">
                 <strong>Note:</strong> This will automatically deactivate all other printers and their control number ranges. Only one printer can be active at a time.
               </p>
             </div>

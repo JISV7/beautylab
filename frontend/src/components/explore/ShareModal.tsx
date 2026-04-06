@@ -173,7 +173,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                             />
                         ) : (
                             <div className="w-full h-full flex items-center justify-center">
-                                <span className="text-p-color opacity-30 text-sm">No image</span>
+                                <span className="text-paragraph opacity-30 text-sm">No image</span>
                             </div>
                         )}
                         {/* Gradient overlay */}
@@ -208,7 +208,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                                     <div className="space-y-3">
                                         {/* Short description (2 lines) */}
                                         {modalDescription && (
-                                            <p className="text-p-font text-p-size text-p-color opacity-75 text-sm leading-relaxed line-clamp-2">
+                                            <p className="text-paragraph opacity-75 text-sm leading-relaxed line-clamp-2">
                                                 {modalDescription}
                                             </p>
                                         )}
@@ -216,25 +216,25 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                                         {/* Meta info */}
                                         <div className="grid grid-cols-2 gap-2 text-sm">
                                             {course.product_name && (
-                                                <div className="flex items-center gap-2 text-p-color opacity-75">
+                                                <div className="flex items-center gap-2 text-paragraph opacity-75">
                                                     <BookOpen className="w-4 h-4 flex-shrink-0" />
                                                     <span className="truncate">{course.product_name}</span>
                                                 </div>
                                             )}
                                             {course.product_sku && (
-                                                <div className="flex items-center gap-2 text-p-color opacity-75">
+                                                <div className="flex items-center gap-2 text-paragraph opacity-75">
                                                     <Package className="w-4 h-4 flex-shrink-0" />
                                                     <span>{course.product_sku}</span>
                                                 </div>
                                             )}
                                             {course.duration_hours && (
-                                                <div className="flex items-center gap-2 text-p-color opacity-75">
+                                                <div className="flex items-center gap-2 text-paragraph opacity-75">
                                                     <Clock className="w-4 h-4 flex-shrink-0" />
                                                     <span>{course.duration_hours}h</span>
                                                 </div>
                                             )}
                                             {course.level_name && (
-                                                <div className="flex items-center gap-2 text-p-color opacity-75">
+                                                <div className="flex items-center gap-2 text-paragraph opacity-75">
                                                     <Tag className="w-4 h-4 flex-shrink-0" />
                                                     <span>{course.level_name}</span>
                                                 </div>
@@ -245,7 +245,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                                         {formattedPrice && (
                                             <div className="pt-2 border-t border-[var(--palette-border)]">
                                                 <div className="flex items-baseline justify-between">
-                                                    <span className="text-xs text-p-color opacity-50 uppercase tracking-wider font-bold">
+                                                    <span className="text-xs text-paragraph opacity-50 uppercase tracking-wider font-bold">
                                                         Price
                                                     </span>
                                                     <span className="text-lg font-black text-[var(--palette-primary)]">
@@ -266,7 +266,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                                             className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[#0088cc]/10 hover:bg-[#0088cc]/20 text-[#0088cc] transition-colors"
                                         >
                                             <MessageCircle className="w-5 h-5 flex-shrink-0" />
-                                            <span className="text-p-font text-p-size font-medium">Share on Telegram</span>
+                                            <span className="text-paragraph font-medium">Share on Telegram</span>
                                         </a>
 
                                         {/* WhatsApp */}
@@ -277,7 +277,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                                             className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[#25D366]/10 hover:bg-[#25D366]/20 text-[#25D366] transition-colors"
                                         >
                                             <Phone className="w-5 h-5 flex-shrink-0" />
-                                            <span className="text-p-font text-p-size font-medium">Share on WhatsApp</span>
+                                            <span className="text-paragraph font-medium">Share on WhatsApp</span>
                                         </a>
 
                                         {/* Copy */}
@@ -288,9 +288,9 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                                             {copied ? (
                                                 <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
                                             ) : (
-                                                <Copy className="w-5 h-5 text-p-color opacity-60 flex-shrink-0" />
+                                                <Copy className="w-5 h-5 text-paragraph opacity-60 flex-shrink-0" />
                                             )}
-                                            <span className="text-p-font text-p-size font-medium text-p-color">
+                                            <span className="text-paragraph font-medium text-paragraph">
                                                 {copied ? 'Copied to clipboard!' : 'Copy to clipboard'}
                                             </span>
                                         </button>

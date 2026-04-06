@@ -65,7 +65,7 @@ export const ExploreCard: React.FC<ExploreCardProps> = ({ course, onViewDetails 
 
                 {/* Placeholder when no image */}
                 <div className={`w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-800 ${course.image_url ? 'hidden' : ''}`}>
-                    <span className="text-p-color opacity-40 text-sm">No image</span>
+                    <span className="text-paragraph opacity-40 text-sm">No image</span>
                 </div>
 
                 {/* Top-left Badges */}
@@ -108,12 +108,12 @@ export const ExploreCard: React.FC<ExploreCardProps> = ({ course, onViewDetails 
                 )}
 
                 {/* Title */}
-                <h3 className="text-h3-font text-h3-size text-h3-color mb-2 line-clamp-2 min-h-[2.8rem]">
+                <h3 className="text-h3 mb-2 line-clamp-2 min-h-[2.8rem]">
                     {course.title}
                 </h3>
 
                 {/* Description - 2 lines max */}
-                <p className="text-p-font text-p-size text-p-color mb-4 flex-grow line-clamp-2 opacity-75 text-sm leading-relaxed">
+                <p className="text-paragraph mb-4 flex-grow line-clamp-2 opacity-75 text-sm leading-relaxed">
                     {course.description || 'Discover this amazing course and expand your knowledge with our expert-led content.'}
                 </p>
 
@@ -135,10 +135,10 @@ export const ExploreCard: React.FC<ExploreCardProps> = ({ course, onViewDetails 
                 {/* Footer: Price & CTA */}
                 <div className="flex items-center justify-between mb-3">
                     <div>
-                        <p className="text-[10px] font-bold text-p-color opacity-40 uppercase tracking-wider">
+                        <p className="text-[10px] font-bold text-paragraph opacity-40 uppercase tracking-wider">
                             Price
                         </p>
-                        <p className="text-lg font-black text-p-color">
+                        <p className="text-lg font-black text-paragraph">
                             {formatPrice(course.price)}
                         </p>
                     </div>

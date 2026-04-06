@@ -33,13 +33,13 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onCheck
                 <div className="flex items-center justify-between p-4 border-b palette-border">
                     <div className="flex items-center gap-2">
                         <ShoppingCart className="w-5 h-5 text-[var(--palette-primary)]" />
-                        <h2 className="text-lg font-bold text-p-color">Shopping Cart</h2>
+                        <h2 className="text-lg font-bold text-paragraph">Shopping Cart</h2>
                     </div>
                     <button
                         onClick={onClose}
                         className="p-2 hover:bg-[var(--palette-border)] rounded-lg transition-colors"
                     >
-                        <X className="w-5 h-5 text-p-color" />
+                        <X className="w-5 h-5 text-paragraph" />
                     </button>
                 </div>
 
@@ -51,9 +51,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onCheck
                         </div>
                     ) : !cart || cart.items.length === 0 ? (
                         <div className="flex flex-col items-center justify-center h-full text-center">
-                            <ShoppingCart className="w-16 h-16 text-p-color opacity-20 mb-4" />
-                            <p className="text-p-color font-semibold">Your cart is empty</p>
-                            <p className="text-p-color opacity-60 text-sm mt-1">
+                            <ShoppingCart className="w-16 h-16 text-paragraph opacity-20 mb-4" />
+                            <p className="text-paragraph font-semibold">Your cart is empty</p>
+                            <p className="text-paragraph opacity-60 text-sm mt-1">
                                 Add courses to get started
                             </p>
                         </div>
@@ -66,10 +66,10 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onCheck
                                 >
                                     {/* Product Info */}
                                     <div className="flex-1 min-w-0">
-                                        <h3 className="font-semibold text-p-color truncate">
+                                        <h3 className="font-semibold text-paragraph truncate">
                                             {item.product_name || 'Course'}
                                         </h3>
-                                        <p className="text-xs text-p-color opacity-60">
+                                        <p className="text-xs text-paragraph opacity-60">
                                             SKU: {item.product_sku || 'N/A'}
                                         </p>
                                         <p className="text-sm font-bold text-[var(--palette-primary)] mt-1">
@@ -90,16 +90,16 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onCheck
                                                 }}
                                                 className="p-1 hover:bg-[var(--palette-border)] rounded transition-colors"
                                             >
-                                                <Minus className="w-4 h-4 text-p-color" />
+                                                <Minus className="w-4 h-4 text-paragraph" />
                                             </button>
-                                            <span className="w-8 text-center text-sm font-semibold text-p-color">
+                                            <span className="w-8 text-center text-sm font-semibold text-paragraph">
                                                 {item.quantity}
                                             </span>
                                             <button
                                                 onClick={() => updateQuantity(item.id, item.quantity + 1)}
                                                 className="p-1 hover:bg-[var(--palette-border)] rounded transition-colors"
                                             >
-                                                <Plus className="w-4 h-4 text-p-color" />
+                                                <Plus className="w-4 h-4 text-paragraph" />
                                             </button>
                                         </div>
                                         <button
@@ -119,15 +119,15 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onCheck
                 {/* Footer with Totals */}
                 {cart && cart.items.length > 0 && (
                     <div className="border-t palette-border p-4 space-y-3">
-                        <div className="flex justify-between text-sm text-p-color opacity-75">
+                        <div className="flex justify-between text-sm text-paragraph opacity-75">
                             <span>Subtotal</span>
                             <span>{formatPrice(cart.subtotal)}</span>
                         </div>
-                        <div className="flex justify-between text-sm text-p-color opacity-75">
+                        <div className="flex justify-between text-sm text-paragraph opacity-75">
                             <span>IVA ({cart.tax_total !== '0.00' ? '16%' : '0%'})</span>
                             <span>{formatPrice(cart.tax_total)}</span>
                         </div>
-                        <div className="flex justify-between text-lg font-bold text-p-color pt-2 border-t palette-border">
+                        <div className="flex justify-between text-lg font-bold text-paragraph pt-2 border-t palette-border">
                             <span>Total</span>
                             <span className="text-[var(--palette-primary)]">
                                 {formatPrice(cart.total)}

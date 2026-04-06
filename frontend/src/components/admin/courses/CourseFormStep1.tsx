@@ -124,15 +124,15 @@ export const CourseFormStep1: React.FC<CourseFormStep1Props> = ({
     return (
         <div className="theme-card p-6 space-y-6">
             <div className="flex items-center gap-2 mb-4">
-                <h3 className="text-h3-size text-h3-color text-h3-font text-h3-weight">
+                <h3 className="text-h3 text-h3 text-h3">
                     Step 1: Course Info
                 </h3>
-                <HelpCircle size={20} className="text-p-color opacity-40 cursor-help" />
+                <HelpCircle size={20} className="text-paragraph opacity-40 cursor-help" />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="md:col-span-2">
-                    <label className="block text-sm font-bold mb-2 text-p-color">
+                    <label className="block text-sm font-bold mb-2 text-paragraph">
                         Course Title
                     </label>
                     <input
@@ -146,11 +146,11 @@ export const CourseFormStep1: React.FC<CourseFormStep1Props> = ({
                 </div>
 
                 <div className="md:col-span-2">
-                    <label className="block text-sm font-bold mb-2 text-p-color">
+                    <label className="block text-sm font-bold mb-2 text-paragraph">
                         Slug
                     </label>
                     <div className="flex">
-                        <span className="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-[var(--palette-border)] bg-[var(--palette-surface)] text-p-color opacity-60 text-xs">
+                        <span className="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-[var(--palette-border)] bg-[var(--palette-surface)] text-paragraph opacity-60 text-xs">
                             beautylab.com/c/
                         </span>
                         <input
@@ -165,7 +165,7 @@ export const CourseFormStep1: React.FC<CourseFormStep1Props> = ({
                 </div>
 
                 <div className="md:col-span-2">
-                    <label className="block text-sm font-bold mb-2 text-p-color">
+                    <label className="block text-sm font-bold mb-2 text-paragraph">
                         Category Selection
                     </label>
                     <select
@@ -182,7 +182,7 @@ export const CourseFormStep1: React.FC<CourseFormStep1Props> = ({
                 </div>
 
                 <div className="md:col-span-2">
-                    <label className="block text-sm font-bold mb-2 text-p-color">
+                    <label className="block text-sm font-bold mb-2 text-paragraph">
                         Level Selection
                     </label>
                     <select
@@ -199,7 +199,7 @@ export const CourseFormStep1: React.FC<CourseFormStep1Props> = ({
                 </div>
 
                 <div>
-                    <label className="block text-sm font-bold mb-2 text-p-color">
+                    <label className="block text-sm font-bold mb-2 text-paragraph">
                         Duration (Hours)
                     </label>
                     <div className="relative">
@@ -212,14 +212,14 @@ export const CourseFormStep1: React.FC<CourseFormStep1Props> = ({
                             placeholder="40"
                             min="0"
                         />
-                        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-p-color opacity-40 text-xs font-bold">
+                        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-paragraph opacity-40 text-xs font-bold">
                             hrs
                         </span>
                     </div>
                 </div>
 
                 <div className="md:col-span-2">
-                    <label className="block text-sm font-bold mb-2 text-p-color">
+                    <label className="block text-sm font-bold mb-2 text-paragraph">
                         Description
                     </label>
                     <textarea
@@ -232,7 +232,7 @@ export const CourseFormStep1: React.FC<CourseFormStep1Props> = ({
                 </div>
 
                 <div className="md:col-span-2">
-                    <label className="block text-sm font-bold mb-2 text-p-color">
+                    <label className="block text-sm font-bold mb-2 text-paragraph">
                         Course Image
                     </label>
                     <div className="space-y-3">
@@ -251,8 +251,8 @@ export const CourseFormStep1: React.FC<CourseFormStep1Props> = ({
                                 disabled={uploading}
                                 className="px-4 border border-[var(--palette-border)] rounded-lg hover:bg-[var(--palette-surface)] transition-colors flex items-center gap-2 disabled:opacity-50"
                             >
-                                <Upload size={18} className="text-p-color opacity-60" />
-                                <span className="text-sm font-bold text-p-color">
+                                <Upload size={18} className="text-paragraph opacity-60" />
+                                <span className="text-sm font-bold text-paragraph">
                                     {uploading ? 'Uploading...' : 'Browse'}
                                 </span>
                             </button>

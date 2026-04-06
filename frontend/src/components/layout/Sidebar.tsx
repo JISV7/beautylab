@@ -42,7 +42,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 {/* Mobile Close Button */}
                 <div className="lg:hidden flex items-center justify-between p-4 border-b palette-border">
                     <span className="text-h4">Menu</span>
-                    <button onClick={onClose} className="p-2 text-p-color">
+                    <button onClick={onClose} className="p-2 text-paragraph">
                         <X className="w-5 h-5" />
                     </button>
                 </div>
@@ -61,8 +61,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
                                     w-full flex items-center gap-3 px-4 py-3 rounded-lg
                                     text-paragraph transition-all
                                     ${isActive
-                                        ? 'bg-palette-primary text-p-color'
-                                        : 'text-p-color hover:bg-palette-border'
+                                        ? 'bg-palette-primary text-paragraph'
+                                        : 'text-paragraph hover:bg-palette-border'
                                     }
                                 `}
                             >

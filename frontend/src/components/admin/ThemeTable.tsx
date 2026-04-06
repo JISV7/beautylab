@@ -77,7 +77,7 @@ export const ThemeTable: React.FC<ThemeTableProps> = ({
                 <thead className="bg-black/5 dark:bg-white/5 border-b palette-border">
                     <tr>
                         <th
-                            className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-bold text-p-color cursor-pointer hover:opacity-70 whitespace-nowrap"
+                            className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-bold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap"
                             onClick={() => onSort('name')}
                             role="columnheader"
                             aria-sort={sortColumn === 'name' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
@@ -88,7 +88,7 @@ export const ThemeTable: React.FC<ThemeTableProps> = ({
                             </div>
                         </th>
                         <th
-                            className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-bold text-p-color cursor-pointer hover:opacity-70 whitespace-nowrap"
+                            className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-bold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap"
                             onClick={() => onSort('isActive')}
                             role="columnheader"
                             aria-sort={sortColumn === 'isActive' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
@@ -99,7 +99,7 @@ export const ThemeTable: React.FC<ThemeTableProps> = ({
                             </div>
                         </th>
                         <th
-                            className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-bold text-p-color cursor-pointer hover:opacity-70 whitespace-nowrap"
+                            className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-bold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap"
                             onClick={() => onSort('isDefault')}
                             role="columnheader"
                             aria-sort={sortColumn === 'isDefault' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
@@ -109,10 +109,10 @@ export const ThemeTable: React.FC<ThemeTableProps> = ({
                                 <SortIcon column="isDefault" sortColumn={sortColumn} sortDirection={sortDirection} />
                             </div>
                         </th>
-                        <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-bold text-p-color whitespace-nowrap" role="columnheader">
+                        <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-bold text-paragraph whitespace-nowrap" role="columnheader">
                             TYPE
                         </th>
-                        <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-right text-xs sm:text-sm font-bold text-p-color whitespace-nowrap" role="columnheader">
+                        <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-right text-xs sm:text-sm font-bold text-paragraph whitespace-nowrap" role="columnheader">
                             ACTIONS
                         </th>
                     </tr>
@@ -132,7 +132,7 @@ export const ThemeTable: React.FC<ThemeTableProps> = ({
                                         <Check className="w-3 h-3" /> Active
                                     </span>
                                 ) : (
-                                    <span className="text-p-color opacity-60">-</span>
+                                    <span className="text-paragraph opacity-60">-</span>
                                 )}
                             </td>
                             <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 whitespace-nowrap">
@@ -141,11 +141,11 @@ export const ThemeTable: React.FC<ThemeTableProps> = ({
                                         <Eye className="w-3 h-3" /> Default
                                     </span>
                                 ) : (
-                                    <span className="text-p-color opacity-60">-</span>
+                                    <span className="text-paragraph opacity-60">-</span>
                                 )}
                             </td>
                             <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 whitespace-nowrap">
-                                <span className="text-sm text-p-color capitalize">{row.type}</span>
+                                <span className="text-sm text-paragraph capitalize">{row.type}</span>
                             </td>
                             <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 whitespace-nowrap">
                                 <div className="flex items-center justify-end gap-1 sm:gap-2">
@@ -183,7 +183,7 @@ export const ThemeTable: React.FC<ThemeTableProps> = ({
                     ))}
                     {tableData.length === 0 && (
                         <tr>
-                            <td colSpan={5} className="px-6 py-12 text-center text-p-color">
+                            <td colSpan={5} className="px-6 py-12 text-center text-paragraph">
                                 No themes found. Create your first theme!
                             </td>
                         </tr>
@@ -195,21 +195,21 @@ export const ThemeTable: React.FC<ThemeTableProps> = ({
             {/* Pagination */}
             {totalPages > 1 && (
                 <div className="px-4 sm:px-6 py-4 border-t palette-border flex items-center justify-between flex-wrap gap-4">
-                    <span className="text-sm text-p-color">
+                    <span className="text-sm text-paragraph">
                         Page {currentPage + 1} of {totalPages}
                     </span>
                     <div className="flex gap-2">
                         <button
                             onClick={() => onPageChange(Math.max(0, currentPage - 1))}
                             disabled={currentPage === 0}
-                            className="px-3 py-1 rounded-lg border palette-border text-p-color hover:bg-black/5 dark:hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed"
+                            className="px-3 py-1 rounded-lg border palette-border text-paragraph hover:bg-black/5 dark:hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed"
                         >
                             Previous
                         </button>
                         <button
                             onClick={() => onPageChange(Math.min(totalPages - 1, currentPage + 1))}
                             disabled={currentPage === totalPages - 1}
-                            className="px-3 py-1 rounded-lg border palette-border text-p-color hover:bg-black/5 dark:hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed"
+                            className="px-3 py-1 rounded-lg border palette-border text-paragraph hover:bg-black/5 dark:hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed"
                         >
                             Next
                         </button>

@@ -142,7 +142,7 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
             {/* Search Bar */}
             <div className="p-4 border-b palette-border flex items-center gap-3">
                 <div className="relative flex-1 max-w-md">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-p-color" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-paragraph" />
                     <input
                         type="text"
                         placeholder="Search fonts..."
@@ -151,10 +151,10 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
                             setSearchQuery(e.target.value);
                             setPageConfig(prev => ({ ...prev, currentPage: 0 }));
                         }}
-                        className="w-full pl-10 pr-4 py-2 rounded-lg palette-surface palette-border border text-p-font text-p-size text-p-color placeholder-[var(--palette-text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
+                        className="w-full pl-10 pr-4 py-2 rounded-lg palette-surface palette-border border text-paragraph placeholder-[var(--palette-text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
                     />
                 </div>
-                <div className="text-p-font text-p-size text-sm sm:text-base text-slate-500 whitespace-nowrap">
+                <div className="text-paragraph text-sm sm:text-base text-slate-500 whitespace-nowrap">
                     {filteredAndSortedData.length} font{filteredAndSortedData.length !== 1 ? 's' : ''} found
                 </div>
             </div>
@@ -164,32 +164,32 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
                 <table className="w-full">
                     <thead className="bg-black/5 dark:bg-white/5 border-b palette-border">
                         <tr>
-                            <th className="px-4 py-3 text-left text-sm font-bold text-p-color cursor-pointer hover:opacity-70 whitespace-nowrap">
+                            <th className="px-4 py-3 text-left text-sm font-bold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap">
                                 <button onClick={() => handleSort('name')} className="flex items-center">
                                     Font Name<SortIcon column="name" />
                                 </button>
                             </th>
-                            <th className="px-4 py-3 text-left text-sm font-bold text-p-color cursor-pointer hover:opacity-70 whitespace-nowrap">
+                            <th className="px-4 py-3 text-left text-sm font-bold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap">
                                 <button onClick={() => handleSort('filename')} className="flex items-center">
                                     Filename<SortIcon column="filename" />
                                 </button>
                             </th>
-                            <th className="px-4 py-3 text-left text-sm font-bold text-p-color cursor-pointer hover:opacity-70 whitespace-nowrap">
+                            <th className="px-4 py-3 text-left text-sm font-bold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap">
                                 <button onClick={() => handleSort('created_by')} className="flex items-center">
                                     Uploaded By<SortIcon column="created_by" />
                                 </button>
                             </th>
-                            <th className="px-4 py-3 text-left text-sm font-bold text-p-color cursor-pointer hover:opacity-70 whitespace-nowrap">
+                            <th className="px-4 py-3 text-left text-sm font-bold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap">
                                 <button onClick={() => handleSort('created_at')} className="flex items-center">
                                     Uploaded<SortIcon column="created_at" />
                                 </button>
                             </th>
-                            <th className="px-4 py-3 text-left text-sm font-bold text-p-color cursor-pointer hover:opacity-70 whitespace-nowrap">
+                            <th className="px-4 py-3 text-left text-sm font-bold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap">
                                 <button onClick={() => handleSort('usage_count')} className="flex items-center">
                                     Usage Count<SortIcon column="usage_count" />
                                 </button>
                             </th>
-                            <th className="px-4 py-3 text-right text-sm font-bold text-p-color">
+                            <th className="px-4 py-3 text-right text-sm font-bold text-paragraph">
                                 Actions
                             </th>
                         </tr>
@@ -208,7 +208,7 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
                                         >
                                             Ag
                                         </span>
-                                        <span className="font-medium text-p-color">{font.name}</span>
+                                        <span className="font-medium text-paragraph">{font.name}</span>
                                     </div>
                                 </td>
                                 <td className="px-4 py-3 text-sm text-slate-600 font-mono">
@@ -265,7 +265,7 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
             {/* Pagination */}
             {totalPages > 1 && (
                 <div className="px-4 py-3 border-t palette-border flex items-center justify-between">
-                    <div className="text-p-font text-p-size text-sm sm:text-base text-slate-500">
+                    <div className="text-paragraph text-sm sm:text-base text-slate-500">
                         Showing {start + 1} to {Math.min(start + pageConfig.rowsPerPage, filteredAndSortedData.length)} of {filteredAndSortedData.length} fonts
                     </div>
                     <div className="flex items-center gap-2">
@@ -320,7 +320,7 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
                             <div className="flex items-start gap-4 mb-4">
                                 <Trash2 className="w-6 h-6 text-red-600 shrink-0" />
                                 <div className="flex-1">
-                                    <h2 className="text-xl font-bold text-[var(--text-h2-color)] mb-2">
+                                    <h2 className="text-xl font-bold text-[var(--text-h2)] mb-2">
                                         Delete Font
                                     </h2>
                                     {getDeleteMessage(fontToDelete)}
@@ -334,7 +334,7 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
                                     setDeleteConfirmOpen(false);
                                     setFontToDelete(null);
                                 }}
-                                className="flex-1 px-4 py-2 rounded-lg border border-[var(--palette-border)] text-[var(--text-p-color)] hover:bg-[var(--palette-border)] transition-colors"
+                                className="flex-1 px-4 py-2 rounded-lg border border-[var(--palette-border)] text-[var(--text-paragraph)] hover:bg-[var(--palette-border)] transition-colors"
                             >
                                 Cancel
                             </button>

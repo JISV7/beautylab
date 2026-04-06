@@ -34,7 +34,7 @@ export const CourseFilters: React.FC<CourseFiltersProps> = ({
     return (
         <div className="theme-card flex flex-wrap gap-4 items-end">
             <div className="flex-1 min-w-[200px]">
-                <label className="block text-sm font-semibold mb-2 text-p-color">
+                <label className="block text-sm font-semibold mb-2 text-paragraph">
                     <Search size={16} className="inline mr-2" />
                     Search
                 </label>
@@ -47,7 +47,7 @@ export const CourseFilters: React.FC<CourseFiltersProps> = ({
                 />
             </div>
             <div className="w-[180px]">
-                <label className="block text-sm font-semibold mb-2 text-p-color">Category</label>
+                <label className="block text-sm font-semibold mb-2 text-paragraph">Category</label>
                 <select
                     className="theme-input w-full"
                     value={categoryFilter}
@@ -60,7 +60,7 @@ export const CourseFilters: React.FC<CourseFiltersProps> = ({
                 </select>
             </div>
             <div className="w-[180px]">
-                <label className="block text-sm font-semibold mb-2 text-p-color">Level</label>
+                <label className="block text-sm font-semibold mb-2 text-paragraph">Level</label>
                 <select
                     className="theme-input w-full"
                     value={levelFilter}
@@ -74,7 +74,7 @@ export const CourseFilters: React.FC<CourseFiltersProps> = ({
             </div>
             {categoryFilter && (
                 <div className="w-[180px]">
-                    <label className="block text-sm font-semibold mb-2 text-p-color">
+                    <label className="block text-sm font-semibold mb-2 text-paragraph">
                         Subcategories
                     </label>
                     <button
@@ -82,7 +82,7 @@ export const CourseFilters: React.FC<CourseFiltersProps> = ({
                         className={`w-full py-2 px-3 rounded-lg border font-semibold text-sm transition-all flex items-center justify-center gap-2 ${
                             includeChildren
                                 ? 'bg-[var(--palette-primary)] text-[var(--decorator-color)] border-[var(--palette-primary)]'
-                                : 'bg-[var(--palette-background)] text-p-color opacity-60 border-[var(--palette-border)]'
+                                : 'bg-[var(--palette-background)] text-paragraph opacity-60 border-[var(--palette-border)]'
                         }`}
                         aria-label="Toggle include subcategories"
                         aria-pressed={includeChildren}
@@ -101,7 +101,7 @@ export const CourseFilters: React.FC<CourseFiltersProps> = ({
                 </div>
             )}
             <div className="w-[180px]">
-                <label className="block text-sm font-semibold mb-2 text-p-color">Status</label>
+                <label className="block text-sm font-semibold mb-2 text-paragraph">Status</label>
                 <select
                     className="theme-input w-full"
                     value={publishedFilter}

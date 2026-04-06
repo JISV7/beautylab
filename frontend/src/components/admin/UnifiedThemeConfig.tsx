@@ -573,7 +573,7 @@ export const UnifiedThemeConfig: React.FC = () => {
                 <>
                     Activate <strong>"{activeTheme.name}"</strong> as the active theme?
                     <br />
-                    <span className="text-[var(--text-p-color)] mt-2 block">
+                    <span className="text-[var(--text-paragraph)] mt-2 block">
                         This will make it the active theme for all users.
                     </span>
                 </>
@@ -618,19 +618,19 @@ export const UnifiedThemeConfig: React.FC = () => {
                 <div className="flex-1 flex flex-col h-full overflow-hidden">
                     <div className="p-6 border-b palette-border flex items-center justify-between flex-wrap gap-4">
                         <div>
-                            <h1 className="text-h1-size font-bold mb-1">Theme Management</h1>
-                            <p className="text-p-font text-p-size text-p-color">Create, edit, and publish themes for your site.</p>
+                            <h1 className="text-h1 font-bold mb-1">Theme Management</h1>
+                            <p className="text-paragraph">Create, edit, and publish themes for your site.</p>
                         </div>
                         <div className="flex items-center gap-3">
                             {/* Search Input */}
                             <div className="relative">
-                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-p-color" />
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-paragraph" />
                                 <input
                                     type="text"
                                     placeholder="Search themes..."
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="w-full pl-10 pr-10 py-2 rounded-lg palette-surface palette-border border text-p-font text-p-size text-p-color placeholder-[var(--palette-text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
+                                    className="w-full pl-10 pr-10 py-2 rounded-lg palette-surface palette-border border text-paragraph placeholder-[var(--palette-text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
                                 />
                                 {searchQuery && (
                                     <button

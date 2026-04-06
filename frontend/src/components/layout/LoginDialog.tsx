@@ -34,7 +34,7 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({ open, onOpenChange, on
         {/* Close button */}
         <button
           onClick={handleClose}
-          className="absolute right-4 top-4 text-[var(--text-p-color)] hover:opacity-80 transition-colors z-10"
+          className="absolute right-4 top-4 text-[var(--text-paragraph)] hover:opacity-80 transition-colors z-10"
         >
           <X className="w-5 h-5" />
         </button>
@@ -43,16 +43,16 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({ open, onOpenChange, on
         <div className="flex border-b border-[var(--palette-border)]">
           <button
             onClick={() => setView('login')}
-            className={`flex-1 py-3 text-sm sm:text-base text-p-font font-medium transition-colors border-b-2 ${
-              view === 'login' ? 'border-[var(--palette-primary)] text-[var(--palette-primary)]' : 'border-transparent text-[var(--text-p-color)]'
+            className={`flex-1 py-3 text-sm sm:text-base text-paragraph font-medium transition-colors border-b-2 ${
+              view === 'login' ? 'border-[var(--palette-primary)] text-[var(--palette-primary)]' : 'border-transparent text-[var(--text-paragraph)]'
             }`}
           >
             Sign In
           </button>
           <button
             onClick={() => setView('register')}
-            className={`flex-1 py-3 text-sm sm:text-base text-p-font font-medium transition-colors border-b-2 ${
-              view === 'register' ? 'border-[var(--palette-primary)] text-[var(--palette-primary)]' : 'border-transparent text-[var(--text-p-color)]'
+            className={`flex-1 py-3 text-sm sm:text-base text-paragraph font-medium transition-colors border-b-2 ${
+              view === 'register' ? 'border-[var(--palette-primary)] text-[var(--palette-primary)]' : 'border-transparent text-[var(--text-paragraph)]'
             }`}
           >
             Sign Up

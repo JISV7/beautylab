@@ -53,7 +53,7 @@ export const FontManager: React.FC<FontManagerProps & {
                         <h3 className="text-lg font-bold">Upload Fonts</h3>
                     </div>
                     <div className="flex items-center gap-2 text-slate-500">
-                        <span className="text-p-font text-p-size text-sm sm:text-base">{installedFonts.length} fonts installed</span>
+                        <span className="text-paragraph text-sm sm:text-base">{installedFonts.length} fonts installed</span>
                         {isUploadExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
                     </div>
                 </div>
@@ -65,7 +65,7 @@ export const FontManager: React.FC<FontManagerProps & {
                             className="border-2 border-dashed palette-border rounded-lg p-8 flex flex-col items-center justify-center text-center hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors cursor-pointer min-h-[180px]"
                         >
                             <UploadCloud className="w-12 h-12 text-slate-300 mb-4" />
-                            <p className="text-base font-medium text-p-color mb-2">
+                            <p className="text-base font-medium text-paragraph mb-2">
                                 Drag and drop your font files here
                             </p>
                             <p className="text-sm text-slate-500 mb-4">

@@ -37,15 +37,15 @@ export const LoginForm: React.FC<LoginFormProps> = ({
   return (
     <div className="space-y-5">
       <div className="text-center">
-        <h2 className="text-h2-font text-h2-size text-h2-color text-h2-weight mb-2">Welcome Back</h2>
-        <p className="text-p-font text-p-size text-p-color">
+        <h2 className="text-h2 mb-2">Welcome Back</h2>
+        <p className="text-paragraph">
           Sign in to your account to continue
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="text-p-font text-p-size text-p-color block mb-1.5">
+          <label className="text-paragraph block mb-1.5">
             Email Address
           </label>
           <div className="relative">
@@ -63,7 +63,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
         </div>
 
         <div>
-          <label className="text-p-font text-p-size text-p-color block mb-1.5">
+          <label className="text-paragraph block mb-1.5">
             Password
           </label>
           <div className="relative">
@@ -93,7 +93,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
           <button
             type="button"
             onClick={onSwitchToRecovery}
-            className="text-p-font text-palette-primary text-sm mt-2 hover:opacity-80 transition-opacity"
+            className="text-paragraph text-palette-primary text-sm mt-2 hover:opacity-80 transition-opacity"
             disabled={isLoading}
           >
             Forgot password?
@@ -108,7 +108,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
 
         <button
           type="submit"
-          className="w-full py-2.5 px-4 rounded-lg bg-[var(--palette-primary)] text-[var(--decorator-color)] font-semibold hover:bg-[var(--palette-accent)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-p-font"
+          className="w-full py-2.5 px-4 rounded-lg bg-[var(--palette-primary)] text-[var(--decorator-color)] font-semibold hover:bg-[var(--palette-accent)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-paragraph"
           disabled={isLoading}
         >
           {isLoading ? 'Signing in...' : 'Sign In'}
@@ -117,11 +117,11 @@ export const LoginForm: React.FC<LoginFormProps> = ({
       </form>
 
       <div className="text-center">
-        <p className="text-p-font text-p-size text-p-color text-sm">
+        <p className="text-paragraph text-sm">
           Don&apos;t have an account?{' '}
           <button
             onClick={onSwitchToRegister}
-            className="text-p-font text-palette-primary hover:opacity-80 transition-opacity"
+            className="text-paragraph text-palette-primary hover:opacity-80 transition-opacity"
           >
             Sign up
           </button>

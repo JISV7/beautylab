@@ -408,7 +408,7 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
         return (
             <div className="p-6">
                 <div className="palette-surface palette-border border rounded-xl p-8 text-center">
-                    <p className="text-p-font text-p-size text-p-color">Loading course details...</p>
+                    <p className="text-paragraph">Loading course details...</p>
                 </div>
             </div>
         );
@@ -437,7 +437,7 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
                 {onBack && (
                     <button
                         onClick={onBack}
-                        className="inline-flex items-center gap-2 text-p-font text-p-color hover:opacity-60 transition-opacity mb-6"
+                        className="inline-flex items-center gap-2 text-paragraph text-paragraph hover:opacity-60 transition-opacity mb-6"
                     >
                         <ArrowLeft size={18} />
                         Back to Explore
@@ -464,7 +464,7 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
             {onBack && paymentStep !== 'payment_details' && (
                 <button
                     onClick={onBack}
-                    className="inline-flex items-center gap-2 text-p-font text-p-color hover:opacity-60 transition-opacity mb-6"
+                    className="inline-flex items-center gap-2 text-paragraph text-paragraph hover:opacity-60 transition-opacity mb-6"
                 >
                     <ArrowLeft size={18} />
                     Back to Explore
@@ -478,10 +478,10 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
                         {/* Header */}
                         <div className="sticky top-0 palette-surface border-b border-[var(--palette-border)] p-6 flex items-center justify-between z-10">
                             <div>
-                                <h2 className="text-h3-font text-h3-size text-h3-color">
+                                <h2 className="text-h3">
                                     Complete Your Purchase
                                 </h2>
-                                <p className="text-p-font text-p-size text-p-color opacity-60">
+                                <p className="text-paragraph opacity-60">
                                     {course.title}
                                 </p>
                             </div>
@@ -489,7 +489,7 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
                                 onClick={() => setPaymentStep('idle')}
                                 className="p-2 hover:bg-[var(--palette-background)] rounded-lg transition-colors"
                             >
-                                <X size={24} className="text-p-color" />
+                                <X size={24} className="text-paragraph" />
                             </button>
                         </div>
 
@@ -497,22 +497,22 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
                         <div className="p-6 space-y-6">
                             {/* Price Display with IVA breakdown */}
                             <div className="palette-surface palette-border border rounded-xl p-4 space-y-3">
-                                <div className="flex items-center justify-between text-p-color opacity-75">
+                                <div className="flex items-center justify-between text-paragraph opacity-75">
                                     <span className="text-sm font-medium">Base Price</span>
                                     <span className="text-sm font-medium">Bs. {courseBasePrice.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                                 </div>
-                                <div className="flex items-center justify-between text-p-color opacity-75">
+                                <div className="flex items-center justify-between text-paragraph opacity-75">
                                     <span className="text-sm font-medium">IVA ({courseTaxRate}%)</span>
                                     <span className="text-sm font-medium">Bs. {courseTax.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                                 </div>
                                 <div className="border-t palette-border pt-3 flex items-center justify-between">
                                     <div className="flex items-center gap-2">
                                         <ShoppingCart size={20} className="text-[var(--palette-primary)]" />
-                                        <span className="text-p-font text-p-size text-p-color font-bold">
+                                        <span className="text-paragraph font-bold">
                                             Total (with IVA)
                                         </span>
                                     </div>
-                                    <span className="text-h3-font text-h3-size text-h3-color font-black text-[var(--palette-primary)]">
+                                    <span className="text-h3 font-black text-[var(--palette-primary)]">
                                         Bs. {coursePrice.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                     </span>
                                 </div>
@@ -529,7 +529,7 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
 
                             {/* Payment Details */}
                             <div className="space-y-4">
-                                <div className="flex items-center gap-2 text-p-font text-p-size text-p-color opacity-80">
+                                <div className="flex items-center gap-2 text-paragraph opacity-80">
                                     <span>💡</span>
                                     <span>You can split your payment across multiple methods. Just add another payment method and allocate the desired amount to each.</span>
                                 </div>
@@ -563,10 +563,10 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
                     <div className="palette-surface palette-border border rounded-xl p-8 text-center max-w-md">
                         <Loader2 size={48} className="animate-spin mx-auto mb-4 text-[var(--palette-primary)]" />
-                        <h3 className="text-h4-font text-h4-size text-h4-color mb-2">
+                        <h3 className="text-h4 mb-2">
                             Processing Payment
                         </h3>
-                        <p className="text-p-font text-p-size text-p-color opacity-60">
+                        <p className="text-paragraph opacity-60">
                             Please wait while we process your payment...
                         </p>
                     </div>
@@ -594,10 +594,10 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
             {/* Auth prompt for unauthenticated users */}
             {!isAuthenticated && (
                 <div className="mb-8 p-6 palette-surface palette-border border rounded-xl text-center">
-                    <h3 className="text-h4-font text-h4-size text-h4-color mb-2">
+                    <h3 className="text-h4 mb-2">
                         Interested in this course?
                     </h3>
-                    <p className="text-p-font text-p-size text-p-color opacity-75 mb-4">
+                    <p className="text-paragraph opacity-75 mb-4">
                         Sign in to purchase and start learning.
                     </p>
                     <a
@@ -624,7 +624,7 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
             {/* Licenses Section — only for authenticated users */}
             {isAuthenticated && (
                 <div className="mb-8">
-                    <h2 className="text-h3-font text-h3-size text-h3-color mb-4">
+                    <h2 className="text-h3 mb-4">
                         Your Licenses
                     </h2>
                     <LicenseTable
@@ -656,7 +656,7 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
                             <div className="p-2 bg-green-500/10 rounded-lg">
                                 <KeyRound size={20} className="text-green-600 dark:text-green-400" />
                             </div>
-                            <h2 className="text-h4-font text-h4-size text-h4-color">
+                            <h2 className="text-h4">
                                 Redeem License
                             </h2>
                         </div>
@@ -665,7 +665,7 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
                         <div className="p-6 space-y-4">
                             <div className="flex items-start gap-3 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
                                 <AlertTriangle size={18} className="text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
-                                <p className="text-p-font text-p-size text-p-color text-sm">
+                                <p className="text-paragraph text-sm">
                                     This will bind the license to your account. Once redeemed, the license cannot be transferred or gifted to another user.
                                 </p>
                             </div>

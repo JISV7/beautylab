@@ -55,14 +55,14 @@ export const CoursePagination: React.FC<CoursePaginationProps> = ({
 
     return (
         <div className="px-6 py-4 flex items-center justify-between border-t border-[var(--palette-border)] font-manrope">
-            <span className="text-sm text-p-color opacity-70">
-                Showing <span className="font-bold text-p-color">{(currentPage - 1) * pageSize + 1} - {Math.min(currentPage * pageSize, totalItems)}</span> of <span className="font-bold text-p-color">{totalItems}</span> courses
+            <span className="text-sm text-paragraph opacity-70">
+                Showing <span className="font-bold text-paragraph">{(currentPage - 1) * pageSize + 1} - {Math.min(currentPage * pageSize, totalItems)}</span> of <span className="font-bold text-paragraph">{totalItems}</span> courses
             </span>
             <div className="flex items-center gap-2">
                 <button
                     onClick={() => onPageChange(Math.max(1, currentPage - 1))}
                     disabled={currentPage === 1}
-                    className="p-2 border border-[var(--palette-border)] rounded-lg text-p-color hover:bg-[var(--palette-surface)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="p-2 border border-[var(--palette-border)] rounded-lg text-paragraph hover:bg-[var(--palette-surface)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -71,7 +71,7 @@ export const CoursePagination: React.FC<CoursePaginationProps> = ({
 
                 {pageNumbers.map((pageNum, index) => (
                     pageNum === -1 ? (
-                        <span key={`ellipsis-${index}`} className="text-p-color opacity-40 px-1">...</span>
+                        <span key={`ellipsis-${index}`} className="text-paragraph opacity-40 px-1">...</span>
                     ) : (
                         <button
                             key={pageNum}
@@ -79,7 +79,7 @@ export const CoursePagination: React.FC<CoursePaginationProps> = ({
                             className={`w-8 h-8 flex items-center justify-center rounded-lg text-sm font-bold transition-colors ${
                                 currentPage === pageNum
                                     ? 'bg-[var(--palette-primary)] text-white'
-                                    : 'text-p-color hover:bg-[var(--palette-surface)]'
+                                    : 'text-paragraph hover:bg-[var(--palette-surface)]'
                             }`}
                         >
                             {pageNum}
@@ -90,7 +90,7 @@ export const CoursePagination: React.FC<CoursePaginationProps> = ({
                 <button
                     onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
                     disabled={currentPage >= totalPages}
-                    className="p-2 border border-[var(--palette-border)] rounded-lg text-p-color hover:bg-[var(--palette-surface)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="p-2 border border-[var(--palette-border)] rounded-lg text-paragraph hover:bg-[var(--palette-surface)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

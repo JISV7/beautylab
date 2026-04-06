@@ -34,16 +34,16 @@ export const CourseFormStep3: React.FC<CourseFormStep3Props> = ({
                         <Rocket size={24} className="text-[var(--palette-primary)]" />
                     </div>
                     <div>
-                        <h3 className="text-sm font-bold text-p-color">
+                        <h3 className="text-sm font-bold text-paragraph">
                             Step 3: Review & Publish
                         </h3>
-                        <p className="text-xs text-p-color opacity-60">
+                        <p className="text-xs text-paragraph opacity-60">
                             Ready to go live? Toggle the status below.
                         </p>
                     </div>
                 </div>
                 <div className="flex items-center gap-4">
-                    <span className="text-sm font-bold text-p-color uppercase tracking-tighter">
+                    <span className="text-sm font-bold text-paragraph uppercase tracking-tighter">
                         Published Status
                     </span>
                     <label className="relative inline-flex items-center cursor-pointer">
@@ -59,35 +59,35 @@ export const CourseFormStep3: React.FC<CourseFormStep3Props> = ({
             </div>
 
             <div className="space-y-4">
-                <h4 className="font-bold text-p-color">Summary</h4>
+                <h4 className="font-bold text-paragraph">Summary</h4>
                 <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
-                        <span className="text-p-color opacity-60">Title:</span>
-                        <p className="font-semibold text-p-color mt-1">{formData.title || 'Not set'}</p>
+                        <span className="text-paragraph opacity-60">Title:</span>
+                        <p className="font-semibold text-paragraph mt-1">{formData.title || 'Not set'}</p>
                     </div>
                     <div>
-                        <span className="text-p-color opacity-60">Category:</span>
-                        <p className="font-semibold text-p-color mt-1">{categoryName}</p>
+                        <span className="text-paragraph opacity-60">Category:</span>
+                        <p className="font-semibold text-paragraph mt-1">{categoryName}</p>
                     </div>
                     <div>
-                        <span className="text-p-color opacity-60">Level:</span>
-                        <p className="font-semibold text-p-color mt-1">{levelName}</p>
+                        <span className="text-paragraph opacity-60">Level:</span>
+                        <p className="font-semibold text-paragraph mt-1">{levelName}</p>
                     </div>
                     <div>
-                        <span className="text-p-color opacity-60">Duration:</span>
-                        <p className="font-semibold text-p-color mt-1">{formData.duration_hours ? `${formData.duration_hours} hours` : 'Not set'}</p>
+                        <span className="text-paragraph opacity-60">Duration:</span>
+                        <p className="font-semibold text-paragraph mt-1">{formData.duration_hours ? `${formData.duration_hours} hours` : 'Not set'}</p>
                     </div>
                     <div>
-                        <span className="text-p-color opacity-60">Product Name:</span>
-                        <p className="font-semibold text-p-color mt-1">{formData.product_name || 'Not set'}</p>
+                        <span className="text-paragraph opacity-60">Product Name:</span>
+                        <p className="font-semibold text-paragraph mt-1">{formData.product_name || 'Not set'}</p>
                     </div>
                     <div>
-                        <span className="text-p-color opacity-60">SKU:</span>
-                        <p className="font-semibold text-p-color mt-1">{formData.sku || 'Not set'}</p>
+                        <span className="text-paragraph opacity-60">SKU:</span>
+                        <p className="font-semibold text-paragraph mt-1">{formData.sku || 'Not set'}</p>
                     </div>
                     <div>
-                        <span className="text-p-color opacity-60">Price:</span>
-                        <p className="font-bold text-p-color mt-1">{formatPrice(formData.price)}</p>
+                        <span className="text-paragraph opacity-60">Price:</span>
+                        <p className="font-bold text-paragraph mt-1">{formatPrice(formData.price)}</p>
                     </div>
                 </div>
             </div>
@@ -98,7 +98,7 @@ export const CourseFormStep3: React.FC<CourseFormStep3Props> = ({
                     className="theme-button"
                     style={{
                         backgroundColor: 'transparent',
-                        color: 'var(--text-p-color)',
+                        color: 'var(--text-paragraph)',
                         border: '1px solid var(--palette-border)',
                     }}
                 >

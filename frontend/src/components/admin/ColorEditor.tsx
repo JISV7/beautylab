@@ -10,7 +10,7 @@ interface ColorInputProps {
 
 const ColorInput: React.FC<ColorInputProps> = ({ label, value, onChange }) => (
     <div className="space-y-1.5">
-        <div className="text-xs font-semibold text-p-color">{label}</div>
+        <div className="text-xs font-semibold text-paragraph">{label}</div>
         <div className="flex items-center gap-2">
             <div className="relative group cursor-pointer shrink-0">
                 <input
@@ -31,7 +31,7 @@ const ColorInput: React.FC<ColorInputProps> = ({ label, value, onChange }) => (
                     value={value}
                     onChange={(e) => onChange(e.target.value)}
                 />
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-p-color">
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-paragraph">
                     <Palette className="w-3.5 h-3.5" />
                 </div>
             </div>

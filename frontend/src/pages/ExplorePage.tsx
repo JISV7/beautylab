@@ -67,10 +67,10 @@ export const ExplorePage: React.FC = () => {
             <div className="max-w-7xl mx-auto">
                 {/* Page Title */}
                 <div className="mb-6">
-                    <h1 className="text-h1-size font-bold mb-1">
+                    <h1 className="text-h1 font-bold mb-1">
                         Explore Courses
                     </h1>
-                    <p className="text-p-font text-p-size text-p-color">
+                    <p className="text-paragraph">
                         Discover amazing courses to boost your skills
                     </p>
                 </div>
@@ -79,20 +79,20 @@ export const ExplorePage: React.FC = () => {
                 <div className="palette-surface palette-border border rounded-xl p-6 mb-6">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <div className="text-center">
-                            <p className="text-3xl font-black text-p-color">{courses.length}</p>
-                            <p className="text-sm text-p-color opacity-60">Courses</p>
+                            <p className="text-3xl font-black text-paragraph">{courses.length}</p>
+                            <p className="text-sm text-paragraph opacity-60">Courses</p>
                         </div>
                         <div className="text-center">
-                            <p className="text-3xl font-black text-p-color">{categories.length}</p>
-                            <p className="text-sm text-p-color opacity-60">Categories</p>
+                            <p className="text-3xl font-black text-paragraph">{categories.length}</p>
+                            <p className="text-sm text-paragraph opacity-60">Categories</p>
                         </div>
                         <div className="text-center">
-                            <p className="text-3xl font-black text-p-color">{levels.length}</p>
-                            <p className="text-sm text-p-color opacity-60">Levels</p>
+                            <p className="text-3xl font-black text-paragraph">{levels.length}</p>
+                            <p className="text-sm text-paragraph opacity-60">Levels</p>
                         </div>
                         <div className="text-center">
-                            <p className="text-3xl font-black text-p-color">∞</p>
-                            <p className="text-sm text-p-color opacity-60">Knowledge</p>
+                            <p className="text-3xl font-black text-paragraph">∞</p>
+                            <p className="text-sm text-paragraph opacity-60">Knowledge</p>
                         </div>
                     </div>
                 </div>
@@ -115,8 +115,8 @@ export const ExplorePage: React.FC = () => {
                 {/* Results Count */}
                 {!isLoading && !error && (
                     <div className="mb-6 flex items-center justify-between">
-                        <p className="text-p-color opacity-60">
-                            Showing <span className="font-bold text-p-color">{courses.length}</span> courses
+                        <p className="text-paragraph opacity-60">
+                            Showing <span className="font-bold text-paragraph">{courses.length}</span> courses
                             {selectedCategory || selectedLevel || searchQuery ? (
                                 <span> matching your filters</span>
                             ) : (

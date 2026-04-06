@@ -60,9 +60,9 @@ export const Footer: React.FC = () => {
                             >
                                 <Code2 className="w-6 h-6 text-white" />
                             </div>
-                            <span className="text-h4-font text-h4-size text-h4-color text-h4-weight font-bold">Codyn</span>
+                            <span className="text-h4 font-bold">Codyn</span>
                         </a>
-                        <p className="text-p-font text-p-size text-p-color mb-6 max-w-xs">
+                        <p className="text-paragraph mb-6 max-w-xs">
                             Master the future of technology with cutting-edge courses in web development,
                             programming, and agentic AI.
                         </p>
@@ -75,10 +75,10 @@ export const Footer: React.FC = () => {
                                     <a
                                         key={item.id}
                                         href={item.href}
-                                        className="flex items-center gap-3 text-p-font text-p-size text-p-color hover:palette-primary transition-colors"
+                                        className="flex items-center gap-3 text-paragraph hover:palette-primary transition-colors"
                                     >
-                                        <Icon className="w-5 h-5 text-p-color flex-shrink-0" />
-                                        <span className="text-p-font text-p-size text-p-color">{item.text}</span>
+                                        <Icon className="w-5 h-5 text-paragraph flex-shrink-0" />
+                                        <span className="text-paragraph">{item.text}</span>
                                     </a>
                                 );
                             })}
@@ -93,9 +93,9 @@ export const Footer: React.FC = () => {
                                         key={social.id}
                                         href={social.href}
                                         aria-label={social.label}
-                                        className="w-10 h-10 rounded-lg palette-border border flex items-center justify-center text-p-size decorator-color hover:palette-primary hover:border-palette-primary transition-all"
+                                        className="w-10 h-10 rounded-lg palette-border border flex items-center justify-center text-paragraph decorator-color hover:palette-primary hover:border-palette-primary transition-all"
                                     >
-                                        <Icon className="w-5 h-5 text-p-color" />
+                                        <Icon className="w-5 h-5 text-paragraph" />
                                     </a>
                                 );
                             })}
@@ -104,13 +104,13 @@ export const Footer: React.FC = () => {
 
                     {/* Product Links */}
                     <div>
-                        <h3 className="text-h3-font text-h3-size text-h3-color text-h3-weight font-semibold mb-4">Product</h3>
+                        <h3 className="text-h3 font-semibold mb-4">Product</h3>
                         <ul className="space-y-3">
                             {footerLinks.product.map((link) => (
                                 <li key={link.id}>
                                     <a
                                         href={link.href}
-                                        className="text-p-font text-p-size text-p-color hover:palette-primary transition-colors"
+                                        className="text-paragraph hover:palette-primary transition-colors"
                                     >
                                         {link.label}
                                     </a>
@@ -121,13 +121,13 @@ export const Footer: React.FC = () => {
 
                     {/* Resources Links */}
                     <div>
-                        <h3 className="text-h3-size text-h3-color text-h3-weight font-semibold mb-4">Resources</h3>
+                        <h3 className="text-h3 font-semibold mb-4">Resources</h3>
                         <ul className="space-y-3">
                             {footerLinks.resources.map((link) => (
                                 <li key={link.id}>
                                     <a
                                         href={link.href}
-                                        className="text-p-font text-p-size text-p-color hover:palette-primary transition-colors"
+                                        className="text-paragraph hover:palette-primary transition-colors"
                                     >
                                         {link.label}
                                     </a>
@@ -138,13 +138,13 @@ export const Footer: React.FC = () => {
 
                     {/* Company Links */}
                     <div>
-                        <h3 className="text-h3-font text-h3-size text-h3-color text-h3-weight font-semibold mb-4">Company</h3>
+                        <h3 className="text-h3 font-semibold mb-4">Company</h3>
                         <ul className="space-y-3">
                             {footerLinks.company.map((link) => (
                                 <li key={link.id}>
                                     <a
                                         href={link.href}
-                                        className="text-p-font text-p-size text-p-color hover:palette-primary transition-colors"
+                                        className="text-paragraph hover:palette-primary transition-colors"
                                     >
                                         {link.label}
                                     </a>
@@ -155,13 +155,13 @@ export const Footer: React.FC = () => {
 
                     {/* Legal Links */}
                     <div>
-                        <h3 className="text-p-font text-h3-size text-h3-color text-h3-weight font-semibold mb-4">Legal</h3>
+                        <h3 className="text-paragraph text-h3 font-semibold mb-4">Legal</h3>
                         <ul className="space-y-3">
                             {footerLinks.legal.map((link) => (
                                 <li key={link.id}>
                                     <a
                                         href={link.href}
-                                        className="text-p-font text-p-size text-p-color hover:palette-primary transition-colors"
+                                        className="text-paragraph hover:palette-primary transition-colors"
                                     >
                                         {link.label}
                                     </a>
@@ -176,25 +176,25 @@ export const Footer: React.FC = () => {
             <div className="palette-border border-t">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                     <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                        <p className="text-p-font text-p-size text-p-color text-center md:text-left">
+                        <p className="text-paragraph text-center md:text-left">
                             © {currentYear} Codyn. All rights reserved.
                         </p>
                         <div className="flex items-center gap-6">
                             <a
                                 href="#privacy"
-                                className="text-p-font text-p-size text-p-color hover:palette-primary transition-colors"
+                                className="text-paragraph hover:palette-primary transition-colors"
                             >
                                 Privacy
                             </a>
                             <a
                                 href="#terms"
-                                className="text-p-font text-p-size text-p-color hover:palette-primary transition-colors"
+                                className="text-paragraph hover:palette-primary transition-colors"
                             >
                                 Terms
                             </a>
                             <a
                                 href="#cookies"
-                                className="text-p-font text-p-size text-p-color hover:palette-primary transition-colors"
+                                className="text-paragraph hover:palette-primary transition-colors"
                             >
                                 Cookies
                             </a>

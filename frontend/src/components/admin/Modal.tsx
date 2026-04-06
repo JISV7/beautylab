@@ -54,7 +54,7 @@ export const Modal: React.FC<ModalProps> = ({
             >
                 {/* Header - shrink-0 to stay fixed */}
                 <div className="shrink-0 flex items-center justify-between p-6 border-b palette-border">
-                    <h2 id="modal-title" className="text-xl font-bold text-p-color">
+                    <h2 id="modal-title" className="text-xl font-bold text-paragraph">
                         {title}
                     </h2>
                     <button
@@ -62,7 +62,7 @@ export const Modal: React.FC<ModalProps> = ({
                         className="p-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
                         aria-label="Close modal"
                     >
-                        <X className="w-5 h-5 text-p-color" />
+                        <X className="w-5 h-5 text-paragraph" />
                     </button>
                 </div>
 

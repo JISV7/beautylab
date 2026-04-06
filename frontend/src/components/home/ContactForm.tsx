@@ -29,8 +29,8 @@ export const ContactForm: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           {/* Left Column - Info */}
           <div>
-            <h2 className="text-h2-font text-h2-size text-h2-color text-h2-weight mb-4">Get in Touch</h2>
-            <p className="text-p-font text-p-size text-p-color mb-8">
+            <h2 className="text-h2 mb-4">Get in Touch</h2>
+            <p className="text-paragraph mb-8">
               Have questions about our courses? Want to learn more about Codyn?
               We're here to help you on your learning journey.
             </p>
@@ -41,8 +41,8 @@ export const ContactForm: React.FC = () => {
                   <Mail className="w-5 h-5 text-white decorator-color" />
                 </div>
                 <div>
-                  <h4 className="text-h4-font text-h4-size text-h4-color text-h4-weight mb-1">Email Us</h4>
-                  <p className="text-p-font text-p-size text-p-color">support@codyn.com</p>
+                  <h4 className="text-h4 mb-1">Email Us</h4>
+                  <p className="text-paragraph">support@codyn.com</p>
                 </div>
               </div>
 
@@ -51,8 +51,8 @@ export const ContactForm: React.FC = () => {
                   <MessageSquare className="w-5 h-5 text-white decorator-color" />
                 </div>
                 <div>
-                  <h4 className="text-h4-font text-h4-size text-h4-color text-h4-weight mb-1">Live Chat</h4>
-                  <p className="text-p-font text-p-size text-p-color">Available Mon-Fri, 9am-5pm EST</p>
+                  <h4 className="text-h4 mb-1">Live Chat</h4>
+                  <p className="text-paragraph">Available Mon-Fri, 9am-5pm EST</p>
                 </div>
               </div>
             </div>
@@ -62,9 +62,9 @@ export const ContactForm: React.FC = () => {
           <div className="theme-card">
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label htmlFor="name" className="text-p-font text-p-size text-p-color font-medium block mb-2">
+                <label htmlFor="name" className="text-paragraph font-medium block mb-2">
                   <div className="flex items-center gap-2">
-                    <User className="w-4 h-4 text-p-color" />
+                    <User className="w-4 h-4 text-paragraph" />
                     Your Name
                   </div>
                 </label>
@@ -81,9 +81,9 @@ export const ContactForm: React.FC = () => {
               </div>
 
               <div>
-                <label htmlFor="email" className="text-p-font text-p-size text-p-color font-medium block mb-2">
+                <label htmlFor="email" className="text-paragraph font-medium block mb-2">
                   <div className="flex items-center gap-2">
-                    <Mail className="w-4 h-4 text-p-color" />
+                    <Mail className="w-4 h-4 text-paragraph" />
                     Email Address
                   </div>
                 </label>
@@ -100,7 +100,7 @@ export const ContactForm: React.FC = () => {
               </div>
 
               <div>
-                <label htmlFor="subject" className="text-p-font text-p-size text-p-color font-medium block mb-2">
+                <label htmlFor="subject" className="text-paragraph font-medium block mb-2">
                   Subject
                 </label>
                 <select
@@ -109,18 +109,18 @@ export const ContactForm: React.FC = () => {
                   value={formData.subject}
                   onChange={handleChange}
                   required
-                  className="theme-input w-full text-p-color"
+                  className="theme-input w-full text-paragraph"
                 >
-                  <option value="" className="text-p-color">Select a subject</option>
-                  <option value="courses" className="text-p-color">Course Inquiry</option>
-                  <option value="technical" className="text-p-color">Technical Support</option>
-                  <option value="partnership" className="text-p-color">Partnership</option>
-                  <option value="other" className="text-p-color">Other</option>
+                  <option value="" className="text-paragraph">Select a subject</option>
+                  <option value="courses" className="text-paragraph">Course Inquiry</option>
+                  <option value="technical" className="text-paragraph">Technical Support</option>
+                  <option value="partnership" className="text-paragraph">Partnership</option>
+                  <option value="other" className="text-paragraph">Other</option>
                 </select>
               </div>
 
               <div>
-                <label htmlFor="message" className="text-p-font text-p-size text-p-color font-medium block mb-2">
+                <label htmlFor="message" className="text-paragraph font-medium block mb-2">
                   Message
                 </label>
                 <textarea

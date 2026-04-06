@@ -41,13 +41,13 @@ export const CourseTable: React.FC<CourseTableProps> = ({
             <table className="w-full">
                 <thead className="bg-[var(--palette-surface)] border-b border-[var(--palette-border)]">
                     <tr>
-                        <th className="text-left py-3 px-4 text-sm font-semibold text-p-color">Course</th>
-                        <th className="text-left py-3 px-4 text-sm font-semibold text-p-color">Category</th>
-                        <th className="text-left py-3 px-4 text-sm font-semibold text-p-color">Level</th>
-                        <th className="text-right py-3 px-4 text-sm font-semibold text-p-color">Duration</th>
-                        <th className="text-right py-3 px-4 text-sm font-semibold text-p-color">Price</th>
-                        <th className="text-left py-3 px-4 text-sm font-semibold text-p-color">Status</th>
-                        <th className="text-right py-3 px-4 text-sm font-semibold text-p-color">Actions</th>
+                        <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph">Course</th>
+                        <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph">Category</th>
+                        <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph">Level</th>
+                        <th className="text-right py-3 px-4 text-sm font-semibold text-paragraph">Duration</th>
+                        <th className="text-right py-3 px-4 text-sm font-semibold text-paragraph">Price</th>
+                        <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph">Status</th>
+                        <th className="text-right py-3 px-4 text-sm font-semibold text-paragraph">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -66,38 +66,38 @@ export const CourseTable: React.FC<CourseTableProps> = ({
                                                 className="w-full h-full object-cover"
                                             />
                                         ) : (
-                                            <div className="w-full h-full flex items-center justify-center text-p-color opacity-40">
+                                            <div className="w-full h-full flex items-center justify-center text-paragraph opacity-40">
                                                 <FileText size={20} />
                                             </div>
                                         )}
                                     </div>
                                     <div>
-                                        <p className="font-semibold text-p-color group-hover:text-[var(--palette-primary)] transition-colors">
+                                        <p className="font-semibold text-paragraph group-hover:text-[var(--palette-primary)] transition-colors">
                                             {course.title}
                                         </p>
-                                        <p className="text-xs text-p-color opacity-60">
+                                        <p className="text-xs text-paragraph opacity-60">
                                             ID: {course.id.slice(0, 8).toUpperCase()}
                                         </p>
                                     </div>
                                 </div>
                             </td>
                             <td className="py-3 px-4">
-                                <span className="px-3 py-1 bg-[var(--palette-surface)] text-p-color rounded-full text-xs font-medium">
+                                <span className="px-3 py-1 bg-[var(--palette-surface)] text-paragraph rounded-full text-xs font-medium">
                                     {getCategoryName(course.category_id)}
                                 </span>
                             </td>
                             <td className="py-3 px-4">
-                                <span className="text-sm font-medium text-p-color">
+                                <span className="text-sm font-medium text-paragraph">
                                     {getLevelName(course.level_id)}
                                 </span>
                             </td>
                             <td className="py-3 px-4 text-right">
-                                <span className="text-sm text-p-color">
+                                <span className="text-sm text-paragraph">
                                     {course.duration_hours ? `${course.duration_hours} hrs` : '-'}
                                 </span>
                             </td>
                             <td className="py-3 px-4 text-right">
-                                <span className="text-sm font-bold text-p-color">
+                                <span className="text-sm font-bold text-paragraph">
                                     {formatPrice(course.product_price)}
                                 </span>
                             </td>
@@ -121,9 +121,9 @@ export const CourseTable: React.FC<CourseTableProps> = ({
                                         title={course.published ? 'Unpublish' : 'Publish'}
                                     >
                                         {course.published ? (
-                                            <Eye size={18} className="text-p-color" />
+                                            <Eye size={18} className="text-paragraph" />
                                         ) : (
-                                            <EyeOff size={18} className="text-p-color" />
+                                            <EyeOff size={18} className="text-paragraph" />
                                         )}
                                     </button>
                                     <button
@@ -131,7 +131,7 @@ export const CourseTable: React.FC<CourseTableProps> = ({
                                         className="p-2 hover:bg-[var(--palette-border)] rounded transition-colors"
                                         title="Edit"
                                     >
-                                        <Edit size={18} className="text-p-color" />
+                                        <Edit size={18} className="text-paragraph" />
                                     </button>
                                     <button
                                         onClick={() => onDelete(course.id, course.title)}

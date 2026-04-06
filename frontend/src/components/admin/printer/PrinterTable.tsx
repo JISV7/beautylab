@@ -28,7 +28,7 @@ export const PrinterTable: React.FC<PrinterTableProps> = ({
       label: 'Business Name',
       sortable: true,
       render: (item) => (
-        <span className="font-medium text-p-color">{item.businessName}</span>
+        <span className="font-medium text-paragraph">{item.businessName}</span>
       ),
     },
     {
@@ -41,7 +41,7 @@ export const PrinterTable: React.FC<PrinterTableProps> = ({
       label: 'Authorization Providence',
       sortable: false,
       render: (item) => (
-        <span className="text-p-color opacity-75 text-sm">{item.authorizationProvidence}</span>
+        <span className="text-paragraph opacity-75 text-sm">{item.authorizationProvidence}</span>
       ),
     },
     {

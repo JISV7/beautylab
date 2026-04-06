@@ -26,16 +26,16 @@ export const PasswordRecoveryForm: React.FC<PasswordRecoveryFormProps> = ({
           <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 bg-[rgba(248,58,58,0.1)]">
             <Mail className="w-8 h-8 text-[var(--palette-primary)]" />
           </div>
-          <h2 className="text-h2-font text-h2-size text-h2-color text-h2-weight mb-2">Check Your Email</h2>
-          <p className="text-p-font text-p-size text-p-color text-sm">
+          <h2 className="text-h2 mb-2">Check Your Email</h2>
+          <p className="text-paragraph text-sm">
             We&apos;ve sent password reset instructions to <br />
-            <span className="text-p-font text-p-size text-p-color text-sm">{email}</span>
+            <span className="text-paragraph text-sm">{email}</span>
           </p>
         </div>
 
         <button
           onClick={onSwitchToLogin}
-          className="w-full py-2.5 px-4 rounded-lg bg-[var(--palette-surface)] text-[var(--text-p-color)] font-semibold border border-[var(--palette-border)] hover:bg-[var(--palette-border)] transition-colors flex items-center justify-center gap-2 text-p-font"
+          className="w-full py-2.5 px-4 rounded-lg bg-[var(--palette-surface)] text-[var(--text-paragraph)] font-semibold border border-[var(--palette-border)] hover:bg-[var(--palette-border)] transition-colors flex items-center justify-center gap-2 text-paragraph"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Sign In
@@ -47,15 +47,15 @@ export const PasswordRecoveryForm: React.FC<PasswordRecoveryFormProps> = ({
   return (
     <div className="space-y-5">
       <div className="text-center">
-        <h2 className="text-h2-font text-h2-size text-h2-color text-h2-weight mb-2">Forgot Password?</h2>
-        <p className="text-p-font text-p-size text-p-color text-sm">
+        <h2 className="text-h2 mb-2">Forgot Password?</h2>
+        <p className="text-paragraph text-sm">
           No worries! Enter your email and we&apos;ll send you reset instructions.
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="text-p-font text-p-size text-p-color block mb-1.5">
+          <label className="text-paragraph block mb-1.5">
             Email Address
           </label>
           <div className="relative">
@@ -73,7 +73,7 @@ export const PasswordRecoveryForm: React.FC<PasswordRecoveryFormProps> = ({
 
         <button
           type="submit"
-          className="w-full py-2.5 px-4 rounded-lg bg-[var(--palette-primary)] text-[var(--decorator-color)] font-semibold hover:bg-[var(--palette-accent)] transition-colors flex items-center justify-center gap-2 text-p-font"
+          className="w-full py-2.5 px-4 rounded-lg bg-[var(--palette-primary)] text-[var(--decorator-color)] font-semibold hover:bg-[var(--palette-accent)] transition-colors flex items-center justify-center gap-2 text-paragraph"
         >
           Send Reset Link
           <Send className="w-4 h-4" />
@@ -82,7 +82,7 @@ export const PasswordRecoveryForm: React.FC<PasswordRecoveryFormProps> = ({
 
       <button
         onClick={onSwitchToLogin}
-        className="w-full py-2.5 px-4 rounded-lg bg-[var(--palette-surface)] text-[var(--text-p-color)] font-semibold border border-[var(--palette-border)] hover:bg-[var(--palette-border)] transition-colors flex items-center justify-center gap-2 text-p-font"
+        className="w-full py-2.5 px-4 rounded-lg bg-[var(--palette-surface)] text-[var(--text-paragraph)] font-semibold border border-[var(--palette-border)] hover:bg-[var(--palette-border)] transition-colors flex items-center justify-center gap-2 text-paragraph"
       >
         <ArrowLeft className="w-4 h-4" />
         Back to Sign In

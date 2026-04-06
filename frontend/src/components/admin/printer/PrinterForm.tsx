@@ -175,14 +175,14 @@ export const PrinterForm: React.FC<PrinterFormProps> = ({
           {/* Header */}
           <div className="bg-[var(--palette-surface)] border-b border-[var(--palette-border)] p-6 flex items-center justify-between">
             <div>
-              <h2 className="text-2xl font-bold text-[var(--text-h2-color)]">
+              <h2 className="text-2xl font-bold text-[var(--text-h2)]">
                 {isEditing ? 'Edit Printer' : 'Add Printer'}
               </h2>
             </div>
             <button
               type="button"
               onClick={onCancel}
-              className="text-[var(--text-p-color)] hover:text-primary transition-colors"
+              className="text-[var(--text-paragraph)] hover:text-primary transition-colors"
             >
               <X className="w-6 h-6" />
             </button>
@@ -193,25 +193,25 @@ export const PrinterForm: React.FC<PrinterFormProps> = ({
             {/* Printer Information Section */}
             <div className="space-y-3.5">
               <h3
-                className="text-[var(--text-p-color)] font-semibold border-b pb-2"
+                className="text-[var(--text-paragraph)] font-semibold border-b pb-2"
                 style={{ borderColor: 'var(--palette-border)' }}
               >
                 Printer Information (Imprenta Autorizada)
               </h3>
 
               <div>
-                <label className="text-[var(--text-p-color)] block mb-1.5">
+                <label className="text-[var(--text-paragraph)] block mb-1.5">
                   Business Name (Razón Social) *
                 </label>
                 <div className="relative">
-                  <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-p-color)] opacity-75" />
+                  <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-paragraph)] opacity-75" />
                   <input
                     type="text"
                     name="businessName"
                     value={formData.businessName}
                     onChange={(e) => onChange('businessName', e.target.value)}
                     required
-                    className="w-full py-2.5 px-4 pl-11 rounded-lg bg-[var(--palette-surface)] border border-[var(--palette-border)] text-[var(--text-p-color)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
+                    className="w-full py-2.5 px-4 pl-11 rounded-lg bg-[var(--palette-surface)] border border-[var(--palette-border)] text-[var(--text-paragraph)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
                     placeholder="Imprentos C.A."
                     disabled={saving}
                   />
@@ -220,7 +220,7 @@ export const PrinterForm: React.FC<PrinterFormProps> = ({
 
               {/* RIF Section */}
               <div>
-                <label className="text-[var(--text-p-color)] block mb-1.5">
+                <label className="text-[var(--text-paragraph)] block mb-1.5">
                   RIF (Registro Único de Información Fiscal) *
                 </label>
 
@@ -235,7 +235,7 @@ export const PrinterForm: React.FC<PrinterFormProps> = ({
                           onChange('rif', expected);
                         }
                       }}
-                      className="w-full py-2.5 px-4 rounded-lg bg-[var(--palette-surface)] border border-[var(--palette-border)] text-[var(--text-p-color)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
+                      className="w-full py-2.5 px-4 rounded-lg bg-[var(--palette-surface)] border border-[var(--palette-border)] text-[var(--text-paragraph)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
                       disabled={saving}
                     >
                       <option value="V">V</option>
@@ -250,7 +250,7 @@ export const PrinterForm: React.FC<PrinterFormProps> = ({
                       type="text"
                       value={documentNumber}
                       onChange={(e) => handleDocumentNumberChange(e.target.value)}
-                      className="w-full py-2.5 px-4 rounded-lg bg-[var(--palette-surface)] border border-[var(--palette-border)] text-[var(--text-p-color)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
+                      className="w-full py-2.5 px-4 rounded-lg bg-[var(--palette-surface)] border border-[var(--palette-border)] text-[var(--text-paragraph)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
                       placeholder="12345678-9"
                       disabled={saving}
                       maxLength={10}
@@ -259,7 +259,7 @@ export const PrinterForm: React.FC<PrinterFormProps> = ({
                 </div>
 
                 <div className="relative">
-                  <FileText className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-p-color)] opacity-75" />
+                  <FileText className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-paragraph)] opacity-75" />
                   <input
                     type="text"
                     name="rif"
@@ -267,7 +267,7 @@ export const PrinterForm: React.FC<PrinterFormProps> = ({
                     onChange={(e) => handleRifChange(e.target.value)}
                     required
                     readOnly
-                    className={`w-full py-2.5 px-4 pl-11 pr-10 rounded-lg bg-[var(--palette-background)] border text-[var(--text-p-color)] focus:outline-none ${rifValid
+                    className={`w-full py-2.5 px-4 pl-11 pr-10 rounded-lg bg-[var(--palette-background)] border text-[var(--text-paragraph)] focus:outline-none ${rifValid
                       ? 'border-green-500 focus:border-green-500 focus:ring-green-500'
                       : rifError
                         ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
@@ -300,7 +300,7 @@ export const PrinterForm: React.FC<PrinterFormProps> = ({
                       borderColor: 'var(--palette-border)',
                     }}
                   >
-                    <p className="text-[var(--text-p-color)] opacity-80 mb-2">
+                    <p className="text-[var(--text-paragraph)] opacity-80 mb-2">
                       Expected RIF:
                     </p>
                     <div className="flex items-center justify-between gap-2">
@@ -342,40 +342,40 @@ export const PrinterForm: React.FC<PrinterFormProps> = ({
 
               {/* Authorization Providence Section */}
               <div>
-                <label className="text-[var(--text-p-color)] block mb-1.5">
+                <label className="text-[var(--text-paragraph)] block mb-1.5">
                   Authorization Providence (Providencia Administrativa) *
                 </label>
                 <div className="relative">
-                  <FileText className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-p-color)] opacity-75" />
+                  <FileText className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-paragraph)] opacity-75" />
                   <input
                     type="text"
                     name="authorizationProvidence"
                     value={formData.authorizationProvidence}
                     onChange={(e) => onChange('authorizationProvidence', e.target.value)}
                     required
-                    className="w-full py-2.5 px-4 pl-11 rounded-lg bg-[var(--palette-surface)] border border-[var(--palette-border)] text-[var(--text-p-color)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
+                    className="w-full py-2.5 px-4 pl-11 rounded-lg bg-[var(--palette-surface)] border border-[var(--palette-border)] text-[var(--text-paragraph)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
                     placeholder="SNAT/2023/001234"
                     disabled={saving}
                   />
                 </div>
-                <p className="text-xs text-[var(--text-p-color)] opacity-60 mt-1">
+                <p className="text-xs text-[var(--text-paragraph)] opacity-60 mt-1">
                   Example: SNAT/2023/001234
                 </p>
               </div>
 
               {/* Authorization Date Section */}
               <div>
-                <label className="text-[var(--text-p-color)] block mb-1.5">
+                <label className="text-[var(--text-paragraph)] block mb-1.5">
                   Authorization Date (Fecha de Asignación) *
                 </label>
                 <div className="relative">
-                  <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-p-color)] opacity-75" />
+                  <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-paragraph)] opacity-75" />
                   <input
                     type="text"
                     value={authorizationDate}
                     onChange={(e) => handleAuthorizationDateChange(e.target.value)}
                     required
-                    className={`w-full py-2.5 px-4 pl-11 rounded-lg bg-[var(--palette-surface)] border text-[var(--text-p-color)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)] ${authorizationDateError ? 'border-red-500' : 'border-[var(--palette-border)]'
+                    className={`w-full py-2.5 px-4 pl-11 rounded-lg bg-[var(--palette-surface)] border text-[var(--text-paragraph)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)] ${authorizationDateError ? 'border-red-500' : 'border-[var(--palette-border)]'
                       }`}
                     placeholder="DDMMAAAA (e.g., 15012023)"
                     disabled={saving}
@@ -383,7 +383,7 @@ export const PrinterForm: React.FC<PrinterFormProps> = ({
                   />
                 </div>
                 {authorizationDate && authorizationDate.length >= 4 && (
-                  <p className="text-xs text-[var(--text-p-color)] opacity-60 mt-1">
+                  <p className="text-xs text-[var(--text-paragraph)] opacity-60 mt-1">
                     Formatted: {authorizationDate.substring(0, 2)}/{authorizationDate.substring(2, 4)}/{authorizationDate.substring(4)}
                   </p>
                 )}
@@ -412,8 +412,8 @@ export const PrinterForm: React.FC<PrinterFormProps> = ({
                     disabled={saving}
                   />
                   <div className="flex flex-col">
-                    <span className="text-[var(--text-p-color)] font-medium">Set as Active Printer</span>
-                    <span className="text-xs text-[var(--text-p-color)] opacity-75">
+                    <span className="text-[var(--text-paragraph)] font-medium">Set as Active Printer</span>
+                    <span className="text-xs text-[var(--text-paragraph)] opacity-75">
                       Only one printer can be active at a time. Activating this printer will deactivate others.
                     </span>
                   </div>
@@ -428,7 +428,7 @@ export const PrinterForm: React.FC<PrinterFormProps> = ({
               type="button"
               onClick={onCancel}
               disabled={saving}
-              className="flex-1 px-4 py-2 rounded-lg border border-[var(--palette-border)] text-[var(--text-p-color)] hover:bg-[var(--palette-border)] transition-colors disabled:opacity-50"
+              className="flex-1 px-4 py-2 rounded-lg border border-[var(--palette-border)] text-[var(--text-paragraph)] hover:bg-[var(--palette-border)] transition-colors disabled:opacity-50"
             >
               Cancel
             </button>
@@ -465,7 +465,7 @@ export const PrinterForm: React.FC<PrinterFormProps> = ({
           </button>
         }
       >
-        <p className="text-p-color">{modalMessage}</p>
+        <p className="text-paragraph">{modalMessage}</p>
       </Modal>
     </div>
   );

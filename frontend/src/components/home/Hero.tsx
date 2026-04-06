@@ -20,17 +20,17 @@ export const Hero: React.FC = () => {
         <div className="text-center">
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full palette-surface palette-border border mb-6">
-            <Sparkles className="w-4 h-4 text-p-color" />
-            <span className="text-p-font text-p-size text-p-color">Master the Future of Technology</span>
+            <Sparkles className="w-4 h-4 text-paragraph" />
+            <span className="text-paragraph">Master the Future of Technology</span>
           </div>
 
           {/* Heading */}
-          <h1 className="text-h1-font text-h1-size text-h1-color mb-6 max-w-4xl mx-auto">
+          <h1 className="text-h1 mb-6 max-w-4xl mx-auto">
             Learn Programming, Web Development & Agentic AI
           </h1>
 
           {/* Description */}
-          <p className="text-p-font text-p-size text-p-color mb-8 max-w-2xl mx-auto">
+          <p className="text-paragraph mb-8 max-w-2xl mx-auto">
             Transform your career with cutting-edge courses in web development, programming fundamentals,
             and the emerging field of agentic AI. Join thousands of learners building the future.
           </p>
@@ -49,16 +49,16 @@ export const Hero: React.FC = () => {
           {/* Stats */}
           <div className="grid grid-cols-3 gap-8 mt-16 max-w-3xl mx-auto">
             <div>
-              <div className="text-title-size text-title-weight text-primary">50K+</div>
-              <div className="text-p-font text-p-size text-p-color">Active Learners</div>
+              <div className="text-title text-title text-primary">50K+</div>
+              <div className="text-paragraph">Active Learners</div>
             </div>
             <div>
-              <div className="text-title-size text-title-weight text-primary">200+</div>
-              <div className="text-p-font text-p-size text-p-color">Expert Courses</div>
+              <div className="text-title text-title text-primary">200+</div>
+              <div className="text-paragraph">Expert Courses</div>
             </div>
             <div>
-              <div className="text-title-size text-title-weight text-primary">95%</div>
-              <div className="text-p-font text-p-size text-p-color">Success Rate</div>
+              <div className="text-title text-title text-primary">95%</div>
+              <div className="text-paragraph">Success Rate</div>
             </div>
           </div>
         </div>

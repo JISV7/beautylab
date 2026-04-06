@@ -231,8 +231,8 @@ export const CourseList: React.FC<CourseListProps> = ({ onNavigateToCreate, onNa
                 {/* Header */}
                 <div className="flex items-center justify-between flex-wrap gap-4">
                     <div>
-                        <h1 className="text-h1-size font-bold mb-1">Course Management</h1>
-                        <p className="text-p-font text-p-size text-p-color">
+                        <h1 className="text-h1 font-bold mb-1">Course Management</h1>
+                        <p className="text-paragraph">
                             Create, edit, and manage your educational courses.
                         </p>
                     </div>
@@ -267,7 +267,7 @@ export const CourseList: React.FC<CourseListProps> = ({ onNavigateToCreate, onNa
                             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--palette-primary)]"></div>
                         </div>
                     ) : filteredCourses.length === 0 ? (
-                        <div className="text-center py-12 text-p-color">
+                        <div className="text-center py-12 text-paragraph">
                             <p>No courses found.</p>
                             <p className="text-sm mt-2">Create your first course to get started!</p>
                         </div>

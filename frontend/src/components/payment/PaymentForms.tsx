@@ -102,7 +102,7 @@ export const CreditCardForm: React.FC<PaymentFormProps> = ({
     return (
         <div className="space-y-4">
             <div>
-                <label className="text-p-font text-p-size text-p-color font-medium block mb-2">
+                <label className="text-paragraph font-medium block mb-2">
                     <div className="flex items-center gap-2">
                         <User size={16} />
                         Cardholder Name
@@ -121,7 +121,7 @@ export const CreditCardForm: React.FC<PaymentFormProps> = ({
             </div>
 
             <div>
-                <label className="text-p-font text-p-size text-p-color font-medium block mb-2">
+                <label className="text-paragraph font-medium block mb-2">
                     <div className="flex items-center gap-2">
                         <CreditCard size={16} />
                         Card Number
@@ -142,7 +142,7 @@ export const CreditCardForm: React.FC<PaymentFormProps> = ({
 
             <div className="grid grid-cols-2 gap-4">
                 <div>
-                    <label className="text-p-font text-p-size text-p-color font-medium block mb-2">
+                    <label className="text-paragraph font-medium block mb-2">
                         <div className="flex items-center gap-2">
                             <Calendar size={16} />
                             Expiry Year
@@ -172,7 +172,7 @@ export const CreditCardForm: React.FC<PaymentFormProps> = ({
                 </div>
 
                 <div>
-                    <label className="text-p-font text-p-size text-p-color font-medium block mb-2">
+                    <label className="text-paragraph font-medium block mb-2">
                         <div className="flex items-center gap-2">
                             <Calendar size={16} />
                             Expiry Month
@@ -204,7 +204,7 @@ export const CreditCardForm: React.FC<PaymentFormProps> = ({
 
             <div className="grid grid-cols-2 gap-4">
                 <div>
-                    <label className="text-p-font text-p-size text-p-color font-medium block mb-2">
+                    <label className="text-paragraph font-medium block mb-2">
                         <div className="flex items-center gap-2">
                             <Lock size={16} />
                             CVV
@@ -224,7 +224,7 @@ export const CreditCardForm: React.FC<PaymentFormProps> = ({
                 </div>
 
                 <div>
-                    <label className="text-p-font text-p-size text-p-color font-medium block mb-2">
+                    <label className="text-paragraph font-medium block mb-2">
                         <div className="flex items-center gap-2">
                             <CreditCard size={16} />
                             Card Brand
@@ -263,7 +263,7 @@ export const DebitCardForm: React.FC<PaymentFormProps> = ({
     return (
         <div className="space-y-4">
             <div>
-                <label className="text-p-font text-p-size text-p-color font-medium block mb-2">
+                <label className="text-paragraph font-medium block mb-2">
                     <div className="flex items-center gap-2">
                         <User size={16} />
                         Cardholder Name
@@ -282,7 +282,7 @@ export const DebitCardForm: React.FC<PaymentFormProps> = ({
             </div>
 
             <div>
-                <label className="text-p-font text-p-size text-p-color font-medium block mb-2">
+                <label className="text-paragraph font-medium block mb-2">
                     <div className="flex items-center gap-2">
                         <CreditCard size={16} />
                         Card Number
@@ -303,7 +303,7 @@ export const DebitCardForm: React.FC<PaymentFormProps> = ({
 
             <div className="grid grid-cols-2 gap-4">
                 <div>
-                    <label className="text-p-font text-p-size text-p-color font-medium block mb-2">
+                    <label className="text-paragraph font-medium block mb-2">
                         <Calendar size={16} />
                         Expiry Year
                     </label>
@@ -328,7 +328,7 @@ export const DebitCardForm: React.FC<PaymentFormProps> = ({
                 </div>
 
                 <div>
-                    <label className="text-p-font text-p-size text-p-color font-medium block mb-2">
+                    <label className="text-paragraph font-medium block mb-2">
                         <Calendar size={16} />
                         Expiry Month
                     </label>
@@ -356,7 +356,7 @@ export const DebitCardForm: React.FC<PaymentFormProps> = ({
 
             <div className="grid grid-cols-2 gap-4">
                 <div>
-                    <label className="text-p-font text-p-size text-p-color font-medium block mb-2">
+                    <label className="text-paragraph font-medium block mb-2">
                         <Lock size={16} />
                         CVV
                     </label>
@@ -374,7 +374,7 @@ export const DebitCardForm: React.FC<PaymentFormProps> = ({
                 </div>
 
                 <div>
-                    <label className="text-p-font text-p-size text-p-color font-medium block mb-2">
+                    <label className="text-paragraph font-medium block mb-2">
                         <Building size={16} />
                         Bank Name
                     </label>
@@ -406,7 +406,7 @@ export const ZelleForm: React.FC<PaymentFormProps> = ({
     return (
         <div className="space-y-4">
             <div>
-                <label className="text-p-font text-p-size text-p-color font-medium block mb-2">
+                <label className="text-paragraph font-medium block mb-2">
                     <User size={16} />
                     Sender Name
                 </label>
@@ -423,7 +423,7 @@ export const ZelleForm: React.FC<PaymentFormProps> = ({
             </div>
 
             <div>
-                <label className="text-p-font text-p-size text-p-color font-medium block mb-2">
+                <label className="text-paragraph font-medium block mb-2">
                     <Mail size={16} />
                     Sender Email
                 </label>
@@ -440,7 +440,7 @@ export const ZelleForm: React.FC<PaymentFormProps> = ({
             </div>
 
             <div>
-                <label className="text-p-font text-p-size text-p-color font-medium block mb-2">
+                <label className="text-paragraph font-medium block mb-2">
                     <Phone size={16} />
                     Sender Phone (Optional)
                 </label>
@@ -454,7 +454,7 @@ export const ZelleForm: React.FC<PaymentFormProps> = ({
             </div>
 
             <div>
-                <label className="text-p-font text-p-size text-p-color font-medium block mb-2">
+                <label className="text-paragraph font-medium block mb-2">
                     <Mail size={16} />
                     Recipient Email
                 </label>
@@ -471,7 +471,7 @@ export const ZelleForm: React.FC<PaymentFormProps> = ({
             </div>
 
             <div>
-                <label className="text-p-font text-p-size text-p-color font-medium block mb-2">
+                <label className="text-paragraph font-medium block mb-2">
                     <FileText size={16} />
                     Confirmation Code
                 </label>
@@ -503,7 +503,7 @@ export const PagoMovilForm: React.FC<PaymentFormProps> = ({
     return (
         <div className="space-y-4">
             <div>
-                <label className="text-p-font text-p-size text-p-color font-medium block mb-2">
+                <label className="text-paragraph font-medium block mb-2">
                     <Building size={16} />
                     Bank Name
                 </label>
@@ -520,7 +520,7 @@ export const PagoMovilForm: React.FC<PaymentFormProps> = ({
             </div>
 
             <div>
-                <label className="text-p-font text-p-size text-p-color font-medium block mb-2">
+                <label className="text-paragraph font-medium block mb-2">
                     <Phone size={16} />
                     Phone Number
                 </label>
@@ -537,7 +537,7 @@ export const PagoMovilForm: React.FC<PaymentFormProps> = ({
             </div>
 
             <div>
-                <label className="text-p-font text-p-size text-p-color font-medium block mb-2">
+                <label className="text-paragraph font-medium block mb-2">
                     <User size={16} />
                     RIF / Cédula
                 </label>
@@ -554,7 +554,7 @@ export const PagoMovilForm: React.FC<PaymentFormProps> = ({
             </div>
 
             <div>
-                <label className="text-p-font text-p-size text-p-color font-medium block mb-2">
+                <label className="text-paragraph font-medium block mb-2">
                     <FileText size={16} />
                     Reference Code
                 </label>
@@ -572,7 +572,7 @@ export const PagoMovilForm: React.FC<PaymentFormProps> = ({
 
             {amount && (
                 <div>
-                    <label className="text-p-font text-p-size text-p-color font-medium block mb-2">
+                    <label className="text-paragraph font-medium block mb-2">
                         Amount Paid
                     </label>
                     <input
@@ -599,7 +599,7 @@ export const PaypalForm: React.FC<PaymentFormProps> = ({
     return (
         <div className="space-y-4">
             <div>
-                <label className="text-p-font text-p-size text-p-color font-medium block mb-2">
+                <label className="text-paragraph font-medium block mb-2">
                     <User size={16} />
                     Payer Name
                 </label>
@@ -616,7 +616,7 @@ export const PaypalForm: React.FC<PaymentFormProps> = ({
             </div>
 
             <div>
-                <label className="text-p-font text-p-size text-p-color font-medium block mb-2">
+                <label className="text-paragraph font-medium block mb-2">
                     <Mail size={16} />
                     PayPal Email
                 </label>
@@ -633,7 +633,7 @@ export const PaypalForm: React.FC<PaymentFormProps> = ({
             </div>
 
             <div>
-                <label className="text-p-font text-p-size text-p-color font-medium block mb-2">
+                <label className="text-paragraph font-medium block mb-2">
                     <FileText size={16} />
                     Transaction ID
                 </label>
@@ -664,7 +664,7 @@ export const BankTransferForm: React.FC<PaymentFormProps> = ({
     return (
         <div className="space-y-4">
             <div>
-                <label className="text-p-font text-p-size text-p-color font-medium block mb-2">
+                <label className="text-paragraph font-medium block mb-2">
                     <Building size={16} />
                     Bank Name
                 </label>
@@ -681,7 +681,7 @@ export const BankTransferForm: React.FC<PaymentFormProps> = ({
             </div>
 
             <div>
-                <label className="text-p-font text-p-size text-p-color font-medium block mb-2">
+                <label className="text-paragraph font-medium block mb-2">
                     <User size={16} />
                     Account Holder Name
                 </label>
@@ -698,7 +698,7 @@ export const BankTransferForm: React.FC<PaymentFormProps> = ({
             </div>
 
             <div>
-                <label className="text-p-font text-p-size text-p-color font-medium block mb-2">
+                <label className="text-paragraph font-medium block mb-2">
                     <FileText size={16} />
                     Transfer Reference
                 </label>
@@ -715,7 +715,7 @@ export const BankTransferForm: React.FC<PaymentFormProps> = ({
             </div>
 
             <div>
-                <label className="text-p-font text-p-size text-p-color font-medium block mb-2">
+                <label className="text-paragraph font-medium block mb-2">
                     <Calendar size={16} />
                     Transfer Date
                 </label>
@@ -751,7 +751,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({
         case 'bank_transfer':
             return <BankTransferForm {...props} />;
         default:
-            return <div className="text-p-color">Unknown payment method</div>;
+            return <div className="text-paragraph">Unknown payment method</div>;
     }
 };
 

@@ -33,8 +33,8 @@ export const About: React.FC = () => {
     <section id="about" className="py-16 lg:py-24 palette-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-h2-font text-h2-size text-h2-color text-h2-weight mb-4">About Codyn</h2>
-          <p className="text-p-font text-p-size text-p-color max-w-2xl mx-auto">
+          <h2 className="text-h2 mb-4">About Codyn</h2>
+          <p className="text-paragraph max-w-2xl mx-auto">
             We're passionate about transforming technology education and helping learners achieve their career goals.
           </p>
         </div>
@@ -50,8 +50,8 @@ export const About: React.FC = () => {
                 <div className="w-12 h-12 rounded-lg palette-primary flex items-center justify-center mb-4 mx-auto group-hover:scale-110 transition-transform duration-300">
                   <Icon className="w-6 h-6 decorator-color" />
                 </div>
-                <h3 className="text-h3-font text-h3-size text-h3-color text-h3-weight mb-3">{feature.title}</h3>
-                <p className="text-p-font text-p-size text-p-color">
+                <h3 className="text-h3 mb-3">{feature.title}</h3>
+                <p className="text-paragraph">
                   {feature.description}
                 </p>
               </div>

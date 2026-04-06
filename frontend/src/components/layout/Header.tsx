@@ -67,7 +67,7 @@ export const Header: React.FC = () => {
                   }`}
                 title="Light Mode"
               >
-                <Sun className="w-4 h-4 text-p-color" />
+                <Sun className="w-4 h-4 text-paragraph" />
               </button>
               <button
                 onClick={() => setPaletteMode('dark')}
@@ -77,7 +77,7 @@ export const Header: React.FC = () => {
                   }`}
                 title="Dark Mode"
               >
-                <Moon className="w-4 h-4 text-p-color" />
+                <Moon className="w-4 h-4 text-paragraph" />
               </button>
               <button
                 onClick={() => setPaletteMode('accessibility')}
@@ -87,7 +87,7 @@ export const Header: React.FC = () => {
                   }`}
                 title="Accessibility Mode"
               >
-                <Eye className="w-4 h-4 text-p-color" />
+                <Eye className="w-4 h-4 text-paragraph" />
               </button>
             </div>
 

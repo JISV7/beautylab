@@ -50,7 +50,7 @@ const PaletteCard: React.FC<PaletteCardProps> = ({ mode, theme, onEdit, headerRe
                 className="p-4 border-b shrink-0 relative flex items-center"
             >
                 <h3
-                    className="font-bold capitalize pr-20 text-h4-font text-h4-size text-h4-color text-h4-weight"
+                    className="font-bold capitalize pr-20 text-h4"
                 >
                     {mode} Mode
                 </h3>
@@ -65,19 +65,19 @@ const PaletteCard: React.FC<PaletteCardProps> = ({ mode, theme, onEdit, headerRe
                 {/* Color swatches */}
                 <div className="grid grid-cols-3 gap-2 min-w-0">
                     <div
-                        className="rounded-lg px-1 py-2 text-center break-words text-p-font text-p-size text-p-color text-p-weight"
+                        className="rounded-lg px-1 py-2 text-center break-words text-paragraph"
                         style={{ backgroundColor: 'var(--palette-primary)' }}
                     >
                         Primary
                     </div>
                     <div
-                        className="rounded-lg px-1 py-2 text-center break-words text-p-font text-p-size text-p-color text-p-weight"
+                        className="rounded-lg px-1 py-2 text-center break-words text-paragraph"
                         style={{ backgroundColor: 'var(--palette-secondary)' }}
                     >
                         Secondary
                     </div>
                     <div
-                        className="rounded-lg px-1 py-2 text-center break-words text-p-font text-p-size text-p-color text-p-weight"
+                        className="rounded-lg px-1 py-2 text-center break-words text-paragraph"
                         style={{ backgroundColor: 'var(--palette-accent)' }}
                     >
                         Accent
@@ -86,10 +86,10 @@ const PaletteCard: React.FC<PaletteCardProps> = ({ mode, theme, onEdit, headerRe
 
                 {/* Typography sample */}
                 <div className="space-y-2">
-                    <h1 className="text-h1-font text-h1-size text-h1-color text-h1-weight">
+                    <h1 className="text-h1">
                         Heading Sample H1
                     </h1>
-                    <p className="text-p-font text-p-size text-p-color text-p-weight text-p-line-height">
+                    <p className="text-paragraph">
                         Paragraph text sample showing the typography settings.
                     </p>
                 </div>
@@ -129,7 +129,7 @@ export const ThemePreview: React.FC<ThemePreviewProps> = ({
                 <div className="flex gap-3">
                     <button
                         onClick={onClose}
-                        className="px-4 py-2 text-sm font-medium text-p-color rounded-lg border palette-border hover:bg-black/5 dark:hover:bg-white/5 transition-colors flex items-center gap-2"
+                        className="px-4 py-2 text-sm font-medium text-paragraph rounded-lg border palette-border hover:bg-black/5 dark:hover:bg-white/5 transition-colors flex items-center gap-2"
                     >
                         <X className="w-4 h-4" />
                         Close

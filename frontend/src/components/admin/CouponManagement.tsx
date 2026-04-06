@@ -205,8 +205,8 @@ export const CouponManagement: React.FC = () => {
         <div className="space-y-6">
             {/* Header */}
             <div>
-                <h1 className="text-h1-size font-bold mb-1">Coupons</h1>
-                <p className="text-p-font text-p-size text-p-color">
+                <h1 className="text-h1 font-bold mb-1">Coupons</h1>
+                <p className="text-paragraph">
                     Create and manage discount codes. Each code can be used once per user.
                 </p>
             </div>
@@ -216,7 +216,7 @@ export const CouponManagement: React.FC = () => {
                 <div className="flex flex-col sm:flex-row gap-3 flex-1 w-full sm:w-auto">
                     {/* Search */}
                     <div className="relative flex-1 sm:flex-none sm:min-w-[250px]">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-p-color opacity-50" />
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-paragraph opacity-50" />
                         <input
                             type="text"
                             value={searchQuery}
@@ -253,7 +253,7 @@ export const CouponManagement: React.FC = () => {
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--palette-primary)]"></div>
                 </div>
             ) : filteredCoupons.length === 0 ? (
-                <div className="text-center py-12 text-p-color">
+                <div className="text-center py-12 text-paragraph">
                     <Tag className="w-12 h-12 mx-auto mb-4 opacity-30" />
                     <p>No coupons found.</p>
                     <p className="text-sm mt-2 opacity-60">
@@ -266,14 +266,14 @@ export const CouponManagement: React.FC = () => {
                         <table className="w-full">
                             <thead className="bg-[var(--palette-surface)] border-b border-[var(--palette-border)]">
                                 <tr>
-                                    <th className="text-left py-3 px-4 text-sm font-semibold text-p-color">Code</th>
-                                    <th className="text-left py-3 px-4 text-sm font-semibold text-p-color">Discount</th>
-                                    <th className="text-left py-3 px-4 text-sm font-semibold text-p-color">Min Purchase</th>
-                                    <th className="text-left py-3 px-4 text-sm font-semibold text-p-color">Uses</th>
-                                    <th className="text-left py-3 px-4 text-sm font-semibold text-p-color">Expires</th>
-                                    <th className="text-left py-3 px-4 text-sm font-semibold text-p-color">Created</th>
-                                    <th className="text-left py-3 px-4 text-sm font-semibold text-p-color">Status</th>
-                                    <th className="text-right py-3 px-4 text-sm font-semibold text-p-color">Actions</th>
+                                    <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph">Code</th>
+                                    <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph">Discount</th>
+                                    <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph">Min Purchase</th>
+                                    <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph">Uses</th>
+                                    <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph">Expires</th>
+                                    <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph">Created</th>
+                                    <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph">Status</th>
+                                    <th className="text-right py-3 px-4 text-sm font-semibold text-paragraph">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -283,7 +283,7 @@ export const CouponManagement: React.FC = () => {
                                         className="border-b border-[var(--palette-border)] hover:bg-[var(--palette-surface)] transition-colors group"
                                     >
                                         <td className="py-3 px-4">
-                                            <span className="font-mono text-sm font-semibold text-p-color">
+                                            <span className="font-mono text-sm font-semibold text-paragraph">
                                                 {coupon.code}
                                             </span>
                                         </td>
@@ -292,19 +292,19 @@ export const CouponManagement: React.FC = () => {
                                                 {formatDiscount(coupon)}
                                             </span>
                                         </td>
-                                        <td className="py-3 px-4 text-sm text-p-color">
+                                        <td className="py-3 px-4 text-sm text-paragraph">
                                             {coupon.min_purchase > 0
                                                 ? `Bs. ${coupon.min_purchase.toLocaleString('es-VE', { minimumFractionDigits: 2 })}`
                                                 : '—'}
                                         </td>
-                                        <td className="py-3 px-4 text-sm text-p-color">
+                                        <td className="py-3 px-4 text-sm text-paragraph">
                                             {coupon.used_count}
                                             {coupon.max_uses ? ` / ${coupon.max_uses}` : ''}
                                         </td>
-                                        <td className="py-3 px-4 text-sm text-p-color">
+                                        <td className="py-3 px-4 text-sm text-paragraph">
                                             {formatDate(coupon.expires_at)}
                                         </td>
-                                        <td className="py-3 px-4 text-sm text-p-color">
+                                        <td className="py-3 px-4 text-sm text-paragraph">
                                             {formatDate(coupon.created_at)}
                                         </td>
                                         <td className="py-3 px-4">
@@ -324,7 +324,7 @@ export const CouponManagement: React.FC = () => {
                                                     className="p-2 hover:bg-[var(--palette-border)] rounded transition-colors"
                                                     title="Edit"
                                                 >
-                                                    <Edit className="w-4 h-4 text-p-color" />
+                                                    <Edit className="w-4 h-4 text-paragraph" />
                                                 </button>
                                                 <button
                                                     onClick={() => handleDelete(coupon)}
@@ -344,7 +344,7 @@ export const CouponManagement: React.FC = () => {
                     {/* Pagination */}
                     {totalPages > 1 && (
                         <div className="flex items-center justify-between px-4 py-3 border-t border-[var(--palette-border)]">
-                            <p className="text-sm text-p-color opacity-60">
+                            <p className="text-sm text-paragraph opacity-60">
                                 Showing {filteredCoupons.length} of {totalItems} coupons
                             </p>
                             <div className="flex items-center gap-2">
@@ -353,7 +353,7 @@ export const CouponManagement: React.FC = () => {
                                     disabled={currentPage === 1}
                                     className="p-2 rounded hover:bg-[var(--palette-border)] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                                 >
-                                    <ChevronLeft className="w-4 h-4 text-p-color" />
+                                    <ChevronLeft className="w-4 h-4 text-paragraph" />
                                 </button>
                                 {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
                                     <button
@@ -361,7 +361,7 @@ export const CouponManagement: React.FC = () => {
                                         onClick={() => setCurrentPage(page)}
                                         className={`w-8 h-8 rounded text-sm font-medium transition-colors ${currentPage === page
                                                 ? 'bg-[var(--palette-primary)] text-white'
-                                                : 'hover:bg-[var(--palette-border)] text-p-color'
+                                                : 'hover:bg-[var(--palette-border)] text-paragraph'
                                             }`}
                                     >
                                         {page}
@@ -372,7 +372,7 @@ export const CouponManagement: React.FC = () => {
                                     disabled={currentPage === totalPages}
                                     className="p-2 rounded hover:bg-[var(--palette-border)] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                                 >
-                                    <ChevronRight className="w-4 h-4 text-p-color" />
+                                    <ChevronRight className="w-4 h-4 text-paragraph" />
                                 </button>
                             </div>
                         </div>
@@ -389,7 +389,7 @@ export const CouponManagement: React.FC = () => {
                 <div className="space-y-4">
                     {/* Code */}
                     <div>
-                        <label className="text-p-font text-p-size text-p-color font-medium block mb-1">
+                        <label className="text-paragraph font-medium block mb-1">
                             Code {editingCoupon && <span className="opacity-50">(read-only)</span>}
                         </label>
                         <input
@@ -404,7 +404,7 @@ export const CouponManagement: React.FC = () => {
 
                     {/* Discount Type */}
                     <div>
-                        <label className="text-p-font text-p-size text-p-color font-medium block mb-1">
+                        <label className="text-paragraph font-medium block mb-1">
                             Discount Type {editingCoupon && <span className="opacity-50">(read-only)</span>}
                         </label>
                         <select
@@ -420,7 +420,7 @@ export const CouponManagement: React.FC = () => {
 
                     {/* Discount Value */}
                     <div>
-                        <label className="text-p-font text-p-size text-p-color font-medium block mb-1">
+                        <label className="text-paragraph font-medium block mb-1">
                             Discount Value
                         </label>
                         <input
@@ -436,7 +436,7 @@ export const CouponManagement: React.FC = () => {
 
                     {/* Min Purchase */}
                     <div>
-                        <label className="text-p-font text-p-size text-p-color font-medium block mb-1">
+                        <label className="text-paragraph font-medium block mb-1">
                             Minimum Purchase (Bs.)
                         </label>
                         <input
@@ -452,7 +452,7 @@ export const CouponManagement: React.FC = () => {
 
                     {/* Max Uses */}
                     <div>
-                        <label className="text-p-font text-p-size text-p-color font-medium block mb-1">
+                        <label className="text-paragraph font-medium block mb-1">
                             Max Total Uses <span className="opacity-50">(leave empty for unlimited)</span>
                         </label>
                         <input
@@ -467,7 +467,7 @@ export const CouponManagement: React.FC = () => {
 
                     {/* Expires At */}
                     <div>
-                        <label className="text-p-font text-p-size text-p-color font-medium block mb-1">
+                        <label className="text-paragraph font-medium block mb-1">
                             Expiration Date <span className="opacity-50">(leave empty for no expiry)</span>
                         </label>
                         <input
@@ -487,7 +487,7 @@ export const CouponManagement: React.FC = () => {
                             onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })}
                             className="w-4 h-4 rounded"
                         />
-                        <label htmlFor="coupon-active" className="text-p-font text-p-size text-p-color font-medium">
+                        <label htmlFor="coupon-active" className="text-paragraph font-medium">
                             Active
                         </label>
                     </div>

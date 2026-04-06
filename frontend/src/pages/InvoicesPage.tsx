@@ -257,13 +257,13 @@ export default function InvoicesPage() {
     if (loading && invoices.length === 0) {
         return (
             <div className="flex items-center justify-center h-64">
-                <div className="text-p-color">Loading invoices...</div>
+                <div className="text-paragraph">Loading invoices...</div>
             </div>
         );
     }
 
     return (
-        <div className="flex h-screen palette-background text-p-font print:block print:h-auto">
+        <div className="flex h-screen palette-background text-paragraph print:block print:h-auto">
             {selectedInvoice ? (
                 <InvoiceDetail
                     invoice={selectedInvoice}
@@ -360,8 +360,8 @@ function InvoiceList({
     return (
         <main className="flex-1 p-8 overflow-auto print:p-0 print:overflow-visible">
             <div className="max-w-7xl mx-auto">
-                <h1 className="text-h1-size font-bold mb-1">My Invoices</h1>
-                <p className="text-p-font text-p-size text-p-color mb-6">
+                <h1 className="text-h1 font-bold mb-1">My Invoices</h1>
+                <p className="text-paragraph mb-6">
                     View, search, and download all your purchase invoices.
                 </p>
 
@@ -373,7 +373,7 @@ function InvoiceList({
                                 <Receipt className="w-6 h-6 text-primary" />
                             </div>
                             <div>
-                                <p className="text-sm text-p-color opacity-75">Total Invoices</p>
+                                <p className="text-sm text-paragraph opacity-75">Total Invoices</p>
                                 <p className="text-2xl font-bold">{summary.total_invoices}</p>
                             </div>
                         </div>
@@ -382,7 +382,7 @@ function InvoiceList({
                                 <DollarSign className="w-6 h-6 text-green-600 dark:text-green-400" />
                             </div>
                             <div>
-                                <p className="text-sm text-p-color opacity-75">Base Total</p>
+                                <p className="text-sm text-paragraph opacity-75">Base Total</p>
                                 <p className="text-2xl font-bold text-green-600 dark:text-green-400">
                                     Bs. {parseFloat(summary.total_subtotal).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                 </p>
@@ -393,7 +393,7 @@ function InvoiceList({
                                 <Percent className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                             </div>
                             <div>
-                                <p className="text-sm text-p-color opacity-75">Total IVA (16%)</p>
+                                <p className="text-sm text-paragraph opacity-75">Total IVA (16%)</p>
                                 <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
                                     Bs. {parseFloat(summary.total_iva).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                 </p>
@@ -404,7 +404,7 @@ function InvoiceList({
                                 <FileText className="w-6 h-6 text-purple-600 dark:text-purple-400" />
                             </div>
                             <div>
-                                <p className="text-sm text-p-color opacity-75">Total Paid</p>
+                                <p className="text-sm text-paragraph opacity-75">Total Paid</p>
                                 <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">
                                     Bs. {parseFloat(summary.total_paid).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                 </p>
@@ -453,7 +453,7 @@ function InvoiceList({
                         {/* Search */}
                         <div className="flex-1 min-w-64">
                             <div className="relative">
-                                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-p-color opacity-50" />
+                                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-paragraph opacity-50" />
                                 <input
                                     type="text"
                                     placeholder="Search by invoice #, control #, RIF..."
@@ -466,7 +466,7 @@ function InvoiceList({
 
                         {/* Status Filter */}
                         <div className="flex items-center gap-2">
-                            <Filter className="w-5 h-5 text-p-color opacity-50" />
+                            <Filter className="w-5 h-5 text-paragraph opacity-50" />
                             <select
                                 value={statusFilter}
                                 onChange={(e) => setStatusFilter(e.target.value)}
@@ -482,7 +482,7 @@ function InvoiceList({
 
                         {/* Page Size Selector */}
                         <div className="flex items-center gap-2">
-                            <span className="text-sm text-p-color opacity-75 whitespace-nowrap">Rows:</span>
+                            <span className="text-sm text-paragraph opacity-75 whitespace-nowrap">Rows:</span>
                             <select
                                 value={pageSize}
                                 onChange={(e) => onPageSizeChange(Number(e.target.value))}
@@ -500,8 +500,8 @@ function InvoiceList({
                 {invoices.length === 0 ? (
                     <div className="palette-surface palette-border border rounded-xl p-8 text-center">
                         <FileText className="w-16 h-16 mx-auto mb-4 opacity-50" />
-                        <p className="text-p-color">No invoices found.</p>
-                        <p className="text-p-color opacity-75 text-sm mt-2">
+                        <p className="text-paragraph">No invoices found.</p>
+                        <p className="text-paragraph opacity-75 text-sm mt-2">
                             When you purchase a course, your invoices will appear here.
                         </p>
                     </div>
@@ -510,7 +510,7 @@ function InvoiceList({
                         <div className="palette-surface rounded-lg shadow-sm palette-border overflow-hidden">
                             <table className="w-full text-left border-collapse">
                                 <thead>
-                                    <tr className="palette-surface border-b palette-border text-p-color text-sm uppercase tracking-wider opacity-75">
+                                    <tr className="palette-surface border-b palette-border text-paragraph text-sm uppercase tracking-wider opacity-75">
                                         <th 
                                             className="p-4 font-semibold cursor-pointer hover:bg-[var(--palette-surface)] transition-colors"
                                             onClick={() => handleSort('invoice_number')}
@@ -591,7 +591,7 @@ function InvoiceList({
                                                                         style={{ width: `${Math.min(invoice.payment_progress, 100)}%` }}
                                                                     />
                                                                 </div>
-                                                                <span className="text-xs text-p-color opacity-75 w-10">
+                                                                <span className="text-xs text-paragraph opacity-75 w-10">
                                                                     {invoice.payment_progress.toFixed(0)}%
                                                                 </span>
                                                             </div>
@@ -655,7 +655,7 @@ function InvoiceList({
                                     </button>
                                 </div>
                                 
-                                <span className="text-p-color">
+                                <span className="text-paragraph">
                                     Page <strong>{currentPage}</strong> of <strong>{totalPages}</strong>
                                 </span>
                                 
@@ -785,17 +785,17 @@ function InvoiceDetail({
                         <div className="flex items-start justify-between mb-4">
                             <div>
                                 <h1 className="text-3xl font-bold text-primary">FACTURA</h1>
-                                <p className="text-p-color opacity-75 mt-1">
+                                <p className="text-paragraph opacity-75 mt-1">
                                     N° {invoice.invoice_number}
                                 </p>
                             </div>
                             {invoice.company && (
                                 <div className="text-right">
                                     <p className="font-semibold">{invoice.company.business_name}</p>
-                                    <p className="text-sm text-p-color">RIF: {invoice.company.rif}</p>
-                                    <p className="text-sm text-p-color">{invoice.company.fiscal_address}</p>
+                                    <p className="text-sm text-paragraph">RIF: {invoice.company.rif}</p>
+                                    <p className="text-sm text-paragraph">{invoice.company.fiscal_address}</p>
                                     {invoice.company.phone && (
-                                        <p className="text-sm text-p-color">Tel: {invoice.company.phone}</p>
+                                        <p className="text-sm text-paragraph">Tel: {invoice.company.phone}</p>
                                     )}
                                 </div>
                             )}
@@ -805,22 +805,22 @@ function InvoiceDetail({
                         {/* Art. 6: Fecha y hora de emisión (DDMMYYYY - HH.MM.SS AM/PM) */}
                         <div className="grid grid-cols-4 gap-4 text-sm bg-[var(--palette-surface)] p-4 rounded-lg">
                             <div>
-                                <p className="text-p-color opacity-75 text-xs uppercase">N° Control</p>
+                                <p className="text-paragraph opacity-75 text-xs uppercase">N° Control</p>
                                 <p className="font-mono font-medium">{invoice.control_number}</p>
                             </div>
                             <div>
-                                <p className="text-p-color opacity-75 text-xs uppercase">Fecha de Emisión</p>
+                                <p className="text-paragraph opacity-75 text-xs uppercase">Fecha de Emisión</p>
                                 <p className="font-medium">{formatDate(invoice.issue_date)}</p>
-                                <p className="text-xs text-p-color opacity-50">
+                                <p className="text-xs text-paragraph opacity-50">
                                     ({formatDateDisplay(invoice.issue_date)})
                                 </p>
                             </div>
                             <div>
-                                <p className="text-p-color opacity-75 text-xs uppercase">Hora de Emisión</p>
+                                <p className="text-paragraph opacity-75 text-xs uppercase">Hora de Emisión</p>
                                 <p className="font-medium">{formatTime(invoice.issue_time)}</p>
                             </div>
                             <div className="text-right">
-                                <p className="text-p-color opacity-75 text-xs uppercase">Estado</p>
+                                <p className="text-paragraph opacity-75 text-xs uppercase">Estado</p>
                                 <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
                                     {invoice.status === 'issued' ? 'Emitida' : invoice.status}
                                 </span>
@@ -831,7 +831,7 @@ function InvoiceDetail({
                     {/* Art. 5: Rango de números de control */}
                     {invoice.control_number_range && (
                         <div className="bg-[var(--palette-surface)] p-3 rounded-lg mb-6 text-sm">
-                            <p className="text-p-color opacity-75 text-xs uppercase mb-1">
+                            <p className="text-paragraph opacity-75 text-xs uppercase mb-1">
                                 Rango de Números de Control Asignados
                             </p>
                             <p className="font-medium">
@@ -839,7 +839,7 @@ function InvoiceDetail({
                                 hasta el N° {invoice.control_number_range.end_number.padStart(12, '0')}
                             </p>
                             {/* Art. 15: Fecha de asignación del número de control */}
-                            <p className="text-xs text-p-color opacity-50 mt-1">
+                            <p className="text-xs text-paragraph opacity-50 mt-1">
                                 Fecha de asignación: {formatDateDisplay(invoice.control_number_range.assigned_date)}
                             </p>
                         </div>
@@ -847,12 +847,12 @@ function InvoiceDetail({
 
                     {/* Art. 7: Información del cliente */}
                     <div className="palette-surface palette-border border rounded-lg p-4 mb-6">
-                        <h3 className="text-sm font-semibold text-p-color opacity-75 uppercase mb-3">
+                        <h3 className="text-sm font-semibold text-paragraph opacity-75 uppercase mb-3">
                             Datos del Cliente
                         </h3>
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <p className="text-p-color opacity-75 text-xs">Nombre / Razón Social</p>
+                                <p className="text-paragraph opacity-75 text-xs">Nombre / Razón Social</p>
                                 <p className="font-medium">
                                     {invoice.client_business_name || 
                                      (invoice.client_document_type && invoice.client_document_number) ||
@@ -861,7 +861,7 @@ function InvoiceDetail({
                                 </p>
                             </div>
                             <div>
-                                <p className="text-p-color opacity-75 text-xs">
+                                <p className="text-paragraph opacity-75 text-xs">
                                     RIF / Cédula / Pasaporte
                                 </p>
                                 <p className="font-medium">
@@ -872,7 +872,7 @@ function InvoiceDetail({
                             </div>
                             {invoice.client_fiscal_address && (
                                 <div className="col-span-2">
-                                    <p className="text-p-color opacity-75 text-xs">Domicilio Fiscal</p>
+                                    <p className="text-paragraph opacity-75 text-xs">Domicilio Fiscal</p>
                                     <p className="font-medium">{invoice.client_fiscal_address}</p>
                                 </div>
                             )}
@@ -899,14 +899,14 @@ function InvoiceDetail({
                                             {line.description}
                                             {/* Art. 8: Operación exenta */}
                                             {line.is_exempt && (
-                                                <span className="ml-2 text-xs text-p-color opacity-75">(E)</span>
+                                                <span className="ml-2 text-xs text-paragraph opacity-75">(E)</span>
                                             )}
                                         </td>
                                         <td className="py-3 text-center">{line.quantity}</td>
                                         <td className="py-3 text-right">
                                             Bs. {parseFloat(line.unit_price).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                         </td>
-                                        <td className="py-3 text-right text-p-color opacity-75">
+                                        <td className="py-3 text-right text-paragraph opacity-75">
                                             {line.tax_rate ? `${parseFloat(line.tax_rate).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%` : '16%'}
                                         </td>
                                         <td className="py-3 text-right font-medium">
@@ -921,7 +921,7 @@ function InvoiceDetail({
                     {/* Art. 10: Ajustes (descuentos, bonificaciones) */}
                     {invoice.adjustments && invoice.adjustments.length > 0 && (
                         <div className="mb-6">
-                            <h4 className="text-sm font-semibold text-p-color opacity-75 uppercase mb-2">
+                            <h4 className="text-sm font-semibold text-paragraph opacity-75 uppercase mb-2">
                                 Ajustes
                             </h4>
                             {invoice.adjustments.map((adj) => (
@@ -941,20 +941,20 @@ function InvoiceDetail({
                     <div className="flex justify-end mb-6">
                         <div className="w-80">
                             <div className="flex items-center justify-between py-2 border-b border-[var(--palette-border)]">
-                                <span className="text-p-color opacity-75">Base Imponible</span>
+                                <span className="text-paragraph opacity-75">Base Imponible</span>
                                 <span className="font-medium">
                                     Bs. {parseFloat(invoice.subtotal).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                 </span>
                             </div>
                             <div className="flex items-center justify-between py-2 border-b border-[var(--palette-border)]">
-                                <span className="text-p-color opacity-75">IVA (16%)</span>
+                                <span className="text-paragraph opacity-75">IVA (16%)</span>
                                 <span className="font-medium">
                                     Bs. {parseFloat(invoice.tax_total).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                 </span>
                             </div>
                             {invoice.discount_total && parseFloat(invoice.discount_total) > 0 && (
                                 <div className="flex items-center justify-between py-2 border-b border-[var(--palette-border)]">
-                                    <span className="text-p-color opacity-75">Descuentos</span>
+                                    <span className="text-paragraph opacity-75">Descuentos</span>
                                     <span className="font-medium text-green-600">
                                         -Bs. {parseFloat(invoice.discount_total).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                     </span>
@@ -972,7 +972,7 @@ function InvoiceDetail({
                     {/* Información de pagos */}
                     {invoice.payments && invoice.payments.length > 0 && (
                         <div className="mt-6 pt-6 border-t border-[var(--palette-border)]">
-                            <h3 className="text-sm font-semibold text-p-color opacity-75 uppercase mb-4">
+                            <h3 className="text-sm font-semibold text-paragraph opacity-75 uppercase mb-4">
                                 Desglose de Pagos
                             </h3>
                             <div className="space-y-2">
@@ -986,12 +986,12 @@ function InvoiceDetail({
                                                 {payment.method_type?.replace('_', ' ') || 'Pago'}
                                             </span>
                                             {payment.card_brand && (
-                                                <span className="text-sm text-p-color opacity-75 block">
+                                                <span className="text-sm text-paragraph opacity-75 block">
                                                     {payment.card_brand}
                                                     {payment.card_last4 && ` •••• ${payment.card_last4}`}
                                                 </span>
                                             )}
-                                            <span className="text-xs text-p-color opacity-50">
+                                            <span className="text-xs text-paragraph opacity-50">
                                                 ({formatDateDisplay(payment.created_at)})
                                             </span>
                                         </div>
@@ -1017,7 +1017,7 @@ function InvoiceDetail({
 
                     {/* Art. 14: Información de la imprenta digital autorizada */}
                     {invoice.control_number_range && (
-                        <div className="mt-6 pt-6 border-t-2 border-[var(--palette-border)] text-xs text-p-color opacity-75">
+                        <div className="mt-6 pt-6 border-t-2 border-[var(--palette-border)] text-xs text-paragraph opacity-75">
                             <h4 className="font-semibold uppercase mb-2">
                                 Imprenta Digital Autorizada
                             </h4>
@@ -1032,7 +1032,7 @@ function InvoiceDetail({
                     )}
 
                     {/* Footer */}
-                    <div className="mt-8 pt-6 border-t border-[var(--palette-border)] text-center text-xs text-p-color opacity-60 print:block">
+                    <div className="mt-8 pt-6 border-t border-[var(--palette-border)] text-center text-xs text-paragraph opacity-60 print:block">
                         {invoice.company && (
                             <p>
                                 {invoice.company.business_name} | RIF: {invoice.company.rif}

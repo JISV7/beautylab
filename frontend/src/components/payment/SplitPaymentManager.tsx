@@ -131,25 +131,25 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
             {/* Allocation Summary */}
             <div className="palette-surface palette-border border rounded-xl p-4">
                 <div className="flex items-center justify-between mb-2">
-                    <span className="text-p-font text-p-size text-p-color font-medium">
+                    <span className="text-paragraph font-medium">
                         Total Amount
                     </span>
-                    <span className="text-h4-font text-h4-size text-h4-color font-bold">
+                    <span className="text-h4 font-bold">
                         {formatAmount(totalAmount)}
                     </span>
                 </div>
 
                 <div className="flex items-center justify-between mb-2">
-                    <span className="text-p-font text-p-size text-p-color">
+                    <span className="text-paragraph">
                         Allocated
                     </span>
-                    <span className={`font-semibold ${isOverAllocated ? 'text-red-500' : 'text-p-color'}`}>
+                    <span className={`font-semibold ${isOverAllocated ? 'text-red-500' : 'text-paragraph'}`}>
                         {formatAmount(totalAllocated)}
                     </span>
                 </div>
 
                 <div className="flex items-center justify-between pt-2 border-t border-[var(--palette-border)]">
-                    <span className="text-p-font text-p-size text-p-color font-medium">
+                    <span className="text-paragraph font-medium">
                         Remaining
                     </span>
                     <span className={`font-bold ${
@@ -157,7 +157,7 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
                             ? 'text-red-500'
                             : isFullyAllocated
                             ? 'text-green-500'
-                            : 'text-p-color'
+                            : 'text-paragraph'
                     }`}>
                         {formatAmount(remaining)}
                     </span>
@@ -207,7 +207,7 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
                                 <div className="w-8 h-8 rounded-full bg-[var(--palette-primary)] text-white flex items-center justify-center font-bold text-sm">
                                     {index + 1}
                                 </div>
-                                <h3 className="text-h4-font text-h4-size text-h4-color font-semibold">
+                                <h3 className="text-h4 font-semibold">
                                     Payment Method {index + 1}
                                 </h3>
                             </div>
@@ -223,7 +223,7 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
 
                         {/* Method Selector */}
                         <div>
-                            <label className="text-p-font text-p-size text-p-color font-medium block mb-2">
+                            <label className="text-paragraph font-medium block mb-2">
                                 Payment Type
                             </label>
                             <select
@@ -244,14 +244,14 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
 
                         {/* Amount Input */}
                         <div>
-                            <label className="text-p-font text-p-size text-p-color font-medium block mb-2">
+                            <label className="text-paragraph font-medium block mb-2">
                                 <div className="flex items-center gap-2">
                                     <DollarSign size={16} />
                                     Amount
                                 </div>
                             </label>
                             <div className="relative">
-                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-p-color opacity-60">
+                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-paragraph opacity-60">
                                     $
                                 </span>
                                 <input
@@ -267,7 +267,7 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
                                     max={totalAmount - (totalAllocated - payment.amount)}
                                 />
                             </div>
-                            <p className="text-sm text-p-color opacity-60 mt-1">
+                            <p className="text-sm text-paragraph opacity-60 mt-1">
                                 Available: {formatAmount(totalAmount - (totalAllocated - payment.amount))}
                             </p>
                         </div>
@@ -287,7 +287,7 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
             {/* Add Payment Button */}
             <button
                 onClick={addPaymentMethod}
-                className="w-full py-3 px-4 border-2 border-dashed border-[var(--palette-border)] rounded-xl text-p-color hover:border-[var(--palette-primary)] hover:text-[var(--palette-primary)] transition-colors flex items-center justify-center gap-2"
+                className="w-full py-3 px-4 border-2 border-dashed border-[var(--palette-border)] rounded-xl text-paragraph hover:border-[var(--palette-primary)] hover:text-[var(--palette-primary)] transition-colors flex items-center justify-center gap-2"
             >
                 <Plus size={20} />
                 <span className="font-medium">Add Another Payment Method</span>
@@ -295,7 +295,7 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
 
             {/* Info */}
             <div className="palette-surface palette-border border rounded-xl p-4 bg-[var(--palette-primary)]/5">
-                <p className="text-p-font text-p-size text-p-color text-sm">
+                <p className="text-paragraph text-sm">
                     💡 <strong>Tip:</strong> You can split your payment across multiple methods.
                     Just add another payment method and allocate the desired amount to each.
                     The total must equal the course price exactly.

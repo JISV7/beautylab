@@ -388,7 +388,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                 <div className="flex gap-2 flex-wrap items-center justify-end shrink-0">
                     <button
                         onClick={onPreview}
-                        className="px-3 py-2 text-xs sm:text-sm font-medium text-p-color rounded-lg border palette-border hover:bg-black/5 dark:hover:bg-white/5 transition-colors flex items-center gap-2 shrink-0"
+                        className="px-3 py-2 text-xs sm:text-sm font-medium text-paragraph rounded-lg border palette-border hover:bg-black/5 dark:hover:bg-white/5 transition-colors flex items-center gap-2 shrink-0"
                         title="Preview theme"
                     >
                         <Eye className="w-4 h-4" />
@@ -396,7 +396,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                     </button>
                     <button
                         onClick={handleDiscard}
-                        className="px-3 py-2 text-xs sm:text-sm font-medium text-p-color rounded-lg border palette-border hover:bg-black/5 dark:hover:bg-white/5 transition-colors flex items-center gap-2 shrink-0"
+                        className="px-3 py-2 text-xs sm:text-sm font-medium text-paragraph rounded-lg border palette-border hover:bg-black/5 dark:hover:bg-white/5 transition-colors flex items-center gap-2 shrink-0"
                         title="Discard changes"
                     >
                         <span className="hidden sm:inline">Discard</span>
@@ -455,7 +455,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                                 className={`px-4 py-2 text-sm font-bold rounded-lg transition-colors capitalize ${
                                     activeMode === mode
                                         ? 'theme-button theme-button-primary'
-                                        : 'text-p-color hover:bg-black/5 dark:hover:bg-white/5'
+                                        : 'text-paragraph hover:bg-black/5 dark:hover:bg-white/5'
                                 }`}
                             >
                                 {mode}
@@ -470,7 +470,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                             className={`pb-2 flex items-center gap-2 font-medium transition-colors ${
                                 activeTab === 'colors'
                                     ? 'text-palette-primary border-b-2 border-palette-primary'
-                                    : 'text-p-color hover:text-slate-900 dark:hover:text-white'
+                                    : 'text-paragraph hover:text-slate-900 dark:hover:text-white'
                             }`}
                         >
                             <Palette className="w-4 h-4" />
@@ -481,7 +481,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                             className={`pb-2 flex items-center gap-2 font-medium transition-colors ${
                                 activeTab === 'typography'
                                     ? 'text-palette-primary border-b-2 border-palette-primary'
-                                    : 'text-p-color hover:text-slate-900 dark:hover:text-white'
+                                    : 'text-paragraph hover:text-slate-900 dark:hover:text-white'
                             }`}
                         >
                             <Type className="w-4 h-4" />

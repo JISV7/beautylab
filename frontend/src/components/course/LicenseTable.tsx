@@ -155,10 +155,10 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
     if (licenses.length === 0) {
         return (
             <div className="palette-surface palette-border border rounded-xl p-8 text-center">
-                <p className="text-p-font text-p-size text-p-color opacity-60 mb-2">
+                <p className="text-paragraph opacity-60 mb-2">
                     No licenses owned for this course yet
                 </p>
-                <p className="text-sm text-p-color opacity-40">
+                <p className="text-sm text-paragraph opacity-40">
                     Purchase a license to start learning
                 </p>
             </div>
@@ -170,28 +170,28 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
             {/* Statistics */}
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
                 <div className="palette-surface palette-border border rounded-lg p-3 text-center">
-                    <p className="text-2xl font-black text-p-color">{stats.total}</p>
-                    <p className="text-xs text-p-color opacity-60 uppercase tracking-wider">Total</p>
+                    <p className="text-2xl font-black text-paragraph">{stats.total}</p>
+                    <p className="text-xs text-paragraph opacity-60 uppercase tracking-wider">Total</p>
                 </div>
                 <div className="palette-surface palette-border border rounded-lg p-3 text-center">
                     <p className="text-2xl font-black text-green-600 dark:text-green-400">{stats.byStatus.active || 0}</p>
-                    <p className="text-xs text-p-color opacity-60 uppercase tracking-wider">Active</p>
+                    <p className="text-xs text-paragraph opacity-60 uppercase tracking-wider">Active</p>
                 </div>
                 <div className="palette-surface palette-border border rounded-lg p-3 text-center">
                     <p className="text-2xl font-black text-blue-600 dark:text-blue-400">{stats.byStatus.redeemed || 0}</p>
-                    <p className="text-xs text-p-color opacity-60 uppercase tracking-wider">Redeemed</p>
+                    <p className="text-xs text-paragraph opacity-60 uppercase tracking-wider">Redeemed</p>
                 </div>
                 <div className="palette-surface palette-border border rounded-lg p-3 text-center">
                     <p className="text-2xl font-black text-amber-600 dark:text-amber-400">{stats.byStatus.pending || 0}</p>
-                    <p className="text-xs text-p-color opacity-60 uppercase tracking-wider">Pending</p>
+                    <p className="text-xs text-paragraph opacity-60 uppercase tracking-wider">Pending</p>
                 </div>
                 <div className="palette-surface palette-border border rounded-lg p-3 text-center">
-                    <p className="text-lg font-black text-p-color">{formatAmount(stats.totalPaid.toString())}</p>
-                    <p className="text-xs text-p-color opacity-60 uppercase tracking-wider">Total Paid</p>
+                    <p className="text-lg font-black text-paragraph">{formatAmount(stats.totalPaid.toString())}</p>
+                    <p className="text-xs text-paragraph opacity-60 uppercase tracking-wider">Total Paid</p>
                 </div>
                 <div className="palette-surface palette-border border rounded-lg p-3 text-center">
                     <p className="text-lg font-black text-amber-600 dark:text-amber-400">{formatAmount(stats.totalRemaining.toString())}</p>
-                    <p className="text-xs text-p-color opacity-60 uppercase tracking-wider">Remaining</p>
+                    <p className="text-xs text-paragraph opacity-60 uppercase tracking-wider">Remaining</p>
                 </div>
             </div>
 
@@ -200,23 +200,23 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
                 <div className="flex flex-col lg:flex-row gap-3">
                     {/* Search */}
                     <div className="flex-1 relative">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-p-color opacity-40" />
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-paragraph opacity-40" />
                         <input
                             type="text"
                             placeholder="Search by license code or email..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-11 pr-4 py-2.5 rounded-lg bg-[var(--palette-surface)] border border-[var(--palette-border)] text-p-color focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)] transition-all"
+                            className="w-full pl-11 pr-4 py-2.5 rounded-lg bg-[var(--palette-surface)] border border-[var(--palette-border)] text-paragraph focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)] transition-all"
                         />
                     </div>
 
                     {/* Status Filter */}
                     <div className="relative">
-                        <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-p-color opacity-40" />
+                        <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-paragraph opacity-40" />
                         <select
                             value={statusFilter}
                             onChange={(e) => setStatusFilter(e.target.value as LicenseStatus | 'all')}
-                            className="pl-10 pr-8 py-2.5 rounded-lg bg-[var(--palette-surface)] border border-[var(--palette-border)] text-p-color focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)] transition-all appearance-none cursor-pointer"
+                            className="pl-10 pr-8 py-2.5 rounded-lg bg-[var(--palette-surface)] border border-[var(--palette-border)] text-paragraph focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)] transition-all appearance-none cursor-pointer"
                         >
                             <option value="all">All Status</option>
                             <option value="pending">Pending</option>
@@ -229,11 +229,11 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
 
                     {/* Payment Filter */}
                     <div className="relative">
-                        <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-p-color opacity-40" />
+                        <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-paragraph opacity-40" />
                         <select
                             value={paymentFilter}
                             onChange={(e) => setPaymentFilter(e.target.value as PaymentFilter)}
-                            className="pl-10 pr-8 py-2.5 rounded-lg bg-[var(--palette-surface)] border border-[var(--palette-border)] text-p-color focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)] transition-all appearance-none cursor-pointer"
+                            className="pl-10 pr-8 py-2.5 rounded-lg bg-[var(--palette-surface)] border border-[var(--palette-border)] text-paragraph focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)] transition-all appearance-none cursor-pointer"
                         >
                             <option value="all">All Payment</option>
                             <option value="paid">Paid</option>
@@ -255,7 +255,7 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
                 </div>
 
                 {/* Results count */}
-                <div className="mt-3 flex items-center justify-between text-sm text-p-color opacity-60">
+                <div className="mt-3 flex items-center justify-between text-sm text-paragraph opacity-60">
                     <span>Showing {filteredLicenses.length} of {licenses.length} licenses</span>
                     {hasActiveFilters && <span>Filters active</span>}
                 </div>
@@ -269,7 +269,7 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
                     <thead className="bg-[var(--palette-background)] border-b border-[var(--palette-border)]">
                         <tr>
                             <th 
-                                className="text-left text-xs font-bold text-p-color uppercase tracking-wider px-4 py-3 cursor-pointer hover:bg-[var(--palette-border)] transition-colors"
+                                className="text-left text-xs font-bold text-paragraph uppercase tracking-wider px-4 py-3 cursor-pointer hover:bg-[var(--palette-border)] transition-colors"
                                 onClick={() => handleSort('license_code')}
                             >
                                 <div className="flex items-center gap-2">
@@ -280,7 +280,7 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
                                 </div>
                             </th>
                             <th 
-                                className="text-left text-xs font-bold text-p-color uppercase tracking-wider px-4 py-3 cursor-pointer hover:bg-[var(--palette-border)] transition-colors"
+                                className="text-left text-xs font-bold text-paragraph uppercase tracking-wider px-4 py-3 cursor-pointer hover:bg-[var(--palette-border)] transition-colors"
                                 onClick={() => handleSort('status')}
                             >
                                 <div className="flex items-center gap-2">
@@ -291,7 +291,7 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
                                 </div>
                             </th>
                             <th 
-                                className="text-left text-xs font-bold text-p-color uppercase tracking-wider px-4 py-3 cursor-pointer hover:bg-[var(--palette-border)] transition-colors"
+                                className="text-left text-xs font-bold text-paragraph uppercase tracking-wider px-4 py-3 cursor-pointer hover:bg-[var(--palette-border)] transition-colors"
                                 onClick={() => handleSort('amount_paid')}
                             >
                                 <div className="flex items-center gap-2">
@@ -302,7 +302,7 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
                                 </div>
                             </th>
                             <th 
-                                className="text-left text-xs font-bold text-p-color uppercase tracking-wider px-4 py-3 cursor-pointer hover:bg-[var(--palette-border)] transition-colors"
+                                className="text-left text-xs font-bold text-paragraph uppercase tracking-wider px-4 py-3 cursor-pointer hover:bg-[var(--palette-border)] transition-colors"
                                 onClick={() => handleSort('amount_remaining')}
                             >
                                 <div className="flex items-center gap-2">
@@ -313,7 +313,7 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
                                 </div>
                             </th>
                             <th 
-                                className="text-left text-xs font-bold text-p-color uppercase tracking-wider px-4 py-3 cursor-pointer hover:bg-[var(--palette-border)] transition-colors"
+                                className="text-left text-xs font-bold text-paragraph uppercase tracking-wider px-4 py-3 cursor-pointer hover:bg-[var(--palette-border)] transition-colors"
                                 onClick={() => handleSort('purchase_date')}
                             >
                                 <div className="flex items-center gap-2">
@@ -324,7 +324,7 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
                                 </div>
                             </th>
                             <th 
-                                className="text-left text-xs font-bold text-p-color uppercase tracking-wider px-4 py-3 cursor-pointer hover:bg-[var(--palette-border)] transition-colors"
+                                className="text-left text-xs font-bold text-paragraph uppercase tracking-wider px-4 py-3 cursor-pointer hover:bg-[var(--palette-border)] transition-colors"
                                 onClick={() => handleSort('redemption_date')}
                             >
                                 <div className="flex items-center gap-2">
@@ -334,10 +334,10 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
                                     )}
                                 </div>
                             </th>
-                            <th className="text-left text-xs font-bold text-p-color uppercase tracking-wider px-4 py-3">
+                            <th className="text-left text-xs font-bold text-paragraph uppercase tracking-wider px-4 py-3">
                                 Assigned To
                             </th>
-                            <th className="text-right text-xs font-bold text-p-color uppercase tracking-wider px-4 py-3">
+                            <th className="text-right text-xs font-bold text-paragraph uppercase tracking-wider px-4 py-3">
                                 Actions
                             </th>
                         </tr>
@@ -347,7 +347,7 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
                             <tr key={license.id} className="hover:bg-[var(--palette-background)] transition-colors">
                                 <td className="px-4 py-3">
                                     <div className="flex items-center gap-2">
-                                        <code className="text-xs font-mono text-p-color">
+                                        <code className="text-xs font-mono text-paragraph">
                                             {license.license_code.slice(0, 8)}...
                                         </code>
                                         <button
@@ -358,7 +358,7 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
                                             {copiedCode === license.license_code ? (
                                                 <Check size={14} className="text-green-500" />
                                             ) : (
-                                                <Copy size={14} className="text-p-color opacity-60" />
+                                                <Copy size={14} className="text-paragraph opacity-60" />
                                             )}
                                         </button>
                                     </div>
@@ -366,7 +366,7 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
                                 <td className="px-4 py-3">
                                     <LicenseStatusBadge status={license.status} />
                                 </td>
-                                <td className="px-4 py-3 text-p-font text-p-size text-p-color">
+                                <td className="px-4 py-3 text-paragraph">
                                     {formatAmount(license.amount_paid)}
                                 </td>
                                 <td className="px-4 py-3">
@@ -380,13 +380,13 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
                                         </span>
                                     )}
                                 </td>
-                                <td className="px-4 py-3 text-p-font text-p-size text-p-color opacity-80">
+                                <td className="px-4 py-3 text-paragraph opacity-80">
                                     {formatDate(license.purchase_date)}
                                 </td>
-                                <td className="px-4 py-3 text-p-font text-p-size text-p-color opacity-80">
+                                <td className="px-4 py-3 text-paragraph opacity-80">
                                     {formatDate(license.redemption_date)}
                                 </td>
-                                <td className="px-4 py-3 text-p-font text-p-size text-p-color">
+                                <td className="px-4 py-3 text-paragraph">
                                     {license.assigned_to_name || license.assigned_to_email || '-'}
                                 </td>
                                 <td className="px-4 py-3 text-right">
@@ -424,7 +424,7 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
                         {/* License Code */}
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
-                                <code className="text-xs font-mono text-p-color">
+                                <code className="text-xs font-mono text-paragraph">
                                     {license.license_code.slice(0, 8)}...
                                 </code>
                                 <button
@@ -434,7 +434,7 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
                                     {copiedCode === license.license_code ? (
                                         <Check size={14} className="text-green-500" />
                                     ) : (
-                                        <Copy size={14} className="text-p-color opacity-60" />
+                                        <Copy size={14} className="text-paragraph opacity-60" />
                                     )}
                                 </button>
                             </div>
@@ -444,15 +444,15 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
                         {/* Payment Info */}
                         <div className="grid grid-cols-2 gap-3">
                             <div>
-                                <p className="text-[10px] font-bold text-p-color opacity-40 uppercase">
+                                <p className="text-[10px] font-bold text-paragraph opacity-40 uppercase">
                                     Paid
                                 </p>
-                                <p className="text-sm font-medium text-p-color">
+                                <p className="text-sm font-medium text-paragraph">
                                     {formatAmount(license.amount_paid)}
                                 </p>
                             </div>
                             <div>
-                                <p className="text-[10px] font-bold text-p-color opacity-40 uppercase">
+                                <p className="text-[10px] font-bold text-paragraph opacity-40 uppercase">
                                     Remaining
                                 </p>
                                 <p className={`text-sm font-medium ${
@@ -470,18 +470,18 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
                         {/* Dates */}
                         <div className="grid grid-cols-2 gap-3">
                             <div>
-                                <p className="text-[10px] font-bold text-p-color opacity-40 uppercase">
+                                <p className="text-[10px] font-bold text-paragraph opacity-40 uppercase">
                                     Purchased
                                 </p>
-                                <p className="text-xs text-p-color opacity-80">
+                                <p className="text-xs text-paragraph opacity-80">
                                     {formatDate(license.purchase_date)}
                                 </p>
                             </div>
                             <div>
-                                <p className="text-[10px] font-bold text-p-color opacity-40 uppercase">
+                                <p className="text-[10px] font-bold text-paragraph opacity-40 uppercase">
                                     Redeemed
                                 </p>
-                                <p className="text-xs text-p-color opacity-80">
+                                <p className="text-xs text-paragraph opacity-80">
                                     {formatDate(license.redemption_date) || 'Not redeemed'}
                                 </p>
                             </div>
@@ -490,10 +490,10 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
                         {/* Assigned To */}
                         {(license.assigned_to_name || license.assigned_to_email) && (
                             <div>
-                                <p className="text-[10px] font-bold text-p-color opacity-40 uppercase">
+                                <p className="text-[10px] font-bold text-paragraph opacity-40 uppercase">
                                     Assigned To
                                 </p>
-                                <p className="text-xs text-p-color">
+                                <p className="text-xs text-paragraph">
                                     {license.assigned_to_name || license.assigned_to_email}
                                 </p>
                             </div>

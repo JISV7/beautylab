@@ -17,14 +17,14 @@ export const CourseFormStep2: React.FC<CourseFormStep2Props> = ({
     return (
         <div className="theme-card p-6 space-y-6">
             <div className="flex items-center gap-2 mb-4">
-                <h3 className="text-h3-size text-h3-color text-h3-font text-h3-weight">
+                <h3 className="text-h3 text-h3 text-h3">
                     Step 2: Commercial Info
                 </h3>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label className="block text-sm font-bold mb-2 text-p-color">
+                    <label className="block text-sm font-bold mb-2 text-paragraph">
                         Product Name
                     </label>
                     <input
@@ -38,7 +38,7 @@ export const CourseFormStep2: React.FC<CourseFormStep2Props> = ({
                 </div>
 
                 <div>
-                    <label className="block text-sm font-bold mb-2 text-p-color">
+                    <label className="block text-sm font-bold mb-2 text-paragraph">
                         SKU
                     </label>
                     <input
@@ -52,11 +52,11 @@ export const CourseFormStep2: React.FC<CourseFormStep2Props> = ({
                 </div>
 
                 <div>
-                    <label className="block text-sm font-bold mb-2 text-p-color">
+                    <label className="block text-sm font-bold mb-2 text-paragraph">
                         Price (Bs.)
                     </label>
                     <div className="relative">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-p-color opacity-40 font-bold">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-paragraph opacity-40 font-bold">
                             Bs.
                         </span>
                         <input
@@ -80,7 +80,7 @@ export const CourseFormStep2: React.FC<CourseFormStep2Props> = ({
                     className="theme-button"
                     style={{
                         backgroundColor: 'transparent',
-                        color: 'var(--text-p-color)',
+                        color: 'var(--text-paragraph)',
                         border: '1px solid var(--palette-border)',
                     }}
                 >

@@ -28,7 +28,7 @@ export const CompanyTable: React.FC<CompanyTableProps> = ({
       label: 'Business Name',
       sortable: true,
       render: (item) => (
-        <span className="font-medium text-p-color">{item.businessName}</span>
+        <span className="font-medium text-paragraph">{item.businessName}</span>
       ),
     },
     {
@@ -41,7 +41,7 @@ export const CompanyTable: React.FC<CompanyTableProps> = ({
       label: 'Email',
       sortable: true,
       render: (item) => (
-        <span className="text-p-color opacity-75">{item.email || '-'}</span>
+        <span className="text-paragraph opacity-75">{item.email || '-'}</span>
       ),
     },
     {

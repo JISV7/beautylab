@@ -295,10 +295,10 @@ export const CategoryManagement: React.FC = () => {
                 {/* Header */}
                 <div className="flex items-center justify-between flex-wrap gap-4">
                     <div>
-                        <h1 className="text-h1-size font-bold mb-1">
+                        <h1 className="text-h1 font-bold mb-1">
                             Category Management
                         </h1>
-                        <p className="text-p-font text-p-size text-p-color">
+                        <p className="text-paragraph">
                             Create, edit, and organize your course categories.
                         </p>
                     </div>
@@ -314,13 +314,13 @@ export const CategoryManagement: React.FC = () => {
                 {/* Search Bar */}
                 <div className="p-4 border-b border-[var(--palette-border)] flex items-center gap-3">
                     <div className="relative flex-1">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-p-color" />
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-paragraph" />
                         <input
                             type="text"
                             placeholder="Search categories by name, slug, or description..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2 rounded-lg bg-[var(--palette-surface)] border border-[var(--palette-border)] text-p-font text-p-size text-p-color placeholder-[var(--palette-text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
+                            className="w-full pl-10 pr-4 py-2 rounded-lg bg-[var(--palette-surface)] border border-[var(--palette-border)] text-paragraph placeholder-[var(--palette-text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
                         />
                     </div>
                 </div>
@@ -332,7 +332,7 @@ export const CategoryManagement: React.FC = () => {
                             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--palette-primary)]"></div>
                         </div>
                     ) : filteredCategories.length === 0 ? (
-                        <div className="text-center py-12 text-p-color">
+                        <div className="text-center py-12 text-paragraph">
                             {searchQuery ? (
                                 <p>No categories found matching "{searchQuery}".</p>
                             ) : (
@@ -347,12 +347,12 @@ export const CategoryManagement: React.FC = () => {
                             <table className="w-full">
                                 <thead className="bg-[var(--palette-surface)] border-b border-[var(--palette-border)]">
                                     <tr>
-                                        <th className="text-left py-3 px-4 text-sm font-semibold text-p-color">Name</th>
-                                        <th className="text-left py-3 px-4 text-sm font-semibold text-p-color">Slug</th>
-                                        <th className="text-left py-3 px-4 text-sm font-semibold text-p-color">Description</th>
-                                        <th className="text-left py-3 px-4 text-sm font-semibold text-p-color">Parent</th>
-                                        <th className="text-right py-3 px-4 text-sm font-semibold text-p-color">Order</th>
-                                        <th className="text-right py-3 px-4 text-sm font-semibold text-p-color">Actions</th>
+                                        <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph">Name</th>
+                                        <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph">Slug</th>
+                                        <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph">Description</th>
+                                        <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph">Parent</th>
+                                        <th className="text-right py-3 px-4 text-sm font-semibold text-paragraph">Order</th>
+                                        <th className="text-right py-3 px-4 text-sm font-semibold text-paragraph">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -362,19 +362,19 @@ export const CategoryManagement: React.FC = () => {
                                             className="border-b border-[var(--palette-border)] hover:bg-[var(--palette-surface)] transition-colors group"
                                         >
                                             <td className="py-3 px-4">
-                                                <span className="font-semibold text-p-color">
+                                                <span className="font-semibold text-paragraph">
                                                     {category.name}
                                                 </span>
                                             </td>
                                             <td className="py-3 px-4">
-                                                <span className="text-sm text-p-color font-mono">
+                                                <span className="text-sm text-paragraph font-mono">
                                                     {category.slug}
                                                 </span>
                                             </td>
                                             <td className="py-3 px-4 max-w-xs">
                                                 {category.description ? (
                                                     <div className="flex items-center gap-2">
-                                                        <span className="text-sm text-p-color line-clamp-2">
+                                                        <span className="text-sm text-paragraph line-clamp-2">
                                                             {category.description.length > 100
                                                                 ? `${category.description.substring(0, 100)}...`
                                                                 : category.description
@@ -390,16 +390,16 @@ export const CategoryManagement: React.FC = () => {
                                                         )}
                                                     </div>
                                                 ) : (
-                                                    <span className="text-sm text-p-color">-</span>
+                                                    <span className="text-sm text-paragraph">-</span>
                                                 )}
                                             </td>
                                             <td className="py-3 px-4">
-                                                <span className="text-sm text-p-color">
+                                                <span className="text-sm text-paragraph">
                                                     {getParentCategoryName(category.parent_id)}
                                                 </span>
                                             </td>
                                             <td className="py-3 px-4 text-right">
-                                                <span className="text-sm text-p-color">
+                                                <span className="text-sm text-paragraph">
                                                     {category.order}
                                                 </span>
                                             </td>
@@ -410,7 +410,7 @@ export const CategoryManagement: React.FC = () => {
                                                         className="p-2 hover:bg-[var(--palette-border)] rounded transition-colors"
                                                         title="Edit"
                                                     >
-                                                        <Edit size={18} className="text-p-color" />
+                                                        <Edit size={18} className="text-paragraph" />
                                                     </button>
                                                     <button
                                                         onClick={() => handleDelete(category)}
@@ -438,7 +438,7 @@ export const CategoryManagement: React.FC = () => {
             >
                 <div className="space-y-4">
                     <div>
-                        <label className="block text-sm font-semibold mb-2 text-p-color">
+                        <label className="block text-sm font-semibold mb-2 text-paragraph">
                             Name <span className="text-red-500">*</span>
                         </label>
                         <input
@@ -452,8 +452,8 @@ export const CategoryManagement: React.FC = () => {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-semibold mb-2 text-p-color">
-                            Slug <span className="text-p-color opacity-60">(auto-generated)</span>
+                        <label className="block text-sm font-semibold mb-2 text-paragraph">
+                            Slug <span className="text-paragraph opacity-60">(auto-generated)</span>
                         </label>
                         <input
                             type="text"
@@ -466,7 +466,7 @@ export const CategoryManagement: React.FC = () => {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-semibold mb-2 text-p-color">
+                        <label className="block text-sm font-semibold mb-2 text-paragraph">
                             Description
                         </label>
                         <textarea
@@ -481,7 +481,7 @@ export const CategoryManagement: React.FC = () => {
 
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm font-semibold mb-2 text-p-color">
+                            <label className="block text-sm font-semibold mb-2 text-paragraph">
                                 Parent Category
                             </label>
                             <select
@@ -502,7 +502,7 @@ export const CategoryManagement: React.FC = () => {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-semibold mb-2 text-p-color">
+                            <label className="block text-sm font-semibold mb-2 text-paragraph">
                                 Order
                             </label>
                             <input
@@ -523,7 +523,7 @@ export const CategoryManagement: React.FC = () => {
                             className="theme-button"
                             style={{
                                 backgroundColor: 'transparent',
-                                color: 'var(--text-p-color)',
+                                color: 'var(--text-paragraph)',
                                 border: '1px solid var(--palette-border)',
                             }}
                         >
@@ -570,12 +570,12 @@ export const CategoryManagement: React.FC = () => {
                     >
                         {/* Header */}
                         <div className="p-6 border-b border-[var(--palette-border)] flex items-center justify-between">
-                            <h3 className="text-xl font-bold text-[var(--text-h2-color)]">
+                            <h3 className="text-xl font-bold text-[var(--text-h2)]">
                                 {descriptionModal.title}
                             </h3>
                             <button
                                 onClick={() => setDescriptionModal(prev => ({ ...prev, isOpen: false }))}
-                                className="text-[var(--text-p-color)] hover:text-primary transition-colors"
+                                className="text-[var(--text-paragraph)] hover:text-primary transition-colors"
                             >
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -585,7 +585,7 @@ export const CategoryManagement: React.FC = () => {
 
                         {/* Content */}
                         <div className="p-6 overflow-y-auto flex-1">
-                            <p className="text-[var(--text-p-color)] whitespace-pre-wrap leading-relaxed">
+                            <p className="text-[var(--text-paragraph)] whitespace-pre-wrap leading-relaxed">
                                 {descriptionModal.content}
                             </p>
                         </div>

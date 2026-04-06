@@ -40,12 +40,12 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
         >
             <div className="flex items-center gap-3">
                 <div
-                    className="w-10 h-10 rounded flex items-center justify-center text-h4-font text-h4-size text-h4-color text-h4-weight"
+                    className="w-10 h-10 rounded flex items-center justify-center text-h4"
                     style={{ backgroundColor: 'var(--palette-surface)' }}
                 >
                     {shortLabel}
                 </div>
-                <h4 className="text-h4-font text-h4-size text-h4-color text-h4-weight">
+                <h4 className="text-h4">
                     {label}
                 </h4>
             </div>
@@ -56,7 +56,7 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
             <div className="p-4 sm:p-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
                 {/* Font Family */}
                 <label className="flex flex-col gap-2 min-w-0">
-                    <span className="text-p-font text-p-size text-p-color text-p-weight">
+                    <span className="text-paragraph">
                         Font Family
                     </span>
                     <div className="relative">
@@ -84,7 +84,7 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
 
                 {/* Size */}
                 <label className="flex flex-col gap-2 min-w-0">
-                    <span className="text-p-font text-p-size text-p-color text-p-weight">
+                    <span className="text-paragraph">
                         Size (rem)
                     </span>
                     <div className="relative flex items-center">
@@ -111,7 +111,7 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
 
                 {/* Font Weight */}
                 <label className="flex flex-col gap-2 min-w-0">
-                    <span className="text-p-font text-p-size text-p-color text-p-weight">
+                    <span className="text-paragraph">
                         Font Weight
                     </span>
                     <div className="relative flex items-center">
@@ -130,7 +130,7 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
 
                 {/* Line Height */}
                 <label className="flex flex-col gap-2 min-w-0">
-                    <span className="text-p-font text-p-size text-p-color text-p-weight">
+                    <span className="text-paragraph">
                         Line Height
                     </span>
                     <div className="relative flex items-center">
@@ -149,7 +149,7 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
 
                 {/* Color */}
                 <div className="flex flex-col gap-2 min-w-0">
-                    <span className="text-p-font text-p-size text-p-color text-p-weight">
+                    <span className="text-paragraph">
                         Color
                     </span>
                     <div className="flex items-center gap-3 w-full">

@@ -186,7 +186,7 @@ export default function CompanyInfoPage() {
   if (loading && companies.length === 0) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="text-p-color">Loading...</div>
+        <div className="text-paragraph">Loading...</div>
       </div>
     );
   }
@@ -194,8 +194,8 @@ export default function CompanyInfoPage() {
   return (
     <div className="p-6">
       <div className="mb-6">
-        <h1 className="text-h1-size font-bold mb-1">Company Information</h1>
-        <p className="text-p-font text-p-size text-p-color">
+        <h1 className="text-h1 mb-1">Company Information</h1>
+        <p className="text-paragraph">
           Manage your company&apos;s legal name, RIF, fiscal address, and
           branding details.
         </p>
@@ -240,7 +240,7 @@ export default function CompanyInfoPage() {
         title="Set Active Company"
         message={
           <>
-            <p className="text-p-color mb-3">
+            <p className="text-paragraph mb-3">
               Are you sure you want to set <strong>"{setActiveModal.company?.businessName}"</strong> as the active company?
             </p>
             <div
@@ -250,7 +250,7 @@ export default function CompanyInfoPage() {
                 borderColor: 'var(--palette-border)',
               }}
             >
-              <p className="text-sm text-[var(--text-p-color)] opacity-80">
+              <p className="text-sm text-[var(--text-paragraph)] opacity-80">
                 <strong>Note:</strong> This will automatically deactivate all other companies. Only one company can be active at a time.
               </p>
             </div>

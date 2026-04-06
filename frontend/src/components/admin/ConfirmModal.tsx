@@ -78,7 +78,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
                 {/* Close button */}
                 <button
                     onClick={onClose}
-                    className="absolute right-4 top-4 text-[var(--text-p-color)] hover:opacity-80 transition-colors z-10"
+                    className="absolute right-4 top-4 text-[var(--text-paragraph)] hover:opacity-80 transition-colors z-10"
                 >
                     <X className="w-5 h-5" />
                 </button>
@@ -89,10 +89,10 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
                     <div className="flex items-start gap-4 mb-4">
                         {getIcon()}
                         <div className="flex-1">
-                            <h2 className="text-xl font-bold text-[var(--text-h2-color)] mb-2">
+                            <h2 className="text-xl font-bold text-[var(--text-h2)] mb-2">
                                 {title}
                             </h2>
-                            <div className="text-[var(--text-p-color)] text-sm">
+                            <div className="text-[var(--text-paragraph)] text-sm">
                                 {message}
                             </div>
                         </div>
@@ -106,7 +106,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
                                 value={inputValue}
                                 onChange={(e) => onInputChange(e.target.value)}
                                 placeholder={inputPlaceholder}
-                                className="w-full px-4 py-2 rounded-lg border border-[var(--palette-border)] bg-[var(--palette-background)] text-[var(--text-p-color)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
+                                className="w-full px-4 py-2 rounded-lg border border-[var(--palette-border)] bg-[var(--palette-background)] text-[var(--text-paragraph)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
                                 autoFocus
                             />
                         </div>
@@ -117,7 +117,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
                 <div className="p-6 border-t border-[var(--palette-border)] flex items-center gap-3 shrink-0 bg-[var(--palette-surface)]">
                     <button
                         onClick={onClose}
-                        className="flex-1 px-4 py-2 rounded-lg border border-[var(--palette-border)] text-[var(--text-p-color)] hover:bg-[var(--palette-border)] transition-colors"
+                        className="flex-1 px-4 py-2 rounded-lg border border-[var(--palette-border)] text-[var(--text-paragraph)] hover:bg-[var(--palette-border)] transition-colors"
                     >
                         {cancelText}
                     </button>

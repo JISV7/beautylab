@@ -344,14 +344,14 @@ export const CourseManagement: React.FC<CourseManagementProps> = ({ courseId, on
                 {/* Header */}
                 <div className="flex items-center justify-between flex-wrap gap-4">
                     <div>
-                        <nav className="flex text-xs font-bold text-p-color opacity-60 mb-2 gap-2 uppercase tracking-widest">
+                        <nav className="flex text-xs font-bold text-paragraph opacity-60 mb-2 gap-2 uppercase tracking-widest">
                             <span>Courses</span>
                             <span>/</span>
                             <span className="text-[var(--palette-primary)]">
                                 {courseId ? 'Edit' : 'Create New'}
                             </span>
                         </nav>
-                        <h1 className="text-h1-size font-bold mb-1">
+                        <h1 className="text-h1 font-bold mb-1">
                             {courseId ? 'Edit Course' : 'Course Creation'}
                         </h1>
                     </div>
@@ -361,7 +361,7 @@ export const CourseManagement: React.FC<CourseManagementProps> = ({ courseId, on
                             className="theme-button"
                             style={{
                                 backgroundColor: 'transparent',
-                                color: 'var(--text-p-color)',
+                                color: 'var(--text-paragraph)',
                                 border: '1px solid var(--palette-border)',
                             }}
                         >

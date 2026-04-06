@@ -21,8 +21,8 @@ export const CoursePreviewCard: React.FC<CoursePreviewCardProps> = ({
     return (
         <div className="sticky top-24">
             <div className="flex items-center gap-2 mb-4">
-                <EyeIcon size={20} className="text-p-color opacity-40" />
-                <span className="text-xs font-black text-p-color opacity-60 uppercase tracking-widest">
+                <EyeIcon size={20} className="text-paragraph opacity-40" />
+                <span className="text-xs font-black text-paragraph opacity-60 uppercase tracking-widest">
                     Live Preview
                 </span>
             </div>
@@ -40,7 +40,7 @@ export const CoursePreviewCard: React.FC<CoursePreviewCardProps> = ({
                             }}
                         />
                     ) : (
-                        <div className="w-full h-full flex items-center justify-center text-p-color opacity-40">
+                        <div className="w-full h-full flex items-center justify-center text-paragraph opacity-40">
                             <span className="text-sm">No image</span>
                         </div>
                     )}
@@ -68,21 +68,21 @@ export const CoursePreviewCard: React.FC<CoursePreviewCardProps> = ({
                             <Star size={14} fill="currentColor" />
                             <Star size={14} fill="currentColor" />
                             <Star size={14} />
-                            <span className="text-xs font-bold text-p-color opacity-60 ml-1">(4.8)</span>
+                            <span className="text-xs font-bold text-paragraph opacity-60 ml-1">(4.8)</span>
                         </div>
                     </div>
-                    <h4 className="text-xl font-black text-p-color leading-tight mb-2">
+                    <h4 className="text-xl font-black text-paragraph leading-tight mb-2">
                         {formData.title || 'Course Title'}
                     </h4>
-                    <p className="text-sm text-p-color opacity-60 line-clamp-2 mb-6 leading-relaxed">
+                    <p className="text-sm text-paragraph opacity-60 line-clamp-2 mb-6 leading-relaxed">
                         {formData.description || 'Course description will appear here...'}
                     </p>
                     <div className="flex items-center justify-between pt-4 border-t border-[var(--palette-border)]">
                         <div>
-                            <p className="text-[10px] font-bold text-p-color opacity-40 uppercase">
+                            <p className="text-[10px] font-bold text-paragraph opacity-40 uppercase">
                                 Enrollment Price
                             </p>
-                            <p className="text-lg font-black text-p-color">
+                            <p className="text-lg font-black text-paragraph">
                                 {formatPrice(formData.price)}
                             </p>
                         </div>

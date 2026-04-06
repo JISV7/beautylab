@@ -193,7 +193,7 @@ export default function MyCoursesPage() {
     if (loading) {
         return (
             <div className="flex items-center justify-center h-64">
-                <div className="text-p-color">Loading your courses...</div>
+                <div className="text-paragraph">Loading your courses...</div>
             </div>
         );
     }
@@ -204,8 +204,8 @@ export default function MyCoursesPage() {
                 {/* Header */}
                 <div className="flex items-start justify-between mb-6">
                     <div>
-                        <h1 className="text-h1-size font-bold mb-1">My Courses</h1>
-                        <p className="text-p-font text-p-size text-p-color">
+                        <h1 className="text-h1 font-bold mb-1">My Courses</h1>
+                        <p className="text-paragraph">
                             Track your enrolled courses, licenses, and learning progress.
                         </p>
                     </div>
@@ -233,16 +233,16 @@ export default function MyCoursesPage() {
 
                 {/* Results Count */}
                 <div className="mb-6 mt-4 flex items-center justify-between">
-                    <p className="text-p-color opacity-60">
-                        Showing <span className="font-bold text-p-color">{filteredCourses.length}</span> courses
+                    <p className="text-paragraph opacity-60">
+                        Showing <span className="font-bold text-paragraph">{filteredCourses.length}</span> courses
                     </p>
                 </div>
 
                 {courses.length === 0 ? (
                     <div className="palette-surface palette-border border rounded-xl p-8 text-center">
                         <Book className="w-16 h-16 mx-auto mb-4 opacity-50" />
-                        <p className="text-p-color">No courses yet.</p>
-                        <p className="text-p-color opacity-75 text-sm mt-2">
+                        <p className="text-paragraph">No courses yet.</p>
+                        <p className="text-paragraph opacity-75 text-sm mt-2">
                             When you purchase a course, it will appear here.
                         </p>
                     </div>
@@ -282,7 +282,7 @@ export default function MyCoursesPage() {
                                     {!course.is_fully_paid && (
                                         <div className="mb-4">
                                             <div className="flex items-center justify-between text-sm mb-1">
-                                                <span className="text-p-color opacity-75">Payment Progress</span>
+                                                <span className="text-paragraph opacity-75">Payment Progress</span>
                                                 <span className="font-medium">
                                                     Bs. {course.total_paid} / Bs. {course.total_required}
                                                 </span>
@@ -304,8 +304,8 @@ export default function MyCoursesPage() {
                                                 className="w-full flex items-center justify-between p-3 bg-[var(--palette-surface)] rounded-lg hover:opacity-80 transition-opacity"
                                             >
                                                 <div className="flex items-center gap-2">
-                                                    <Gift className="w-4 h-4 text-p-color opacity-50" />
-                                                    <span className="text-sm font-semibold text-p-color opacity-75">
+                                                    <Gift className="w-4 h-4 text-paragraph opacity-50" />
+                                                    <span className="text-sm font-semibold text-paragraph opacity-75">
                                                         Licenses ({course.licenses.length})
                                                     </span>
                                                 </div>
@@ -336,10 +336,10 @@ export default function MyCoursesPage() {
                                                                 key={status}
                                                                 className="flex items-center justify-between p-2 bg-[var(--palette-surface)] rounded-lg"
                                                             >
-                                                                <span className="text-sm text-p-color opacity-75">
+                                                                <span className="text-sm text-paragraph opacity-75">
                                                                     {statusLabels[status]}
                                                                 </span>
-                                                                <span className="font-bold text-p-color">
+                                                                <span className="font-bold text-paragraph">
                                                                     {count}
                                                                 </span>
                                                             </div>
@@ -391,12 +391,12 @@ export default function MyCoursesPage() {
                                 <div className="p-2 bg-green-500/10 rounded-lg">
                                     <KeyRound size={20} className="text-green-600 dark:text-green-400" />
                                 </div>
-                                <h3 className="text-h4-font text-h4-size text-h4-color">
+                                <h3 className="text-h4">
                                     Redeem License
                                 </h3>
                             </div>
                             <button onClick={() => { setRedeemModalOpen(false); setRedeemCode(''); setRedeemError(null); }} className="p-2 hover:bg-[var(--palette-border)] rounded-lg transition-colors">
-                                <X size={18} className="text-p-color" />
+                                <X size={18} className="text-paragraph" />
                             </button>
                         </div>
 
@@ -404,14 +404,14 @@ export default function MyCoursesPage() {
                         <div className="p-6 space-y-4">
                             <div className="flex items-start gap-3 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
                                 <AlertTriangle size={18} className="text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
-                                <p className="text-p-font text-p-size text-p-color text-sm">
+                                <p className="text-paragraph text-sm">
                                     Enter the license code to redeem it. This will bind the license to your account and cannot be undone.
                                 </p>
                             </div>
 
                             {/* License Code Input */}
                             <div>
-                                <label className="block text-xs font-bold text-p-color uppercase tracking-wider mb-2">
+                                <label className="block text-xs font-bold text-paragraph uppercase tracking-wider mb-2">
                                     License Code
                                 </label>
                                 <input

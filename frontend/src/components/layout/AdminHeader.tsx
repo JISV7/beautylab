@@ -29,7 +29,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({ onBack, onMenuToggle, 
                 {/* Mobile Hamburger Menu */}
                 <button
                     onClick={onMenuToggle}
-                    className="lg:hidden p-2 rounded-lg text-p-color hover:bg-palette-border transition-colors"
+                    className="lg:hidden p-2 rounded-lg text-paragraph hover:bg-palette-border transition-colors"
                 >
                     <Menu className="w-6 h-6" />
                 </button>
@@ -48,11 +48,11 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({ onBack, onMenuToggle, 
                 {/* Search Bar */}
                 <div className="flex-1 min-w-0 max-w-xs sm:max-w-xl">
                     <div className="flex items-center palette-surface palette-border border rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-palette-primary">
-                        <Search className="w-4 h-4 text-p-color flex-shrink-0 ml-3" />
+                        <Search className="w-4 h-4 text-paragraph flex-shrink-0 ml-3" />
                         <input
                             type="text"
                             placeholder="Search..."
-                            className="flex-1 min-w-0 py-2 pl-2 pr-4 bg-transparent text-paragraph placeholder:text-p-color placeholder:opacity-60 focus:outline-none"
+                            className="flex-1 min-w-0 py-2 pl-2 pr-4 bg-transparent text-paragraph placeholder:text-paragraph placeholder:opacity-60 focus:outline-none"
                         />
                     </div>
                 </div>
@@ -79,7 +79,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({ onBack, onMenuToggle, 
                             }`}
                         title="Light Mode"
                     >
-                        <Sun className="w-5 h-5 text-p-color" />
+                        <Sun className="w-5 h-5 text-paragraph" />
                     </button>
                     <button
                         onClick={() => setPaletteMode('dark')}
@@ -89,7 +89,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({ onBack, onMenuToggle, 
                             }`}
                         title="Dark Mode"
                     >
-                        <Moon className="w-5 h-5 text-p-color" />
+                        <Moon className="w-5 h-5 text-paragraph" />
                     </button>
                     <button
                         onClick={() => setPaletteMode('accessibility')}
@@ -99,7 +99,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({ onBack, onMenuToggle, 
                             }`}
                         title="Accessibility Mode"
                     >
-                        <Eye className="w-5 h-5 text-p-color" />
+                        <Eye className="w-5 h-5 text-paragraph" />
                     </button>
                 </div>
 
@@ -109,7 +109,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({ onBack, onMenuToggle, 
                         onClick={() => setIsNotificationOpen(!isNotificationOpen)}
                         className="relative p-2 rounded-lg bg-transparent transition-colors"
                     >
-                        <Bell className="w-5 h-5 text-p-color" />
+                        <Bell className="w-5 h-5 text-paragraph" />
                         <span className="absolute top-1 right-1 w-2 h-2 palette-primary rounded-full" />
                     </button>
 

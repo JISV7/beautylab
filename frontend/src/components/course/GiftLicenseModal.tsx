@@ -60,7 +60,7 @@ export const GiftLicenseModal: React.FC<GiftLicenseModalProps> = ({
                         <div className="p-2 bg-[var(--palette-primary)]/10 rounded-lg">
                             <Gift size={20} className="text-[var(--palette-primary)]" />
                         </div>
-                        <h2 className="text-h4-font text-h4-size text-h4-color">
+                        <h2 className="text-h4">
                             Gift License
                         </h2>
                     </div>
@@ -69,7 +69,7 @@ export const GiftLicenseModal: React.FC<GiftLicenseModalProps> = ({
                         className="p-2 hover:bg-[var(--palette-border)] rounded-lg transition-colors"
                         aria-label="Close modal"
                     >
-                        <X size={18} className="text-p-color" />
+                        <X size={18} className="text-paragraph" />
                     </button>
                 </div>
 
@@ -78,10 +78,10 @@ export const GiftLicenseModal: React.FC<GiftLicenseModalProps> = ({
                     <div className="p-6 space-y-4">
                         {licenseCode && (
                             <div className="p-3 bg-[var(--palette-background)] rounded-lg">
-                                <p className="text-[10px] font-bold text-p-color opacity-40 uppercase mb-1">
+                                <p className="text-[10px] font-bold text-paragraph opacity-40 uppercase mb-1">
                                     License Code
                                 </p>
-                                <code className="text-xs font-mono text-p-color">
+                                <code className="text-xs font-mono text-paragraph">
                                     {licenseCode}
                                 </code>
                             </div>
@@ -89,17 +89,17 @@ export const GiftLicenseModal: React.FC<GiftLicenseModalProps> = ({
 
                         {/* Email Input */}
                         <div>
-                            <label className="block text-xs font-bold text-p-color uppercase tracking-wider mb-2">
+                            <label className="block text-xs font-bold text-paragraph uppercase tracking-wider mb-2">
                                 Recipient Email
                             </label>
                             <div className="relative">
-                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-p-color opacity-40" />
+                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-paragraph opacity-40" />
                                 <input
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     placeholder="friend@example.com"
-                                    className="w-full py-2.5 pl-11 pr-4 rounded-lg bg-[var(--palette-surface)] border border-[var(--palette-border)] text-p-color focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)] transition-all"
+                                    className="w-full py-2.5 pl-11 pr-4 rounded-lg bg-[var(--palette-surface)] border border-[var(--palette-border)] text-paragraph focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)] transition-all"
                                     autoFocus
                                 />
                             </div>
@@ -107,17 +107,17 @@ export const GiftLicenseModal: React.FC<GiftLicenseModalProps> = ({
 
                         {/* Optional Message */}
                         <div>
-                            <label className="block text-xs font-bold text-p-color uppercase tracking-wider mb-2">
+                            <label className="block text-xs font-bold text-paragraph uppercase tracking-wider mb-2">
                                 Message (Optional)
                             </label>
                             <div className="relative">
-                                <MessageSquare className="absolute left-3 top-3 w-5 h-5 text-p-color opacity-40" />
+                                <MessageSquare className="absolute left-3 top-3 w-5 h-5 text-paragraph opacity-40" />
                                 <textarea
                                     value={message}
                                     onChange={(e) => setMessage(e.target.value)}
                                     placeholder="Add a personal message..."
                                     rows={3}
-                                    className="w-full py-2.5 pl-11 pr-4 rounded-lg bg-[var(--palette-surface)] border border-[var(--palette-border)] text-p-color focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)] transition-all resize-none"
+                                    className="w-full py-2.5 pl-11 pr-4 rounded-lg bg-[var(--palette-surface)] border border-[var(--palette-border)] text-paragraph focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)] transition-all resize-none"
                                 />
                             </div>
                         </div>
@@ -131,7 +131,7 @@ export const GiftLicenseModal: React.FC<GiftLicenseModalProps> = ({
 
                         {/* Info */}
                         <div className="p-3 bg-[var(--palette-background)] rounded-lg">
-                            <p className="text-xs text-p-color opacity-60">
+                            <p className="text-xs text-paragraph opacity-60">
                                 The recipient will receive an email with instructions on how to redeem this license.
                             </p>
                         </div>
@@ -142,7 +142,7 @@ export const GiftLicenseModal: React.FC<GiftLicenseModalProps> = ({
                         <button
                             type="button"
                             onClick={handleClose}
-                            className="flex-1 px-4 py-2.5 rounded-lg border border-[var(--palette-border)] text-p-color hover:bg-[var(--palette-border)] transition-colors font-medium"
+                            className="flex-1 px-4 py-2.5 rounded-lg border border-[var(--palette-border)] text-paragraph hover:bg-[var(--palette-border)] transition-colors font-medium"
                         >
                             Cancel
                         </button>

@@ -226,14 +226,14 @@ export const CompanyForm: React.FC<CompanyFormProps> = ({
           {/* Header */}
           <div className="bg-[var(--palette-surface)] border-b border-[var(--palette-border)] p-6 flex items-center justify-between">
             <div>
-              <h2 className="text-2xl font-bold text-[var(--text-h2-color)]">
+              <h2 className="text-2xl font-bold text-[var(--text-h2)]">
                 {isEditing ? 'Edit Company Info' : 'Add Company Info'}
               </h2>
             </div>
             <button
               type="button"
               onClick={onCancel}
-              className="text-[var(--text-p-color)] hover:text-primary transition-colors"
+              className="text-[var(--text-paragraph)] hover:text-primary transition-colors"
             >
               <X className="w-6 h-6" />
             </button>
@@ -244,25 +244,25 @@ export const CompanyForm: React.FC<CompanyFormProps> = ({
             {/* Company Information Section */}
             <div className="space-y-3.5">
               <h3
-                className="text-[var(--text-p-color)] font-semibold border-b pb-2"
+                className="text-[var(--text-paragraph)] font-semibold border-b pb-2"
                 style={{ borderColor: 'var(--palette-border)' }}
               >
                 Company Information (Emisor)
               </h3>
 
               <div>
-                <label className="text-[var(--text-p-color)] block mb-1.5">
+                <label className="text-[var(--text-paragraph)] block mb-1.5">
                   Business Name (Razón Social) *
                 </label>
                 <div className="relative">
-                  <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-p-color)] opacity-75" />
+                  <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-paragraph)] opacity-75" />
                   <input
                     type="text"
                     name="businessName"
                     value={formData.businessName}
                     onChange={(e) => onChange('businessName', e.target.value)}
                     required
-                    className="w-full py-2.5 px-4 pl-11 rounded-lg bg-[var(--palette-surface)] border border-[var(--palette-border)] text-[var(--text-p-color)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
+                    className="w-full py-2.5 px-4 pl-11 rounded-lg bg-[var(--palette-surface)] border border-[var(--palette-border)] text-[var(--text-paragraph)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
                     placeholder="Company Name C.A."
                     disabled={saving}
                   />
@@ -271,7 +271,7 @@ export const CompanyForm: React.FC<CompanyFormProps> = ({
 
               {/* RIF Section */}
               <div>
-                <label className="text-[var(--text-p-color)] block mb-1.5">
+                <label className="text-[var(--text-paragraph)] block mb-1.5">
                   RIF (Registro Único de Información Fiscal) *
                 </label>
 
@@ -286,7 +286,7 @@ export const CompanyForm: React.FC<CompanyFormProps> = ({
                           onChange('rif', expected);
                         }
                       }}
-                      className="w-full py-2.5 px-4 rounded-lg bg-[var(--palette-surface)] border border-[var(--palette-border)] text-[var(--text-p-color)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
+                      className="w-full py-2.5 px-4 rounded-lg bg-[var(--palette-surface)] border border-[var(--palette-border)] text-[var(--text-paragraph)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
                       disabled={saving}
                     >
                       <option value="V">V</option>
@@ -301,7 +301,7 @@ export const CompanyForm: React.FC<CompanyFormProps> = ({
                       type="text"
                       value={documentNumber}
                       onChange={(e) => handleDocumentNumberChange(e.target.value)}
-                      className="w-full py-2.5 px-4 rounded-lg bg-[var(--palette-surface)] border border-[var(--palette-border)] text-[var(--text-p-color)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
+                      className="w-full py-2.5 px-4 rounded-lg bg-[var(--palette-surface)] border border-[var(--palette-border)] text-[var(--text-paragraph)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
                       placeholder="12345678-9"
                       disabled={saving}
                       maxLength={10}
@@ -310,7 +310,7 @@ export const CompanyForm: React.FC<CompanyFormProps> = ({
                 </div>
 
                 <div className="relative">
-                  <FileText className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-p-color)] opacity-75" />
+                  <FileText className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-paragraph)] opacity-75" />
                   <input
                     type="text"
                     name="rif"
@@ -318,7 +318,7 @@ export const CompanyForm: React.FC<CompanyFormProps> = ({
                     onChange={(e) => handleRifChange(e.target.value)}
                     required
                     readOnly
-                    className={`w-full py-2.5 px-4 pl-11 pr-10 rounded-lg bg-[var(--palette-background)] border text-[var(--text-p-color)] focus:outline-none ${rifValid
+                    className={`w-full py-2.5 px-4 pl-11 pr-10 rounded-lg bg-[var(--palette-background)] border text-[var(--text-paragraph)] focus:outline-none ${rifValid
                       ? 'border-green-500 focus:border-green-500 focus:ring-green-500'
                       : rifError
                         ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
@@ -351,7 +351,7 @@ export const CompanyForm: React.FC<CompanyFormProps> = ({
                       borderColor: 'var(--palette-border)',
                     }}
                   >
-                    <p className="text-[var(--text-p-color)] opacity-80 mb-2">
+                    <p className="text-[var(--text-paragraph)] opacity-80 mb-2">
                       Expected RIF:
                     </p>
                     <div className="flex items-center justify-between gap-2">
@@ -392,18 +392,18 @@ export const CompanyForm: React.FC<CompanyFormProps> = ({
               </div>
 
               <div>
-                <label className="text-[var(--text-p-color)] block mb-1.5">
+                <label className="text-[var(--text-paragraph)] block mb-1.5">
                   Fiscal Address (Domicilio Fiscal) *
                 </label>
                 <div className="relative">
-                  <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-p-color)] opacity-75" />
+                  <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-paragraph)] opacity-75" />
                   <textarea
                     name="fiscalAddress"
                     value={formData.fiscalAddress}
                     onChange={(e) => onChange('fiscalAddress', e.target.value)}
                     required
                     rows={3}
-                    className="w-full py-2.5 px-4 pl-11 rounded-lg bg-[var(--palette-surface)] border border-[var(--palette-border)] text-[var(--text-p-color)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
+                    className="w-full py-2.5 px-4 pl-11 rounded-lg bg-[var(--palette-surface)] border border-[var(--palette-border)] text-[var(--text-paragraph)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
                     placeholder="Complete address: Street, Building, City, State"
                     disabled={saving}
                   />
@@ -412,17 +412,17 @@ export const CompanyForm: React.FC<CompanyFormProps> = ({
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-[var(--text-p-color)] block mb-1.5">
+                  <label className="text-[var(--text-paragraph)] block mb-1.5">
                     Phone *
                   </label>
                   <div className="relative">
-                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-p-color)] opacity-75" />
+                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-paragraph)] opacity-75" />
                     <input
                       type="tel"
                       name="phone"
                       value={formData.phone || ''}
                       onChange={(e) => onChange('phone', e.target.value)}
-                      className="w-full py-2.5 px-4 pl-11 rounded-lg bg-[var(--palette-surface)] border border-[var(--palette-border)] text-[var(--text-p-color)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
+                      className="w-full py-2.5 px-4 pl-11 rounded-lg bg-[var(--palette-surface)] border border-[var(--palette-border)] text-[var(--text-paragraph)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
                       placeholder="+58 412 1234567"
                       disabled={saving}
                     />
@@ -430,17 +430,17 @@ export const CompanyForm: React.FC<CompanyFormProps> = ({
                 </div>
 
                 <div>
-                  <label className="text-[var(--text-p-color)] block mb-1.5">
+                  <label className="text-[var(--text-paragraph)] block mb-1.5">
                     Email
                   </label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-p-color)] opacity-75" />
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-paragraph)] opacity-75" />
                     <input
                       type="email"
                       name="email"
                       value={formData.email || ''}
                       onChange={(e) => onChange('email', e.target.value)}
-                      className="w-full py-2.5 px-4 pl-11 rounded-lg bg-[var(--palette-surface)] border border-[var(--palette-border)] text-[var(--text-p-color)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
+                      className="w-full py-2.5 px-4 pl-11 rounded-lg bg-[var(--palette-surface)] border border-[var(--palette-border)] text-[var(--text-paragraph)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
                       placeholder="info@company.com"
                       disabled={saving}
                     />
@@ -449,7 +449,7 @@ export const CompanyForm: React.FC<CompanyFormProps> = ({
               </div>
 
               <div>
-                <label className="text-[var(--text-p-color)] block mb-1.5">
+                <label className="text-[var(--text-paragraph)] block mb-1.5">
                   Company Logo (Optional)
                 </label>
                 
@@ -479,13 +479,13 @@ export const CompanyForm: React.FC<CompanyFormProps> = ({
                 {/* Upload Section */}
                 <div className="flex items-start gap-3">
                   <div className="relative flex-1">
-                    <ImageIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-p-color)] opacity-75" />
+                    <ImageIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-paragraph)] opacity-75" />
                     <input
                       type="url"
                       name="logoUrl"
                       value={formData.logoUrl || ''}
                       onChange={(e) => onChange('logoUrl', e.target.value)}
-                      className="w-full py-2.5 px-4 pl-11 rounded-lg bg-[var(--palette-surface)] border border-[var(--palette-border)] text-[var(--text-p-color)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
+                      className="w-full py-2.5 px-4 pl-11 rounded-lg bg-[var(--palette-surface)] border border-[var(--palette-border)] text-[var(--text-paragraph)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
                       placeholder="https://example.com/logo.png or upload below"
                       disabled={saving || uploading}
                     />
@@ -506,7 +506,7 @@ export const CompanyForm: React.FC<CompanyFormProps> = ({
                     type="button"
                     onClick={handleBrowseClick}
                     disabled={saving || uploading}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-[var(--palette-border)] text-[var(--text-p-color)] hover:bg-[var(--palette-surface)] transition-colors disabled:opacity-50 text-sm"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-[var(--palette-border)] text-[var(--text-paragraph)] hover:bg-[var(--palette-surface)] transition-colors disabled:opacity-50 text-sm"
                   >
                     <Upload className="w-4 h-4" />
                     {uploading ? 'Uploading...' : 'Upload Logo'}
@@ -539,8 +539,8 @@ export const CompanyForm: React.FC<CompanyFormProps> = ({
                     disabled={saving}
                   />
                   <div className="flex flex-col">
-                    <span className="text-[var(--text-p-color)] font-medium">Set as Active Company</span>
-                    <span className="text-xs text-[var(--text-p-color)] opacity-75">
+                    <span className="text-[var(--text-paragraph)] font-medium">Set as Active Company</span>
+                    <span className="text-xs text-[var(--text-paragraph)] opacity-75">
                       Only one company can be active at a time. Activating this company will deactivate others.
                     </span>
                   </div>
@@ -555,7 +555,7 @@ export const CompanyForm: React.FC<CompanyFormProps> = ({
               type="button"
               onClick={onCancel}
               disabled={saving}
-              className="flex-1 px-4 py-2 rounded-lg border border-[var(--palette-border)] text-[var(--text-p-color)] hover:bg-[var(--palette-border)] transition-colors disabled:opacity-50"
+              className="flex-1 px-4 py-2 rounded-lg border border-[var(--palette-border)] text-[var(--text-paragraph)] hover:bg-[var(--palette-border)] transition-colors disabled:opacity-50"
             >
               Cancel
             </button>
@@ -592,7 +592,7 @@ export const CompanyForm: React.FC<CompanyFormProps> = ({
           </button>
         }
       >
-        <p className="text-p-color">{modalMessage}</p>
+        <p className="text-paragraph">{modalMessage}</p>
       </Modal>
     </div>
   );

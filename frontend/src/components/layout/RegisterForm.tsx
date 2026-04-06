@@ -126,8 +126,8 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
   return (
     <div className="space-y-4">
       <div className="text-center">
-        <h2 className="text-h2-font text-h2-size text-h2-color text-h2-weight mb-1.5">Create Account</h2>
-        <p className="text-p-font text-p-size text-p-color text-sm">
+        <h2 className="text-h2 mb-1.5">Create Account</h2>
+        <p className="text-paragraph text-sm">
           Join us and start your learning journey
         </p>
       </div>
@@ -136,7 +136,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         {/* Personal Information Section */}
         <div className="space-y-3.5">
           <h3
-            className="text-p-font text-p-size text-p-color font-semibold border-b pb-2"
+            className="text-paragraph font-semibold border-b pb-2"
             style={{
               borderColor: 'var(--palette-border)',
             }}
@@ -145,7 +145,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
           </h3>
           
           <div>
-            <label className="text-p-font text-p-size text-p-color block mb-1.5">
+            <label className="text-paragraph block mb-1.5">
               Full Name {isLegalEntity ? '(Representative)' : '*'}
             </label>
             <div className="relative">
@@ -163,7 +163,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
           </div>
 
           <div>
-            <label className="text-p-font text-p-size text-p-color block mb-1.5">
+            <label className="text-paragraph block mb-1.5">
               Email Address *
             </label>
             <div className="relative">
@@ -182,7 +182,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
 
           {isLegalEntity && (
             <div>
-              <label className="text-p-font text-p-size text-p-color block mb-1.5">
+              <label className="text-paragraph block mb-1.5">
                 Business Name *
               </label>
               <div className="relative">
@@ -202,7 +202,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-p-font text-p-size text-p-color block mb-1.5">
+              <label className="text-paragraph block mb-1.5">
                 Document Type *
               </label>
               <div className="relative">
@@ -222,7 +222,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
             </div>
 
             <div>
-              <label className="text-p-font text-p-size text-p-color block mb-1.5">
+              <label className="text-paragraph block mb-1.5">
                 Document Number *
               </label>
               <input
@@ -238,7 +238,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
           </div>
 
           <div>
-            <label className="text-p-font text-p-size text-p-color block mb-1.5">
+            <label className="text-paragraph block mb-1.5">
               RIF (Tax ID) *
             </label>
             <div className="relative">
@@ -264,25 +264,25 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
             
             {/* RIF validation messages */}
             {rifError && (
-              <p className="text-p-font text-p-size text-red-600 dark:text-red-400 mt-1">
+              <p className="text-paragraph text-red-600 dark:text-red-400 mt-1">
                 {rifError}
               </p>
             )}
 
             {/* Show expected RIF when user has typed document number but no RIF yet */}
             {expectedRif && !rif && (
-              <div className="mt-2 p-3 rounded-lg border text-p-font"
+              <div className="mt-2 p-3 rounded-lg border text-paragraph"
                 style={{
                   backgroundColor: 'var(--palette-surface)',
                   borderColor: 'var(--palette-border)',
                 }}
               >
-                <p className="text-p-font text-p-size text-p-color opacity-80 mb-2">
+                <p className="text-paragraph opacity-80 mb-2">
                   Your expected RIF is:
                 </p>
                 <div className="flex items-center justify-between gap-2">
                   <code
-                    className="text-p-font text-p-size px-3 py-2 rounded font-mono font-bold"
+                    className="text-paragraph px-3 py-2 rounded font-mono font-bold"
                     style={{
                       backgroundColor: 'var(--palette-background)',
                       color: 'var(--palette-primary)',
@@ -293,7 +293,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                   <button
                     type="button"
                     onClick={() => setRif(expectedRif)}
-                    className="text-p-font text-p-size px-3 py-2 rounded font-semibold transition-colors whitespace-nowrap"
+                    className="text-paragraph px-3 py-2 rounded font-semibold transition-colors whitespace-nowrap"
                     style={{
                       backgroundColor: 'var(--palette-primary)',
                       color: 'var(--decorator-color)',
@@ -307,14 +307,14 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
             )}
 
             {!rifError && rifValid && (
-              <p className="text-p-font text-p-size text-green-600 dark:text-green-400 mt-1">
+              <p className="text-paragraph text-green-600 dark:text-green-400 mt-1">
                 RIF is valid
               </p>
             )}
           </div>
 
           <div>
-            <label className="text-p-font text-p-size text-p-color block mb-1.5">
+            <label className="text-paragraph block mb-1.5">
               Fiscal Address *
             </label>
             <div className="relative">
@@ -332,7 +332,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
           </div>
 
           <div>
-            <label className="text-p-font text-p-size text-p-color block mb-1.5">
+            <label className="text-paragraph block mb-1.5">
               Phone *
             </label>
             <div className="relative">
@@ -367,7 +367,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         {/* Password Section */}
         <div className="space-y-3.5">
           <h3
-            className="text-p-font text-p-size text-p-color font-semibold border-b pb-2"
+            className="text-paragraph font-semibold border-b pb-2"
             style={{
               borderColor: 'var(--palette-border)',
             }}
@@ -376,7 +376,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
           </h3>
 
           <div>
-            <label className="text-p-font text-p-size text-p-color block mb-1.5">
+            <label className="text-paragraph block mb-1.5">
               Password *
             </label>
             <div className="relative">
@@ -406,7 +406,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
           </div>
 
           <div>
-            <label className="text-p-font text-p-size text-p-color block mb-1.5">
+            <label className="text-paragraph block mb-1.5">
               Confirm Password *
             </label>
             <div className="relative">
@@ -444,7 +444,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
 
         <button
           type="submit"
-          className="w-full py-2.5 px-4 rounded-lg bg-[var(--palette-primary)] text-[var(--decorator-color)] font-semibold hover:bg-[var(--palette-accent)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-p-font"
+          className="w-full py-2.5 px-4 rounded-lg bg-[var(--palette-primary)] text-[var(--decorator-color)] font-semibold hover:bg-[var(--palette-accent)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-paragraph"
           disabled={isLoading}
         >
           {isLoading ? 'Creating Account...' : 'Create Account'}
@@ -453,11 +453,11 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
       </form>
 
       <div className="text-center">
-        <p className="text-p-font text-p-size text-p-color text-sm">
+        <p className="text-paragraph text-sm">
           Already have an account?{' '}
           <button
             onClick={onSwitchToLogin}
-            className="text-p-font text-palette-primary hover:opacity-80 transition-opacity"
+            className="text-paragraph text-palette-primary hover:opacity-80 transition-opacity"
           >
             Sign in
           </button>

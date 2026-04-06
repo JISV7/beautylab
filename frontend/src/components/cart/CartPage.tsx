@@ -330,13 +330,13 @@ export const CartPage: React.FC<CartPageProps> = ({ onBack }) => {
                         onClick={handleGoBack}
                         className="p-2 hover:bg-[var(--palette-border)] rounded-lg transition-colors"
                     >
-                        <ArrowLeft className="w-5 h-5 text-p-color" />
+                        <ArrowLeft className="w-5 h-5 text-paragraph" />
                     </button>
                     <div>
-                        <h1 className="text-h1-size font-bold mb-1">
+                        <h1 className="text-h1 font-bold mb-1">
                             Shopping Cart
                         </h1>
-                        <p className="text-p-font text-p-size text-p-color">
+                        <p className="text-paragraph">
                             Review your items and complete your purchase
                         </p>
                     </div>
@@ -349,8 +349,8 @@ export const CartPage: React.FC<CartPageProps> = ({ onBack }) => {
                     {!cart || cart.items.length === 0 ? (
                         <div className="lg:col-span-3 flex items-center justify-center min-h-[60vh]">
                             <div className="palette-surface palette-border border rounded-xl p-12 text-center w-full">
-                                <ShoppingCart className="w-16 h-16 mx-auto mb-4 text-p-color opacity-20" />
-                                <p className="text-p-font text-p-size text-p-color font-semibold mb-4">
+                                <ShoppingCart className="w-16 h-16 mx-auto mb-4 text-paragraph opacity-20" />
+                                <p className="text-paragraph font-semibold mb-4">
                                     Your cart is empty
                                 </p>
                                 <button
@@ -369,13 +369,13 @@ export const CartPage: React.FC<CartPageProps> = ({ onBack }) => {
                                     className="palette-surface palette-border border rounded-xl p-4 flex gap-4"
                                 >
                                     <div className="flex-1">
-                                        <h3 className="text-h3-font text-h3-size text-h3-color text-h3-weight mb-1">
+                                        <h3 className="text-h3 mb-1">
                                             {item.product_name || 'Course'}
                                         </h3>
-                                        <p className="text-p-font text-p-size text-p-color opacity-60">
+                                        <p className="text-paragraph opacity-60">
                                             SKU: {item.product_sku || 'N/A'}
                                         </p>
-                                        <h4 className="text-h4-font text-h4-size text-h4-color text-h4-weight text-[var(--palette-primary)] mt-2">
+                                        <h4 className="text-h4 text-[var(--palette-primary)] mt-2">
                                             {formatPrice(item.product_price || '0')}
                                         </h4>
                                     </div>
@@ -391,21 +391,21 @@ export const CartPage: React.FC<CartPageProps> = ({ onBack }) => {
                                                 }}
                                                 className="p-1.5 hover:bg-[var(--palette-border)] rounded transition-colors"
                                             >
-                                                <Minus className="w-4 h-4 text-p-color" />
+                                                <Minus className="w-4 h-4 text-paragraph" />
                                             </button>
-                                            <span className="w-10 text-center text-p-font text-p-size text-p-color font-semibold">
+                                            <span className="w-10 text-center text-paragraph font-semibold">
                                                 {item.quantity}
                                             </span>
                                             <button
                                                 onClick={() => updateQuantity(item.id, item.quantity + 1)}
                                                 className="p-1.5 hover:bg-[var(--palette-border)] rounded transition-colors"
                                             >
-                                                <Plus className="w-4 h-4 text-p-color" />
+                                                <Plus className="w-4 h-4 text-paragraph" />
                                             </button>
                                         </div>
                                         <button
                                             onClick={() => removeFromCart(item.id)}
-                                            className="flex items-center gap-1 text-red-500 hover:text-red-600 text-p-font text-p-size transition-colors"
+                                            className="flex items-center gap-1 text-red-500 hover:text-red-600 text-paragraph transition-colors"
                                         >
                                             <Trash2 className="w-4 h-4" />
                                             Remove
@@ -419,24 +419,24 @@ export const CartPage: React.FC<CartPageProps> = ({ onBack }) => {
                     {/* Order Summary */}
                     {cart && cart.items.length > 0 && (
                         <div className="palette-surface palette-border border rounded-xl p-6 h-fit space-y-4">
-                            <h3 className="text-h3-font text-h3-size text-h3-color text-h3-weight">Order Summary</h3>
+                            <h3 className="text-h3">Order Summary</h3>
                             <div className="space-y-3 pt-4 border-t palette-border">
-                                <div className="flex justify-between text-p-font text-p-size">
-                                    <span className="text-p-color opacity-75">Subtotal</span>
-                                    <span className="text-p-color font-medium">
+                                <div className="flex justify-between text-paragraph">
+                                    <span className="text-paragraph opacity-75">Subtotal</span>
+                                    <span className="text-paragraph font-medium">
                                         {formatPrice(cart.subtotal)}
                                     </span>
                                 </div>
-                                <div className="flex justify-between text-p-font text-p-size">
-                                    <span className="text-p-color opacity-75">IVA (16%)</span>
-                                    <span className="text-p-color font-medium">
+                                <div className="flex justify-between text-paragraph">
+                                    <span className="text-paragraph opacity-75">IVA (16%)</span>
+                                    <span className="text-paragraph font-medium">
                                         {formatPrice(cart.tax_total)}
                                     </span>
                                 </div>
 
                                 {/* Coupon Discounts */}
                                 {appliedCoupons.length > 0 && appliedCoupons.map((cp) => (
-                                    <div key={cp.code} className="flex justify-between text-p-font text-p-size">
+                                    <div key={cp.code} className="flex justify-between text-paragraph">
                                         <span className="text-green-600 dark:text-green-400 font-medium flex items-center gap-1">
                                             <Tag className="w-3 h-3" />
                                             {cp.code}
@@ -448,8 +448,8 @@ export const CartPage: React.FC<CartPageProps> = ({ onBack }) => {
                                 ))}
 
                                 {/* Total after coupons */}
-                                <div className="flex justify-between text-h4-font text-h4-size pt-3 border-t palette-border">
-                                    <span className="text-h4-color font-bold">Total</span>
+                                <div className="flex justify-between text-h4 pt-3 border-t palette-border">
+                                    <span className="text-h4 font-bold">Total</span>
                                     <span className="text-[var(--palette-primary)] font-bold">
                                         {appliedCoupons.length > 0
                                             ? formatPrice(Math.max(0, totalAfterCoupons))
@@ -460,7 +460,7 @@ export const CartPage: React.FC<CartPageProps> = ({ onBack }) => {
 
                             {/* Coupon Input */}
                             <div className="pt-3 border-t palette-border">
-                                <p className="text-p-font text-p-size text-p-color font-medium mb-2">
+                                <p className="text-paragraph font-medium mb-2">
                                     Have a coupon?
                                 </p>
                                 <div className="flex gap-2 items-center">
@@ -533,18 +533,18 @@ export const CartPage: React.FC<CartPageProps> = ({ onBack }) => {
                 <div className="max-w-2xl mx-auto space-y-6">
                     {/* Order Summary */}
                     <div className="palette-surface palette-border border rounded-xl p-4">
-                        <h3 className="text-h3-font text-h3-size text-h3-color text-h3-weight mb-3">Order Total</h3>
+                        <h3 className="text-h3 mb-3">Order Total</h3>
                         <div className="space-y-2">
-                            <div className="flex justify-between text-p-font text-p-size">
-                                <span className="text-p-color opacity-75">Subtotal</span>
-                                <span className="text-p-color">{formatPrice(cart.subtotal)}</span>
+                            <div className="flex justify-between text-paragraph">
+                                <span className="text-paragraph opacity-75">Subtotal</span>
+                                <span className="text-paragraph">{formatPrice(cart.subtotal)}</span>
                             </div>
-                            <div className="flex justify-between text-p-font text-p-size">
-                                <span className="text-p-color opacity-75">IVA (16%)</span>
-                                <span className="text-p-color">{formatPrice(cart.tax_total)}</span>
+                            <div className="flex justify-between text-paragraph">
+                                <span className="text-paragraph opacity-75">IVA (16%)</span>
+                                <span className="text-paragraph">{formatPrice(cart.tax_total)}</span>
                             </div>
                             {appliedCoupons.length > 0 && appliedCoupons.map((cp) => (
-                                <div key={cp.code} className="flex justify-between text-p-font text-p-size">
+                                <div key={cp.code} className="flex justify-between text-paragraph">
                                     <span className="text-green-600 dark:text-green-400 font-medium flex items-center gap-1">
                                         <Tag className="w-3 h-3" />
                                         {cp.code}
@@ -554,8 +554,8 @@ export const CartPage: React.FC<CartPageProps> = ({ onBack }) => {
                                     </span>
                                 </div>
                             ))}
-                            <div className="flex justify-between text-h4-font text-h4-size pt-3 border-t palette-border">
-                                <span className="text-h4-color font-bold">Total</span>
+                            <div className="flex justify-between text-h4 pt-3 border-t palette-border">
+                                <span className="text-h4 font-bold">Total</span>
                                 <span className="text-[var(--palette-primary)] font-bold">
                                     {appliedCoupons.length > 0
                                         ? formatPrice(Math.max(0, totalAfterCoupons))
@@ -575,7 +575,7 @@ export const CartPage: React.FC<CartPageProps> = ({ onBack }) => {
                     {/* Error Display */}
                     {purchaseError && (
                         <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4">
-                            <p className="text-p-font text-p-size text-red-600 dark:text-red-400 font-medium">
+                            <p className="text-paragraph text-red-600 dark:text-red-400 font-medium">
                                 {purchaseError}
                             </p>
                         </div>
@@ -596,8 +596,8 @@ export const CartPage: React.FC<CartPageProps> = ({ onBack }) => {
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
                     <div className="palette-surface palette-border border rounded-xl p-8 text-center max-w-md">
                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--palette-primary)] mx-auto mb-4"></div>
-                        <h3 className="text-h3-font text-h3-size text-h3-color text-h3-weight mb-2">Processing Payment</h3>
-                        <p className="text-p-font text-p-size text-p-color opacity-60">
+                        <h3 className="text-h3 mb-2">Processing Payment</h3>
+                        <p className="text-paragraph opacity-60">
                             Please wait while we process your payment...
                         </p>
                     </div>

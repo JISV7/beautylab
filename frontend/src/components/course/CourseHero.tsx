@@ -60,8 +60,8 @@ export const CourseHero: React.FC<CourseHeroProps> = ({
                         }}
                     />
                 ) : (
-                    <div className="w-full h-48 flex items-center justify-center text-p-color opacity-40">
-                        <span className="text-p-color">No image available</span>
+                    <div className="w-full h-48 flex items-center justify-center text-paragraph opacity-40">
+                        <span className="text-paragraph">No image available</span>
                     </div>
                 )}
             </div>
@@ -81,7 +81,7 @@ export const CourseHero: React.FC<CourseHeroProps> = ({
                         </span>
                     )}
                     {duration_hours && (
-                        <div className="flex items-center gap-1.5 text-p-color opacity-60">
+                        <div className="flex items-center gap-1.5 text-paragraph opacity-60">
                             <Clock size={14} />
                             <span className="text-sm">{duration_hours}h</span>
                         </div>
@@ -89,13 +89,13 @@ export const CourseHero: React.FC<CourseHeroProps> = ({
                 </div>
 
                 {/* Title */}
-                <h1 className="text-h2-font text-h2-size text-h2-color mb-4">
+                <h1 className="text-h2 mb-4">
                     {title}
                 </h1>
 
                 {/* Description */}
                 {description && (
-                    <p className="text-p-font text-p-size text-p-color mb-6 leading-relaxed">
+                    <p className="text-paragraph mb-6 leading-relaxed">
                         {description}
                     </p>
                 )}
@@ -109,7 +109,7 @@ export const CourseHero: React.FC<CourseHeroProps> = ({
                         className="inline-flex items-center gap-2 text-[var(--palette-primary)] hover:opacity-80 transition-opacity mb-6"
                     >
                         <PlayCircle size={18} />
-                        <span className="text-p-font text-p-size">Watch Course Video</span>
+                        <span className="text-paragraph">Watch Course Video</span>
                         <ExternalLink size={14} />
                     </a>
                 )}
@@ -120,10 +120,10 @@ export const CourseHero: React.FC<CourseHeroProps> = ({
                         {/* Product Name */}
                         {product_name && (
                             <div>
-                                <p className="text-[10px] font-bold text-p-color opacity-40 uppercase tracking-wider mb-1">
+                                <p className="text-[10px] font-bold text-paragraph opacity-40 uppercase tracking-wider mb-1">
                                     Product Name
                                 </p>
-                                <p className="text-sm font-semibold text-p-color">
+                                <p className="text-sm font-semibold text-paragraph">
                                     {product_name}
                                 </p>
                             </div>
@@ -131,20 +131,20 @@ export const CourseHero: React.FC<CourseHeroProps> = ({
                         {/* Product SKU */}
                         {product_sku && (
                             <div>
-                                <p className="text-[10px] font-bold text-p-color opacity-40 uppercase tracking-wider mb-1">
+                                <p className="text-[10px] font-bold text-paragraph opacity-40 uppercase tracking-wider mb-1">
                                     SKU
                                 </p>
-                                <p className="text-sm font-mono text-p-color opacity-80">
+                                <p className="text-sm font-mono text-paragraph opacity-80">
                                     {product_sku}
                                 </p>
                             </div>
                         )}
                         {/* Price */}
                         <div>
-                            <p className="text-[10px] font-bold text-p-color opacity-40 uppercase tracking-wider mb-1">
+                            <p className="text-[10px] font-bold text-paragraph opacity-40 uppercase tracking-wider mb-1">
                                 Enrollment Price
                             </p>
-                            <p className="text-2xl font-black text-p-color">
+                            <p className="text-2xl font-black text-paragraph">
                                 {formatPrice(price)}
                             </p>
                         </div>
@@ -153,7 +153,7 @@ export const CourseHero: React.FC<CourseHeroProps> = ({
                         {/* Quantity Selector */}
                         {onAddToCart && (
                             <div className="flex items-center gap-2">
-                                <span className="text-sm font-semibold text-p-color opacity-75">Qty:</span>
+                                <span className="text-sm font-semibold text-paragraph opacity-75">Qty:</span>
                                 <button
                                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
                                     className="p-1.5 hover:bg-[var(--palette-border)] rounded transition-colors"
@@ -172,7 +172,7 @@ export const CourseHero: React.FC<CourseHeroProps> = ({
                                     onBlur={() => {
                                         if (quantity < 1) setQuantity(1);
                                     }}
-                                    className="w-16 text-center font-bold text-p-color theme-input !py-1 !px-2 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                    className="w-16 text-center font-bold text-paragraph theme-input !py-1 !px-2 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                                 />
                                 <button
                                     onClick={() => setQuantity(Math.min(999, quantity + 1))}

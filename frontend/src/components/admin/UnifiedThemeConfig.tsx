@@ -46,6 +46,154 @@ function hexToHsl(hex: string): { h: number; s: number; l: number } {
     return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
 }
 
+// ============================================================
+// Color Vision Deficiency (CVD) Simulation & Auto-Correction
+// Based on Machado et al. (2009) transformation matrices for sRGB
+// ============================================================
+
+// CVD transformation matrices (Machado et al. 2009)
+// Each matrix transforms [R, G, B] as a colorblind person would see it
+const CVD_MATRICES: Record<string, number[][]> = {
+    protanopia: [
+        [0.152286, 1.052583, -0.204868],
+        [0.114503, 0.786281,  0.099216],
+        [-0.003882, -0.048116, 1.051998],
+    ],
+    deuteranopia: [
+        [0.367322, 0.860646, -0.227968],
+        [0.280085, 0.672501,  0.047413],
+        [-0.011820, 0.042940,  0.968881],
+    ],
+    tritanopia: [
+        [1.255528, -0.076749, -0.178779],
+        [0.078212,  0.930766, -0.008979],
+        [0.004733,  0.691367,  0.303900],
+    ],
+};
+
+// Simulate a single hex color under a specific CVD type
+function simulateCVD(hex: string, type: string): string {
+    const r = parseInt(hex.slice(1, 3), 16) / 255;
+    const g = parseInt(hex.slice(3, 5), 16) / 255;
+    const b = parseInt(hex.slice(5, 7), 16) / 255;
+
+    const matrix = CVD_MATRICES[type];
+    const sr = matrix[0][0] * r + matrix[0][1] * g + matrix[0][2] * b;
+    const sg = matrix[1][0] * r + matrix[1][1] * g + matrix[1][2] * b;
+    const sb = matrix[2][0] * r + matrix[2][1] * g + matrix[2][2] * b;
+
+    const clamp = (v: number) => Math.max(0, Math.min(1, v));
+    return `#${Math.round(clamp(sr) * 255).toString(16).padStart(2, '0')}${Math.round(clamp(sg) * 255).toString(16).padStart(2, '0')}${Math.round(clamp(sb) * 255).toString(16).padStart(2, '0')}`;
+}
+
+// Compute perceptual distance between two hex colors (Euclidean in RGB, 0-255 scale)
+function colorDistance(a: string, b: string): number {
+    const ar = parseInt(a.slice(1, 3), 16), ag = parseInt(a.slice(3, 5), 16), ab = parseInt(a.slice(5, 7), 16);
+    const br = parseInt(b.slice(1, 3), 16), bg = parseInt(b.slice(3, 5), 16), bb = parseInt(b.slice(5, 7), 16);
+    return Math.sqrt((ar - br) ** 2 + (ag - bg) ** 2 + (ab - bb) ** 2);
+}
+
+// Check if a palette is distinguishable under a given CVD type
+// Returns true if all three pairs (p-s, p-a, s-a) have sufficient distance
+function isCvdDistinguishable(
+    primary: string,
+    secondary: string,
+    accent: string,
+    type: string,
+    minDistance = 40
+): boolean {
+    const sp = simulateCVD(primary, type);
+    const ss = simulateCVD(secondary, type);
+    const sa = simulateCVD(accent, type);
+
+    return (
+        colorDistance(sp, ss) >= minDistance &&
+        colorDistance(sp, sa) >= minDistance &&
+        colorDistance(ss, sa) >= minDistance
+    );
+}
+
+// Check palette against all three CVD types
+function isAccessiblePalette(
+    primary: string,
+    secondary: string,
+    accent: string,
+    minDistance = 40
+): boolean {
+    return (
+        isCvdDistinguishable(primary, secondary, accent, 'protanopia', minDistance) &&
+        isCvdDistinguishable(primary, secondary, accent, 'deuteranopia', minDistance) &&
+        isCvdDistinguishable(primary, secondary, accent, 'tritanopia', minDistance)
+    );
+}
+
+// Automatically adjust a palette to be CVD-safe
+// Takes base hue, light/dark params, and incrementally nudges secondary/accent
+// until all three colors are distinguishable under every CVD type
+function generateCvdSafePalette(
+    baseH: number,
+    baseS: number,
+    lightParams: { pL: number; sL: number; aL: number },
+    darkParams: { pL: number; sL: number; aL: number },
+    minDistance = 40,
+    maxIterations = 120
+): {
+    light: { primary: string; secondary: string; accent: string };
+    dark: { primary: string; secondary: string; accent: string };
+} {
+    // Primary stays at base hue — it's the user's chosen color
+    // We only adjust secondary (+30°) and accent (-30°) incrementally
+
+    const getPalette = (hS: number, hA: number, pL: number, sL: number, aL: number) => ({
+        primary: hslToHex(baseH, baseS, pL),
+        secondary: hslToHex(hS, baseS, sL),
+        accent: hslToHex(hA, baseS, aL),
+    });
+
+    let secOffset = 30; // secondary starts at baseH + 30
+    let accOffset = -30; // accent starts at baseH - 30
+
+    let iter = 0;
+    while (iter < maxIterations) {
+        const light = getPalette(
+            (baseH + secOffset + 360) % 360,
+            (baseH + accOffset + 360) % 360,
+            lightParams.pL, lightParams.sL, lightParams.aL
+        );
+        const dark = getPalette(
+            (baseH + secOffset + 360) % 360,
+            (baseH + accOffset + 360) % 360,
+            darkParams.pL, darkParams.sL, darkParams.aL
+        );
+
+        const lightOK = isAccessiblePalette(light.primary, light.secondary, light.accent, minDistance);
+        const darkOK = isAccessiblePalette(dark.primary, dark.secondary, dark.accent, minDistance);
+
+        if (lightOK && darkOK) {
+            return { light, dark };
+        }
+
+        // Incrementally push secondary and accent apart by ±5°
+        // Secondary moves toward larger offset, accent toward more negative
+        secOffset += 5;
+        accOffset -= 5;
+        iter++;
+    }
+
+    // Fallback: return whatever we have after max iterations
+    const light = getPalette(
+        (baseH + secOffset + 360) % 360,
+        (baseH + accOffset + 360) % 360,
+        lightParams.pL, lightParams.sL, lightParams.aL
+    );
+    const dark = getPalette(
+        (baseH + secOffset + 360) % 360,
+        (baseH + accOffset + 360) % 360,
+        darkParams.pL, darkParams.sL, darkParams.aL
+    );
+    return { light, dark };
+}
+
 // Helper to create a complete default theme config with all required fields
 function createDefaultThemeConfig(
     defaultFontId: string,
@@ -212,7 +360,7 @@ const toThemePalette = (
 });
 
 export const UnifiedThemeConfig: React.FC = () => {
-    // Helper for generating analogous colors from an optional base color
+    // Helper for generating CVD-safe analogous colors from an optional base color
     const generateAnalogousColors = (baseColor: string) => {
         let h: number, s: number;
         if (baseColor && /^#[0-9A-Fa-f]{6}$/.test(baseColor)) {
@@ -224,16 +372,17 @@ export const UnifiedThemeConfig: React.FC = () => {
             s = 75 + Math.floor(Math.random() * 15);
         }
 
-        const getColors = (pL: number, sL: number, aL: number) => ({
-            primary: hslToHex(h, s, pL),
-            secondary: hslToHex((h + 30) % 360, s, sL),
-            accent: hslToHex((h - 30 + 360) % 360, s, aL),
-        });
-
-        return {
-            light: getColors(60, 80, 50),
-            dark: getColors(40, 20, 45),
-        };
+        // Use the CVD-safe palette generator which incrementally
+        // pushes secondary/accent hues until all 3 colors are
+        // distinguishable under protanopia, deuteranopia & tritanopia
+        return generateCvdSafePalette(
+            h,
+            s,
+            { pL: 60, sL: 80, aL: 50 },  // light mode lightness
+            { pL: 40, sL: 20, aL: 45 },  // dark mode lightness
+            40,    // minimum RGB distance under CVD simulation
+            120    // max iterations (±5° per step)
+        );
     };
 
     const { fetchAllThemes, activateTheme, createTheme, updateTheme, deleteTheme, fetchFonts } = useTheme();

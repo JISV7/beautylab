@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import axios from 'axios';
-import { HelpCircle, Upload, X, CheckCircle } from 'lucide-react';
+import { Upload, X, CheckCircle } from 'lucide-react';
 import type { Category, Level, CourseFormData } from '../types';
 
 const API_URL = 'http://localhost:8000';

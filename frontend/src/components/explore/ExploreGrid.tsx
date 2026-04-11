@@ -1,5 +1,5 @@
 import React from 'react';
-import { BookOpen, Search } from 'lucide-react';
+import { Search } from 'lucide-react';
 import type { Course } from './ExploreCard';
 import { ExploreCard } from './ExploreCard';
 

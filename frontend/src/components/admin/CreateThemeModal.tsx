@@ -133,7 +133,7 @@ export const CreateThemeModal: React.FC<CreateThemeModalProps> = ({
                                 />
                             </div>
                             <p className="text-xs text-paragraph opacity-60 mt-1.5">
-                                Pick a color for analogous palette generation (±30° hue). Leave empty for a fully random hue.
+                                Pick a base color. Secondary will be a close analogous color, accent will provide contrast. Leave empty for fully random.
                             </p>
                         </div>
                     </div>

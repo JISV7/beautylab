@@ -49,15 +49,15 @@ export const Hero: React.FC = () => {
           {/* Stats */}
           <div className="grid grid-cols-3 gap-8 mt-16 max-w-3xl mx-auto">
             <div>
-              <div className="text-title text-title text-primary">50K+</div>
+              <div className="text-h3 text-h3 text-primary">50K+</div>
               <div className="text-paragraph">Active Learners</div>
             </div>
             <div>
-              <div className="text-title text-title text-primary">200+</div>
+              <div className="text-h3 text-h3 text-primary">200+</div>
               <div className="text-paragraph">Expert Courses</div>
             </div>
             <div>
-              <div className="text-title text-title text-primary">95%</div>
+              <div className="text-h3 text-h3 text-primary">95%</div>
               <div className="text-paragraph">Success Rate</div>
             </div>
           </div>

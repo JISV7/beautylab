@@ -127,11 +127,6 @@ export const PrinterForm: React.FC<PrinterFormProps> = ({
     const cleanValue = value.replace(/[^0-9]/g, '');
     if (cleanValue.length <= 8) {
       setAuthorizationDate(cleanValue);
-      // Format for display: DD/MM/AAAA
-      if (cleanValue.length >= 4) {
-        const formatted = `${cleanValue.substring(0, 2)}/${cleanValue.substring(2, 4)}/${cleanValue.substring(4)}`;
-        onChange('authorizationProvidence', `${formData.authorizationProvidence.split(' ')[0] || ''} ${formatted}`);
-      }
     }
   };
 

@@ -155,7 +155,7 @@ export const Footer: React.FC = () => {
 
                     {/* Legal Links */}
                     <div>
-                        <h3 className="text-paragraph text-h3 font-semibold mb-4">Legal</h3>
+                        <h3 className="text-h3 font-semibold mb-4">Legal</h3>
                         <ul className="space-y-3">
                             {footerLinks.legal.map((link) => (
                                 <li key={link.id}>

@@ -130,6 +130,7 @@ function isAccessiblePalette(
 // Automatically adjust a palette to be CVD-safe
 // Takes base hue, light/dark params, and incrementally nudges secondary/accent
 // until all three colors are distinguishable under every CVD type
+// Strategy: Keep secondary CLOSE to primary (analogous), only push apart if needed
 function generateCvdSafePalette(
     baseH: number,
     baseS: number,
@@ -142,7 +143,8 @@ function generateCvdSafePalette(
     dark: { primary: string; secondary: string; accent: string };
 } {
     // Primary stays at base hue — it's the user's chosen color
-    // We only adjust secondary (+30°) and accent (-30°) incrementally
+    // Secondary starts close (+15°), accent further (-40°) for contrast
+    // This creates an analogous palette where secondary is close to primary
 
     const getPalette = (hS: number, hA: number, pL: number, sL: number, aL: number) => ({
         primary: hslToHex(baseH, baseS, pL),
@@ -150,8 +152,8 @@ function generateCvdSafePalette(
         accent: hslToHex(hA, baseS, aL),
     });
 
-    let secOffset = 30; // secondary starts at baseH + 30
-    let accOffset = -30; // accent starts at baseH - 30
+    let secOffset = 15; // secondary starts close to primary (+15°)
+    let accOffset = -40; // accent is further away for contrast (-40°)
 
     let iter = 0;
     while (iter < maxIterations) {
@@ -174,7 +176,7 @@ function generateCvdSafePalette(
         }
 
         // Incrementally push secondary and accent apart by ±5°
-        // Secondary moves toward larger offset, accent toward more negative
+        // Secondary moves away from primary slowly, accent moves further
         secOffset += 5;
         accOffset -= 5;
         iter++;

@@ -107,7 +107,7 @@ export const CompanyTable: React.FC<CompanyTableProps> = ({
     <DataTable
       data={companies}
       columns={columns}
-      title="Company Info"
+      hideTitle
       searchQuery={searchQuery}
       onSearchChange={onSearchChange}
       onAdd={onAdd}

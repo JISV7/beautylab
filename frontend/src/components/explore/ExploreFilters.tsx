@@ -66,25 +66,27 @@ export const ExploreFilters: React.FC<ExploreFiltersProps> = ({
     return (
         <div className="bg-[var(--palette-surface)] rounded-xl shadow-md border border-[var(--palette-border)] p-4 md:p-6 mb-6">
             {/* Search Bar */}
-            <div className="relative mb-4 md:mb-6">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-paragraph opacity-40" />
-                <input
-                    type="text"
-                    placeholder="Search courses..."
-                    value={localSearch}
-                    onChange={(e) => setLocalSearch(e.target.value)}
-                    className="w-full py-3 pl-12 pr-4 rounded-lg bg-[var(--palette-background)] border border-[var(--palette-border)] text-paragraph focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)] transition-all"
-                    aria-label="Search courses"
-                />
-                {localSearch && (
-                    <button
-                        onClick={() => setLocalSearch('')}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 p-1 hover:bg-[var(--palette-border)] rounded-full transition-colors"
-                        aria-label="Clear search"
-                    >
-                        <X size={16} className="text-paragraph opacity-60" />
-                    </button>
-                )}
+            <div className="mb-4 md:mb-6">
+                <div className="flex items-center palette-surface palette-border border rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-palette-primary">
+                    <Search className="w-4 h-4 text-paragraph flex-shrink-0 ml-3" />
+                    <input
+                        type="text"
+                        placeholder="Search courses..."
+                        value={localSearch}
+                        onChange={(e) => setLocalSearch(e.target.value)}
+                        className="flex-1 min-w-0 py-2 pl-2 pr-4 bg-transparent text-paragraph placeholder:text-paragraph placeholder:opacity-60 focus:outline-none"
+                        aria-label="Search courses"
+                    />
+                    {localSearch && (
+                        <button
+                            onClick={() => setLocalSearch('')}
+                            className="p-2 hover:bg-[var(--palette-border)] transition-colors"
+                            aria-label="Clear search"
+                        >
+                            <X size={16} className="text-paragraph opacity-60" />
+                        </button>
+                    )}
+                </div>
             </div>
 
             {/* Filter Controls */}

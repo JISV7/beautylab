@@ -216,14 +216,16 @@ export const CouponManagement: React.FC = () => {
                 <div className="flex flex-col sm:flex-row gap-3 flex-1 w-full sm:w-auto">
                     {/* Search */}
                     <div className="relative flex-1 sm:flex-none sm:min-w-[250px]">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-paragraph opacity-50" />
-                        <input
-                            type="text"
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            placeholder="Search by code..."
-                            className="theme-input w-full pl-9"
-                        />
+                        <div className="flex items-center palette-surface palette-border border rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-palette-primary">
+                            <Search className="w-4 h-4 text-paragraph flex-shrink-0 ml-3" />
+                            <input
+                                type="text"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                placeholder="Search by code..."
+                                className="flex-1 min-w-0 py-2 pl-2 pr-4 bg-transparent text-paragraph placeholder:text-paragraph placeholder:opacity-60 focus:outline-none"
+                            />
+                        </div>
                     </div>
 
                     {/* Active filter */}

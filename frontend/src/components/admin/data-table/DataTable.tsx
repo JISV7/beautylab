@@ -14,7 +14,8 @@ export interface Column<T> {
 interface DataTableProps<T extends Record<string, unknown>> {
   data: T[];
   columns: Column<T>[];
-  title: string;
+  title?: string;
+  hideTitle?: boolean;
   searchQuery: string;
   onSearchChange: (query: string) => void;
   onAdd?: () => void;
@@ -35,6 +36,7 @@ export function DataTable<T extends Record<string, unknown>>({
   data,
   columns,
   title,
+  hideTitle = false,
   searchQuery,
   onSearchChange,
   onAdd,
@@ -112,6 +114,7 @@ export function DataTable<T extends Record<string, unknown>>({
     <div className="theme-card overflow-hidden p-0">
       <DataTableHeader
         title={title}
+        hideTitle={hideTitle}
         searchQuery={searchQuery}
         onSearchChange={(query) => {
           onSearchChange(query);

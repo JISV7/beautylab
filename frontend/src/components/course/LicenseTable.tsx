@@ -199,15 +199,17 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
             <div className="palette-surface palette-border border rounded-xl p-4">
                 <div className="flex flex-col lg:flex-row gap-3">
                     {/* Search */}
-                    <div className="flex-1 relative">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-paragraph opacity-40" />
-                        <input
-                            type="text"
-                            placeholder="Search by license code or email..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-11 pr-4 py-2.5 rounded-lg bg-[var(--palette-surface)] border border-[var(--palette-border)] text-paragraph focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)] transition-all"
-                        />
+                    <div className="flex-1">
+                        <div className="flex items-center palette-surface palette-border border rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-palette-primary">
+                            <Search className="w-4 h-4 text-paragraph flex-shrink-0 ml-3" />
+                            <input
+                                type="text"
+                                placeholder="Search by license code or email..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="flex-1 min-w-0 py-2 pl-2 pr-4 bg-transparent text-paragraph placeholder:text-paragraph placeholder:opacity-60 focus:outline-none"
+                            />
+                        </div>
                     </div>
 
                     {/* Status Filter */}

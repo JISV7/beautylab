@@ -107,7 +107,7 @@ export const PrinterTable: React.FC<PrinterTableProps> = ({
     <DataTable
       data={printers}
       columns={columns}
-      title="Printer Info"
+      hideTitle
       searchQuery={searchQuery}
       onSearchChange={onSearchChange}
       onAdd={onAdd}

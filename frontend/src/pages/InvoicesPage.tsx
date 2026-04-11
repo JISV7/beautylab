@@ -452,14 +452,14 @@ function InvoiceList({
 
                         {/* Search */}
                         <div className="flex-1 min-w-64">
-                            <div className="relative">
-                                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-paragraph opacity-50" />
+                            <div className="flex items-center palette-surface palette-border border rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-palette-primary">
+                                <Search className="w-4 h-4 text-paragraph flex-shrink-0 ml-3" />
                                 <input
                                     type="text"
                                     placeholder="Search by invoice #, control #, RIF..."
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
-                                    className="w-full pl-10 pr-4 py-2 theme-input"
+                                    className="flex-1 min-w-0 py-2 pl-2 pr-4 bg-transparent text-paragraph placeholder:text-paragraph placeholder:opacity-60 focus:outline-none"
                                 />
                             </div>
                         </div>

@@ -141,18 +141,20 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
         <div className="theme-card overflow-hidden p-0">
             {/* Search Bar */}
             <div className="p-4 border-b palette-border flex items-center gap-3">
-                <div className="relative flex-1 max-w-md">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-paragraph" />
-                    <input
-                        type="text"
-                        placeholder="Search fonts..."
-                        value={searchQuery}
-                        onChange={(e) => {
-                            setSearchQuery(e.target.value);
-                            setPageConfig(prev => ({ ...prev, currentPage: 0 }));
-                        }}
-                        className="w-full pl-10 pr-4 py-2 rounded-lg palette-surface palette-border border text-paragraph placeholder-[var(--palette-text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)]"
-                    />
+                <div className="flex-1 max-w-md">
+                    <div className="flex items-center palette-surface palette-border border rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-palette-primary">
+                        <Search className="w-4 h-4 text-paragraph flex-shrink-0 ml-3" />
+                        <input
+                            type="text"
+                            placeholder="Search fonts..."
+                            value={searchQuery}
+                            onChange={(e) => {
+                                setSearchQuery(e.target.value);
+                                setPageConfig(prev => ({ ...prev, currentPage: 0 }));
+                            }}
+                            className="flex-1 min-w-0 py-2 pl-2 pr-4 bg-transparent text-paragraph placeholder:text-paragraph placeholder:opacity-60 focus:outline-none"
+                        />
+                    </div>
                 </div>
                 <div className="text-paragraph text-sm sm:text-base text-slate-500 whitespace-nowrap">
                     {filteredAndSortedData.length} font{filteredAndSortedData.length !== 1 ? 's' : ''} found

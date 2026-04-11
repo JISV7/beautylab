@@ -35,16 +35,18 @@ export const CourseFilters: React.FC<CourseFiltersProps> = ({
         <div className="theme-card flex flex-wrap gap-4 items-end">
             <div className="flex-1 min-w-[200px]">
                 <label className="block text-sm font-semibold mb-2 text-paragraph">
-                    <Search size={16} className="inline mr-2" />
                     Search
                 </label>
-                <input
-                    type="text"
-                    className="theme-input w-full"
-                    placeholder="Search courses..."
-                    value={searchQuery}
-                    onChange={(e) => onSearchChange(e.target.value)}
-                />
+                <div className="flex items-center palette-surface palette-border border rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-palette-primary">
+                    <Search className="w-4 h-4 text-paragraph flex-shrink-0 ml-3" />
+                    <input
+                        type="text"
+                        placeholder="Search courses..."
+                        value={searchQuery}
+                        onChange={(e) => onSearchChange(e.target.value)}
+                        className="flex-1 min-w-0 py-2 pl-2 pr-4 bg-transparent text-paragraph placeholder:text-paragraph placeholder:opacity-60 focus:outline-none"
+                    />
+                </div>
             </div>
             <div className="w-[180px]">
                 <label className="block text-sm font-semibold mb-2 text-paragraph">Category</label>

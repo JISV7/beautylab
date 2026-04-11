@@ -192,6 +192,7 @@ async def checkout(
         multi_result = await coupon_service.validate_multiple_coupons(
             codes=coupon_codes_to_apply,
             cart_total=summary["total"],
+            subtotal=summary["subtotal"],
             user_id=current_user.id,
         )
         if multi_result["errors"]:

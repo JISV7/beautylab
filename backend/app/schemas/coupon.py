@@ -72,7 +72,8 @@ class CouponValidateRequest(BaseModel):
     """Request to validate a coupon code."""
 
     code: str
-    cart_total: Decimal = Field(..., gt=0, description="Current cart total")
+    cart_total: Decimal = Field(..., gt=0, description="Current cart total (includes tax)")
+    subtotal: Decimal | None = Field(None, gt=0, description="Cart subtotal before tax")
 
 
 class CouponValidateResponse(BaseModel):

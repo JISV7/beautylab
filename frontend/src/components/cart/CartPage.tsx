@@ -76,7 +76,11 @@ export const CartPage: React.FC<CartPageProps> = ({ onBack }) => {
             const token = getAuthToken();
             const response = await api.post(
                 '/coupons/validate',
-                { code, cart_total: parseFloat(cart.total) },
+                {
+                    code,
+                    cart_total: parseFloat(cart.total),
+                    subtotal: parseFloat(cart.subtotal),
+                },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
 
@@ -101,7 +105,9 @@ export const CartPage: React.FC<CartPageProps> = ({ onBack }) => {
     };
 
     const totalCouponDiscount = appliedCoupons.reduce((sum, c) => sum + c.discountAmount, 0);
-    const totalAfterCoupons = Math.round((parseFloat(cart?.total || '0') - totalCouponDiscount) * 100) / 100;
+    const discountedSubtotal = Math.max(0, parseFloat(cart?.subtotal || '0') - totalCouponDiscount);
+    const recalculatedTax = Math.round(discountedSubtotal * 0.16 * 100) / 100;
+    const totalAfterCoupons = Math.round((discountedSubtotal + recalculatedTax) * 100) / 100;
 
     const handleCheckout = () => {
         setCheckoutStep('payment');
@@ -427,12 +433,6 @@ export const CartPage: React.FC<CartPageProps> = ({ onBack }) => {
                                         {formatPrice(cart.subtotal)}
                                     </span>
                                 </div>
-                                <div className="flex justify-between text-paragraph">
-                                    <span className="text-paragraph opacity-75">IVA (16%)</span>
-                                    <span className="text-paragraph font-medium">
-                                        {formatPrice(cart.tax_total)}
-                                    </span>
-                                </div>
 
                                 {/* Coupon Discounts */}
                                 {appliedCoupons.length > 0 && appliedCoupons.map((cp) => (
@@ -446,6 +446,19 @@ export const CartPage: React.FC<CartPageProps> = ({ onBack }) => {
                                         </span>
                                     </div>
                                 ))}
+
+                                {/* IVA on discounted subtotal */}
+                                <div className="flex justify-between text-paragraph">
+                                    <span className="text-paragraph opacity-75">
+                                        IVA (16%)
+                                        {appliedCoupons.length > 0}
+                                    </span>
+                                    <span className="text-paragraph font-medium">
+                                        {appliedCoupons.length > 0
+                                            ? formatPrice(recalculatedTax)
+                                            : formatPrice(cart.tax_total)}
+                                    </span>
+                                </div>
 
                                 {/* Total after coupons */}
                                 <div className="flex justify-between text-h4 pt-3 border-t palette-border">
@@ -533,15 +546,11 @@ export const CartPage: React.FC<CartPageProps> = ({ onBack }) => {
                 <div className="max-w-2xl mx-auto space-y-6">
                     {/* Order Summary */}
                     <div className="palette-surface palette-border border rounded-xl p-4">
-                        <h3 className="text-h3 mb-3">Order Total</h3>
+                        <h3 className="text-h3 mb-3">Order Summary</h3>
                         <div className="space-y-2">
                             <div className="flex justify-between text-paragraph">
                                 <span className="text-paragraph opacity-75">Subtotal</span>
                                 <span className="text-paragraph">{formatPrice(cart.subtotal)}</span>
-                            </div>
-                            <div className="flex justify-between text-paragraph">
-                                <span className="text-paragraph opacity-75">IVA (16%)</span>
-                                <span className="text-paragraph">{formatPrice(cart.tax_total)}</span>
                             </div>
                             {appliedCoupons.length > 0 && appliedCoupons.map((cp) => (
                                 <div key={cp.code} className="flex justify-between text-paragraph">
@@ -554,6 +563,15 @@ export const CartPage: React.FC<CartPageProps> = ({ onBack }) => {
                                     </span>
                                 </div>
                             ))}
+                            <div className="flex justify-between text-paragraph">
+                                <span className="text-paragraph opacity-75">
+                                    IVA (16%)
+                                    {appliedCoupons.length > 0}
+                                </span>
+                                <span className="text-paragraph">
+                                    {appliedCoupons.length > 0 ? formatPrice(recalculatedTax) : formatPrice(cart.tax_total)}
+                                </span>
+                            </div>
                             <div className="flex justify-between text-h4 pt-3 border-t palette-border">
                                 <span className="text-h4 font-bold">Total</span>
                                 <span className="text-[var(--palette-primary)] font-bold">

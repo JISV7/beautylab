@@ -67,7 +67,7 @@ class CouponService:
         Validate a coupon code for use.
 
         Args:
-            request: Validation request with code and cart_total
+            request: Validation request with code, cart_total, and optional subtotal
             user_id: Optional user ID to check usage limits
 
         Returns:
@@ -100,8 +100,9 @@ class CouponService:
         if coupon.max_uses and coupon.used_count >= coupon.max_uses:
             raise CouponMaxUsesError("Coupon has reached maximum uses")
 
-        # Check minimum purchase
-        if cart_total < coupon.min_purchase:
+        # Check minimum purchase (use subtotal if available, otherwise cart_total)
+        effective_total = request.subtotal if request.subtotal else cart_total
+        if effective_total < coupon.min_purchase:
             raise CouponMinPurchaseError(f"Minimum purchase of ${coupon.min_purchase} required")
 
         # Check if user already used this coupon (if user_id provided)
@@ -114,8 +115,8 @@ class CouponService:
             if usage.scalar_one_or_none():
                 raise CouponAlreadyUsedError("You have already used this coupon")
 
-        # Calculate discount
-        discount_amount = await self.calculate_discount(coupon, cart_total)
+        # Calculate discount using subtotal (pre-tax) for percentage coupons
+        discount_amount = await self.calculate_discount(coupon, cart_total, request.subtotal)
         final_total = cart_total - discount_amount
 
         return {
@@ -130,18 +131,20 @@ class CouponService:
         self,
         codes: list[str],
         cart_total: Decimal,
+        subtotal: Decimal | None = None,
         user_id: UUID | None = None,
     ) -> dict:
         """
         Validate multiple coupon codes for combined discount.
 
-        Each coupon discount is calculated against the ORIGINAL cart total
-        (not a running total), matching the frontend validation behavior.
+        Each coupon discount is calculated against the pre-tax subtotal
+        (not the tax-inclusive total), so discounts are applied before tax.
         Percentage discounts are evaluated first to maximize user savings.
 
         Args:
             codes: List of coupon codes
-            cart_total: Cart subtotal before discounts
+            cart_total: Cart total including tax
+            subtotal: Cart subtotal before tax (used for percentage discounts)
             user_id: User ID for usage checks
 
         Returns:
@@ -167,7 +170,7 @@ class CouponService:
 
         for code in sorted_codes:
             try:
-                request = CouponValidateRequest(code=code, cart_total=cart_total)
+                request = CouponValidateRequest(code=code, cart_total=cart_total, subtotal=subtotal)
                 result = await self.validate_coupon(request=request, user_id=user_id)
                 valid_coupons.append(
                     {
@@ -201,10 +204,17 @@ class CouponService:
         self,
         coupon: Coupon,
         cart_total: Decimal,
+        subtotal: Decimal | None = None,
     ) -> Decimal:
-        """Calculate discount amount based on coupon type."""
+        """Calculate discount amount based on coupon type.
+
+        For percentage coupons, uses the pre-tax subtotal so the discount
+        is applied before tax calculation. Falls back to cart_total if
+        subtotal is not provided (backward compatibility).
+        """
+        base = subtotal if subtotal else cart_total
         if coupon.discount_type == "percentage":
-            discount = cart_total * (coupon.discount_value / Decimal("100"))
+            discount = base * (coupon.discount_value / Decimal("100"))
         else:  # fixed
             discount = coupon.discount_value
 

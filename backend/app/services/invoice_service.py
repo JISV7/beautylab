@@ -143,8 +143,11 @@ class InvoiceService:
         Returns:
             Created invoice
         """
-        # Calculate totals
-        totals = await self._calculate_invoice_totals(invoice_data.lines)
+        # Calculate totals (considering adjustments for tax recalculation)
+        totals = await self._calculate_invoice_totals(
+            invoice_data.lines,
+            invoice_data.adjustments,
+        )
 
         # Get active company info
         active_company = await self._get_active_company()
@@ -263,9 +266,14 @@ class InvoiceService:
     async def _calculate_invoice_totals(
         self,
         lines: list[InvoiceLineCreate],
+        adjustments: list[InvoiceAdjustmentCreate] | None = None,
     ) -> dict:
         """
         Calculate invoice totals from line items.
+
+        When discount adjustments are provided, the discount is applied to the
+        subtotal first, then tax is recalculated proportionally on the discounted
+        base amount.
 
         Returns:
             dict with subtotal, discount_total, tax_total, total
@@ -281,7 +289,20 @@ class InvoiceService:
                 tax_amount = line_subtotal * (line.tax_rate / Decimal("100"))
                 tax_total += tax_amount
 
-        discount_total = Decimal("0.00")  # Would calculate from adjustments
+        # Calculate total discount from adjustments
+        discount_total = Decimal("0.00")
+        if adjustments:
+            for adj in adjustments:
+                if adj.adjustment_type == "discount":
+                    discount_total += adj.amount
+
+        # If there's a discount, recalculate tax proportionally on the discounted base.
+        # This ensures IVA reflects the actual selling price.
+        if discount_total > 0 and subtotal > 0:
+            discounted_subtotal = max(subtotal - discount_total, Decimal("0.00"))
+            # Scale tax_total proportionally to the discounted subtotal
+            tax_total = tax_total * (discounted_subtotal / subtotal)
+
         total = subtotal + tax_total - discount_total
 
         return {

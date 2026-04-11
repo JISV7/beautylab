@@ -251,9 +251,6 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
                                 </div>
                             </label>
                             <div className="relative">
-                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-paragraph opacity-60">
-                                    $
-                                </span>
                                 <input
                                     type="number"
                                     value={payment.amount}

@@ -43,8 +43,8 @@ export const CourseFormStep3: React.FC<CourseFormStep3Props> = ({
                     </div>
                 </div>
                 <div className="flex items-center gap-4">
-                    <span className="text-sm font-bold text-paragraph uppercase tracking-tighter">
-                        Published Status
+                    <span className="text-sm font-bold text-paragraph">
+                        Published
                     </span>
                     <label className="relative inline-flex items-center cursor-pointer">
                         <input

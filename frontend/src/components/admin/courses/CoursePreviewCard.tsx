@@ -92,22 +92,6 @@ export const CoursePreviewCard: React.FC<CoursePreviewCardProps> = ({
                     </div>
                 </div>
             </article>
-
-            {/* Tip Card */}
-            <div className="mt-6 bg-[var(--palette-primary)] text-white p-6 rounded-xl relative overflow-hidden">
-                <div className="relative z-10">
-                    <p className="text-[10px] font-black opacity-80 uppercase tracking-widest mb-2">
-                        Editor's Tip
-                    </p>
-                    <h5 className="text-sm font-bold mb-2">Engagement Matters</h5>
-                    <p className="text-xs opacity-80 leading-relaxed">
-                        Courses with detailed descriptions and professional images see a 40% higher conversion rate.
-                    </p>
-                </div>
-                <div className="absolute -right-4 -bottom-4 opacity-10">
-                    <EyeIcon size={64} />
-                </div>
-            </div>
         </div>
     );
 };

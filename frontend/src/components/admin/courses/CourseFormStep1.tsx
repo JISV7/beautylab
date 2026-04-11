@@ -127,7 +127,6 @@ export const CourseFormStep1: React.FC<CourseFormStep1Props> = ({
                 <h3 className="text-h3 text-h3 text-h3">
                     Step 1: Course Info
                 </h3>
-                <HelpCircle size={20} className="text-paragraph opacity-40 cursor-help" />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

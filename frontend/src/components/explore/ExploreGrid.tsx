@@ -44,22 +44,14 @@ export const ExploreGrid: React.FC<ExploreGridProps> = ({ courses, isLoading, on
     // Empty State
     if (courses.length === 0) {
         return (
-            <div className="text-center py-16 px-4">
-                <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-[var(--palette-primary)]/10 mb-6">
-                    <Search size={40} className="text-[var(--palette-primary)] opacity-60" />
-                </div>
-                <h3 className="text-2xl font-black text-paragraph mb-3">
+            <div className="palette-surface palette-border border rounded-xl p-12 text-center">
+                <Search size={48} className="mx-auto mb-4 opacity-50 text-paragraph" />
+                <h3 className="text-xl font-bold text-paragraph mb-2">
                     No courses found
                 </h3>
-                <p className="text-paragraph opacity-60 max-w-md mx-auto mb-8">
+                <p className="text-paragraph opacity-75 max-w-md mx-auto">
                     We couldn't find any courses matching your current filters. Try adjusting your search or filter criteria.
                 </p>
-                <div className="flex flex-wrap justify-center gap-3">
-                    <div className="inline-flex items-center gap-2 bg-[var(--palette-surface)] border border-[var(--palette-border)] rounded-lg px-4 py-2">
-                        <BookOpen size={16} className="text-paragraph opacity-40" />
-                        <span className="text-sm text-paragraph opacity-60">Check back later for new courses</span>
-                    </div>
-                </div>
             </div>
         );
     }

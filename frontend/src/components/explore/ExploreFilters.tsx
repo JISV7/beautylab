@@ -107,7 +107,7 @@ export const ExploreFilters: React.FC<ExploreFiltersProps> = ({
                 <div className={`${isExpanded ? 'flex' : 'hidden'} md:flex flex-col md:flex-row gap-4 flex-1`}>
                     {/* Category Filter */}
                     <div className="flex-1">
-                        <label className="block text-xs font-bold text-paragraph opacity-60 uppercase tracking-wider mb-2">
+                        <label className="block text-sm font-bold text-paragraph mb-2">
                             Category
                         </label>
                         <select
@@ -127,7 +127,7 @@ export const ExploreFilters: React.FC<ExploreFiltersProps> = ({
 
                     {/* Level Filter */}
                     <div className="flex-1">
-                        <label className="block text-xs font-bold text-paragraph opacity-60 uppercase tracking-wider mb-2">
+                        <label className="block text-sm font-bold text-paragraph mb-2">
                             Level
                         </label>
                         <select

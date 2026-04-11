@@ -202,7 +202,7 @@ export const CouponManagement: React.FC = () => {
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 p-6">
             {/* Header */}
             <div>
                 <h1 className="text-h1 font-bold mb-1">Coupons</h1>
@@ -255,10 +255,10 @@ export const CouponManagement: React.FC = () => {
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--palette-primary)]"></div>
                 </div>
             ) : filteredCoupons.length === 0 ? (
-                <div className="text-center py-12 text-paragraph">
-                    <Tag className="w-12 h-12 mx-auto mb-4 opacity-30" />
-                    <p>No coupons found.</p>
-                    <p className="text-sm mt-2 opacity-60">
+                <div className="palette-surface palette-border border rounded-xl p-8 text-center">
+                    <Tag className="w-16 h-16 mx-auto mb-4 opacity-50" />
+                    <p className="text-paragraph">No coupons found.</p>
+                    <p className="text-paragraph opacity-75 text-sm mt-2">
                         {searchQuery ? 'Try a different search term.' : 'Create your first coupon to get started!'}
                     </p>
                 </div>

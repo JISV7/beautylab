@@ -189,6 +189,7 @@
 
   .theme-input::placeholder {
     color: var(--text-p-color);
+    opacity: 0.6;
   }
 
   .theme-input:is(select) {

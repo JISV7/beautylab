@@ -227,12 +227,8 @@ class InvoiceService:
         tax_amount = subtotal * tax_rate if not line_data.is_exempt else Decimal("0.00")
         line_total = subtotal + tax_amount
 
-        # Get product description if product_id provided
+        # Use description as provided by caller (cart.py or other sources)
         description = line_data.description
-        if line_data.product_id:
-            product = await self._get_product_by_id(line_data.product_id)
-            if product:
-                description = f"{product.name} - {line_data.description}"
 
         line = InvoiceLine(
             invoice_id=invoice_id,

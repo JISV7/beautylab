@@ -31,7 +31,7 @@ class Product(Base, TimestampMixin):
     name: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
     sku: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
-    price: Mapped[Decimal] = mapped_column(NUMERIC(10, 2), nullable=False)
+    price: Mapped[Decimal] = mapped_column(NUMERIC(15, 2), nullable=False)
     tax_rate: Mapped[Decimal] = mapped_column(
         NUMERIC(5, 2), nullable=False, default=Decimal("16.00")
     )

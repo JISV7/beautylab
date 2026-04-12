@@ -1,5 +1,6 @@
 import React from 'react';
 import { CheckCircle, Mail, BookOpen, ArrowRight, Receipt, Calendar } from 'lucide-react';
+import { formatCurrency } from '../../utils/formatCurrency';
 
 export interface PaymentBreakdown {
     method: string;
@@ -35,15 +36,6 @@ export const PurchaseConfirmation: React.FC<PurchaseConfirmationProps> = ({
     onGoToDashboard,
     onViewCourses,
 }) => {
-    const formatCurrency = (value: string) => {
-        const num = parseFloat(value);
-        if (isNaN(num)) return 'Bs. 0.00';
-        return `Bs. ${num.toLocaleString('es-VE', {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-        })}`;
-    };
-
     return (
         <div className="max-w-3xl mx-auto">
             {/* Success Banner */}

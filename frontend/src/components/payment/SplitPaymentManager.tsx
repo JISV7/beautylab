@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, Trash2, DollarSign, AlertCircle } from 'lucide-react';
 import type { PaymentMethodType } from './types';
-import { PaymentForm, type PaymentFormValues } from './PaymentForms';
+import { type PaymentFormValues, PaymentForm } from './PaymentForms';
 
 export interface SplitPaymentEntry {
     id: string;

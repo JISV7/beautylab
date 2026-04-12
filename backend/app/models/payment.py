@@ -68,7 +68,7 @@ class Payment(Base, TimestampMixin):
         index=True,
     )
     method_type: Mapped[str] = mapped_column(String(20), nullable=False)
-    amount: Mapped[Decimal] = mapped_column(NUMERIC(10, 2), nullable=False)
+    amount: Mapped[Decimal] = mapped_column(NUMERIC(15, 2), nullable=False)
     status: Mapped[str] = mapped_column(String(20), nullable=False, default="pending")
     transaction_reference: Mapped[str | None] = mapped_column(String(255), nullable=True)
 

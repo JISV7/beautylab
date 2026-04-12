@@ -30,9 +30,9 @@ class Coupon(Base, TimestampMixin):
     discount_type: Mapped[str] = mapped_column(
         String(20), nullable=False, default="percentage"
     )  # percentage, fixed
-    discount_value: Mapped[Decimal] = mapped_column(NUMERIC(10, 2), nullable=False)
+    discount_value: Mapped[Decimal] = mapped_column(NUMERIC(15, 2), nullable=False)
     min_purchase: Mapped[Decimal] = mapped_column(
-        NUMERIC(10, 2), nullable=False, default=Decimal("0.00")
+        NUMERIC(15, 2), nullable=False, default=Decimal("0.00")
     )
     max_uses: Mapped[int | None] = mapped_column(Integer, nullable=True)
     used_count: Mapped[int] = mapped_column(Integer, default=0)

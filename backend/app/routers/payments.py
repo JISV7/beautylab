@@ -152,21 +152,9 @@ async def process_split_payment(
             detail=f"Invoice {request.invoice_id} not found",
         )
 
-    # Calculate effective total — discounts reduce what the user actually owes
-    from app.models.invoice import InvoiceAdjustment
-
-    adj_result = await db.execute(
-        select(InvoiceAdjustment).where(
-            InvoiceAdjustment.invoice_id == invoice.id,
-            InvoiceAdjustment.adjustment_type == "discount",
-        )
-    )
-    adjustments = adj_result.scalars().all()
-    total_discount = Decimal("0.00")
-    for adj in adjustments:
-        total_discount += adj.amount
-
-    effective_total = max(Decimal("0.00"), invoice.total - total_discount)
+    # The invoice total already includes discounts (calculated at invoice
+    # creation time), so we use it directly as the effective total.
+    effective_total = invoice.total
     total_paid = sum(p.amount for p in request.payments)
 
     # Full payment required — reject if amounts don't match
@@ -223,9 +211,14 @@ async def process_split_payment(
     # manually redeems them (for personal use) or gifts them to someone else
 
     # Apply coupons — mark usage and increment counter
+    from app.models.invoice import InvoiceAdjustment
     from app.services.coupon_service import CouponService
 
     coupon_service = CouponService(db)
+    adj_result = await db.execute(
+        select(InvoiceAdjustment).where(InvoiceAdjustment.invoice_id == request.invoice_id)
+    )
+    adjustments = adj_result.scalars().all()
     for adj in adjustments:
         if adj.description and adj.description.startswith("Coupon: "):
             code = adj.description.replace("Coupon: ", "").strip()

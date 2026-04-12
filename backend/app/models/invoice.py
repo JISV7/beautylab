@@ -67,14 +67,14 @@ class Invoice(Base, TimestampMixin):
     client_document_type: Mapped[str | None] = mapped_column(String(10), nullable=True)
     client_document_number: Mapped[str | None] = mapped_column(String(20), nullable=True)
     client_fiscal_address: Mapped[str | None] = mapped_column(String(500), nullable=True)
-    subtotal: Mapped[Decimal] = mapped_column(NUMERIC(10, 2), nullable=False)
+    subtotal: Mapped[Decimal] = mapped_column(NUMERIC(15, 2), nullable=False)
     discount_total: Mapped[Decimal] = mapped_column(
-        NUMERIC(10, 2), nullable=False, default=Decimal("0.00")
+        NUMERIC(15, 2), nullable=False, default=Decimal("0.00")
     )
     tax_total: Mapped[Decimal] = mapped_column(
-        NUMERIC(10, 2), nullable=False, default=Decimal("0.00")
+        NUMERIC(15, 2), nullable=False, default=Decimal("0.00")
     )
-    total: Mapped[Decimal] = mapped_column(NUMERIC(10, 2), nullable=False)
+    total: Mapped[Decimal] = mapped_column(NUMERIC(15, 2), nullable=False)
     status: Mapped[str] = mapped_column(String(20), nullable=False, default="issued")
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
 
@@ -119,16 +119,16 @@ class InvoiceLine(Base):
         nullable=True,
     )
     description: Mapped[str] = mapped_column(Text, nullable=False)
-    quantity: Mapped[Decimal] = mapped_column(NUMERIC(10, 2), nullable=False)
-    unit_price: Mapped[Decimal] = mapped_column(NUMERIC(10, 2), nullable=False)
+    quantity: Mapped[Decimal] = mapped_column(NUMERIC(15, 2), nullable=False)
+    unit_price: Mapped[Decimal] = mapped_column(NUMERIC(15, 2), nullable=False)
     tax_rate: Mapped[Decimal] = mapped_column(NUMERIC(5, 2), nullable=False)
     tax_amount: Mapped[Decimal] = mapped_column(
-        NUMERIC(10, 2), nullable=False, default=Decimal("0.00")
+        NUMERIC(15, 2), nullable=False, default=Decimal("0.00")
     )
     discount: Mapped[Decimal] = mapped_column(
-        NUMERIC(10, 2), nullable=False, default=Decimal("0.00")
+        NUMERIC(15, 2), nullable=False, default=Decimal("0.00")
     )
-    line_total: Mapped[Decimal] = mapped_column(NUMERIC(10, 2), nullable=False)
+    line_total: Mapped[Decimal] = mapped_column(NUMERIC(15, 2), nullable=False)
     is_exempt: Mapped[bool] = mapped_column(default=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.now)
 
@@ -157,7 +157,7 @@ class InvoiceAdjustment(Base):
         String(20), nullable=False
     )  # discount, bonus, surcharge
     description: Mapped[str] = mapped_column(Text, nullable=False)
-    amount: Mapped[Decimal] = mapped_column(NUMERIC(10, 2), nullable=False)
+    amount: Mapped[Decimal] = mapped_column(NUMERIC(15, 2), nullable=False)
     is_percentage: Mapped[bool] = mapped_column(default=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.now)
 

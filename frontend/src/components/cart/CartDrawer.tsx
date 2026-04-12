@@ -1,6 +1,7 @@
 import React from 'react';
 import { X, Trash2, Plus, Minus, ShoppingCart } from 'lucide-react';
 import { useCart } from '../../contexts/CartContext';
+import { formatCurrency } from '../../utils/formatCurrency';
 
 interface CartDrawerProps {
     isOpen: boolean;
@@ -10,12 +11,6 @@ interface CartDrawerProps {
 
 export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onCheckout }) => {
     const { cart, removeFromCart, updateQuantity, isLoading } = useCart();
-
-    const formatPrice = (price: string) => {
-        const numericPrice = parseFloat(price);
-        if (isNaN(numericPrice)) return 'Bs. 0,00';
-        return `Bs. ${numericPrice.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-    };
 
     if (!isOpen) return null;
 
@@ -73,7 +68,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onCheck
                                             SKU: {item.product_sku || 'N/A'}
                                         </p>
                                         <p className="text-sm font-bold text-[var(--palette-primary)] mt-1">
-                                            {formatPrice(item.product_price || '0')}
+                                            {formatCurrency(item.product_price || '0')}
                                         </p>
                                     </div>
 
@@ -121,16 +116,16 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onCheck
                     <div className="border-t palette-border p-4 space-y-3">
                         <div className="flex justify-between text-sm text-paragraph opacity-75">
                             <span>Subtotal</span>
-                            <span>{formatPrice(cart.subtotal)}</span>
+                            <span>{formatCurrency(cart.subtotal)}</span>
                         </div>
                         <div className="flex justify-between text-sm text-paragraph opacity-75">
                             <span>IVA ({cart.tax_total !== '0.00' ? '16%' : '0%'})</span>
-                            <span>{formatPrice(cart.tax_total)}</span>
+                            <span>{formatCurrency(cart.tax_total)}</span>
                         </div>
                         <div className="flex justify-between text-lg font-bold text-paragraph pt-2 border-t palette-border">
                             <span>Total</span>
                             <span className="text-[var(--palette-primary)]">
-                                {formatPrice(cart.total)}
+                                {formatCurrency(cart.total)}
                             </span>
                         </div>
                         <button

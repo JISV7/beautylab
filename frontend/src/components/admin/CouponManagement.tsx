@@ -282,7 +282,7 @@ export const CouponManagement: React.FC = () => {
                                 {filteredCoupons.map((coupon) => (
                                     <tr
                                         key={coupon.id}
-                                        className="border-b border-[var(--palette-border)] hover:bg-[var(--palette-surface)] transition-colors group"
+                                        className="border-b border-[var(--palette-border)] hover:bg-[var(--palette-surface)] transition-colors"
                                     >
                                         <td className="py-3 px-4">
                                             <span className="font-mono text-sm font-semibold text-paragraph">
@@ -320,7 +320,7 @@ export const CouponManagement: React.FC = () => {
                                             </span>
                                         </td>
                                         <td className="py-3 px-4 text-right">
-                                            <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <div className="flex items-center justify-end gap-1">
                                                 <button
                                                     onClick={() => handleOpenEdit(coupon)}
                                                     className="p-2 hover:bg-[var(--palette-border)] rounded transition-colors"

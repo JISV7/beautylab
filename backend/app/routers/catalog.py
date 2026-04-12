@@ -472,10 +472,43 @@ async def get_course_details(
 
         # Build license responses with payment details
         for lic in licenses:
-            # Calculate payment amounts (simplified - in real app would calculate from invoice)
-            total_price = course.product.price if course.product else Decimal("0.00")
-            amount_paid = total_price  # Assuming fully paid for now
+            # Calculate payment amounts from the actual invoice
+            amount_paid = Decimal("0.00")
             amount_remaining = Decimal("0.00")
+
+            if lic.invoice_line_id:
+                from app.models.invoice import Invoice, InvoiceLine
+
+                # Get the invoice line
+                il_result = await db.execute(
+                    select(InvoiceLine).where(InvoiceLine.id == lic.invoice_line_id)
+                )
+                invoice_line = il_result.scalar_one_or_none()
+
+                if invoice_line and invoice_line.invoice_id:
+                    # Get the invoice
+                    inv_result = await db.execute(
+                        select(Invoice).where(Invoice.id == invoice_line.invoice_id)
+                    )
+                    invoice = inv_result.scalar_one_or_none()
+
+                    if invoice:
+                        # Calculate proportional share of invoice total for this line.
+                        # The denominator is the full price+tax (before discounts),
+                        # the numerator is this line's price+tax.
+                        # The result is this line's fair share of the final discounted total.
+                        full_subtotal = invoice.subtotal
+                        if full_subtotal > 0:
+                            proportion = (
+                                invoice_line.unit_price * invoice_line.quantity / full_subtotal
+                            )
+                            amount_paid = invoice.total * proportion
+                        else:
+                            amount_paid = invoice.total
+
+                        amount_remaining = Decimal(
+                            "0.00"
+                        )  # License only created after full payment
 
             # Get assigned user info if gifted
             assigned_to_email = None

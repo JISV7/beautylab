@@ -152,95 +152,138 @@ async def download_all_invoices_as_pdfs(
         cnr = invoice.control_number_range
         cnr_printer = cnr.printer if cnr else None
 
-        # Company info
+        # Company info — matches frontend: font-semibold (600) for business_name
         co_html = ""
         if c:
-            phone = f"<p>  Tel: {c.phone}</p>" if c.phone else ""
+            phone = f'<p class="text-paragraph">Tel: {c.phone}</p>' if c.phone else ""
             co_html = (
                 '<div class="co">'
-                f"<p><b>{c.business_name}</b></p>"
-                f"<p>  RIF: {c.rif}</p>"
-                f"<p>  {c.fiscal_address or ''}</p>"
+                f'<p class="font-semibold text-paragraph">{c.business_name} — RIF: {c.rif}</p>'
+                f'<p class="text-paragraph">{c.fiscal_address or ""}</p>'
                 f"{phone}"
                 "</div>"
             )
 
-        # Control range
+        # Control range — matches frontend structure
         range_html = ""
         if cnr:
             s = cnr.start_number.zfill(12)
             e = cnr.end_number.zfill(12)
             ad = _format_date_ddmmyyyy(cnr.assigned_date)
             range_html = (
-                '<div class="box">'
-                '<p class="sm">  Rango de Números de Control</p>'
-                f"<p>  Desde N° {s} hasta N° {e}</p>"
-                f'<p class="xs">  Fecha de asignación: {ad}</p>'
-                "</div>"
+                '<div class="fn printer-info">'
+                '<p class="text-paragraph">'
+                f"{cnr_printer.business_name if cnr_printer else 'Imprenta'}"
+                f" | RIF: {cnr_printer.rif if cnr_printer else 'N/A'}"
+                "</p>"
+                '<p class="text-paragraph mt-1">'
+                "Providencia Administrativa: "
+                f"{cnr_printer.authorization_providence if cnr_printer else 'N/A'}"
+                "</p>"
+                '<div class="control-range text-right">'
+                '<p class="font-medium">'
+                f"Rango de Números de Control:"
+                f" desde el N° {s} hasta el N° {e}"
+                "</p>"
+                f'<p class="mt-1">Fecha de asignación: {ad}</p>'
+                "</div></div>"
             )
 
-        # Line items
+        # Line items — matches frontend: th font-semibold, td values font-medium
         lines_html = ""
         if invoice.lines:
             rows = ""
             for ln in invoice.lines:
-                ex = " (E)" if ln.is_exempt else ""
-                price = f"  Bs. {float(ln.unit_price):,.2f}"
-                rate = f"  {float(ln.tax_rate):.2f}%"
-                total = f"  Bs. {float(ln.line_total):,.2f}"
+                ex = '<span class="opacity-75"> (E)</span>' if ln.is_exempt else ""
+                price = f"Bs. {float(ln.unit_price):,.2f}"
+                rate = f"{float(ln.tax_rate):,.2f}%" if ln.tax_rate else "16%"
+                total = f"Bs. {float(ln.line_total):,.2f}"
                 rows += (
                     "<tr>"
-                    f"<td>{ln.description}{ex}</td>"
-                    f'<td class="c">{ln.quantity}</td>'
-                    f'<td class="r">{price}</td>'
-                    f'<td class="r m">{rate}</td>'
-                    f'<td class="r b">{total}</td>'
+                    f'<td class="l py-3">{ln.description}{ex}</td>'
+                    f'<td class="c py-3">{ln.quantity}</td>'
+                    f'<td class="r py-3">{price}</td>'
+                    f'<td class="r py-3 opacity-75">{rate}</td>'
+                    f'<td class="r py-3 font-medium">{total}</td>'
                     "</tr>"
                 )
             lines_html = (
-                "<table><thead><tr>"
-                '<th class="l">Descripción</th>'
-                '<th class="c">Cant.</th>'
-                '<th class="r">Precio Unit.</th>'
-                '<th class="r">Alícuota</th>'
-                '<th class="r">Total</th>'
+                '<div class="overflow-x-auto"><table class="w-full mb-6">'
+                '<thead><tr class="border-b-2 text-paragraph uppercase opacity-75">'
+                '<th class="l py-3 font-semibold">Descripción</th>'
+                '<th class="c py-3 font-semibold">Cant.</th>'
+                '<th class="r py-3 font-semibold">Precio Unit.</th>'
+                '<th class="r py-3 font-semibold">Alícuota</th>'
+                '<th class="r py-3 font-semibold">Total</th>'
                 "</tr></thead>"
-                f"<tbody>{rows}</tbody></table>"
+                f"<tbody>{rows}</tbody></table></div>"
             )
 
-        # Adjustments
+        # Adjustments — matches frontend: h4 font-semibold opacity-75 uppercase
         adj_html = ""
-        if invoice.adjustments:
+        if invoice.adjustments and len(invoice.adjustments) > 0:
             parts = []
             for a in invoice.adjustments:
                 sign = "-" if a.adjustment_type == "discount" else ""
                 amt = f"{sign}Bs. {float(a.amount):,.2f}"
-                parts.append(f"<div><span>{a.description}</span><b>{amt}</b></div>")
-            adj_html = f'<div class="mb"><h4 class="sm">Ajustes</h4>{"".join(parts)}</div>'
+                parts.append(
+                    f'<div class="py-2">'
+                    f'<p class="text-paragraph">{a.description}</p>'
+                    f'<p class="font-medium text-paragraph">{amt}</p>'
+                    "</div>"
+                )
+            adj_html = (
+                '<div class="adj-section">'
+                '<h4 class="font-semibold text-paragraph opacity-75 uppercase mb-2">Ajustes</h4>'
+                f"{'\n'.join(parts)}"
+                "</div>"
+            )
+        else:
+            adj_html = (
+                '<div class="adj-section">'
+                '<h4 class="font-semibold text-paragraph opacity-75 uppercase mb-2">Ajustes</h4>'
+                '<p class="text-paragraph opacity-50 py-2">Ninguno</p>'
+                "</div>"
+            )
 
-        # Totals
-        sub = f"  Bs. {float(invoice.subtotal):,.2f}"
-        tax = f"  Bs. {float(invoice.tax_total):,.2f}"
+        # Totals — matches frontend: labels opacity-75, values font-medium, total uses h3 font-bold
+        sub = f"Bs. {float(invoice.subtotal):,.2f}"
+        tax = f"Bs. {float(invoice.tax_total):,.2f}"
         disc = ""
         if float(invoice.discount_total) > 0:
             d = f"-Bs. {float(invoice.discount_total):,.2f}"
-            disc = f'<div><span>Descuentos</span><b class="g">{d}</b></div>'
-        tot = f"  Bs. {float(invoice.total):,.2f}"
+            disc = (
+                '<div class="flex items-center justify-between py-2 border-b">'
+                '<span class="text-paragraph opacity-75">Descuentos</span>'
+                f'<span class="font-medium text-green-600">{d}</span>'
+                "</div>"
+            )
+        tot = f"Bs. {float(invoice.total):,.2f}"
         totals_html = (
-            '<div class="tot">'
-            f"<div><span>Base Imponible</span><b>{sub}</b></div>"
-            f"<div><span>IVA (16%)</span><b>{tax}</b></div>"
+            '<div class="totals-section">'
+            '<div class="flex items-center justify-between py-2 border-b">'
+            '<span class="text-paragraph opacity-75">Base Imponible</span>'
+            f'<span class="font-medium text-paragraph">{sub}</span>'
+            "</div>"
+            '<div class="flex items-center justify-between py-2 border-b">'
+            '<span class="text-paragraph opacity-75">IVA</span>'
+            f'<span class="font-medium text-paragraph">{tax}</span>'
+            "</div>"
             f"{disc}"
-            f'<div class="gr"><span>Total</span><b>{tot}</b></div>'
+            '<div class="flex items-center justify-between '
+            'py-3 px-3 rounded-lg mt-2 bg-primary-soft">'
+            '<span class="font-bold text-primary">Total</span>'
+            f'<span class="text-h3 font-bold text-primary">{tot}</span>'
+            "</div>"
             "</div>"
         )
 
-        # Payments
+        # Payments — matches frontend: font-bold for method and amount, status badge
         pay_html = ""
         if invoice.payments:
             parts = []
             for p in invoice.payments:
-                mt = (p.method_type or "Pago").replace("_", " ").title()
+                mt = (p.method_type or "Pago").replace("_", " ")
                 ci = ""
                 if hasattr(p, "details") and p.details:
                     if p.details.card_brand:
@@ -248,30 +291,47 @@ async def download_all_invoices_as_pdfs(
                         ci = f" — {p.details.card_brand} ****{last4}"
                 bg = "#dcfce7" if p.status == "completed" else "#fef9c3"
                 clr = "#15803d" if p.status == "completed" else "#a16207"
-                amt = f"  Bs. {float(p.amount):,.2f}"
+                amt = f"Bs. {float(p.amount):,.2f}"
                 parts.append(
-                    '<div class="pay">'
-                    f"<span><b>{mt}{ci}</b></span>"
-                    f"<span><b>{amt}</b>"
-                    f'<em style="background:{bg};color:{clr}">'
-                    f"  {p.status}</em></span></div>"
+                    '<div class="pay-row flex flex-col sm:flex-row '
+                    "items-start sm:items-center justify-between "
+                    "py-3 px-4 rounded-lg palette-surface "
+                    'palette-border border">'
+                    f'<span class="font-bold text-paragraph">{mt}'
+                    f'<span class="font-semibold text-paragraph opacity-80">{ci}</span></span>'
+                    '<div class="flex items-center gap-3 mt-2 sm:mt-0">'
+                    f'<span class="font-bold text-paragraph">{amt}</span>'
+                    f'<span class="status-badge px-2 py-0.5 '
+                    'rounded-full text-xs font-medium" '
+                    f'style="background:{bg};color:{clr}">'
+                    f"{p.status}</span></div></div>"
                 )
             pay_html = (
-                f'<div class="mt"><h3 class="sm">Desglose de Pagos</h3>{"".join(parts)}</div>'
+                '<div class="mt pt-6 border-t">'
+                '<h3 class="font-semibold text-paragraph '
+                'opacity-75 uppercase mb-4">Desglose de Pagos</h3>'
+                '<div class="space-y-2">'
+                f"{'\n'.join(parts)}"
+                "</div></div>"
             )
 
-        # Printer info
+        # Printer info (if not included in range_html)
         prn_html = ""
-        if cnr_printer:
+        if cnr_printer and not cnr:
             prn_html = (
-                '<div class="fn">'
-                "<p><b>Imprenta Digital Autorizada</b></p>"
-                f"<p>{cnr_printer.business_name} | RIF: {cnr_printer.rif}</p>"
-                f"<p>Providencia: {cnr_printer.authorization_providence}</p>"
+                '<div class="fn printer-only">'
+                '<p class="text-paragraph">'
+                f"{cnr_printer.business_name}"
+                f" | RIF: {cnr_printer.rif}"
+                "</p>"
+                '<p class="mt-1 text-paragraph">'
+                "Providencia Administrativa: "
+                f"{cnr_printer.authorization_providence}"
+                "</p>"
                 "</div>"
             )
 
-        # Client info — fallback to user profile when invoice fields empty
+        # Client info — matches frontend: labels opacity-75, values font-medium
         _rif = invoice.client_rif
         _dtype = invoice.client_document_type
         _dnum = invoice.client_document_number
@@ -308,7 +368,12 @@ async def download_all_invoices_as_pdfs(
 
         fiscal_addr_html = ""
         if _addr:
-            fiscal_addr_html = f'<p class="xs">  Domicilio Fiscal</p><p><b>{_addr}</b></p>'
+            fiscal_addr_html = (
+                '<div class="sm:col-span-2">'
+                '<p class="text-paragraph opacity-75">Domicilio Fiscal</p>'
+                f'<p class="font-medium">{_addr}</p>'
+                "</div>"
+            )
 
         # Footer
         ft = ""
@@ -325,151 +390,235 @@ async def download_all_invoices_as_pdfs(
         <style>
         @page {{ size: letter; margin: 2cm 2.5cm; }}
         body {{
-            font-family: Helvetica, Arial, sans-serif;
-            font-size: 14px; color: #1f2937;
+            font-family: Roboto, Helvetica, Arial, sans-serif;
+            font-size: 16px; color: #1A1A1A;
             line-height: 1.5;
         }}
+
+        /* ===== Typography — matches config-jsonb.txt light theme ===== */
+        h1 {{
+            font-family: Roboto, sans-serif;
+            font-size: 39.87px; /* 2.492rem */
+            color: #F83A3A;
+            font-weight: 400;
+            line-height: 1.2;
+            margin: 0;
+        }}
+        h3 {{
+            font-family: Roboto, sans-serif;
+            font-size: 27.68px; /* 1.73rem */
+            color: #D73359;
+            font-weight: 400;
+            line-height: 1.3;
+            margin: 0;
+        }}
+        h4 {{
+            font-family: Roboto, sans-serif;
+            font-size: 23.04px; /* 1.44rem */
+            color: #8F1D1D;
+            font-weight: 400;
+            line-height: 1.4;
+            margin: 0;
+        }}
+        p, span, div, td, th {{
+            font-family: Roboto, sans-serif;
+            font-size: 16px;
+            color: #1A1A1A;
+            font-weight: 400;
+            line-height: 1.5;
+        }}
+
+        /* ===== Font weight utilities ===== */
+        .font-bold {{ font-weight: 700; }}
+        .font-semibold {{ font-weight: 600; }}
+        .font-medium {{ font-weight: 500; }}
+
+        /* ===== Opacity utilities ===== */
+        .opacity-75 {{ opacity: 0.75; }}
+        .opacity-50 {{ opacity: 0.5; }}
+        .opacity-80 {{ opacity: 0.8; }}
+
+        /* ===== Text utilities ===== */
+        .uppercase {{ text-transform: uppercase; }}
+        .text-right {{ text-align: right; }}
+        .text-left {{ text-align: left; }}
+        .text-center {{ text-align: center; }}
+        .text-primary {{ color: #F83A3A; }}
+        .text-green-600 {{ color: #16a34a; }}
+        .text-paragraph {{ color: #1A1A1A; }}
+        .mt-1 {{ margin-top: 4px; }}
+        .mt-2 {{ margin-top: 8px; }}
+        .mt-6 {{ margin-top: 24px; }}
+        .mb-2 {{ margin-bottom: 8px; }}
+        .mb-3 {{ margin-bottom: 12px; }}
+        .mb-4 {{ margin-bottom: 16px; }}
+        .mb-6 {{ margin-bottom: 24px; }}
+        .py-2 {{ padding-top: 8px; padding-bottom: 8px; }}
+        .py-3 {{ padding-top: 12px; padding-bottom: 12px; }}
+        .px-3 {{ padding-left: 12px; padding-right: 12px; }}
+        .px-4 {{ padding-left: 16px; padding-right: 16px; }}
+        .p-4 {{ padding: 16px; }}
+        .p-8 {{ padding: 32px; }}
+        .gap-3 {{ gap: 12px; }}
+        .gap-4 {{ gap: 16px; }}
+        .gap-6 {{ gap: 24px; }}
+
+        /* ===== Layout ===== */
+        .flex {{ display: flex; }}
+        .flex-col {{ flex-direction: column; }}
+        .items-center {{ align-items: center; }}
+        .items-start {{ align-items: flex-start; }}
+        .justify-between {{ justify-content: space-between; }}
+        .rounded-lg {{ border-radius: 8px; }}
+        .rounded-full {{ border-radius: 9999px; }}
+        .overflow-x-auto {{ overflow-x: auto; }}
+        .w-full {{ width: 100%; }}
+        .space-y-2 > * + * {{ margin-top: 8px; }}
+
+        /* ===== Colors ===== */
+        .bg-primary-soft {{ background-color: rgba(248, 58, 58, 0.1); }}
+        .palette-surface {{ background-color: #EEEEF0; }}
+        .palette-border {{ border-color: #DDDDDD; }}
+        .border {{ border: 1px solid #DDDDDD; }}
+        .border-b {{ border-bottom: 1px solid #DDDDDD; }}
+        .border-b-2 {{ border-bottom: 2px solid #DDDDDD; }}
+        .border-t {{ border-top: 1px solid #DDDDDD; }}
+
+        /* ===== Header section ===== */
         .hdr {{
-            border-bottom: 2px solid #e5e7eb;
-            padding-bottom: 16px; margin-bottom: 16px;
+            border-bottom: 2px solid #DDDDDD;
+            padding-bottom: 24px; margin-bottom: 24px;
+        }}
+        .hdr-top {{
+            display: flex; flex-direction: column; gap: 16px;
+        }}
+        .hdr-main {{
+            display: flex; justify-content: space-between; align-items: flex-start;
         }}
         .co {{ text-align: right; }}
-        .co p {{ margin: 0; font-size: 12px; color: #555; }}
-        .co p:first-child {{ font-weight: bold; font-size: 14px; color: #1f2937; }}
+        .co p {{ margin: 0; }}
+
+        /* ===== Info grid (N° Control, Fecha, Hora, Estado) ===== */
         .mg {{
-            display: flex; gap: 16px;
-            background: #f9fafb; padding: 12px;
-            border-radius: 8px; font-size: 12px;
-            margin-bottom: 16px;
+            display: flex; gap: 16px; flex-wrap: wrap;
+            background: #EEEEF0; padding: 16px;
+            border-radius: 8px; font-size: 16px;
         }}
-        .mg > div {{ flex: 1; }}
+        .mg > div {{ flex: 1; min-width: 0; }}
         .mg p {{ margin: 0; }}
-        .sm {{
-            font-size: 10px; text-transform: uppercase;
-            color: #888; margin: 0 0 4px;
-        }}
-        .box {{
-            background: #f3f4f6; padding: 12px;
-            border-radius: 8px; margin-bottom: 16px;
-            font-size: 12px;
-        }}
-        .box p {{ margin: 0; }}
-        .xs {{ font-size: 10px; color: #888; }}
+
+        /* ===== Table ===== */
         table {{
             width: 100%; border-collapse: collapse;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }}
         th {{
-            text-transform: uppercase; font-size: 12px;
-            color: #888; border-bottom: 2px solid #e5e7eb;
-            padding: 8px; text-align: left;
+            text-transform: uppercase; font-size: 16px;
+            color: #1A1A1A; border-bottom: 2px solid #DDDDDD;
+            padding: 12px 8px; text-align: left;
+            font-weight: 600; opacity: 0.75;
         }}
         td {{
-            padding: 8px;
-            border-bottom: 1px solid #e5e7eb;
+            padding: 12px 8px;
+            border-bottom: 1px solid #DDDDDD;
         }}
-        .l {{ text-align: left; }}
-        .r {{ text-align: right; }}
-        .c {{ text-align: center; }}
-        .m {{ color: #888; }}
-        .b {{ font-weight: 600; }}
+
+        /* ===== Client card ===== */
         .cc {{
-            background: #f9fafb; border: 1px solid #e5e7eb;
+            background: #EEEEF0; border: 1px solid #DDDDDD;
             border-radius: 8px; padding: 16px;
-            margin-bottom: 16px;
+            margin-bottom: 24px;
         }}
         .cc h3 {{
-            font-size: 12px; text-transform: uppercase;
-            color: #888; margin: 0 0 8px;
+            font-size: 16px; text-transform: uppercase;
+            color: #1A1A1A; opacity: 0.75; font-weight: 600;
+            margin: 0 0 12px;
         }}
         .cc p {{ margin: 0; }}
-        .mb {{ margin-bottom: 16px; }}
-        .mb > div {{
-            display: flex; justify-content: space-between;
-            padding: 4px 0;
-        }}
-        .tot {{ display: flex; justify-content: flex-end; }}
-        .tot > div {{
+        .client-grid {{ display: flex; gap: 16px; }}
+        .client-grid > div {{ flex: 1; }}
+
+        /* ===== Totals ===== */
+        .totals-section {{ margin-left: auto; width: 280px; }}
+        .totals-section > div {{
             display: flex; justify-content: space-between;
             padding: 8px 0;
-            border-bottom: 1px solid #e5e7eb;
-            width: 280px;
         }}
-        .tot .g {{ color: #16a34a; }}
-        .tot .gr {{
-            background: #fef2f2; border-radius: 8px;
-            padding: 12px 16px; margin-top: 8px;
-            border-bottom: none;
+        .text-h3 {{
+            font-family: Roboto, sans-serif;
+            font-size: 27.68px;
+            color: #F83A3A;
+            font-weight: 700;
         }}
-        .tot .gr span {{
-            font-weight: 700; color: #dc2626;
-        }}
-        .tot .gr b {{
-            font-size: 18px; font-weight: 700;
-            color: #dc2626;
-        }}
-        .mt {{
-            margin-top: 24px; padding-top: 16px;
-            border-top: 1px solid #e5e7eb;
-        }}
-        .pay {{
+
+        /* ===== Payments ===== */
+        .pay-row {{
             display: flex; justify-content: space-between;
-            align-items: center; padding: 8px 16px;
-            background: #f3f4f6; border-radius: 8px;
-            margin-bottom: 4px;
+            align-items: center; padding: 12px 16px;
+            background: #EEEEF0; border: 1px solid #DDDDDD;
+            border-radius: 8px; margin-bottom: 8px;
         }}
-        .pay em {{
+        .status-badge {{
             font-size: 10px; padding: 2px 8px;
             border-radius: 999px; font-style: normal;
         }}
+
+        /* ===== Printer / Footer ===== */
         .fn {{
             margin-top: 24px; padding-top: 16px;
-            border-top: 2px solid #e5e7eb;
-            font-size: 10px; color: #888;
+            border-top: 2px solid #DDDDDD;
+            font-size: 16px; color: #1A1A1A;
         }}
-        .fn p {{ margin: 2px 0; }}
+        .fn p {{ margin: 4px 0; }}
+        .printer-info {{
+            display: flex; flex-direction: column; gap: 4px;
+        }}
+        .control-range {{ margin-top: 8px; }}
         .ftr {{
             margin-top: 32px; padding-top: 16px;
-            border-top: 1px solid #e5e7eb;
-            text-align: center; font-size: 10px;
+            border-top: 1px solid #DDDDDD;
+            text-align: center; font-size: 12px;
             color: #999;
         }}
         </style></head><body>
+        <div class="p-8">
         <div class="hdr">
-        <div style="display:flex;justify-content:space-between;">
+        <div class="hdr-main">
         <div>
-        <h1 style="margin:0;font-size:28px;color:#dc2626;">
-          FACTURA</h1>
-        <p style="margin:4px 0 0;color:#888;">
-          N° {num}</p>
+        <h1 class="font-bold">FACTURA</h1>
+        <p class="text-paragraph opacity-75 mt-1">N° {num}</p>
         </div>{co_html}</div></div>
         <div class="mg">
-        <div><p class="sm">N° Control</p>
-        <p style="font-family:monospace;font-weight:600;">
-          {ctrl}</p></div>
-        <div><p class="sm">Fecha</p>
-        <p><b>{ddt}</b></p></div>
-        <div><p class="sm">Hora</p>
-        <p><b>{ttm}</b></p></div>
-        <div style="text-align:right;">
-        <p class="sm">Estado</p>
-        <span style="padding:2px 12px;border-radius:999px;
-          font-size:11px;background:#dcfce7;color:#15803d;
-          font-weight:600;">{st}</span></div></div>
+        <div><p class="text-paragraph opacity-75 uppercase">N° Control</p>
+        <p class="font-medium" style="font-family:monospace;">{ctrl}</p></div>
+        <div><p class="text-paragraph opacity-75 uppercase">Fecha de Emisión</p>
+        <p class="font-medium">{ddt}</p></div>
+        <div><p class="text-paragraph opacity-75 uppercase">Hora de Emisión</p>
+        <p class="font-medium">{ttm}</p></div>
+        <div class="text-right">
+        <p class="text-paragraph opacity-75 uppercase">Estado</p>
+        <span class="px-2 py-1 rounded-full font-medium"
+              style="background:#dcfce7;color:#15803d;">{st}</span></div></div>
+        </div>
         {range_html}
         <div class="cc">
-        <h3>Datos del Cliente</h3>
-        <div style="display:flex;gap:16px;">
-        <div style="flex:1;">
-        <p class="xs">Nombre / Razón Social</p>
-        <p><b>{client_name}</b></p></div>
-        <div style="flex:1;">
-        <p class="xs">RIF / Cédula / Pasaporte</p>
-        <p><b>{client_doc or "N/A"}</b></p></div></div>
+        <h3 class="font-semibold text-paragraph opacity-75
+            uppercase mb-3">Datos del Cliente</h3>
+        <div class="client-grid">
+        <div>
+        <p class="text-paragraph opacity-75">Nombre / Razón Social</p>
+        <p class="font-medium">{client_name}</p></div>
+        <div>
+        <p class="text-paragraph opacity-75">RIF / Cédula / Pasaporte</p>
+        <p class="font-medium">{client_doc or "N/A"}</p></div></div>
         {fiscal_addr_html}</div>
-        {lines_html}{adj_html}{totals_html}
+        {lines_html}
+        <div class="flex flex-col lg:flex-row gap-6 mb-6">
+        <div class="flex-1">{adj_html}</div>
+        <div>{totals_html}</div></div>
         {pay_html}{prn_html}
         <div class="ftr">{ft}</div>
+        </div>
         </body></html>"""
 
         return HTML(string=html).write_pdf()

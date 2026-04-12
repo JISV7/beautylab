@@ -76,134 +76,453 @@ class EmailService:
         issue_date: str,
         items: list[dict],
         download_url: str | None = None,
+        control_number: str | None = None,
+        issue_time: str | None = None,
+        status: str | None = None,
+        company: dict | None = None,
+        client_name: str | None = None,
+        client_doc: str | None = None,
+        client_address: str | None = None,
+        subtotal: str | None = None,
+        tax_total: str | None = None,
+        discount_total: str | None = None,
+        adjustments: list[dict] | None = None,
+        payments: list[dict] | None = None,
+        printer_info: dict | None = None,
+        control_range: dict | None = None,
     ) -> bool:
-        """
-        Send invoice email.
+        """Send invoice email matching website InvoiceDetail style."""
+        # Format date DDMMYYYY
+        try:
+            from datetime import datetime
 
-        Args:
-            to_email: Customer email
-            invoice_number: Invoice number
-            total: Total amount
-            issue_date: Issue date
-            items: List of line items
-            download_url: Optional PDF download URL
-        """
-        subject = f"Invoice {invoice_number} - Codyn Academy"
+            dt = datetime.fromisoformat(issue_date)
+            date_fmt = f"{dt.day:02d}{dt.month:02d}{dt.year}"
+            date_display = dt.strftime("%d/%m/%Y")
+        except Exception:
+            date_fmt = issue_date
+            date_display = issue_date
 
-        # Build items HTML
+        # Format time
+        time_fmt = ""
+        if issue_time:
+            try:
+                from datetime import datetime
+
+                t = datetime.strptime(issue_time, "%H:%M:%S")
+                h = t.hour
+                ampm = "p.m." if h >= 12 else "a.m."
+                h = h % 12 or 12
+                time_fmt = f"{h:02d}.{t.minute:02d}.{t.second:02d} {ampm}"
+            except Exception:
+                time_fmt = issue_time
+
+        status_display = status or "issued"
+        if status_display == "issued":
+            status_display = "Emitida"
+        status_display = status_display.capitalize()
+
+        # Company info
+        co_name = company.get("business_name", "") if company else ""
+        co_rif = company.get("rif", "") if company else ""
+        co_address = company.get("fiscal_address", "") if company else ""
+        co_phone = company.get("phone", "") if company else ""
+        co_html = ""
+        if co_name:
+            phone_p = "Tel: " + co_phone if co_phone else ""
+            co_html = (
+                '<div class="co">'
+                f'<p class="fw600">{co_name} \u2014 RIF: {co_rif}</p>'
+                f"<p>{co_address}</p>"
+                f"<p>{phone_p}</p>"
+                "</div>"
+            )
+
+        # Client name fallback
+        display_client_name = client_name or "Cliente"
+        display_client_doc = client_doc or "N/A"
+
+        # Line items
         items_html = ""
         for item in items:
             desc = item.get("description", "")
             qty = item.get("quantity", 1)
             price = item.get("unit_price", "0.00")
-            total = item.get("line_total", "0.00")
-            items_html += (
-                f"<tr>"
-                f'<td style="padding: 8px; border-bottom: 1px solid #ddd;">{desc}</td>'
-                f'<td style="padding: 8px; border-bottom: 1px solid #ddd; '
-                f'text-align: center;">{qty}</td>'
-                f'<td style="padding: 8px; border-bottom: 1px solid #ddd; '
-                f'text-align: right;">Bs. {price}</td>'
-                f'<td style="padding: 8px; border-bottom: 1px solid #ddd; '
-                f'text-align: right;">Bs. {total}</td>'
-                f"</tr>"
+            line_total = item.get("line_total", "0.00")
+            tax_rate = item.get("tax_rate")
+            is_exempt = item.get("is_exempt")
+            ex = ' <span class="op75">(E)</span>' if is_exempt else ""
+            rate_val = f"{float(tax_rate):,.2f}%" if tax_rate else "16%"
+            items_html += "<tr>"
+            items_html += f'<td class="tl">{desc}{ex}</td>'
+            items_html += f'<td class="tc">{qty}</td>'
+            items_html += f'<td class="tr">Bs. {float(price):,.2f}</td>'
+            items_html += f'<td class="tr op75">{rate_val}</td>'
+            items_html += '<td class="tr fw500">'
+            items_html += f"Bs. {float(line_total):,.2f}</td>"
+            items_html += "</tr>"
+
+        # Adjustments
+        adj_html = ""
+        if adjustments and len(adjustments) > 0:
+            adj_rows = ""
+            for adj in adjustments:
+                sign = "-" if adj.get("adjustment_type") == "discount" else ""
+                amt = f"{sign}Bs. {float(adj['amount']):,.2f}"
+                dsc = adj.get("description", "")
+                adj_rows += (
+                    f'<div class="adj-row"><span>{dsc}</span><span class="fw500">{amt}</span></div>'
+                )
+            adj_html = (
+                f'<div class="adj-section"><h4 class="sec-title">Ajustes</h4>{adj_rows}</div>'
+            )
+        else:
+            adj_html = (
+                '<div class="adj-section">'
+                '<h4 class="sec-title">Ajustes</h4>'
+                '<p class="ninguno">Ninguno</p>'
+                "</div>"
             )
 
-        download_button = ""
+        # Totals
+        sub_val = f"Bs. {float(subtotal):,.2f}" if subtotal else ""
+        tax_val = f"Bs. {float(tax_total):,.2f}" if tax_total else ""
+        disc_html = ""
+        if discount_total and float(discount_total) > 0:
+            disc_html = (
+                '<div class="tot-row">'
+                '<span class="op75">Descuentos</span>'
+                f'<span class="green">-Bs. {float(discount_total):,.2f}</span>'
+                "</div>"
+            )
+        total_val = f"Bs. {float(total):,.2f}"
+        totals_html = (
+            '<div class="totals-sec">'
+            '<div class="tot-row">'
+            '<span class="op75">Base Imponible</span>'
+            f'<span class="fw500">{sub_val}</span>'
+            "</div>"
+            '<div class="tot-row">'
+            '<span class="op75">IVA</span>'
+            f'<span class="fw500">{tax_val}</span>'
+            "</div>"
+            f"{disc_html}"
+            '<div class="tot-gr">'
+            '<span class="fw700 primary">Total</span>'
+            f'<span class="total-amount">{total_val}</span>'
+            "</div>"
+            "</div>"
+        )
+
+        # Payments
+        pay_html = ""
+        if payments and len(payments) > 0:
+            pay_rows = ""
+            for p in payments:
+                mt = (p.get("method_type", "Pago") or "Pago").replace("_", " ")
+                ci = ""
+                if p.get("card_brand"):
+                    last4 = p.get("card_last4", "")
+                    ci = f" \u2014 {p['card_brand']} ****{last4}"
+                bg = "#dcfce7" if p.get("status") == "completed" else "#fef9c3"
+                clr = "#15803d" if p.get("status") == "completed" else "#a16207"
+                amt = f"Bs. {float(p.get('amount', 0)):,.2f}"
+                st = p.get("status", "")
+                pay_rows += (
+                    '<div class="pay-row">'
+                    f'<span class="fw700">{mt}'
+                    f'<span class="fw600 op80">{ci}</span></span>'
+                    '<div class="pay-right">'
+                    f'<span class="fw700">{amt}</span>'
+                    f'<span class="badge" style="background:{bg};'
+                    f'color:{clr};">{st}</span>'
+                    "</div></div>"
+                )
+            pay_html = (
+                '<div class="pay-section">'
+                '<h3 class="sec-title">Desglose de Pagos</h3>'
+                f"{pay_rows}"
+                "</div>"
+            )
+
+        # Printer info
+        prn_html = ""
+        if printer_info:
+            prn_name = printer_info.get("business_name", "Imprenta")
+            prn_rif = printer_info.get("rif", "N/A")
+            prn_prov = printer_info.get("authorization_providence", "N/A")
+            prn_html = (
+                '<div class="printer-sec">'
+                f"<p>{prn_name} | RIF: {prn_rif}</p>"
+                f"<p>Providencia Administrativa: {prn_prov}</p>"
+                "</div>"
+            )
+
+        # Control range
+        range_html = ""
+        if control_range:
+            s = control_range.get("start_number", "").zfill(12)
+            e = control_range.get("end_number", "").zfill(12)
+            ad = control_range.get("assigned_date", "")
+            range_html = (
+                '<div class="range-sec">'
+                '<p class="fw500">Rango de N\u00fameros'
+                f" de Control: desde el N\u00b0 {s}"
+                f" hasta el N\u00b0 {e}</p>"
+                f"<p>Fecha de asignaci\u00f3n: {ad}</p>"
+                "</div>"
+            )
+
+        # Download button
+        download_html = ""
         if download_url:
-            download_button = f"""
-            <div style="margin-top: 30px; text-align: center;">
-                <a href="{download_url}"
-                   style="background-color: #4CAF50; color: white; padding: 14px 20px;
-                          text-decoration: none; border-radius: 4px; display: inline-block;">
-                    Download PDF Invoice
-                </a>
-            </div>
-            """
+            download_html = (
+                '<div class="dl-sec">'
+                f'<a href="{download_url}" class="dl-btn">'
+                "Descargar Factura PDF</a>"
+                "</div>"
+            )
 
-        html_content = f"""
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <style>
-                body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
-                .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
-                .header {{ background-color: #4CAF50; color: white; padding: 20px;
-                           text-align: center; }}
-                .content {{ padding: 20px; background-color: #f9f9f9; }}
-                .invoice-details {{ background-color: white; padding: 20px; margin: 20px 0;
-                                   border-radius: 4px; }}
-                table {{ width: 100%; border-collapse: collapse; margin: 20px 0; }}
-                th {{ background-color: #4CAF50; color: white; padding: 10px; text-align: left; }}
-                .total {{ font-size: 18px; font-weight: bold; text-align: right;
-                         margin-top: 20px; }}
-                .footer {{ text-align: center; padding: 20px; color: #666; font-size: 12px; }}
-            </style>
-        </head>
-        <body>
-            <div class="container">
-                <div class="header">
-                    <h1>Codyn Academy</h1>
-                    <p>Invoice {invoice_number}</p>
-                </div>
+        # Fiscal address
+        fiscal_addr_html = ""
+        if client_address:
+            fiscal_addr_html = (
+                '<div class="fiscal-sec">'
+                '<p class="op75">Domicilio Fiscal</p>'
+                f'<p class="fw500">{client_address}</p>'
+                "</div>"
+            )
 
-                <div class="content">
-                    <p>Dear Customer,</p>
-                    <p>Thank you for your purchase! Please find your invoice details below.</p>
+        subject = f"Factura {invoice_number} - {co_name or 'Beautylab'}"
 
-                    <div class="invoice-details">
-                        <p><strong>Invoice Number:</strong> {invoice_number}</p>
-                        <p><strong>Issue Date:</strong> {issue_date}</p>
+        # Build the time column separately
+        time_col = ""
+        if time_fmt:
+            time_col = (
+                "<div>"
+                '<p class="label">Hora de Emisi\u00f3n</p>'
+                f'<p class="fw500">{time_fmt}</p>'
+                "</div>"
+            )
 
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Description</th>
-                                    <th style="text-align: center;">Qty</th>
-                                    <th style="text-align: right;">Price</th>
-                                    <th style="text-align: right;">Total</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {items_html}
-                            </tbody>
-                        </table>
+        # Build table header separately
+        tbl_hdr = (
+            "<thead><tr>"
+            "<th>Descripci\u00f3n</th>"
+            "<th>Cant.</th>"
+            "<th>Precio Unit.</th>"
+            "<th>Al\u00edcuota</th>"
+            "<th>Total</th>"
+            "</tr></thead>"
+        )
 
-                        <div class="total">
-                            Total: Bs. {total}
-                        </div>
-                    </div>
+        table_block = ""
+        if items_html:
+            table_block = f"<table>{tbl_hdr}<tbody>{items_html}</tbody></table>"
 
-                    {download_button}
+        html_content = (
+            "<!DOCTYPE html>\n<html>\n<head>\n"
+            '<meta charset="utf-8">\n'
+            "<style>\n"
+            "body { font-family: Roboto, Arial, sans-serif;\n"
+            "  font-size: 16px; color: #1A1A1A;\n"
+            "  line-height: 1.5; margin: 0; padding: 0;\n"
+            "  background-color: #FBFBFE; }\n"
+            ".email-wrapper { max-width: 680px;\n"
+            "  margin: 0 auto; padding: 32px; }\n"
+            ".invoice-content { background-color: #EEEEF0;\n"
+            "  border: 1px solid #DDDDDD;\n"
+            "  border-radius: 12px; padding: 32px; }\n"
+            ".hdr { border-bottom: 2px solid #DDDDDD;\n"
+            "  padding-bottom: 24px; margin-bottom: 24px; }\n"
+            ".hdr-top { display: flex;\n"
+            "  justify-content: space-between;\n"
+            "  align-items: flex-start; }\n"
+            ".co { text-align: right; }\n"
+            ".co p { margin: 0; }\n"
+            ".info-grid { display: flex; gap: 16px;\n"
+            "  background-color: #EEEEF0;\n"
+            "  padding: 16px; border-radius: 8px; }\n"
+            ".info-grid > div { flex: 1; min-width: 0; }\n"
+            ".info-grid p { margin: 0; }\n"
+            ".label { font-size: 16px; color: #1A1A1A;\n"
+            "  opacity: 0.75; text-transform: uppercase; }\n"
+            ".client-card { background-color: #EEEEF0;\n"
+            "  border: 1px solid #DDDDDD;\n"
+            "  border-radius: 8px; padding: 16px;\n"
+            "  margin-bottom: 24px; margin-top: 24px; }\n"
+            ".client-grid { display: flex; gap: 16px; }\n"
+            ".client-grid > div { flex: 1; }\n"
+            "table { width: 100%; border-collapse: collapse;\n"
+            "  margin-bottom: 24px; }\n"
+            "th { text-transform: uppercase; font-size: 16px;\n"
+            "  color: #1A1A1A;\n"
+            "  border-bottom: 2px solid #DDDDDD;\n"
+            "  padding: 12px 8px; text-align: left;\n"
+            "  font-weight: 600; opacity: 0.75; }\n"
+            "td { padding: 12px 8px;\n"
+            "  border-bottom: 1px solid #DDDDDD; }\n"
+            ".tl { text-align: left; }\n"
+            ".tc { text-align: center; }\n"
+            ".tr { text-align: right; }\n"
+            ".totals-row { display: flex; gap: 24px;\n"
+            "  margin-bottom: 24px; }\n"
+            ".adj-section { flex: 1; }\n"
+            ".adj-row { display: flex;\n"
+            "  justify-content: space-between;\n"
+            "  padding: 8px 0; }\n"
+            ".ninguno { opacity: 0.5; padding: 8px 0; }\n"
+            ".totals-sec { margin-left: auto; width: 280px; }\n"
+            ".tot-row { display: flex;\n"
+            "  justify-content: space-between;\n"
+            "  padding: 8px 0;\n"
+            "  border-bottom: 1px solid #DDDDDD; }\n"
+            ".tot-gr { display: flex;\n"
+            "  justify-content: space-between;\n"
+            "  padding: 12px 16px;\n"
+            "  border-radius: 8px; margin-top: 8px;\n"
+            "  background-color: rgba(248,58,58,0.1); }\n"
+            ".total-amount { font-family: Roboto, sans-serif;\n"
+            "  font-size: 27.68px; color: #F83A3A;\n"
+            "  font-weight: 700; }\n"
+            ".green { color: #16a34a; }\n"
+            ".primary { color: #F83A3A; }\n"
+            ".pay-section { margin-top: 24px;\n"
+            "  padding-top: 24px;\n"
+            "  border-top: 1px solid #DDDDDD; }\n"
+            ".pay-row { display: flex;\n"
+            "  justify-content: space-between;\n"
+            "  align-items: center;\n"
+            "  padding: 12px 16px;\n"
+            "  border-radius: 8px; margin-bottom: 8px;\n"
+            "  background-color: #EEEEF0;\n"
+            "  border: 1px solid #DDDDDD; }\n"
+            ".pay-right { display: flex;\n"
+            "  align-items: center; gap: 12px; }\n"
+            ".badge { padding: 2px 8px;\n"
+            "  border-radius: 999px; font-size: 12px;\n"
+            "  font-weight: 500; }\n"
+            ".printer-sec { margin-top: 24px;\n"
+            "  padding-top: 24px;\n"
+            "  border-top: 2px solid #DDDDDD; }\n"
+            ".range-sec { text-align: right;\n"
+            "  margin-top: 24px; padding-top: 24px;\n"
+            "  border-top: 2px solid #DDDDDD; }\n"
+            ".dl-sec { margin-top: 32px;\n"
+            "  text-align: center; }\n"
+            ".dl-btn { background-color: #F83A3A;\n"
+            "  color: #FFFFFF; padding: 14px 28px;\n"
+            "  text-decoration: none; border-radius: 8px;\n"
+            "  display: inline-block;\n"
+            "  font-family: Roboto, sans-serif;\n"
+            "  font-size: 16px; font-weight: 600; }\n"
+            ".fiscal-sec { margin-top: 12px; }\n"
+            ".sec-title { font-family: Roboto, sans-serif;\n"
+            "  font-size: 16px; color: #1A1A1A;\n"
+            "  font-weight: 600;\n"
+            "  text-transform: uppercase;\n"
+            "  opacity: 0.75; margin: 0 0 12px; }\n"
+            "h1 { font-family: Roboto, sans-serif;\n"
+            "  font-size: 39.87px; color: #F83A3A;\n"
+            "  font-weight: 700; margin: 0; }\n"
+            "h3 { font-family: Roboto, sans-serif;\n"
+            "  font-size: 27.68px; color: #D73359;\n"
+            "  font-weight: 600; margin: 0 0 16px; }\n"
+            "h4 { font-family: Roboto, sans-serif;\n"
+            "  font-size: 23.04px; color: #8F1D1D;\n"
+            "  font-weight: 600; margin: 0 0 8px; }\n"
+            ".fw700 { font-weight: 700; }\n"
+            ".fw600 { font-weight: 600; }\n"
+            ".fw500 { font-weight: 500; }\n"
+            ".op75 { opacity: 0.75; }\n"
+            ".op80 { opacity: 0.8; }\n"
+            "p { margin: 0; font-size: 16px;\n"
+            "  color: #1A1A1A; }\n"
+            ".footer { margin-top: 32px;\n"
+            "  padding-top: 16px;\n"
+            "  border-top: 1px solid #DDDDDD;\n"
+            "  text-align: center; font-size: 12px;\n"
+            "  color: #999; }\n"
+            "</style>\n</head>\n<body>\n"
+            '<div class="email-wrapper">\n'
+            "<p>Estimado cliente,</p>\n"
+            "<p>Gracias por su compra. A continuaci\u00f3n "
+            "encontrar\u00e1 el detalle de su factura.</p>\n"
+            '\n<div class="invoice-content">\n'
+            '<div class="hdr">\n'
+            '<div class="hdr-top">\n'
+            "<div>\n"
+            "<h1>FACTURA</h1>\n"
+            f'<p class="op75" style="margin:4px 0 0;">'
+            f"N\u00b0 {invoice_number}</p>\n"
+            "</div>\n"
+            f"{co_html}"
+            "</div>\n</div>\n"
+            '\n<div class="info-grid">\n'
+            "<div>\n"
+            '<p class="label">N\u00b0 Control</p>\n'
+            f'<p class="fw500" style="font-family:monospace;">'
+            f"{control_number or 'N/A'}</p>\n"
+            "</div>\n"
+            "<div>\n"
+            '<p class="label">Fecha de Emisi\u00f3n</p>\n'
+            f'<p class="fw500">{date_fmt}</p>\n'
+            "</div>\n"
+            f"{time_col}"
+            '<div style="text-align:right;">\n'
+            '<p class="label">Estado</p>\n'
+            '<span class="status-badge">'
+            f"{status_display}</span>\n"
+            "</div>\n</div>\n"
+            '\n<div class="client-card">\n'
+            '<h3 class="sec-title">Datos del Cliente</h3>\n'
+            '<div class="client-grid">\n'
+            "<div>\n"
+            '<p class="op75">Nombre / Raz\u00f3n Social</p>\n'
+            f'<p class="fw500">{display_client_name}</p>\n'
+            "</div>\n"
+            "<div>\n"
+            '<p class="op75">RIF / C\u00e9dula / Pasaporte</p>\n'
+            f'<p class="fw500">{display_client_doc}</p>\n'
+            "</div>\n</div>\n"
+            f"{fiscal_addr_html}"
+            "</div>\n"
+            f"\n{table_block}\n"
+            '\n<div class="totals-row">\n'
+            '<div class="adj-section">'
+            f"{adj_html}</div>\n"
+            f"{totals_html}"
+            "</div>\n"
+            f"{pay_html}{prn_html}{range_html}"
+            f"{download_html}"
+            "\n</div>\n"
+            '\n<div class="footer">\n'
+            f"<p>\u00a9 2026 {co_name or 'Beautylab'}."
+            " Todos los derechos reservados.</p>\n"
+            "<p>\u00bfNecesita ayuda? Cont\u00e1ctenos en "
+            f"{settings.support_email}</p>\n"
+            "</div>\n</div>\n</body>\n</html>"
+        )
 
-                    <p>If you have any questions, please don't hesitate to contact us.</p>
+        sub_text = f"Bs. {float(subtotal):,.2f}" if subtotal else "N/A"
+        tax_text = f"Bs. {float(tax_total):,.2f}" if tax_total else "N/A"
+        dl_text = f"Descargar PDF: {download_url}" if download_url else ""
 
-                    <p>Best regards,<br>The Codyn Academy Team</p>
-                </div>
-
-                <div class="footer">
-                    <p>&copy; 2026 Codyn Academy. All rights reserved.</p>
-                </div>
-            </div>
-        </body>
-        </html>
-        """
-
-        text_content = f"""
-        Invoice {invoice_number}
-
-        Issue Date: {issue_date}
-
-        Items:
-        {self._format_items_text(items)}
-
-        Total: Bs. {total}
-
-        Thank you for your purchase!
-
-        Best regards,
-        The Codyn Academy Team
-        """
+        text_content = (
+            f"Factura {invoice_number}\n"
+            f"Fecha: {date_display}\n"
+            f"N\u00b0 Control: {control_number or 'N/A'}\n"
+            f"Estado: {status_display}\n\n"
+            f"Cliente: {display_client_name}\n"
+            f"RIF/C\u00e9dula: {display_client_doc}\n\n"
+            f"Detalle:\n{self._format_items_text(items)}\n\n"
+            f"Base Imponible: {sub_text}\n"
+            f"IVA: {tax_text}\n"
+            f"Total: Bs. {float(total):,.2f}\n\n"
+            f"{dl_text}\n\n"
+            "Gracias por su compra.\n"
+            f"Beautylab - {settings.support_email}"
+        )
 
         return self.send_email(
             to_email=to_email,

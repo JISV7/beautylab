@@ -41,6 +41,11 @@ export function InvoiceDetail({ invoice, onBack, onPrint }: InvoiceDetailProps) 
                     button, .theme-button { display: none !important; }
                     .invoice-content, .invoice-content * { visibility: visible !important; }
                     .invoice-content { border: none !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; max-width: none !important; }
+                    .print\\:flex-row { display: flex !important; flex-direction: row !important; }
+                    .print\\:w-1\\/2 { width: 50% !important; }
+                    .print\\:w-80 { width: 20rem !important; }
+                    .print\\:ml-auto { margin-left: auto !important; }
+                    .print\\:grid-cols-2 { display: grid !important; grid-template-columns: 1fr 1fr !important; }
                 }
             `}</style>
             <div className="max-w-6xl mx-auto">
@@ -159,58 +164,27 @@ export function InvoiceDetail({ invoice, onBack, onPrint }: InvoiceDetailProps) 
                     )}
 
                     {/* Art. 10-13: Adjustments + Totals */}
-                    {(invoice.adjustments && invoice.adjustments.length > 0) || invoice.subtotal ? (
-                        <div className="flex flex-col lg:flex-row gap-6 mb-6">
+                    {invoice.subtotal && (
+                        <div className="flex flex-col lg:flex-row gap-6 mb-6 print:flex-row">
                             {/* Adjustments */}
-                            {invoice.adjustments && invoice.adjustments.length > 0 && (
-                                <div className="flex-1">
-                                    <h4 className="font-semibold text-paragraph opacity-75 uppercase mb-2">Ajustes</h4>
-                                    {invoice.adjustments.map((adj) => (
+                            <div className="flex-1 print:w-1/2">
+                                <h4 className="font-semibold text-paragraph opacity-75 uppercase mb-2">Ajustes</h4>
+                                {invoice.adjustments && invoice.adjustments.length > 0 ? (
+                                    invoice.adjustments.map((adj) => (
                                         <div key={adj.id} className="py-2">
                                             <p className="text-paragraph">{adj.description}</p>
                                             <p className="font-medium text-paragraph">
                                                 {adj.adjustment_type === 'discount' ? '-' : ''}Bs. {parseFloat(adj.amount).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                             </p>
                                         </div>
-                                    ))}
-                                </div>
-                            )}
+                                    ))
+                                ) : (
+                                    <p className="text-paragraph opacity-50 py-2">Ninguno</p>
+                                )}
+                            </div>
 
                             {/* Totals */}
-                            {invoice.subtotal && (
-                                <div className="w-full sm:w-80">
-                                    <div className="flex items-center justify-between py-2 border-b palette-border">
-                                        <span className="text-paragraph opacity-75">Base Imponible</span>
-                                        <span className="font-medium text-paragraph">
-                                            Bs. {parseFloat(invoice.subtotal).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                                        </span>
-                                    </div>
-                                    {invoice.discount_total && parseFloat(invoice.discount_total) > 0 && (
-                                        <div className="flex items-center justify-between py-2 border-b palette-border">
-                                            <span className="text-paragraph opacity-75">Descuentos</span>
-                                            <span className="font-medium text-green-600">
-                                                -Bs. {parseFloat(invoice.discount_total).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                                            </span>
-                                        </div>
-                                    )}
-                                    <div className="flex items-center justify-between py-2 border-b palette-border">
-                                        <span className="text-paragraph opacity-75">IVA</span>
-                                        <span className="font-medium text-paragraph">
-                                            Bs. {parseFloat(invoice.tax_total).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                                        </span>
-                                    </div>
-                                    <div className="flex items-center justify-between py-3 px-3 rounded-lg mt-2 bg-primary/10">
-                                        <span className="font-bold text-primary">Total</span>
-                                        <span className="text-h3 font-bold text-primary">
-                                            Bs. {parseFloat(invoice.total).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                                        </span>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    ) : (
-                        <div className="flex justify-end mb-6">
-                            <div className="w-full sm:w-80">
+                            <div className="w-full sm:w-80 print:w-80 print:ml-auto">
                                 <div className="flex items-center justify-between py-2 border-b palette-border">
                                     <span className="text-paragraph opacity-75">Base Imponible</span>
                                     <span className="font-medium text-paragraph">
@@ -273,7 +247,7 @@ export function InvoiceDetail({ invoice, onBack, onPrint }: InvoiceDetailProps) 
 
                     {/* Art. 14: Imprenta + Control Number Range */}
                     {(invoice.control_number_range?.printer || invoice.control_number_range) && (
-                        <div className="mt-6 pt-6 border-t palette-border grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="mt-6 pt-6 border-t palette-border grid grid-cols-1 md:grid-cols-2 gap-6 print:grid-cols-2">
                             {/* Left: Imprenta Digital Autorizada */}
                             {invoice.control_number_range?.printer && (
                                 <div>

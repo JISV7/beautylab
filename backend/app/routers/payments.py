@@ -254,15 +254,104 @@ async def process_split_payment(
 
         if receipt_data:
             user_email = current_user.email
+
+            # Build line items with tax_rate and is_exempt
             invoice_items = [
                 {
                     "description": line.description,
                     "quantity": int(line.quantity),
                     "unit_price": str(line.unit_price),
                     "line_total": str(line.line_total),
+                    "tax_rate": line.tax_rate
+                    if hasattr(line, "tax_rate") and line.tax_rate
+                    else None,
+                    "is_exempt": line.is_exempt if hasattr(line, "is_exempt") else False,
                 }
                 for line in invoice.lines
             ]
+
+            # Build company info
+            company_info = None
+            if invoice.company_info_id:
+                from app.models.company_info import CompanyInfo
+
+                co_result = await db.execute(
+                    select(CompanyInfo).where(CompanyInfo.id == invoice.company_info_id)
+                )
+                co = co_result.scalar_one_or_none()
+                if co:
+                    company_info = {
+                        "business_name": co.business_name,
+                        "rif": co.rif,
+                        "fiscal_address": co.fiscal_address,
+                        "phone": co.phone,
+                    }
+
+            # Build payments info
+            payments_info = []
+            for p in payments:
+                payment_info = {
+                    "method_type": p.method_type,
+                    "amount": str(p.amount),
+                    "status": p.status,
+                }
+                if hasattr(p, "details") and p.details:
+                    if hasattr(p.details, "card_brand"):
+                        payment_info["card_brand"] = p.details.card_brand
+                    if hasattr(p.details, "card_number_last4"):
+                        payment_info["card_last4"] = p.details.card_number_last4
+                payments_info.append(payment_info)
+
+            # Build adjustments info
+            adjustments_info = []
+            from app.models.invoice import InvoiceAdjustment
+
+            adj_result = await db.execute(
+                select(InvoiceAdjustment).where(InvoiceAdjustment.invoice_id == invoice.id)
+            )
+            for adj in adj_result.scalars().all():
+                adjustments_info.append(
+                    {
+                        "description": adj.description,
+                        "amount": str(adj.amount),
+                        "adjustment_type": "discount" if adj.amount < 0 else "other",
+                    }
+                )
+
+            # Build control range info
+            control_range_info = None
+            from app.models.invoice import ControlNumberRange
+
+            cnr_result = await db.execute(
+                select(ControlNumberRange).where(
+                    ControlNumberRange.id == invoice.control_number_range_id
+                )
+            )
+            cnr = cnr_result.scalar_one_or_none()
+            if cnr:
+                control_range_info = {
+                    "start_number": cnr.start_number,
+                    "end_number": cnr.end_number,
+                    "assigned_date": cnr.assigned_date.isoformat() if cnr.assigned_date else "",
+                }
+
+            # Determine client name and doc
+            client_name_val = invoice.client_business_name
+            if (
+                not client_name_val
+                and invoice.client_document_type
+                and invoice.client_document_number
+            ):
+                client_name_val = f"{invoice.client_document_type}-{invoice.client_document_number}"
+            elif not client_name_val:
+                client_name_val = None
+
+            client_doc_val = None
+            if invoice.client_document_type and invoice.client_document_number:
+                client_doc_val = f"{invoice.client_document_type}-{invoice.client_document_number}"
+            elif invoice.client_rif:
+                client_doc_val = invoice.client_rif
+
             success = email_service.send_invoice_email(
                 to_email=user_email,
                 invoice_number=invoice.invoice_number,
@@ -270,6 +359,19 @@ async def process_split_payment(
                 issue_date=invoice.issue_date.isoformat(),
                 items=invoice_items,
                 download_url=f"https://beautylab.com/invoices/{invoice.id}/download",
+                control_number=invoice.control_number,
+                issue_time=invoice.issue_time.isoformat() if invoice.issue_time else None,
+                status=invoice.status,
+                company=company_info,
+                client_name=client_name_val,
+                client_doc=client_doc_val,
+                client_address=invoice.client_fiscal_address,
+                subtotal=str(invoice.subtotal),
+                tax_total=str(invoice.tax_total),
+                discount_total=str(invoice.discount_total) if invoice.discount_total else None,
+                adjustments=adjustments_info if adjustments_info else None,
+                payments=payments_info if payments_info else None,
+                control_range=control_range_info,
             )
             if not success:
                 email_sent = False

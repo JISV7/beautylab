@@ -37,65 +37,65 @@ export function InvoiceControls({
                 </div>
             )}
 
-            <div className="flex flex-wrap gap-4 items-center">
-                <button
-                    onClick={onDownloadAll}
-                    disabled={downloadingAll}
-                    className="theme-button theme-button-primary inline-flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                    {downloadingAll ? (
-                        <>
-                            <Loader2 className="w-4 h-4 animate-spin" />
-                            Generating ZIP...
-                        </>
-                    ) : (
-                        <>
-                            <Download className="w-4 h-4" />
-                            Download All (PDF)
-                        </>
-                    )}
-                </button>
+            <div className="space-y-3">
+                <div className="flex items-center palette-surface palette-border border rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-palette-primary">
+                    <Search className="w-4 h-4 text-paragraph flex-shrink-0 ml-3" />
+                    <input
+                        type="text"
+                        placeholder="Search by invoice #, control #, RIF..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="flex-1 min-w-0 py-2.5 pl-2 pr-4 bg-transparent text-paragraph placeholder:text-paragraph placeholder:opacity-60 focus:outline-none"
+                    />
+                </div>
 
-                <div className="flex-1 min-w-64">
-                    <div className="flex items-center palette-surface palette-border border rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-palette-primary">
-                        <Search className="w-4 h-4 text-paragraph flex-shrink-0 ml-3" />
-                        <input
-                            type="text"
-                            placeholder="Search by invoice #, control #, RIF..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="flex-1 min-w-0 py-2 pl-2 pr-4 bg-transparent text-paragraph placeholder:text-paragraph placeholder:opacity-60 focus:outline-none"
-                        />
+                <div className="flex flex-wrap gap-3 items-center">
+                    <button
+                        onClick={onDownloadAll}
+                        disabled={downloadingAll}
+                        className="theme-button theme-button-primary inline-flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        {downloadingAll ? (
+                            <>
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                                Generating ZIP...
+                            </>
+                        ) : (
+                            <>
+                                <Download className="w-4 h-4" />
+                                Download All (PDF)
+                            </>
+                        )}
+                    </button>
+
+                    <div className="flex items-center gap-2">
+                        <Filter className="w-4 h-4 text-paragraph opacity-50" />
+                        <select
+                            value={statusFilter}
+                            onChange={(e) => setStatusFilter(e.target.value)}
+                            className="theme-input !py-2 !px-3"
+                        >
+                            <option value="all">All Status</option>
+                            <option value="issued">Issued</option>
+                            <option value="paid">Paid</option>
+                            <option value="partial">Partial</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
                     </div>
-                </div>
 
-                <div className="flex items-center gap-2">
-                    <Filter className="w-5 h-5 text-paragraph opacity-50" />
-                    <select
-                        value={statusFilter}
-                        onChange={(e) => setStatusFilter(e.target.value)}
-                        className="theme-input min-w-32"
-                    >
-                        <option value="all">All Status</option>
-                        <option value="issued">Issued</option>
-                        <option value="paid">Paid</option>
-                        <option value="partial">Partial</option>
-                        <option value="cancelled">Cancelled</option>
-                    </select>
-                </div>
-
-                <div className="flex items-center gap-2">
-                    <span className="text-sm text-paragraph opacity-75 whitespace-nowrap">Rows:</span>
-                    <select
-                        value={pageSize}
-                        onChange={(e) => onPageSizeChange(Number(e.target.value))}
-                        className="theme-input min-w-20"
-                    >
-                        <option value={5}>5</option>
-                        <option value={10}>10</option>
-                        <option value={25}>25</option>
-                        <option value={50}>50</option>
-                    </select>
+                    <div className="flex items-center gap-2">
+                        <span className="text-paragraph opacity-60">Rows:</span>
+                        <select
+                            value={pageSize}
+                            onChange={(e) => onPageSizeChange(Number(e.target.value))}
+                            className="theme-input !py-2 !px-3 !min-w-[60px]"
+                        >
+                            <option value={5}>5</option>
+                            <option value={10}>10</option>
+                            <option value={25}>25</option>
+                            <option value={50}>50</option>
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>

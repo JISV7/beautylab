@@ -154,6 +154,7 @@ export default function InvoicesPage() {
                             currentPage={currentPage}
                             totalPages={totalPages}
                             onPageChange={handlePageChange}
+                            totalItems={filteredAndSortedInvoices.length}
                         />
                     </div>
                 </main>

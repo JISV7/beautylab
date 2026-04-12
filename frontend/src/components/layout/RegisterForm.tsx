@@ -362,6 +362,26 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
               I am a VAT contributor (require invoice with RIF)
             </label>
           </div>
+
+          {isContributor && (
+            <div>
+              <label className="text-paragraph block mb-1.5">
+                Business Name / Razón Social *
+              </label>
+              <div className="relative">
+                <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5" />
+                <input
+                  type="text"
+                  required
+                  value={businessName}
+                  onChange={(e) => setBusinessName(e.target.value)}
+                  className="auth-input w-full py-2.5 px-4 pl-11 rounded-lg"
+                  placeholder="Empresa C.A. / Your full name if individual"
+                  disabled={isLoading}
+                />
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Password Section */}

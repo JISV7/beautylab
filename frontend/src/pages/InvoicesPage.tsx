@@ -15,7 +15,6 @@ export default function InvoicesPage() {
     const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
-    const [totalPages, setTotalPages] = useState(1);
     const [summary, setSummary] = useState<InvoiceSummary | null>(null);
     const [downloadingAll, setDownloadingAll] = useState(false);
     const [downloadError, setDownloadError] = useState<string | null>(null);
@@ -24,12 +23,16 @@ export default function InvoicesPage() {
     const [sortColumn, setSortColumn] = useState<SortableColumn>('issue_date');
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
 
+    // Reset to page 1 when filters change
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchTerm, statusFilter]);
+
     useEffect(() => {
         fetchSummary().then(setSummary);
         fetchInvoices(currentPage, pageSize).then((res) => {
             if (res) {
                 setInvoices(res.invoices);
-                setTotalPages(res.totalPages);
                 setCurrentPage(res.page);
             }
             setLoading(false);
@@ -41,7 +44,6 @@ export default function InvoicesPage() {
         const res = await fetchInvoices(page, pageSize);
         if (res) {
             setInvoices(res.invoices);
-            setTotalPages(res.totalPages);
             setCurrentPage(res.page);
         }
         setLoading(false);
@@ -111,7 +113,7 @@ export default function InvoicesPage() {
     }
 
     return (
-        <div className="flex h-screen palette-background text-paragraph print:block print:h-auto">
+        <div className="palette-background text-paragraph print:block">
             {selectedInvoice ? (
                 <InvoiceDetail
                     invoice={selectedInvoice}
@@ -119,7 +121,7 @@ export default function InvoicesPage() {
                     onPrint={() => window.print()}
                 />
             ) : (
-                <main className="flex-1 p-8 overflow-auto print:p-0 print:overflow-visible">
+                <main className="p-8 print:p-0 print:overflow-visible">
                     <div className="max-w-7xl mx-auto">
                         <h1 className="text-h1 font-bold mb-1">My Invoices</h1>
                         <p className="text-paragraph mb-6">View, search, and download all your purchase invoices.</p>
@@ -152,7 +154,7 @@ export default function InvoicesPage() {
 
                         <InvoicePagination
                             currentPage={currentPage}
-                            totalPages={totalPages}
+                            totalPages={Math.max(1, Math.ceil(filteredAndSortedInvoices.length / pageSize))}
                             onPageChange={handlePageChange}
                             totalItems={filteredAndSortedInvoices.length}
                         />

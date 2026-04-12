@@ -32,7 +32,7 @@ export function InvoiceDetail({ invoice, onBack, onPrint }: InvoiceDetailProps) 
     };
 
     return (
-        <main className="flex-1 p-8 overflow-auto print:p-0 print:overflow-visible">
+        <main className="p-8 print:p-0 print:overflow-visible">
             <style>{`
                 @media print {
                     aside, header, nav { display: none !important; }
@@ -57,58 +57,42 @@ export function InvoiceDetail({ invoice, onBack, onPrint }: InvoiceDetailProps) 
 
                 <div className="invoice-content palette-surface palette-border border rounded-xl p-8 print:shadow-none print:border-0 print:p-4">
                     {/* Art. 1-3: FACTURA + Emisor */}
-                    <div className="border-b-2 palette-border pb-6 mb-6">
-                        <div className="flex flex-col sm:flex-row items-start justify-between mb-4 gap-4">
+                    <div className="border-b palette-border pb-6 mb-6">
+                        <div className="flex flex-col sm:flex-row items-start justify-between mb-4 gap-4 print:flex-row print:flex-nowrap print:gap-8">
                             <div>
                                 <h1 className="text-h1 font-bold text-primary">FACTURA</h1>
                                 <p className="text-paragraph opacity-75 mt-1">N° {invoice.invoice_number}</p>
                             </div>
                             {invoice.company && (
                                 <div className="text-right">
-                                    <p className="font-semibold text-paragraph">{invoice.company.business_name}</p>
-                                    <p className="text-paragraph">RIF: {invoice.company.rif}</p>
+                                    <p className="font-semibold text-paragraph">{invoice.company.business_name} — RIF: {invoice.company.rif}</p>
                                     <p className="text-paragraph">{invoice.company.fiscal_address}</p>
                                     {invoice.company.phone && <p className="text-paragraph">Tel: {invoice.company.phone}</p>}
                                 </div>
                             )}
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 palette-surface p-4 rounded-lg">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 palette-surface p-4 rounded-lg print:grid-cols-4 print:gap-2 print:p-2">
                             <div>
-                                <p className="text-paragraph opacity-75 uppercase">N° Control</p>
-                                <p className="font-mono font-medium">{invoice.control_number}</p>
+                                <p className="text-paragraph opacity-75 uppercase whitespace-nowrap">N° Control</p>
+                                <p className="font-mono font-medium whitespace-nowrap">{invoice.control_number}</p>
                             </div>
                             <div>
-                                <p className="text-paragraph opacity-75 uppercase">Fecha de Emisión</p>
-                                <p className="font-medium">{formatDate(invoice.issue_date)}</p>
-                                <p className="text-paragraph opacity-50">({formatDateDisplay(invoice.issue_date)})</p>
+                                <p className="text-paragraph opacity-75 uppercase whitespace-nowrap">Fecha de Emisión</p>
+                                <p className="font-medium whitespace-nowrap">{formatDate(invoice.issue_date)}</p>
                             </div>
                             <div>
-                                <p className="text-paragraph opacity-75 uppercase">Hora de Emisión</p>
-                                <p className="font-medium">{formatTime(invoice.issue_time)}</p>
+                                <p className="text-paragraph opacity-75 uppercase whitespace-nowrap">Hora de Emisión</p>
+                                <p className="font-medium whitespace-nowrap">{formatTime(invoice.issue_time)}</p>
                             </div>
                             <div className="text-right">
-                                <p className="text-paragraph opacity-75 uppercase">Estado</p>
-                                <span className="px-2 py-1 rounded-full font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
+                                <p className="text-paragraph opacity-75 uppercase whitespace-nowrap">Estado</p>
+                                <span className="px-2 py-1 rounded-full font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 whitespace-nowrap">
                                     {invoice.status === 'issued' ? 'Emitida' : invoice.status}
                                 </span>
                             </div>
                         </div>
                     </div>
-
-                    {/* Art. 5 + 15: Control number range */}
-                    {invoice.control_number_range && (
-                        <div className="palette-surface p-3 rounded-lg mb-6">
-                            <p className="text-paragraph opacity-75 uppercase mb-1">Rango de Números de Control Asignados</p>
-                            <p className="font-medium">
-                                Desde el N° {invoice.control_number_range.start_number.padStart(12, '0')}{' '}
-                                hasta el N° {invoice.control_number_range.end_number.padStart(12, '0')}
-                            </p>
-                            <p className="text-paragraph opacity-50 mt-1">
-                                Fecha de asignación: {formatDateDisplay(invoice.control_number_range.assigned_date)}
-                            </p>
-                        </div>
-                    )}
 
                     {/* Art. 7: Client info */}
                     <div className="palette-surface palette-border border rounded-lg p-4 mb-6">
@@ -174,52 +158,88 @@ export function InvoiceDetail({ invoice, onBack, onPrint }: InvoiceDetailProps) 
                         </div>
                     )}
 
-                    {/* Art. 10: Adjustments */}
-                    {invoice.adjustments && invoice.adjustments.length > 0 && (
-                        <div className="mb-6">
-                            <h4 className="font-semibold text-paragraph opacity-75 uppercase mb-2">Ajustes</h4>
-                            {invoice.adjustments.map((adj) => (
-                                <div key={adj.id} className="flex justify-between py-1">
-                                    <span className="text-paragraph">{adj.description}</span>
-                                    <span className="font-medium text-paragraph">
-                                        {adj.adjustment_type === 'discount' ? '-' : ''}Bs. {parseFloat(adj.amount).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                                    </span>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-
-                    {/* Art. 11-13: Totals */}
-                    <div className="flex justify-end mb-6">
-                        <div className="w-full sm:w-80">
-                            <div className="flex items-center justify-between py-2 border-b palette-border">
-                                <span className="text-paragraph opacity-75">Base Imponible</span>
-                                <span className="font-medium text-paragraph">
-                                    Bs. {parseFloat(invoice.subtotal).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                                </span>
-                            </div>
-                            <div className="flex items-center justify-between py-2 border-b palette-border">
-                                <span className="text-paragraph opacity-75">IVA (16%)</span>
-                                <span className="font-medium text-paragraph">
-                                    Bs. {parseFloat(invoice.tax_total).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                                </span>
-                            </div>
-                            {invoice.discount_total && parseFloat(invoice.discount_total) > 0 && (
-                                <div className="flex items-center justify-between py-2 border-b palette-border">
-                                    <span className="text-paragraph opacity-75">Descuentos</span>
-                                    <span className="font-medium text-green-600">
-                                        -Bs. {parseFloat(invoice.discount_total).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                                    </span>
+                    {/* Art. 10-13: Adjustments + Totals */}
+                    {(invoice.adjustments && invoice.adjustments.length > 0) || invoice.subtotal ? (
+                        <div className="flex flex-col lg:flex-row gap-6 mb-6">
+                            {/* Adjustments */}
+                            {invoice.adjustments && invoice.adjustments.length > 0 && (
+                                <div className="flex-1">
+                                    <h4 className="font-semibold text-paragraph opacity-75 uppercase mb-2">Ajustes</h4>
+                                    {invoice.adjustments.map((adj) => (
+                                        <div key={adj.id} className="py-2">
+                                            <p className="text-paragraph">{adj.description}</p>
+                                            <p className="font-medium text-paragraph">
+                                                {adj.adjustment_type === 'discount' ? '-' : ''}Bs. {parseFloat(adj.amount).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                            </p>
+                                        </div>
+                                    ))}
                                 </div>
                             )}
-                            <div className="flex items-center justify-between py-3 px-3 rounded-lg mt-2 bg-primary/10">
-                                <span className="font-bold text-primary">Total</span>
-                                <span className="text-h3 font-bold text-primary">
-                                    Bs. {parseFloat(invoice.total).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                                </span>
+
+                            {/* Totals */}
+                            {invoice.subtotal && (
+                                <div className="w-full sm:w-80">
+                                    <div className="flex items-center justify-between py-2 border-b palette-border">
+                                        <span className="text-paragraph opacity-75">Base Imponible</span>
+                                        <span className="font-medium text-paragraph">
+                                            Bs. {parseFloat(invoice.subtotal).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                        </span>
+                                    </div>
+                                    {invoice.discount_total && parseFloat(invoice.discount_total) > 0 && (
+                                        <div className="flex items-center justify-between py-2 border-b palette-border">
+                                            <span className="text-paragraph opacity-75">Descuentos</span>
+                                            <span className="font-medium text-green-600">
+                                                -Bs. {parseFloat(invoice.discount_total).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                            </span>
+                                        </div>
+                                    )}
+                                    <div className="flex items-center justify-between py-2 border-b palette-border">
+                                        <span className="text-paragraph opacity-75">IVA</span>
+                                        <span className="font-medium text-paragraph">
+                                            Bs. {parseFloat(invoice.tax_total).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                        </span>
+                                    </div>
+                                    <div className="flex items-center justify-between py-3 px-3 rounded-lg mt-2 bg-primary/10">
+                                        <span className="font-bold text-primary">Total</span>
+                                        <span className="text-h3 font-bold text-primary">
+                                            Bs. {parseFloat(invoice.total).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                        </span>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    ) : (
+                        <div className="flex justify-end mb-6">
+                            <div className="w-full sm:w-80">
+                                <div className="flex items-center justify-between py-2 border-b palette-border">
+                                    <span className="text-paragraph opacity-75">Base Imponible</span>
+                                    <span className="font-medium text-paragraph">
+                                        Bs. {parseFloat(invoice.subtotal).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                    </span>
+                                </div>
+                                {invoice.discount_total && parseFloat(invoice.discount_total) > 0 && (
+                                    <div className="flex items-center justify-between py-2 border-b palette-border">
+                                        <span className="text-paragraph opacity-75">Descuentos</span>
+                                        <span className="font-medium text-green-600">
+                                            -Bs. {parseFloat(invoice.discount_total).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                        </span>
+                                    </div>
+                                )}
+                                <div className="flex items-center justify-between py-2 border-b palette-border">
+                                    <span className="text-paragraph opacity-75">IVA</span>
+                                    <span className="font-medium text-paragraph">
+                                        Bs. {parseFloat(invoice.tax_total).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                    </span>
+                                </div>
+                                <div className="flex items-center justify-between py-3 px-3 rounded-lg mt-2 bg-primary/10">
+                                    <span className="font-bold text-primary">Total</span>
+                                    <span className="text-h3 font-bold text-primary">
+                                        Bs. {parseFloat(invoice.total).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                    </span>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    )}
 
                     {/* Payments */}
                     {invoice.payments && invoice.payments.length > 0 && (
@@ -227,30 +247,22 @@ export function InvoiceDetail({ invoice, onBack, onPrint }: InvoiceDetailProps) 
                             <h3 className="font-semibold text-paragraph opacity-75 uppercase mb-4">Desglose de Pagos</h3>
                             <div className="space-y-2">
                                 {invoice.payments.map((payment) => (
-                                    <div key={payment.id} className="flex items-center justify-between py-2 px-4 rounded-lg palette-surface">
-                                        <div>
-                                            <span className="font-medium capitalize text-paragraph">
-                                                {payment.method_type?.replace('_', ' ') || 'Pago'}
-                                            </span>
+                                    <div key={payment.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between py-3 px-4 rounded-lg palette-surface palette-border border">
+                                        <span className="font-bold text-paragraph">
+                                            {payment.method_type?.replace('_', ' ') || 'Pago'}
                                             {payment.card_brand && (
-                                                <span className="text-paragraph opacity-75 block">
-                                                    {payment.card_brand}{payment.card_last4 && ` •••• ${payment.card_last4}`}
-                                                </span>
+                                                <span className="font-semibold text-paragraph opacity-80"> — {payment.card_brand} {payment.card_last4 ? `****${payment.card_last4}` : ''}</span>
                                             )}
-                                            <span className="text-paragraph opacity-50">
-                                                ({formatDateDisplay(payment.created_at)})
-                                            </span>
-                                        </div>
-                                        <div className="flex items-center gap-3">
-                                            <span className="font-medium text-paragraph">
+                                        </span>
+                                        <div className="flex items-center gap-3 mt-2 sm:mt-0">
+                                            <span className="font-bold text-paragraph">
                                                 Bs. {parseFloat(payment.amount).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                             </span>
-                                            <span className={`px-2 py-1 rounded-full font-medium ${
-                                                payment.status === 'completed'
+                                            <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${payment.status === 'completed'
                                                     ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
                                                     : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
-                                            }`}>
-                                                {payment.status === 'completed' ? 'Completado' : payment.status}
+                                                }`}>
+                                                {payment.status === 'completed' ? 'completed' : payment.status}
                                             </span>
                                         </div>
                                     </div>
@@ -259,23 +271,36 @@ export function InvoiceDetail({ invoice, onBack, onPrint }: InvoiceDetailProps) 
                         </div>
                     )}
 
-                    {/* Art. 14: Imprenta */}
-                    {invoice.control_number_range && (
-                        <div className="mt-6 pt-6 border-t palette-border">
-                            <h4 className="font-semibold text-paragraph opacity-75 uppercase mb-2">Imprenta Digital Autorizada</h4>
-                            <p className="text-paragraph">
-                                {invoice.control_number_range.printer?.business_name || 'Imprenta'} |
-                                RIF: {invoice.control_number_range.printer?.rif || 'N/A'}
-                            </p>
-                            <p className="mt-1 text-paragraph">
-                                Providencia Administrativa: {invoice.control_number_range.printer?.authorization_providence || 'N/A'}
-                            </p>
+                    {/* Art. 14: Imprenta + Control Number Range */}
+                    {(invoice.control_number_range?.printer || invoice.control_number_range) && (
+                        <div className="mt-6 pt-6 border-t palette-border grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {/* Left: Imprenta Digital Autorizada */}
+                            {invoice.control_number_range?.printer && (
+                                <div>
+                                    <p className="text-paragraph">
+                                        {invoice.control_number_range.printer.business_name || 'Imprenta'} |
+                                        RIF: {invoice.control_number_range.printer.rif || 'N/A'}
+                                    </p>
+                                    <p className="mt-1 text-paragraph">
+                                        Providencia Administrativa: {invoice.control_number_range.printer.authorization_providence || 'N/A'}
+                                    </p>
+                                </div>
+                            )}
+
+                            {/* Right: Rango de Números de Control */}
+                            {invoice.control_number_range && (
+                                <div className="text-right">
+                                    <p className="font-medium">
+                                        Rango de Números de Control: desde el N° {invoice.control_number_range.start_number.padStart(12, '0')}
+                                        {' '}hasta el N° {invoice.control_number_range.end_number.padStart(12, '0')}
+                                    </p>
+                                    <p className="mt-1">
+                                        Fecha de asignación: {formatDateDisplay(invoice.control_number_range.assigned_date)}
+                                    </p>
+                                </div>
+                            )}
                         </div>
                     )}
-
-                    <div className="mt-8 pt-6 border-t palette-border text-center text-paragraph opacity-60 print:block">
-                        {invoice.company && <p>{invoice.company.business_name} | RIF: {invoice.company.rif}</p>}
-                    </div>
                 </div>
             </div>
         </main>

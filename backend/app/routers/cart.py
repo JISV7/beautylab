@@ -241,7 +241,7 @@ async def checkout(
     invoice_data = InvoiceCreate(
         client_id=current_user.id,
         client_rif=current_user.rif,
-        client_business_name=current_user.business_name,
+        client_business_name=current_user.business_name or current_user.full_name,
         client_document_type=current_user.document_type,
         client_document_number=current_user.document_number,
         client_fiscal_address=current_user.fiscal_address,

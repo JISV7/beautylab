@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
-import { FileText, X, Printer, DollarSign, Receipt, Percent, Search, Filter, ChevronUp, ChevronDown, ChevronsLeft, ChevronsRight, ChevronLeft, ChevronRight, Download, Loader2, AlertTriangle } from 'lucide-react';
+import { FileText, X, Printer, DollarSign, Receipt, Percent, Search, Filter, ChevronDown, ChevronsLeft, ChevronsRight, ChevronLeft, ChevronRight, Download, Loader2, AlertTriangle } from 'lucide-react';
 
 const API_URL = 'http://localhost:8000';
 
@@ -352,9 +352,13 @@ function InvoiceList({
 
     const SortIcon = ({ column }: { column: SortableColumn }) => {
         if (sortColumn !== column) return <span className="w-4 h-4 ml-1 opacity-0"></span>;
-        return sortDirection === 'asc' 
-            ? <ChevronUp className="w-4 h-4 ml-1" />
-            : <ChevronDown className="w-4 h-4 ml-1" />;
+        return (
+            <ChevronDown
+                className={`w-4 h-4 ml-1 transition-transform ${
+                    sortDirection === 'asc' ? 'rotate-180' : ''
+                }`}
+            />
+        );
     };
 
     return (
@@ -369,18 +373,14 @@ function InvoiceList({
                 {summary && (
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
                         <div className="palette-surface palette-border border rounded-xl p-4 flex items-center gap-4">
-                            <div className="p-3 bg-primary/10 rounded-lg">
-                                <Receipt className="w-6 h-6 text-primary" />
-                            </div>
+                            <Receipt className="w-6 h-6 text-red-600 dark:text-red-400" />
                             <div>
                                 <p className="text-sm text-paragraph opacity-75">Total Invoices</p>
                                 <p className="text-2xl font-bold">{summary.total_invoices}</p>
                             </div>
                         </div>
                         <div className="palette-surface palette-border border rounded-xl p-4 flex items-center gap-4">
-                            <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-lg">
-                                <DollarSign className="w-6 h-6 text-green-600 dark:text-green-400" />
-                            </div>
+                            <DollarSign className="w-6 h-6 text-green-600 dark:text-green-400" />
                             <div>
                                 <p className="text-sm text-paragraph opacity-75">Base Total</p>
                                 <p className="text-2xl font-bold text-green-600 dark:text-green-400">
@@ -389,9 +389,7 @@ function InvoiceList({
                             </div>
                         </div>
                         <div className="palette-surface palette-border border rounded-xl p-4 flex items-center gap-4">
-                            <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-                                <Percent className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                            </div>
+                            <Percent className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                             <div>
                                 <p className="text-sm text-paragraph opacity-75">Total IVA (16%)</p>
                                 <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
@@ -400,9 +398,7 @@ function InvoiceList({
                             </div>
                         </div>
                         <div className="palette-surface palette-border border rounded-xl p-4 flex items-center gap-4">
-                            <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
-                                <FileText className="w-6 h-6 text-purple-600 dark:text-purple-400" />
-                            </div>
+                            <FileText className="w-6 h-6 text-purple-600 dark:text-purple-400" />
                             <div>
                                 <p className="text-sm text-paragraph opacity-75">Total Paid</p>
                                 <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">
@@ -512,7 +508,7 @@ function InvoiceList({
                                 <thead>
                                     <tr className="palette-surface border-b palette-border text-paragraph text-sm uppercase tracking-wider opacity-75">
                                         <th 
-                                            className="p-4 font-semibold cursor-pointer hover:bg-[var(--palette-surface)] transition-colors"
+                                            className="p-4 font-semibold cursor-pointer btn-hover-surface transition-colors"
                                             onClick={() => handleSort('invoice_number')}
                                         >
                                             <div className="flex items-center">
@@ -521,7 +517,7 @@ function InvoiceList({
                                             </div>
                                         </th>
                                         <th 
-                                            className="p-4 font-semibold cursor-pointer hover:bg-[var(--palette-surface)] transition-colors"
+                                            className="p-4 font-semibold cursor-pointer btn-hover-surface transition-colors"
                                             onClick={() => handleSort('control_number')}
                                         >
                                             <div className="flex items-center">
@@ -530,7 +526,7 @@ function InvoiceList({
                                             </div>
                                         </th>
                                         <th 
-                                            className="p-4 font-semibold cursor-pointer hover:bg-[var(--palette-surface)] transition-colors"
+                                            className="p-4 font-semibold cursor-pointer btn-hover-surface transition-colors"
                                             onClick={() => handleSort('issue_date')}
                                         >
                                             <div className="flex items-center">
@@ -539,7 +535,7 @@ function InvoiceList({
                                             </div>
                                         </th>
                                         <th 
-                                            className="p-4 font-semibold cursor-pointer hover:bg-[var(--palette-surface)] transition-colors"
+                                            className="p-4 font-semibold cursor-pointer btn-hover-surface transition-colors"
                                             onClick={() => handleSort('total')}
                                         >
                                             <div className="flex items-center">
@@ -548,7 +544,7 @@ function InvoiceList({
                                             </div>
                                         </th>
                                         <th 
-                                            className="p-4 font-semibold cursor-pointer hover:bg-[var(--palette-surface)] transition-colors"
+                                            className="p-4 font-semibold cursor-pointer btn-hover-surface transition-colors"
                                             onClick={() => handleSort('status')}
                                         >
                                             <div className="flex items-center">
@@ -563,7 +559,7 @@ function InvoiceList({
                                     {invoices.map((invoice) => (
                                         <tr
                                             key={invoice.id}
-                                            className="border-b border-[var(--palette-border)] hover:bg-[var(--palette-surface)] cursor-pointer transition-colors"
+                                            className="border-b palette-border table-row-hover cursor-pointer transition-colors"
                                             onClick={() => onViewDetails(invoice)}
                                         >
                                             <td className="p-4 font-medium">{invoice.invoice_number}</td>
@@ -640,7 +636,7 @@ function InvoiceList({
                                     <button
                                         onClick={() => onPageChange(1)}
                                         disabled={currentPage === 1}
-                                        className="p-2 rounded-lg border border-[var(--palette-border)] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[var(--palette-surface)]"
+                                        className="p-2 rounded-lg border palette-border btn-hover-surface disabled:opacity-50 disabled:cursor-not-allowed"
                                         title="First page"
                                     >
                                         <ChevronsLeft className="w-4 h-4" />
@@ -648,7 +644,7 @@ function InvoiceList({
                                     <button
                                         onClick={() => onPageChange(currentPage - 1)}
                                         disabled={currentPage === 1}
-                                        className="p-2 rounded-lg border border-[var(--palette-border)] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[var(--palette-surface)]"
+                                        className="p-2 rounded-lg border palette-border btn-hover-surface disabled:opacity-50 disabled:cursor-not-allowed"
                                         title="Previous page"
                                     >
                                         <ChevronLeft className="w-4 h-4" />
@@ -663,7 +659,7 @@ function InvoiceList({
                                     <button
                                         onClick={() => onPageChange(currentPage + 1)}
                                         disabled={currentPage === totalPages}
-                                        className="p-2 rounded-lg border border-[var(--palette-border)] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[var(--palette-surface)]"
+                                        className="p-2 rounded-lg border palette-border btn-hover-surface disabled:opacity-50 disabled:cursor-not-allowed"
                                         title="Next page"
                                     >
                                         <ChevronRight className="w-4 h-4" />
@@ -671,7 +667,7 @@ function InvoiceList({
                                     <button
                                         onClick={() => onPageChange(totalPages)}
                                         disabled={currentPage === totalPages}
-                                        className="p-2 rounded-lg border border-[var(--palette-border)] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[var(--palette-surface)]"
+                                        className="p-2 rounded-lg border palette-border btn-hover-surface disabled:opacity-50 disabled:cursor-not-allowed"
                                         title="Last page"
                                     >
                                         <ChevronsRight className="w-4 h-4" />

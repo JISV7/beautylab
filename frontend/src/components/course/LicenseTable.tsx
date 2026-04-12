@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { LicenseStatusBadge, type LicenseStatus } from './LicenseStatusBadge';
-import { Gift, Copy, Check, Search, Filter, X, KeyRound } from 'lucide-react';
+import { Gift, Copy, Check, Search, Filter, X, KeyRound, ChevronDown } from 'lucide-react';
 
 export interface License {
     id: string;
@@ -41,6 +41,17 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
             month: 'short',
             day: 'numeric',
         });
+    };
+
+    const SortIcon = ({ column }: { column: SortField }) => {
+        if (sortField !== column) return <span className="w-3.5 h-3.5 ml-1 opacity-0"></span>;
+        return (
+            <ChevronDown
+                className={`w-3.5 h-3.5 ml-1 transition-transform ${
+                    sortDirection === 'asc' ? 'rotate-180' : ''
+                }`}
+            />
+        );
     };
 
     const formatAmount = (amount: string) => {
@@ -268,72 +279,60 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
             {/* Desktop Table */}
             <div className="hidden md:block overflow-x-auto">
                 <table className="w-full">
-                    <thead className="bg-[var(--palette-background)] border-b border-[var(--palette-border)]">
+                    <thead className="bg-black/5 dark:bg-white/5 border-b palette-border">
                         <tr>
-                            <th 
-                                className="text-left text-xs font-bold text-paragraph uppercase tracking-wider px-4 py-3 cursor-pointer hover:bg-[var(--palette-border)] transition-colors"
+                            <th
+                                className="text-left text-xs font-bold text-paragraph uppercase tracking-wider px-4 py-3 cursor-pointer hover:opacity-70 whitespace-nowrap"
                                 onClick={() => handleSort('license_code')}
                             >
                                 <div className="flex items-center gap-2">
                                     License Code
-                                    {sortField === 'license_code' && (
-                                        <span className="text-[var(--palette-primary)]">{sortDirection === 'asc' ? '↑' : '↓'}</span>
-                                    )}
+                                    <SortIcon column="license_code" />
                                 </div>
                             </th>
-                            <th 
-                                className="text-left text-xs font-bold text-paragraph uppercase tracking-wider px-4 py-3 cursor-pointer hover:bg-[var(--palette-border)] transition-colors"
+                            <th
+                                className="text-left text-xs font-bold text-paragraph uppercase tracking-wider px-4 py-3 cursor-pointer hover:opacity-70 whitespace-nowrap"
                                 onClick={() => handleSort('status')}
                             >
                                 <div className="flex items-center gap-2">
                                     Status
-                                    {sortField === 'status' && (
-                                        <span className="text-[var(--palette-primary)]">{sortDirection === 'asc' ? '↑' : '↓'}</span>
-                                    )}
+                                    <SortIcon column="status" />
                                 </div>
                             </th>
-                            <th 
-                                className="text-left text-xs font-bold text-paragraph uppercase tracking-wider px-4 py-3 cursor-pointer hover:bg-[var(--palette-border)] transition-colors"
+                            <th
+                                className="text-left text-xs font-bold text-paragraph uppercase tracking-wider px-4 py-3 cursor-pointer hover:opacity-70 whitespace-nowrap"
                                 onClick={() => handleSort('amount_paid')}
                             >
                                 <div className="flex items-center gap-2">
                                     Amount Paid
-                                    {sortField === 'amount_paid' && (
-                                        <span className="text-[var(--palette-primary)]">{sortDirection === 'asc' ? '↑' : '↓'}</span>
-                                    )}
+                                    <SortIcon column="amount_paid" />
                                 </div>
                             </th>
-                            <th 
-                                className="text-left text-xs font-bold text-paragraph uppercase tracking-wider px-4 py-3 cursor-pointer hover:bg-[var(--palette-border)] transition-colors"
+                            <th
+                                className="text-left text-xs font-bold text-paragraph uppercase tracking-wider px-4 py-3 cursor-pointer hover:opacity-70 whitespace-nowrap"
                                 onClick={() => handleSort('amount_remaining')}
                             >
                                 <div className="flex items-center gap-2">
                                     Remaining
-                                    {sortField === 'amount_remaining' && (
-                                        <span className="text-[var(--palette-primary)]">{sortDirection === 'asc' ? '↑' : '↓'}</span>
-                                    )}
+                                    <SortIcon column="amount_remaining" />
                                 </div>
                             </th>
-                            <th 
-                                className="text-left text-xs font-bold text-paragraph uppercase tracking-wider px-4 py-3 cursor-pointer hover:bg-[var(--palette-border)] transition-colors"
+                            <th
+                                className="text-left text-xs font-bold text-paragraph uppercase tracking-wider px-4 py-3 cursor-pointer hover:opacity-70 whitespace-nowrap"
                                 onClick={() => handleSort('purchase_date')}
                             >
                                 <div className="flex items-center gap-2">
                                     Purchase Date
-                                    {sortField === 'purchase_date' && (
-                                        <span className="text-[var(--palette-primary)]">{sortDirection === 'asc' ? '↑' : '↓'}</span>
-                                    )}
+                                    <SortIcon column="purchase_date" />
                                 </div>
                             </th>
-                            <th 
-                                className="text-left text-xs font-bold text-paragraph uppercase tracking-wider px-4 py-3 cursor-pointer hover:bg-[var(--palette-border)] transition-colors"
+                            <th
+                                className="text-left text-xs font-bold text-paragraph uppercase tracking-wider px-4 py-3 cursor-pointer hover:opacity-70 whitespace-nowrap"
                                 onClick={() => handleSort('redemption_date')}
                             >
                                 <div className="flex items-center gap-2">
                                     Redemption Date
-                                    {sortField === 'redemption_date' && (
-                                        <span className="text-[var(--palette-primary)]">{sortDirection === 'asc' ? '↑' : '↓'}</span>
-                                    )}
+                                    <SortIcon column="redemption_date" />
                                 </div>
                             </th>
                             <th className="text-left text-xs font-bold text-paragraph uppercase tracking-wider px-4 py-3">
@@ -346,7 +345,7 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
                     </thead>
                     <tbody className="divide-y divide-[var(--palette-border)]">
                         {filteredLicenses.map((license) => (
-                            <tr key={license.id} className="hover:bg-[var(--palette-background)] transition-colors">
+                            <tr key={license.id} className="border-b palette-border table-row-hover transition-colors">
                                 <td className="px-4 py-3">
                                     <div className="flex items-center gap-2">
                                         <code className="text-xs font-mono text-paragraph">

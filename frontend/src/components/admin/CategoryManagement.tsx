@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Plus, Edit, Trash2, Search } from 'lucide-react';
+import { Plus, Edit, Trash2, Search, ChevronDown } from 'lucide-react';
 import type { Category } from './types';
 import { MessageModal } from './MessageModal';
 import { ConfirmModal } from './ConfirmModal';
@@ -51,6 +51,9 @@ export const CategoryManagement: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [saving, setSaving] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
+
+    const [sortColumn, setSortColumn] = useState<string>('name');
+    const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 
     const [messageModal, setMessageModal] = useState<{
         isOpen: boolean;
@@ -111,6 +114,42 @@ export const CategoryManagement: React.FC = () => {
         category.slug.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (category.description && category.description.toLowerCase().includes(searchQuery.toLowerCase()))
     );
+
+    const sortedCategories = [...filteredCategories].sort((a, b) => {
+        let comparison = 0;
+        switch (sortColumn) {
+            case 'name':
+                comparison = a.name.localeCompare(b.name);
+                break;
+            case 'slug':
+                comparison = a.slug.localeCompare(b.slug);
+                break;
+            case 'order':
+                comparison = a.order - b.order;
+                break;
+        }
+        return sortDirection === 'asc' ? comparison : -comparison;
+    });
+
+    const handleSort = (column: string) => {
+        if (sortColumn === column) {
+            setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+        } else {
+            setSortColumn(column);
+            setSortDirection('asc');
+        }
+    };
+
+    const SortIcon = ({ column }: { column: string }) => {
+        if (sortColumn !== column) return <span className="w-3.5 h-3.5 ml-1 opacity-0"></span>;
+        return (
+            <ChevronDown
+                className={`w-3.5 h-3.5 ml-1 transition-transform ${
+                    sortDirection === 'asc' ? 'rotate-180' : ''
+                }`}
+            />
+        );
+    };
 
     // Auto-generate slug from name
     useEffect(() => {
@@ -347,21 +386,27 @@ export const CategoryManagement: React.FC = () => {
                     ) : (
                         <div className="overflow-x-auto">
                             <table className="w-full">
-                                <thead className="bg-[var(--palette-surface)] border-b border-[var(--palette-border)]">
+                                <thead className="bg-black/5 dark:bg-white/5 border-b palette-border">
                                     <tr>
-                                        <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph">Name</th>
-                                        <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph">Slug</th>
+                                        <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap" onClick={() => handleSort('name')}>
+                                            <div className="flex items-center">Name<SortIcon column="name" /></div>
+                                        </th>
+                                        <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap" onClick={() => handleSort('slug')}>
+                                            <div className="flex items-center">Slug<SortIcon column="slug" /></div>
+                                        </th>
                                         <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph">Description</th>
                                         <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph">Parent</th>
-                                        <th className="text-right py-3 px-4 text-sm font-semibold text-paragraph">Order</th>
+                                        <th className="text-right py-3 px-4 text-sm font-semibold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap" onClick={() => handleSort('order')}>
+                                            <div className="flex items-center justify-end">Order<SortIcon column="order" /></div>
+                                        </th>
                                         <th className="text-right py-3 px-4 text-sm font-semibold text-paragraph">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {filteredCategories.map((category) => (
+                                    {sortedCategories.map((category) => (
                                         <tr
                                             key={category.id}
-                                            className="border-b border-[var(--palette-border)] hover:bg-[var(--palette-surface)] transition-colors group"
+                                            className="border-b palette-border table-row-hover transition-colors"
                                         >
                                             <td className="py-3 px-4">
                                                 <span className="font-semibold text-paragraph">
@@ -409,17 +454,17 @@ export const CategoryManagement: React.FC = () => {
                                                 <div className="flex items-center justify-end gap-2">
                                                     <button
                                                         onClick={() => handleOpenEdit(category)}
-                                                        className="p-2 hover:bg-[var(--palette-border)] rounded transition-colors"
+                                                        className="p-2 rounded-lg edit-action"
                                                         title="Edit"
                                                     >
-                                                        <Edit size={18} className="text-paragraph" />
+                                                        <Edit size={18} />
                                                     </button>
                                                     <button
                                                         onClick={() => handleDelete(category)}
-                                                        className="p-2 hover:bg-red-100 dark:hover:bg-red-900 rounded transition-colors"
+                                                        className="p-2 rounded-lg delete-action"
                                                         title="Delete"
                                                     >
-                                                        <Trash2 size={18} className="text-red-600 dark:text-red-400" />
+                                                        <Trash2 size={18} />
                                                     </button>
                                                 </div>
                                             </td>

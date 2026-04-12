@@ -39,7 +39,7 @@ export const CourseTable: React.FC<CourseTableProps> = ({
     return (
         <div className="overflow-x-auto">
             <table className="w-full">
-                <thead className="bg-[var(--palette-surface)] border-b border-[var(--palette-border)]">
+                <thead className="bg-black/5 dark:bg-white/5 border-b palette-border">
                     <tr>
                         <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph">Course</th>
                         <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph">Category</th>
@@ -54,7 +54,7 @@ export const CourseTable: React.FC<CourseTableProps> = ({
                     {courses.map((course) => (
                         <tr
                             key={course.id}
-                            className="border-b border-[var(--palette-border)] hover:bg-[var(--palette-surface)] transition-colors group"
+                            className="border-b palette-border table-row-hover transition-colors"
                         >
                             <td className="py-3 px-4">
                                 <div className="flex items-center gap-4">
@@ -72,7 +72,7 @@ export const CourseTable: React.FC<CourseTableProps> = ({
                                         )}
                                     </div>
                                     <div>
-                                        <p className="font-semibold text-paragraph group-hover:text-[var(--palette-primary)] transition-colors">
+                                        <p className="font-semibold text-paragraph table-row-hover-title">
                                             {course.title}
                                         </p>
                                         <p className="text-xs text-paragraph opacity-60">
@@ -117,28 +117,28 @@ export const CourseTable: React.FC<CourseTableProps> = ({
                                 <div className="flex items-center justify-end gap-2">
                                     <button
                                         onClick={() => onTogglePublish(course.id, course.published, course.title)}
-                                        className="p-2 hover:bg-[var(--palette-border)] rounded transition-colors"
+                                        className="p-2 rounded-lg yellow-action"
                                         title={course.published ? 'Unpublish' : 'Publish'}
                                     >
                                         {course.published ? (
-                                            <Eye size={18} className="text-paragraph" />
+                                            <Eye size={18} />
                                         ) : (
-                                            <EyeOff size={18} className="text-paragraph" />
+                                            <EyeOff size={18} />
                                         )}
                                     </button>
                                     <button
                                         onClick={() => onEdit(course.id)}
-                                        className="p-2 hover:bg-[var(--palette-border)] rounded transition-colors"
+                                        className="p-2 rounded-lg edit-action"
                                         title="Edit"
                                     >
-                                        <Edit size={18} className="text-paragraph" />
+                                        <Edit size={18} />
                                     </button>
                                     <button
                                         onClick={() => onDelete(course.id, course.title)}
-                                        className="p-2 hover:bg-red-100 dark:hover:bg-red-900 rounded transition-colors"
+                                        className="p-2 rounded-lg delete-action"
                                         title="Delete"
                                     >
-                                        <Trash2 size={18} className="text-red-600 dark:text-red-400" />
+                                        <Trash2 size={18} />
                                     </button>
                                 </div>
                             </td>

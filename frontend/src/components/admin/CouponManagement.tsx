@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Plus, Edit, Trash2, Search, Tag, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Plus, Edit, Trash2, Search, Tag, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
 import type { Coupon, CouponFormData } from './types';
 import { MessageModal } from './MessageModal';
 import { ConfirmModal } from './ConfirmModal';
@@ -46,6 +46,9 @@ export const CouponManagement: React.FC = () => {
     const [pageSize] = useState(10);
     const [totalItems, setTotalItems] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
+
+    const [sortColumn, setSortColumn] = useState<string>('code');
+    const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 
     const [messageModal, setMessageModal] = useState<{
         isOpen: boolean;
@@ -93,6 +96,48 @@ export const CouponManagement: React.FC = () => {
         const q = searchQuery.toLowerCase();
         return c.code.toLowerCase().includes(q);
     });
+
+    const sortedCoupons = [...filteredCoupons].sort((a, b) => {
+        let comparison = 0;
+        switch (sortColumn) {
+            case 'code':
+                comparison = a.code.localeCompare(b.code);
+                break;
+            case 'discount':
+                comparison = a.discount_value - b.discount_value;
+                break;
+            case 'min_purchase':
+                comparison = a.min_purchase - b.min_purchase;
+                break;
+            case 'uses':
+                comparison = a.used_count - b.used_count;
+                break;
+            case 'created_at':
+                comparison = new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+                break;
+        }
+        return sortDirection === 'asc' ? comparison : -comparison;
+    });
+
+    const handleSort = (column: string) => {
+        if (sortColumn === column) {
+            setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+        } else {
+            setSortColumn(column);
+            setSortDirection('asc');
+        }
+    };
+
+    const SortIcon = ({ column }: { column: string }) => {
+        if (sortColumn !== column) return <span className="w-3.5 h-3.5 ml-1 opacity-0"></span>;
+        return (
+            <ChevronDown
+                className={`w-3.5 h-3.5 ml-1 transition-transform ${
+                    sortDirection === 'asc' ? 'rotate-180' : ''
+                }`}
+            />
+        );
+    };
 
     const handleOpenCreate = () => {
         setEditingCoupon(null);
@@ -266,23 +311,48 @@ export const CouponManagement: React.FC = () => {
                 <div className="theme-card overflow-hidden p-0">
                     <div className="overflow-x-auto">
                         <table className="w-full">
-                            <thead className="bg-[var(--palette-surface)] border-b border-[var(--palette-border)]">
+                            <thead className="bg-black/5 dark:bg-white/5 border-b palette-border">
                                 <tr>
-                                    <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph">Code</th>
-                                    <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph">Discount</th>
-                                    <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph">Min Purchase</th>
-                                    <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph">Uses</th>
-                                    <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph">Expires</th>
-                                    <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph">Created</th>
-                                    <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph">Status</th>
+                                    <th
+                                        className="text-left py-3 px-4 text-sm font-semibold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap"
+                                        onClick={() => handleSort('code')}
+                                    >
+                                        <div className="flex items-center">Code<SortIcon column="code" /></div>
+                                    </th>
+                                    <th
+                                        className="text-left py-3 px-4 text-sm font-semibold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap"
+                                        onClick={() => handleSort('discount')}
+                                    >
+                                        <div className="flex items-center">Discount<SortIcon column="discount" /></div>
+                                    </th>
+                                    <th
+                                        className="text-left py-3 px-4 text-sm font-semibold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap"
+                                        onClick={() => handleSort('min_purchase')}
+                                    >
+                                        <div className="flex items-center">Min Purchase<SortIcon column="min_purchase" /></div>
+                                    </th>
+                                    <th
+                                        className="text-left py-3 px-4 text-sm font-semibold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap"
+                                        onClick={() => handleSort('uses')}
+                                    >
+                                        <div className="flex items-center">Uses<SortIcon column="uses" /></div>
+                                    </th>
+                                    <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph whitespace-nowrap">Expires</th>
+                                    <th
+                                        className="text-left py-3 px-4 text-sm font-semibold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap"
+                                        onClick={() => handleSort('created_at')}
+                                    >
+                                        <div className="flex items-center">Created<SortIcon column="created_at" /></div>
+                                    </th>
+                                    <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph whitespace-nowrap">Status</th>
                                     <th className="text-right py-3 px-4 text-sm font-semibold text-paragraph">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredCoupons.map((coupon) => (
+                                {sortedCoupons.map((coupon) => (
                                     <tr
                                         key={coupon.id}
-                                        className="border-b border-[var(--palette-border)] hover:bg-[var(--palette-surface)] transition-colors"
+                                        className="border-b palette-border table-row-hover transition-colors"
                                     >
                                         <td className="py-3 px-4">
                                             <span className="font-mono text-sm font-semibold text-paragraph">
@@ -323,17 +393,17 @@ export const CouponManagement: React.FC = () => {
                                             <div className="flex items-center justify-end gap-1">
                                                 <button
                                                     onClick={() => handleOpenEdit(coupon)}
-                                                    className="p-2 hover:bg-[var(--palette-border)] rounded transition-colors"
+                                                    className="p-2 rounded-lg edit-action"
                                                     title="Edit"
                                                 >
-                                                    <Edit className="w-4 h-4 text-paragraph" />
+                                                    <Edit className="w-4 h-4" />
                                                 </button>
                                                 <button
                                                     onClick={() => handleDelete(coupon)}
-                                                    className="p-2 hover:bg-red-100 dark:hover:bg-red-900/30 rounded transition-colors"
+                                                    className="p-2 rounded-lg delete-action"
                                                     title="Deactivate"
                                                 >
-                                                    <Trash2 className="w-4 h-4 text-red-500" />
+                                                    <Trash2 className="w-4 h-4" />
                                                 </button>
                                             </div>
                                         </td>
@@ -345,15 +415,15 @@ export const CouponManagement: React.FC = () => {
 
                     {/* Pagination */}
                     {totalPages > 1 && (
-                        <div className="flex items-center justify-between px-4 py-3 border-t border-[var(--palette-border)]">
+                        <div className="flex items-center justify-between px-4 py-3 border-t palette-border">
                             <p className="text-sm text-paragraph opacity-60">
-                                Showing {filteredCoupons.length} of {totalItems} coupons
+                                Showing {sortedCoupons.length} of {totalItems} coupons
                             </p>
                             <div className="flex items-center gap-2">
                                 <button
                                     onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                                     disabled={currentPage === 1}
-                                    className="p-2 rounded hover:bg-[var(--palette-border)] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                                    className="p-2 rounded btn-hover-surface disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                                 >
                                     <ChevronLeft className="w-4 h-4 text-paragraph" />
                                 </button>
@@ -362,8 +432,8 @@ export const CouponManagement: React.FC = () => {
                                         key={page}
                                         onClick={() => setCurrentPage(page)}
                                         className={`w-8 h-8 rounded text-sm font-medium transition-colors ${currentPage === page
-                                                ? 'bg-[var(--palette-primary)] text-white'
-                                                : 'hover:bg-[var(--palette-border)] text-paragraph'
+                                                ? 'bg-palette-primary text-white'
+                                                : 'btn-hover-surface text-paragraph'
                                             }`}
                                     >
                                         {page}
@@ -372,7 +442,7 @@ export const CouponManagement: React.FC = () => {
                                 <button
                                     onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                                     disabled={currentPage === totalPages}
-                                    className="p-2 rounded hover:bg-[var(--palette-border)] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                                    className="p-2 rounded btn-hover-surface disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                                 >
                                     <ChevronRight className="w-4 h-4 text-paragraph" />
                                 </button>

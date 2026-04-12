@@ -83,7 +83,7 @@ export const ThemeTable: React.FC<ThemeTableProps> = ({
                             aria-sort={sortColumn === 'name' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
                         >
                             <div className="flex items-center gap-1 sm:gap-2">
-                                NAME
+                                Name
                                 <SortIcon column="name" sortColumn={sortColumn} sortDirection={sortDirection} />
                             </div>
                         </th>
@@ -94,7 +94,7 @@ export const ThemeTable: React.FC<ThemeTableProps> = ({
                             aria-sort={sortColumn === 'isActive' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
                         >
                             <div className="flex items-center gap-1 sm:gap-2">
-                                ACTIVE
+                                Active
                                 <SortIcon column="isActive" sortColumn={sortColumn} sortDirection={sortDirection} />
                             </div>
                         </th>
@@ -105,15 +105,15 @@ export const ThemeTable: React.FC<ThemeTableProps> = ({
                             aria-sort={sortColumn === 'isDefault' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
                         >
                             <div className="flex items-center gap-1 sm:gap-2">
-                                DEFAULT
+                                Default
                                 <SortIcon column="isDefault" sortColumn={sortColumn} sortDirection={sortDirection} />
                             </div>
                         </th>
                         <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-bold text-paragraph whitespace-nowrap" role="columnheader">
-                            TYPE
+                            Type
                         </th>
                         <th className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-right text-xs sm:text-sm font-bold text-paragraph whitespace-nowrap" role="columnheader">
-                            ACTIONS
+                            Actions
                         </th>
                     </tr>
                 </thead>

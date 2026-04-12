@@ -11,6 +11,53 @@
 }
 
 @layer utilities {
+  /* ==================== Table Utilities ==================== */
+  .table-row-hover:hover {
+    background-color: var(--palette-surface);
+  }
+
+  .btn-hover-surface:hover {
+    background-color: var(--palette-surface);
+  }
+
+  .table-row-hover:hover .table-row-hover-title {
+    color: var(--palette-primary);
+    transition: color 0.15s;
+  }
+
+  .edit-action {
+    color: #2563eb;
+    transition: background-color 0.15s;
+  }
+  .edit-action:hover {
+    background-color: #eff6ff;
+  }
+  :where(html.dark) .edit-action:hover {
+    background-color: rgba(30, 58, 138, 0.2);
+  }
+
+  .delete-action {
+    color: #dc2626;
+    transition: background-color 0.15s;
+  }
+  .delete-action:hover {
+    background-color: #fef2f2;
+  }
+  :where(html.dark) .delete-action:hover {
+    background-color: rgba(153, 27, 27, 0.2);
+  }
+
+  .yellow-action {
+    color: #ca8a04;
+    transition: background-color 0.15s;
+  }
+  .yellow-action:hover {
+    background-color: #fefce8;
+  }
+  :where(html.dark) .yellow-action:hover {
+    background-color: rgba(113, 63, 18, 0.2);
+  }
+
   /* ==================== Scrollbar Utilities ==================== */
   .scrollbar-hide {
     -ms-overflow-style: none;  /* IE and Edge */

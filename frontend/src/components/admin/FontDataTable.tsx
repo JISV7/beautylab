@@ -236,7 +236,7 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
                                         {onApplyToAll && (
                                             <button
                                                 onClick={() => onApplyToAll(font)}
-                                                className="text-slate-400 hover:text-emerald-500 transition-colors"
+                                                className="p-2 rounded-lg edit-action"
                                                 title="Apply to all"
                                             >
                                                 <Check className="w-4 h-4" />
@@ -244,10 +244,13 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
                                         )}
                                         <button
                                             onClick={() => handleDeleteClick(font)}
-                                            className="text-slate-400 hover:text-red-500 transition-colors"
+                                            className={`p-2 rounded-lg delete-action ${
+                                                (font.usageCount || 0) > 0 ? 'opacity-30 cursor-not-allowed' : ''
+                                            }`}
                                             title={(font.usageCount || 0) > 0 ? 'Cannot delete - font in use' : 'Delete font'}
+                                            disabled={(font.usageCount || 0) > 0}
                                         >
-                                            <Trash2 className={`w-4 h-4 ${(font.usageCount || 0) > 0 ? 'opacity-50 cursor-not-allowed' : ''}`} />
+                                            <Trash2 className="w-4 h-4" />
                                         </button>
                                     </div>
                                 </td>
@@ -274,7 +277,7 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
                         <button
                             onClick={() => setPageConfig(prev => ({ ...prev, currentPage: Math.max(0, prev.currentPage - 1) }))}
                             disabled={pageConfig.currentPage === 0}
-                            className="px-3 py-1.5 text-sm font-medium rounded-lg border palette-border hover:bg-black/5 dark:hover:bg-white/5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="px-3 py-1.5 text-sm font-medium rounded-lg border palette-border btn-hover-surface transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             Previous
                         </button>
@@ -286,7 +289,7 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
                                     className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
                                         pageConfig.currentPage === i
                                             ? 'bg-palette-primary text-white'
-                                            : 'border palette-border hover:bg-black/5 dark:hover:bg-white/5'
+                                            : 'border palette-border btn-hover-surface'
                                     }`}
                                 >
                                     {i + 1}
@@ -296,7 +299,7 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
                         <button
                             onClick={() => setPageConfig(prev => ({ ...prev, currentPage: Math.min(totalPages - 1, prev.currentPage + 1) }))}
                             disabled={pageConfig.currentPage >= totalPages - 1}
-                            className="px-3 py-1.5 text-sm font-medium rounded-lg border palette-border hover:bg-black/5 dark:hover:bg-white/5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="px-3 py-1.5 text-sm font-medium rounded-lg border palette-border btn-hover-surface transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             Next
                         </button>
@@ -313,8 +316,8 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
                         setFontToDelete(null);
                     }}
                 >
-                    <div 
-                        className="w-full max-w-md relative max-h-[80vh] flex flex-col bg-[var(--palette-surface)] border border-[var(--palette-border)] rounded-2xl shadow-2xl"
+                    <div
+                        className="w-full max-w-md relative max-h-[80vh] flex flex-col palette-surface palette-border border rounded-2xl shadow-2xl"
                         onClick={(e) => e.stopPropagation()}
                     >
                         {/* Scrollable content area */}
@@ -322,7 +325,7 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
                             <div className="flex items-start gap-4 mb-4">
                                 <Trash2 className="w-6 h-6 text-red-600 shrink-0" />
                                 <div className="flex-1">
-                                    <h2 className="text-xl font-bold text-[var(--text-h2)] mb-2">
+                                    <h2 className="text-xl font-bold mb-2">
                                         Delete Font
                                     </h2>
                                     {getDeleteMessage(fontToDelete)}
@@ -330,13 +333,13 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
                             </div>
                         </div>
                         {/* Fixed button area */}
-                        <div className="p-6 border-t border-[var(--palette-border)] flex items-center gap-3 shrink-0 bg-[var(--palette-surface)]">
+                        <div className="p-6 border-t palette-border flex items-center gap-3 shrink-0">
                             <button
                                 onClick={() => {
                                     setDeleteConfirmOpen(false);
                                     setFontToDelete(null);
                                 }}
-                                className="flex-1 px-4 py-2 rounded-lg border border-[var(--palette-border)] text-[var(--text-paragraph)] hover:bg-[var(--palette-border)] transition-colors"
+                                className="flex-1 px-4 py-2 rounded-lg border palette-border btn-hover-surface transition-colors"
                             >
                                 Cancel
                             </button>

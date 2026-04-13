@@ -82,7 +82,7 @@ export function InvoiceTable({ invoices, onViewDetails, sortColumn, sortDirectio
                         >
                             <td className="p-4 font-medium">{invoice.invoice_number}</td>
                             <td className="p-4 font-mono text-sm">{invoice.control_number}</td>
-                            <td className="p-4">{new Date(invoice.issue_date).toLocaleDateString()}</td>
+                            <td className="p-4">{(() => { const [y, m, d] = invoice.issue_date.split('-').map(Number); return `${y}/${m}/${d}`; })()}</td>
                             <td className="p-4">
                                 <div className="flex flex-col gap-1">
                                     <span className="font-semibold text-primary">

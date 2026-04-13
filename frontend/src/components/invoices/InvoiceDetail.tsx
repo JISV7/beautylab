@@ -7,48 +7,30 @@ interface InvoiceDetailProps {
     onPrint: () => void;
 }
 
+const formatDate = (dateStr: string) => {
+    const [year, month, day] = dateStr.split('-').map(Number);
+    return `${String(day).padStart(2, '0')}${String(month).padStart(2, '0')}${year}`;
+};
+
+const formatTime = (timeStr: string) => {
+    const date = new Date(`2000-01-01T${timeStr}`);
+    let hours = date.getHours();
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    const ampm = hours >= 12 ? 'p.m.' : 'a.m.';
+    hours = hours % 12 || 12;
+    return `${String(hours).padStart(2, '0')}.${minutes}.${seconds} ${ampm}`;
+};
+
+const formatDateDisplay = (dateStr: string) => {
+    const [year, month, day] = dateStr.split('-').map(Number);
+    return `${String(day).padStart(2, '0')}/${String(month).padStart(2, '0')}/${year}`;
+};
+
 export function InvoiceDetail({ invoice, onBack, onPrint }: InvoiceDetailProps) {
-    const formatDate = (dateStr: string) => {
-        const date = new Date(dateStr);
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const year = date.getFullYear();
-        return `${day}${month}${year}`;
-    };
-
-    const formatTime = (timeStr: string) => {
-        const date = new Date(`2000-01-01T${timeStr}`);
-        let hours = date.getHours();
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-        const seconds = String(date.getSeconds()).padStart(2, '0');
-        const ampm = hours >= 12 ? 'p.m.' : 'a.m.';
-        hours = hours % 12 || 12;
-        return `${String(hours).padStart(2, '0')}.${minutes}.${seconds} ${ampm}`;
-    };
-
-    const formatDateDisplay = (dateStr: string) => {
-        const date = new Date(dateStr);
-        return date.toLocaleDateString('es-VE', { day: '2-digit', month: '2-digit', year: 'numeric' });
-    };
-
     return (
         <main className="p-8 print:p-0 print:overflow-visible">
-            <style>{`
-                @media print {
-                    aside, header, nav { display: none !important; }
-                    [class*="sidebar"], [class*="header"], [class*="nav"],
-                    [class*="search"], [class*="theme-toggle"], [class*="user-menu"] { display: none !important; }
-                    button, .theme-button { display: none !important; }
-                    .invoice-content, .invoice-content * { visibility: visible !important; }
-                    .invoice-content { border: none !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; max-width: none !important; }
-                    .print\\:flex-row { display: flex !important; flex-direction: row !important; }
-                    .print\\:w-1\\/2 { width: 50% !important; }
-                    .print\\:w-80 { width: 20rem !important; }
-                    .print\\:ml-auto { margin-left: auto !important; }
-                    .print\\:grid-cols-2 { display: grid !important; grid-template-columns: 1fr 1fr !important; }
-                }
-            `}</style>
-            <div className="max-w-6xl mx-auto">
+            <div className="max-w-6xl mx-auto print:max-w-none print:mx-0">
                 <div className="flex items-center justify-between mb-6 print:hidden">
                     <button onClick={onBack} className="flex items-center gap-2 theme-button theme-button-secondary">
                         <X className="w-5 h-5" />
@@ -60,7 +42,7 @@ export function InvoiceDetail({ invoice, onBack, onPrint }: InvoiceDetailProps) 
                     </button>
                 </div>
 
-                <div className="invoice-content palette-surface palette-border border rounded-xl p-8 print:shadow-none print:border-0 print:p-4">
+                <div className="invoice-content palette-surface palette-border border rounded-xl p-8 print:shadow-none print:border-0 print:p-4 print:m-0 print:max-w-none">
                     {/* Art. 1-3: FACTURA + Emisor */}
                     <div className="border-b palette-border pb-6 mb-6">
                         <div className="flex flex-col sm:flex-row items-start justify-between mb-4 gap-4 print:flex-row print:flex-nowrap print:gap-8">
@@ -92,7 +74,7 @@ export function InvoiceDetail({ invoice, onBack, onPrint }: InvoiceDetailProps) 
                             </div>
                             <div className="text-right">
                                 <p className="text-paragraph opacity-75 uppercase whitespace-nowrap">Estado</p>
-                                <span className="px-2 py-1 rounded-full font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 whitespace-nowrap">
+                                <span className="px-2 py-1 rounded-full font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 whitespace-nowrap print:bg-transparent print:text-black print:p-0">
                                     {invoice.status === 'issued' ? 'Emitida' : invoice.status}
                                 </span>
                             </div>
@@ -100,7 +82,7 @@ export function InvoiceDetail({ invoice, onBack, onPrint }: InvoiceDetailProps) 
                     </div>
 
                     {/* Art. 7: Client info */}
-                    <div className="palette-surface palette-border border rounded-lg p-4 mb-6">
+                    <div className="palette-surface palette-border border rounded-lg p-4 mb-6 print:border-0 print:p-0">
                         <h3 className="font-semibold text-paragraph opacity-75 uppercase mb-3">Datos del Cliente</h3>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
@@ -128,7 +110,7 @@ export function InvoiceDetail({ invoice, onBack, onPrint }: InvoiceDetailProps) 
 
                     {/* Art. 8-9: Line items */}
                     {invoice.lines && invoice.lines.length > 0 && (
-                        <div className="overflow-x-auto">
+                        <div className="overflow-x-auto print:overflow-visible">
                             <table className="w-full mb-6 min-w-[500px]">
                                 <thead>
                                     <tr className="border-b-2 palette-border text-paragraph uppercase opacity-75">
@@ -205,9 +187,9 @@ export function InvoiceDetail({ invoice, onBack, onPrint }: InvoiceDetailProps) 
                                         Bs. {parseFloat(invoice.tax_total).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                     </span>
                                 </div>
-                                <div className="flex items-center justify-between py-3 px-3 rounded-lg mt-2 bg-primary/10">
-                                    <span className="font-bold text-primary">Total</span>
-                                    <span className="text-h3 font-bold text-primary">
+                                <div className="flex items-center justify-between py-3 px-3 rounded-lg mt-2 bg-primary/10 print:bg-transparent">
+                                    <span className="font-bold text-primary print:text-black">Total</span>
+                                    <span className="text-h3 font-bold text-primary print:text-black">
                                         Bs. {parseFloat(invoice.total).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                     </span>
                                 </div>
@@ -221,7 +203,7 @@ export function InvoiceDetail({ invoice, onBack, onPrint }: InvoiceDetailProps) 
                             <h3 className="font-semibold text-paragraph opacity-75 uppercase mb-4">Desglose de Pagos</h3>
                             <div className="space-y-2">
                                 {invoice.payments.map((payment) => (
-                                    <div key={payment.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between py-3 px-4 rounded-lg palette-surface palette-border border">
+                                    <div key={payment.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between py-3 px-4 rounded-lg palette-surface palette-border border print:border-gray-300 print:break-inside-avoid">
                                         <span className="font-bold text-paragraph">
                                             {payment.method_type?.replace('_', ' ') || 'Pago'}
                                             {payment.card_brand && (
@@ -232,11 +214,11 @@ export function InvoiceDetail({ invoice, onBack, onPrint }: InvoiceDetailProps) 
                                             <span className="font-bold text-paragraph">
                                                 Bs. {parseFloat(payment.amount).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                             </span>
-                                            <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${payment.status === 'completed'
+                                            <span className={`px-2 py-0.5 rounded-full text-xs font-medium print:bg-transparent print:text-black ${payment.status === 'completed'
                                                     ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
                                                     : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
                                                 }`}>
-                                                {payment.status === 'completed' ? 'completed' : payment.status}
+                                                {payment.status === 'completed' ? 'Completado' : payment.status}
                                             </span>
                                         </div>
                                     </div>
@@ -251,11 +233,11 @@ export function InvoiceDetail({ invoice, onBack, onPrint }: InvoiceDetailProps) 
                             {/* Left: Imprenta Digital Autorizada */}
                             {invoice.control_number_range?.printer && (
                                 <div>
-                                    <p className="text-paragraph">
+                                    <p className="text-paragraph text-sm">
                                         {invoice.control_number_range.printer.business_name || 'Imprenta'} |
                                         RIF: {invoice.control_number_range.printer.rif || 'N/A'}
                                     </p>
-                                    <p className="mt-1 text-paragraph">
+                                    <p className="mt-1 text-paragraph text-sm">
                                         Providencia Administrativa: {invoice.control_number_range.printer.authorization_providence || 'N/A'}
                                     </p>
                                 </div>
@@ -263,7 +245,7 @@ export function InvoiceDetail({ invoice, onBack, onPrint }: InvoiceDetailProps) 
 
                             {/* Right: Rango de Números de Control */}
                             {invoice.control_number_range && (
-                                <div className="text-right">
+                                <div className="text-right text-sm">
                                     <p className="font-medium">
                                         Rango de Números de Control: desde el N° {invoice.control_number_range.start_number.padStart(12, '0')}
                                         {' '}hasta el N° {invoice.control_number_range.end_number.padStart(12, '0')}

@@ -24,7 +24,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNavigate, on
     };
 
     return (
-        <header className="dashboard-header palette-surface z-40 px-4 lg:px-6 py-4 flex items-center justify-between gap-4 border-b palette-border">
+        <header className="dashboard-header palette-surface z-40 px-4 lg:px-6 py-4 flex items-center justify-between gap-4 border-b palette-border print:hidden">
             {/* Left Side: Hamburger + Logo + Search */}
             <div className="flex items-center gap-2 lg:gap-4 flex-1 min-w-0">
                 {/* Mobile Hamburger Menu */}

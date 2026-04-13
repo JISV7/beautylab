@@ -108,10 +108,35 @@ async def download_all_invoices_as_pdfs(
     """
     from datetime import datetime
     from io import BytesIO
+    from pathlib import Path
     from zipfile import ZIP_DEFLATED, ZipFile
 
     from fastapi.responses import StreamingResponse
+    from jinja2 import Environment, FileSystemLoader
     from weasyprint import HTML
+
+    # Set up Jinja2 template environment
+    _template_dir = Path(__file__).parent.parent / "templates"
+    _env = Environment(loader=FileSystemLoader(_template_dir))
+
+    # Custom filters for the template
+    def _fmt_money(value: float) -> str:
+        """Venezuelan format: 28.440,00"""
+        return f"{value:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+
+    _env.filters["money"] = _fmt_money
+    _env.filters["invoice_status"] = lambda s: {
+        "issued": "Emitida",
+        "paid": "Pagada",
+        "partial": "Pago Parcial",
+        "cancelled": "Cancelada",
+    }.get(s, s.capitalize())
+    _env.filters["payment_status"] = lambda s: {
+        "completed": "Completado",
+    }.get(s, s.capitalize())
+    _env.filters["payment_method"] = lambda s: (s or "Pago").replace("_", " ")
+    _env.filters["tax_rate"] = lambda r: f"{float(r):,.2f}%" if r else "16%"
+    _template = _env.get_template("invoice_pdf.html")
 
     invoice_service = InvoiceService(db)
 
@@ -147,72 +172,12 @@ async def download_all_invoices_as_pdfs(
         return f"{hour_12:02d}.{minute:02d}.{second:02d} {ampm}"
 
     def _generate_invoice_pdf(invoice) -> bytes:
-        """Generate a single invoice PDF matching the browser print version."""
-
-        # ==================== Helpers ====================
-
-        def _format_money(value: float) -> str:
-            """Venezuelan format: 28.440,00"""
-            return f"{value:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
-
-        def _translate_invoice_status(status: str) -> str:
-            return {
-                "issued": "Emitida",
-                "paid": "Pagada",
-                "partial": "Pago Parcial",
-                "cancelled": "Cancelada",
-            }.get(status, status.capitalize())
-
-        def _translate_payment_status(status: str) -> str:
-            return {
-                "completed": "Completado",
-            }.get(status, status.capitalize())
-
-        # ==================== Data extraction ====================
-
+        """Generate a single invoice PDF using the Jinja2 template."""
         c = invoice.company
         cnr = invoice.control_number_range
         cnr_printer = cnr.printer if cnr else None
-        num = invoice.invoice_number
-        ctrl = invoice.control_number
-        ddt = _format_date_ddmmyyyy(invoice.issue_date)
-        ttm = _format_time_hhmmss_am_pm(invoice.issue_time)
-        st = _translate_invoice_status(invoice.status)
 
-        # ==================== Company info ====================
-
-        co_html = ""
-        if c:
-            phone_part = f'<p class="text-sm muted">Tel: {c.phone}</p>' if c.phone else ""
-            co_html = (
-                '<div class="co-info">'
-                f'<p class="co-name">{c.business_name} — RIF: {c.rif}</p>'
-                f'<p class="text-sm muted">{c.fiscal_address or ""}</p>'
-                f"{phone_part}"
-                "</div>"
-            )
-
-        # ==================== Info bar (no background, no border) ====================
-
-        info_bar_html = (
-            '<div class="info-bar">'
-            '<div class="info-item">'
-            '<p class="info-label">N° Control</p>'
-            f'<p class="mono">{ctrl}</p></div>'
-            '<div class="info-item">'
-            '<p class="info-label">Fecha de Emisión</p>'
-            f'<p class="val">{ddt}</p></div>'
-            '<div class="info-item">'
-            '<p class="info-label">Hora de Emisión</p>'
-            f'<p class="val">{ttm}</p></div>'
-            '<div class="info-item info-status">'
-            '<p class="info-label">Estado</p>'
-            f'<span class="status-text">{st}</span></div>'
-            "</div>"
-        )
-
-        # ==================== Client info (no background, no border) ====================
-
+        # Resolve client info (enrich from user if missing)
         _rif = invoice.client_rif
         _dtype = invoice.client_document_type
         _dnum = invoice.client_document_number
@@ -240,414 +205,46 @@ async def download_all_invoices_as_pdfs(
         else:
             client_name = "Cliente"
 
-        if _dtype and _dnum:
-            client_doc = f"{_dtype}-{_dnum}"
-        elif _rif:
-            client_doc = _rif
-        else:
-            client_doc = "N/A"
+        client_doc = f"{_dtype}-{_dnum}" if _dtype and _dnum else _rif if _rif else "N/A"
 
-        fiscal_addr_html = ""
-        if _addr:
-            fiscal_addr_html = (
-                '<div class="client-addr">'
-                '<p class="info-label">Domicilio Fiscal</p>'
-                f'<p class="val">{_addr}</p></div>'
-            )
+        # Resolve printer info
+        printer_name = cnr_printer.business_name if cnr_printer else "Imprenta"
+        printer_rif = cnr_printer.rif if cnr_printer else "N/A"
+        printer_providence = cnr_printer.authorization_providence if cnr_printer else "N/A"
 
-        client_html = (
-            '<div class="client-section">'
-            '<h3 class="section-title">Datos del Cliente</h3>'
-            '<div class="client-grid">'
-            '<div><p class="info-label">Nombre / Razón Social</p>'
-            f'<p class="val">{client_name}</p></div>'
-            '<div><p class="info-label">RIF / Cédula / Pasaporte</p>'
-            f'<p class="val">{client_doc}</p></div>'
-            "</div>"
-            f"{fiscal_addr_html}"
-            "</div>"
+        html = _template.render(
+            # Basic invoice data
+            invoice_number=invoice.invoice_number,
+            control_number=invoice.control_number,
+            status=invoice.status,
+            issue_date_fmt=_format_date_ddmmyyyy(invoice.issue_date),
+            issue_time_fmt=_format_time_hhmmss_am_pm(invoice.issue_time),
+            # Company
+            company=c,
+            # Client
+            client_name=client_name,
+            client_doc=client_doc,
+            client_fiscal_address=_addr,
+            # Line items
+            lines=invoice.lines or [],
+            # Adjustments
+            adjustments=invoice.adjustments or [],
+            # Totals
+            subtotal=float(invoice.subtotal),
+            tax_total=float(invoice.tax_total),
+            discount_total=float(invoice.discount_total),
+            total=float(invoice.total),
+            # Payments
+            payments=invoice.payments or [],
+            # Printer / control range
+            control_number_range=cnr,
+            printer_name=printer_name,
+            printer_rif=printer_rif,
+            printer_providence=printer_providence,
+            cnr_start=cnr.start_number.zfill(12) if cnr else "",
+            cnr_end=cnr.end_number.zfill(12) if cnr else "",
+            cnr_assigned_date=cnr.assigned_date.strftime("%d/%m/%Y") if cnr else "",
         )
-
-        # ==================== Line items ====================
-
-        lines_html = ""
-        if invoice.lines:
-            rows = ""
-            for ln in invoice.lines:
-                ex = '<span class="muted"> (E)</span>' if ln.is_exempt else ""
-                price = f"Bs. {_format_money(float(ln.unit_price))}"
-                rate = f"{_format_money(float(ln.tax_rate))}%" if ln.tax_rate else "16%"
-                total = f"Bs. {_format_money(float(ln.line_total))}"
-                rows += (
-                    "<tr>"
-                    f'<td class="td-desc">{ln.description}{ex}</td>'
-                    f'<td class="td-num">{ln.quantity}</td>'
-                    f'<td class="td-num">{price}</td>'
-                    f'<td class="td-num muted">{rate}</td>'
-                    f'<td class="td-num td-total">{total}</td>'
-                    "</tr>"
-                )
-            lines_html = (
-                '<table class="line-table">'
-                "<thead><tr>"
-                '<th class="th">Descripción</th>'
-                '<th class="th th-center">Cant.</th>'
-                '<th class="th th-right">Precio Unit.</th>'
-                '<th class="th th-right">Alícuota</th>'
-                '<th class="th th-right">Total</th>'
-                "</tr></thead>"
-                f"<tbody>{rows}</tbody></table>"
-            )
-
-        # ==================== Adjustments ====================
-
-        if invoice.adjustments and len(invoice.adjustments) > 0:
-            adj_parts = []
-            for a in invoice.adjustments:
-                sign = "-" if a.adjustment_type == "discount" else ""
-                amt = f"{sign}Bs. {_format_money(float(a.amount))}"
-                adj_parts.append(
-                    '<div class="adj-row">'
-                    f'<p class="val">{a.description}</p>'
-                    f'<p class="adj-amount">{amt}</p></div>'
-                )
-            adj_html = "\n".join(adj_parts)
-        else:
-            adj_html = '<p class="muted adj-none">Ninguno</p>'
-
-        # ==================== Totals panel (no background) ====================
-
-        sub = f"Bs. {_format_money(float(invoice.subtotal))}"
-        tax = f"Bs. {_format_money(float(invoice.tax_total))}"
-        tot = f"Bs. {_format_money(float(invoice.total))}"
-
-        disc_html = ""
-        if float(invoice.discount_total) > 0:
-            d = f"-Bs. {_format_money(float(invoice.discount_total))}"
-            disc_html = (
-                '<div class="tot-row">'
-                '<span class="tot-label">Descuentos</span>'
-                f'<span class="tot-val tot-green">{d}</span></div>'
-            )
-
-        totals_html = (
-            '<div class="totals-panel">'
-            '<div class="tot-row">'
-            '<span class="tot-label">Base Imponible</span>'
-            f'<span class="tot-val">{sub}</span></div>'
-            '<div class="tot-row">'
-            '<span class="tot-label">IVA</span>'
-            f'<span class="tot-val">{tax}</span></div>'
-            f"{disc_html}"
-            '<div class="tot-row tot-grand">'
-            '<span class="tot-label tot-grand-label">Total</span>'
-            f'<span class="tot-grand-val">{tot}</span></div>'
-            "</div>"
-        )
-
-        # ==================== Payments (no background, no badges) ====================
-
-        pay_html = ""
-        if invoice.payments:
-            parts = []
-            for p in invoice.payments:
-                mt = (p.method_type or "Pago").replace("_", " ")
-                ci = ""
-                if hasattr(p, "details") and p.details:
-                    if p.details.card_brand:
-                        last4 = p.details.card_number_last4 or ""
-                        ci = f" — {p.details.card_brand} ****{last4}"
-                amt = f"Bs. {_format_money(float(p.amount))}"
-                p_status = _translate_payment_status(p.status)
-                parts.append(
-                    '<div class="pay-row">'
-                    f'<span class="pay-method">{mt}'
-                    f'<span class="pay-detail">{ci}</span></span>'
-                    '<span class="pay-right">'
-                    f'<span class="pay-amount">{amt}</span>'
-                    f'<span class="pay-status">{p_status}</span>'
-                    "</span></div>"
-                )
-            pay_html = (
-                '<div class="payments-section">'
-                '<h3 class="section-title">Desglose de Pagos</h3>'
-                '<div class="pay-list">'
-                f"{'\n'.join(parts)}"
-                "</div></div>"
-            )
-
-        # ==================== Printer / Control range ====================
-
-        range_html = ""
-        if cnr:
-            s = cnr.start_number.zfill(12)
-            e = cnr.end_number.zfill(12)
-            ad = cnr.assigned_date.strftime("%d/%m/%Y")
-            p_name = cnr_printer.business_name if cnr_printer else "Imprenta"
-            p_rif = cnr_printer.rif if cnr_printer else "N/A"
-            p_prov = cnr_printer.authorization_providence if cnr_printer else "N/A"
-            range_html = (
-                '<div class="printer-section">'
-                '<div class="printer-info">'
-                f'<p class="val text-sm">{p_name} | RIF: {p_rif}</p>'
-                f'<p class="muted text-sm">Providencia Administrativa: {p_prov}</p>'
-                "</div>"
-                '<div class="control-range">'
-                f'<p class="val text-sm">Rango de Números de Control:'
-                f" desde el N° {s} hasta el N° {e}</p>"
-                f'<p class="muted text-sm">Fecha de asignación: {ad}</p></div>'
-                "</div>"
-            )
-        elif cnr_printer:
-            range_html = (
-                '<div class="printer-section">'
-                '<div class="printer-info">'
-                f'<p class="val text-sm">{cnr_printer.business_name}'
-                f" | RIF: {cnr_printer.rif}</p>"
-                '<p class="muted text-sm">Providencia Administrativa: '
-                f"{cnr_printer.authorization_providence}</p></div></div>"
-            )
-
-        # ==================== Footer ====================
-
-        footer_html = ""
-        if c:
-            footer_html = f'<div class="footer"><p>{c.business_name} | RIF: {c.rif}</p></div>'
-
-        # ==================== Assemble full HTML ====================
-
-        html = f"""<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <style>
-  @page {{
-      size: legal;
-      margin: 1.5cm 2cm;
-  }}
-  * {{ margin: 0; padding: 0; box-sizing: border-box; }}
-  body {{
-      font-family: "Roboto", "Helvetica Neue", Arial, sans-serif;
-      font-size: 10pt;
-      color: #1A1A1A;
-      line-height: 1.4;
-  }}
-
-  /* ---- Colors ---- */
-  :root {{
-      --primary: #F83A3A;
-      --muted: rgba(26, 26, 26, 0.6);
-      --green-text: #15803d;
-  }}
-
-  /* ---- Typography ---- */
-  h1 {{
-      font-size: 24pt;
-      font-weight: 700;
-      color: var(--primary);
-      line-height: 1.2;
-  }}
-  h3 {{
-      font-size: 12pt;
-      font-weight: 600;
-      color: #1A1A1A;
-      text-transform: uppercase;
-      opacity: 0.75;
-      margin-bottom: 8px;
-  }}
-  .text-sm {{ font-size: 8pt; }}
-  .muted {{ color: var(--muted); font-size: 8pt; }}
-  .val {{ font-weight: 500; font-size: 9pt; }}
-
-  /* ---- Layout ---- */
-  .invoice {{ padding: 4px 0; }}
-  .header {{
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      border-bottom: 1px solid #DDD;
-      padding-bottom: 12px;
-      margin-bottom: 12px;
-  }}
-  .header-left h1 {{ margin-bottom: 2px; }}
-  .header-left .inv-num {{ color: var(--muted); font-size: 9pt; }}
-
-  .co-info {{ text-align: right; min-width: 200px; }}
-  .co-name {{ font-weight: 600; font-size: 10pt; color: #1A1A1A; }}
-
-  /* ---- Info bar (transparent, no border) ---- */
-  .info-bar {{
-      display: flex;
-      gap: 16px;
-      padding: 8px 0;
-      margin-bottom: 14px;
-  }}
-  .info-item {{ flex: 1; }}
-  .info-label {{
-      font-size: 8pt;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 1px;
-  }}
-  .info-status {{ text-align: right; }}
-  .status-text {{ font-weight: 500; font-size: 9pt; }}
-
-  /* ---- Client section (transparent, no border) ---- */
-  .client-section {{
-      margin-bottom: 14px;
-  }}
-  .client-grid {{
-      display: flex;
-      gap: 24px;
-  }}
-  .client-grid > div {{ flex: 1; }}
-  .client-addr {{ margin-top: 6px; }}
-
-  /* ---- Line items table ---- */
-  .line-table {{
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 14px;
-  }}
-  .th {{
-      text-align: left;
-      font-size: 8pt;
-      font-weight: 600;
-      text-transform: uppercase;
-      color: var(--muted);
-      border-bottom: 1px solid #DDD;
-      padding: 6px 4px;
-  }}
-  .th-center {{ text-align: center; }}
-  .th-right {{ text-align: right; }}
-  .line-table tbody tr {{
-      border-bottom: 1px solid #EEE;
-  }}
-  .line-table td {{
-      padding: 6px 4px;
-      vertical-align: top;
-      font-size: 9pt;
-  }}
-  .td-desc {{ text-align: left; }}
-  .td-num {{ text-align: right; font-weight: 500; }}
-  .td-total {{ font-weight: 600; }}
-
-  /* ---- Adj + Totals row ---- */
-  .details-row {{
-      display: flex;
-      gap: 24px;
-      margin-bottom: 14px;
-  }}
-  .adj-block {{ flex: 1; }}
-  .adj-row {{
-      display: flex;
-      justify-content: space-between;
-      padding: 3px 0;
-  }}
-  .adj-amount {{ font-weight: 500; font-size: 9pt; }}
-  .adj-none {{ font-style: italic; padding: 3px 0; }}
-
-  /* ---- Totals panel (transparent, no background) ---- */
-  .totals-panel {{
-      width: 200px;
-      flex-shrink: 0;
-  }}
-  .tot-row {{
-      display: flex;
-      justify-content: space-between;
-      padding: 3px 0;
-  }}
-  .tot-label {{ color: var(--muted); font-size: 9pt; }}
-  .tot-val {{ font-weight: 500; font-size: 9pt; }}
-  .tot-green {{ color: var(--green-text); }}
-  .tot-grand {{
-      padding: 6px 0;
-      margin-top: 4px;
-      border-top: 1px solid #DDD;
-  }}
-  .tot-grand-label {{ font-weight: 700; color: var(--primary); font-size: 10pt; }}
-  .tot-grand-val {{
-      font-size: 14pt;
-      font-weight: 700;
-      color: var(--primary);
-  }}
-
-  /* ---- Payments (transparent, no border, no badges) ---- */
-  .payments-section {{
-      border-top: 1px solid #DDD;
-      padding-top: 12px;
-      margin-top: 8px;
-  }}
-  .pay-list {{ display: flex; flex-direction: column; gap: 6px; }}
-  .pay-row {{
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 6px 0;
-      border-bottom: 1px solid #EEE;
-  }}
-  .pay-method {{ font-weight: 600; font-size: 9pt; white-space: nowrap; }}
-  .pay-detail {{ font-weight: 400; color: var(--muted); font-size: 8pt; }}
-  .pay-right {{
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-shrink: 0;
-  }}
-  .pay-amount {{ font-weight: 600; font-size: 9pt; white-space: nowrap; }}
-  .pay-status {{ font-size: 8pt; color: var(--green-text); white-space: nowrap; }}
-
-  /* ---- Printer info ---- */
-  .printer-section {{
-      display: flex;
-      gap: 24px;
-      border-top: 1px solid #DDD;
-      padding-top: 10px;
-      margin-top: 14px;
-  }}
-  .printer-info {{ flex: 1; }}
-  .control-range {{ flex: 1; text-align: right; }}
-
-  /* ---- Footer ---- */
-  .footer {{
-      text-align: center;
-      font-size: 7pt;
-      color: #999;
-      border-top: 1px solid #DDD;
-      padding-top: 8px;
-      margin-top: 14px;
-  }}
-  </style>
-</head>
-<body>
-  <div class="invoice">
-    <div class="header">
-      <div class="header-left">
-        <h1>FACTURA</h1>
-        <p class="inv-num">N° {num}</p>
-      </div>
-      {co_html}
-    </div>
-
-    {info_bar_html}
-    {client_html}
-    {lines_html}
-
-    <div class="details-row">
-      <div class="adj-block">
-        <h3 class="section-title">Ajustes</h3>
-        {adj_html}
-      </div>
-      {totals_html}
-    </div>
-
-    {pay_html}
-    {range_html}
-    {footer_html}
-  </div>
-</body>
-</html>"""
-
         return HTML(string=html).write_pdf()
 
     def _generate_zip_stream():

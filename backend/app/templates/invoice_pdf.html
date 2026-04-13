@@ -120,13 +120,16 @@
       display: flex;
       gap: 24px;
       margin-bottom: 14px;
+      align-items: flex-start;
   }
-  .adj-block { flex: 1; }
+  .adj-block { flex: 1; min-width: 0; }
   .adj-row {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       padding: 3px 0;
   }
+  .adj-row p { margin: 0; white-space: nowrap; }
   .adj-amount { font-weight: 500; font-size: 9pt; }
   .adj-none { font-style: italic; padding: 3px 0; }
 
@@ -134,11 +137,14 @@
   .totals-panel {
       width: 200px;
       flex-shrink: 0;
+      margin-left: auto;
   }
   .tot-row {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       padding: 3px 0;
+      white-space: nowrap;
   }
   .tot-label { color: var(--muted); font-size: 9pt; }
   .tot-val { font-weight: 500; font-size: 9pt; }
@@ -174,7 +180,7 @@
   .pay-right {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 14px;
       flex-shrink: 0;
   }
   .pay-amount { font-weight: 600; font-size: 9pt; white-space: nowrap; }
@@ -311,16 +317,16 @@
           <span class="tot-label">Base Imponible</span>
           <span class="tot-val">Bs. {{ subtotal | money }}</span>
         </div>
-        <div class="tot-row">
-          <span class="tot-label">IVA</span>
-          <span class="tot-val">Bs. {{ tax_total | money }}</span>
-        </div>
         {% if discount_total > 0 %}
         <div class="tot-row">
           <span class="tot-label">Descuentos</span>
           <span class="tot-val tot-green">-Bs. {{ discount_total | money }}</span>
         </div>
         {% endif %}
+        <div class="tot-row">
+          <span class="tot-label">IVA</span>
+          <span class="tot-val">Bs. {{ tax_total | money }}</span>
+        </div>
         <div class="tot-row tot-grand">
           <span class="tot-label tot-grand-label">Total</span>
           <span class="tot-grand-val">Bs. {{ total | money }}</span>
@@ -337,7 +343,7 @@
         <div class="pay-row">
           <span class="pay-method">{{ payment.method_type | payment_method }}
             {% if payment.card_brand %}
-            <span class="pay-detail"> — {{ payment.card_brand }} ****{{ payment.card_number_last4 or "" }}</span>
+            <span class="pay-detail"> — {{ payment.card_brand }} ****{{ payment.card_last4 or "" }}</span>
             {% endif %}
           </span>
           <span class="pay-right">

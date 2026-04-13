@@ -212,6 +212,19 @@ async def download_all_invoices_as_pdfs(
         printer_rif = cnr_printer.rif if cnr_printer else "N/A"
         printer_providence = cnr_printer.authorization_providence if cnr_printer else "N/A"
 
+        # Normalize payments (raw SQLAlchemy models → dicts with card details)
+        norm_payments = []
+        for p in invoice.payments or []:
+            norm_payments.append(
+                {
+                    "method_type": p.method_type or "Pago",
+                    "amount": float(p.amount),
+                    "status": p.status,
+                    "card_brand": (p.details.card_brand if p.details else None),
+                    "card_last4": (p.details.card_number_last4 if p.details else None),
+                }
+            )
+
         html = _template.render(
             # Basic invoice data
             invoice_number=invoice.invoice_number,
@@ -234,8 +247,8 @@ async def download_all_invoices_as_pdfs(
             tax_total=float(invoice.tax_total),
             discount_total=float(invoice.discount_total),
             total=float(invoice.total),
-            # Payments
-            payments=invoice.payments or [],
+            # Payments (normalized)
+            payments=norm_payments,
             # Printer / control range
             control_number_range=cnr,
             printer_name=printer_name,

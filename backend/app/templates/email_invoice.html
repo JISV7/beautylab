@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+  {% raw %}
+  /* ---- Font: Roboto via @import, with system fallback ---- */
+  @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap');
+
+  body {
+      font-family: Roboto, Arial, Helvetica, sans-serif;
+      font-size: 14px;
+      color: #1A1A1A;
+      line-height: 1.5;
+      margin: 0;
+      padding: 24px 16px;
+      background-color: #FBFBFE;
+  }
+
+  /* ---- Email wrapper ---- */
+  .email-wrapper {
+      max-width: 640px;
+      margin: 0 auto;
+  }
+
+  /* ---- Greeting ---- */
+  .greeting {
+      margin-bottom: 20px;
+  }
+  .greeting p {
+      margin: 0 0 8px;
+      font-size: 14px;
+      color: #1A1A1A;
+  }
+
+  /* ---- Invoice card ---- */
+  .invoice-content {
+      background-color: #FFFFFF;
+      border: 1px solid #DDDDDD;
+      border-radius: 12px;
+      padding: 24px;
+  }
+
+  /* ---- Header ---- */
+  .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 1px solid #DDD;
+      padding-bottom: 14px;
+      margin-bottom: 14px;
+  }
+  .header-left h1 {
+      font-size: 22pt;
+      font-weight: 700;
+      color: #F83A3A;
+      line-height: 1.2;
+      margin: 0 0 2px;
+  }
+  .header-left .inv-num {
+      color: rgba(26,26,26,0.6);
+      font-size: 11px;
+      margin: 0;
+  }
+  .co-info {
+      text-align: right;
+      min-width: 180px;
+  }
+  .co-name {
+      font-weight: 600;
+      font-size: 12px;
+      color: #1A1A1A;
+      margin: 0 0 2px;
+  }
+  .co-addr, .co-phone {
+      font-size: 10px;
+      color: rgba(26,26,26,0.6);
+      margin: 0;
+  }
+
+  /* ---- Info bar ---- */
+  .info-bar {
+      display: flex;
+      gap: 12px;
+      padding: 8px 0;
+      margin-bottom: 14px;
+  }
+  .info-item { flex: 1; }
+  .info-label {
+      font-size: 9px;
+      text-transform: uppercase;
+      color: rgba(26,26,26,0.6);
+      margin: 0 0 1px;
+  }
+  .info-status { text-align: right; }
+  .status-text { font-weight: 500; font-size: 11px; }
+
+  /* ---- Client section ---- */
+  .client-section {
+      margin-bottom: 14px;
+  }
+  .section-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: #1A1A1A;
+      text-transform: uppercase;
+      opacity: 0.75;
+      margin: 0 0 8px;
+  }
+  .client-grid {
+      display: flex;
+      gap: 20px;
+  }
+  .client-grid > div { flex: 1; }
+  .client-addr { margin-top: 6px; }
+  .field-label {
+      font-size: 10px;
+      color: rgba(26,26,26,0.6);
+      margin: 0 0 1px;
+  }
+  .field-value {
+      font-weight: 500;
+      font-size: 11px;
+      color: #1A1A1A;
+      margin: 0;
+  }
+
+  /* ---- Table ---- */
+  .line-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 14px;
+  }
+  .th {
+      text-align: left;
+      font-size: 9px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: rgba(26,26,26,0.6);
+      border-bottom: 1px solid #DDD;
+      padding: 5px 4px;
+  }
+  .th-center { text-align: center; }
+  .th-right { text-align: right; }
+  .line-table tbody tr {
+      border-bottom: 1px solid #EEE;
+  }
+  .line-table td {
+      padding: 5px 4px;
+      vertical-align: top;
+      font-size: 11px;
+  }
+  .td-desc { text-align: left; }
+  .td-num { text-align: right; font-weight: 500; }
+  .td-total { font-weight: 600; }
+
+  /* ---- Adj + Totals ---- */
+  .details-row {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 14px;
+      align-items: flex-start;
+  }
+  .adj-block { flex: 1; min-width: 0; }
+  .adj-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 3px 0;
+  }
+  .adj-row p { margin: 0; white-space: nowrap; }
+  .adj-amount { font-weight: 500; font-size: 11px; }
+  .adj-none { font-style: italic; color: rgba(26,26,26,0.5); padding: 3px 0; font-size: 11px; margin: 0; }
+
+  .totals-panel {
+      width: 190px;
+      flex-shrink: 0;
+      margin-left: auto;
+  }
+  .tot-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 3px 0;
+      white-space: nowrap;
+  }
+  .tot-label { color: rgba(26,26,26,0.6); font-size: 11px; }
+  .tot-val { font-weight: 500; font-size: 11px; }
+  .tot-green { color: #16a34a; }
+  .tot-grand {
+      padding: 5px 0;
+      margin-top: 4px;
+      border-top: 1px solid #DDD;
+  }
+  .tot-grand-label { font-weight: 700; color: #F83A3A; font-size: 11px; }
+  .tot-grand-val {
+      font-size: 14pt;
+      font-weight: 700;
+      color: #F83A3A;
+  }
+
+  /* ---- Payments ---- */
+  .payments-section {
+      border-top: 1px solid #DDD;
+      padding-top: 10px;
+      margin-top: 8px;
+  }
+  .pay-list { }
+  .pay-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px 0;
+      border-bottom: 1px solid #EEE;
+  }
+  .pay-method { font-weight: 600; font-size: 11px; white-space: nowrap; }
+  .pay-detail { font-weight: 400; color: rgba(26,26,26,0.6); font-size: 10px; }
+  .pay-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-shrink: 0;
+  }
+  .pay-amount { font-weight: 600; font-size: 11px; white-space: nowrap; }
+  .pay-status { font-size: 10px; color: #15803d; white-space: nowrap; }
+
+  /* ---- Printer / Control range ---- */
+  .printer-section {
+      display: flex;
+      gap: 20px;
+      border-top: 1px solid #DDD;
+      padding-top: 10px;
+      margin-top: 14px;
+  }
+  .printer-info { flex: 1; }
+  .control-range { flex: 1; text-align: right; }
+
+  /* ---- Download button ---- */
+  .dl-section {
+      margin-top: 20px;
+      text-align: center;
+  }
+  .dl-btn {
+      display: inline-block;
+      background-color: #F83A3A;
+      color: #FFFFFF !important;
+      padding: 10px 24px;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 13px;
+  }
+
+  /* ---- Footer ---- */
+  .footer {
+      text-align: center;
+      font-size: 9px;
+      color: #999;
+      margin-top: 20px;
+      padding-top: 10px;
+      border-top: 1px solid #DDD;
+  }
+  {% endraw %}
+  </style>
+</head>
+<body>
+  <div class="email-wrapper">
+
+    {# ==================== Greeting ==================== #}
+    <div class="greeting">
+      <p>Estimado cliente,</p>
+      <p>Gracias por su compra. A continuación encontrará el detalle de su factura.</p>
+    </div>
+
+    {# ==================== Invoice card ==================== #}
+    <div class="invoice-content">
+
+      {# ---- Header ---- #}
+      <div class="header">
+        <div class="header-left">
+          <h1>FACTURA</h1>
+          <p class="inv-num">N° {{ invoice_number }}</p>
+        </div>
+        {% if company %}
+        <div class="co-info">
+          <p class="co-name">{{ company.business_name }} — RIF: {{ company.rif }}</p>
+          <p class="co-addr">{{ company.fiscal_address or "" }}</p>
+          {% if company.phone %}
+          <p class="co-phone">Tel: {{ company.phone }}</p>
+          {% endif %}
+        </div>
+        {% endif %}
+      </div>
+
+      {# ---- Info bar ---- #}
+      <div class="info-bar">
+        <div class="info-item">
+          <p class="info-label">N° Control</p>
+          <p class="field-value" style="font-family: monospace;">{{ control_number }}</p>
+        </div>
+        <div class="info-item">
+          <p class="info-label">Fecha de Emisión</p>
+          <p class="field-value">{{ issue_date | format_date_ddmmyyyy }}</p>
+        </div>
+        <div class="info-item">
+          <p class="info-label">Hora de Emisión</p>
+          <p class="field-value">{{ issue_time | format_time_hhmmss }}</p>
+        </div>
+        <div class="info-item info-status">
+          <p class="info-label">Estado</p>
+          <span class="status-text">{{ status | invoice_status }}</span>
+        </div>
+      </div>
+
+      {# ---- Client info ---- #}
+      <div class="client-section">
+        <h3 class="section-title">Datos del Cliente</h3>
+        <div class="client-grid">
+          <div>
+            <p class="field-label">Nombre / Razón Social</p>
+            <p class="field-value">{{ client_name }}</p>
+          </div>
+          <div>
+            <p class="field-label">RIF / Cédula / Pasaporte</p>
+            <p class="field-value">{{ client_doc }}</p>
+          </div>
+        </div>
+        {% if client_fiscal_address %}
+        <div class="client-addr">
+          <p class="field-label">Domicilio Fiscal</p>
+          <p class="field-value">{{ client_fiscal_address }}</p>
+        </div>
+        {% endif %}
+      </div>
+
+      {# ---- Line items ---- #}
+      {% if lines %}
+      <table class="line-table">
+        <thead>
+          <tr>
+            <th class="th">Descripción</th>
+            <th class="th th-center">Cant.</th>
+            <th class="th th-right">Precio Unit.</th>
+            <th class="th th-right">Alícuota</th>
+            <th class="th th-right">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for line in lines %}
+          <tr>
+            <td class="td-desc">{{ line.description }}{% if line.is_exempt %} <span style="color:rgba(26,26,26,0.6);">(E)</span>{% endif %}</td>
+            <td class="td-num">{{ line.quantity }}</td>
+            <td class="td-num">Bs. {{ line.unit_price | money }}</td>
+            <td class="td-num" style="color:rgba(26,26,26,0.6);">{{ line.tax_rate | tax_rate }}</td>
+            <td class="td-num td-total">Bs. {{ line.line_total | money }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% endif %}
+
+      {# ---- Adjustments + Totals ---- #}
+      <div class="details-row">
+        <div class="adj-block">
+          <h3 class="section-title">Ajustes</h3>
+          {% if adjustments %}
+            {% for adj in adjustments %}
+            <div class="adj-row">
+              <p class="field-value" style="margin:0;">{{ adj.description }}</p>
+              <p class="adj-amount">{% if adj.adjustment_type == "discount" %}-{% endif %}Bs. {{ adj.amount | money }}</p>
+            </div>
+            {% endfor %}
+          {% else %}
+            <p class="adj-none">Ninguno</p>
+          {% endif %}
+        </div>
+
+        <div class="totals-panel">
+          <div class="tot-row">
+            <span class="tot-label">Base Imponible</span>
+            <span class="tot-val">Bs. {{ subtotal | money }}</span>
+          </div>
+          {% if discount_total > 0 %}
+          <div class="tot-row">
+            <span class="tot-label">Descuentos</span>
+            <span class="tot-val tot-green">-Bs. {{ discount_total | money }}</span>
+          </div>
+          {% endif %}
+          <div class="tot-row">
+            <span class="tot-label">IVA</span>
+            <span class="tot-val">Bs. {{ tax_total | money }}</span>
+          </div>
+          <div class="tot-row tot-grand">
+            <span class="tot-label tot-grand-label">Total</span>
+            <span class="tot-grand-val">Bs. {{ total | money }}</span>
+          </div>
+        </div>
+      </div>
+
+      {# ---- Payments ---- #}
+      {% if payments %}
+      <div class="payments-section">
+        <h3 class="section-title">Desglose de Pagos</h3>
+        <div class="pay-list">
+          {% for payment in payments %}
+          <div class="pay-row">
+            <span class="pay-method">{{ payment.method_type | payment_method }}
+              {% if payment.card_brand %}
+              <span class="pay-detail"> — {{ payment.card_brand }} ****{{ payment.card_number_last4 or "" }}</span>
+              {% endif %}
+            </span>
+            <span class="pay-right">
+              <span class="pay-amount">Bs. {{ payment.amount | money }}</span>
+              <span class="pay-status">{{ payment.status | payment_status }}</span>
+            </span>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+      {# ---- Printer / Control range ---- #}
+      {% if printer_info %}
+      <div class="printer-section">
+        <div class="printer-info">
+          <p class="field-value" style="margin:0;">{{ printer_info.business_name }} | RIF: {{ printer_info.rif }}</p>
+          <p class="field-label" style="margin:0;">Providencia Administrativa: {{ printer_info.authorization_providence }}</p>
+        </div>
+        {% if control_range %}
+        <div class="control-range">
+          <p class="field-value" style="margin:0;">Rango de Números de Control: desde el N° {{ control_range.start_number | zfill(12) }} hasta el N° {{ control_range.end_number | zfill(12) }}</p>
+          <p class="field-label" style="margin:0;">Fecha de asignación: {{ control_range.assigned_date | format_date_display }}</p>
+        </div>
+        {% endif %}
+      </div>
+      {% endif %}
+
+      {# ---- Download button ---- #}
+      {% if download_url %}
+      <div class="dl-section">
+        <a href="{{ download_url }}" class="dl-btn">Descargar Factura PDF</a>
+      </div>
+      {% endif %}
+
+    </div>
+
+    {# ==================== Footer ==================== #}
+    <div class="footer">
+      <p>© 2026 {% if company %}{{ company.business_name }}{% else %}Beautylab{% endif %}. Todos los derechos reservados.</p>
+      <p>¿Necesita ayuda? Contáctenos en {{ support_email }}</p>
+    </div>
+
+  </div>
+</body>
+</html>

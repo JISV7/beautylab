@@ -320,7 +320,7 @@ async def process_split_payment(
 
             # Build control range info
             control_range_info = None
-            from app.models.invoice import ControlNumberRange
+            from app.models import ControlNumberRange
 
             cnr_result = await db.execute(
                 select(ControlNumberRange).where(

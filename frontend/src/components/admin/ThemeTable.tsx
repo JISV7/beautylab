@@ -74,7 +74,7 @@ export const ThemeTable: React.FC<ThemeTableProps> = ({
         <div className="theme-card overflow-hidden p-0">
             <div className="overflow-x-auto scrollbar-hide">
                 <table className="w-full min-w-[800px]">
-                <thead className="bg-black/5 dark:bg-white/5 border-b palette-border">
+                <thead className="bg-palette-border border-b palette-border">
                     <tr>
                         <th
                             className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-bold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap"

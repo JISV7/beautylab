@@ -164,7 +164,7 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
             {/* Table */}
             <div className="overflow-x-auto">
                 <table className="w-full">
-                    <thead className="bg-black/5 dark:bg-white/5 border-b palette-border">
+                    <thead className="bg-palette-border border-b palette-border">
                         <tr>
                             <th className="px-4 py-3 text-left text-sm font-bold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap">
                                 <button onClick={() => handleSort('name')} className="flex items-center">
@@ -213,13 +213,13 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
                                         <span className="font-medium text-paragraph">{font.name}</span>
                                     </div>
                                 </td>
-                                <td className="px-4 py-3 text-sm text-slate-600 font-mono">
+                                <td className="px-4 py-3 text-sm font-mono text-paragraph">
                                     {font.filename}
                                 </td>
-                                <td className="px-4 py-3 text-sm text-slate-600">
+                                <td className="px-4 py-3 text-sm text-paragraph">
                                     {font.createdByName || font.createdBy || 'Unknown'}
                                 </td>
-                                <td className="px-4 py-3 text-sm text-slate-600">
+                                <td className="px-4 py-3 text-sm text-paragraph">
                                     {font.createdAt ? new Date(font.createdAt).toLocaleDateString() : 'N/A'}
                                 </td>
                                 <td className="px-4 py-3">
@@ -258,7 +258,7 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
                         ))}
                         {paginatedData.length === 0 && (
                             <tr>
-                                <td colSpan={6} className="px-4 py-12 text-center text-slate-500">
+                                <td colSpan={6} className="px-4 py-12 text-center text-paragraph">
                                     {searchQuery ? 'No fonts match your search.' : 'No fonts uploaded yet.'}
                                 </td>
                             </tr>

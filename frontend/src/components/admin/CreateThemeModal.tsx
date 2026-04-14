@@ -65,7 +65,7 @@ export const CreateThemeModal: React.FC<CreateThemeModalProps> = ({
                     </button>
                     <button
                         onClick={handleRandom}
-                        className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-palette-primary to-palette-accent hover:opacity-90 rounded-lg shadow-sm transition-opacity flex items-center gap-2"
+                        className="px-4 py-2 text-sm font-medium bg-gradient-to-r from-palette-primary to-palette-accent decorator-color rounded-lg hover:opacity-90 transition-opacity flex items-center gap-2"
                     >
                         <Sparkles className="w-4 h-4" />
                         Generate Theme

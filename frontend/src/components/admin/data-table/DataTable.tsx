@@ -128,7 +128,7 @@ export function DataTable<T extends Record<string, unknown>>({
 
       <div className="overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-black/5 dark:bg-white/5 border-b palette-border">
+          <thead className="bg-palette-border border-b palette-border">
             <tr>
               {columns.map((column) => (
                 <th
@@ -161,7 +161,7 @@ export function DataTable<T extends Record<string, unknown>>({
             ))}
             {paginatedData.length === 0 && (
               <tr>
-                <td colSpan={columns.length} className="px-4 py-12 text-center text-slate-500">
+                <td colSpan={columns.length} className="px-4 py-12 text-center text-paragraph">
                   {searchQuery ? `No ${itemType} match your search.` : emptyMessage}
                 </td>
               </tr>

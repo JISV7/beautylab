@@ -246,7 +246,7 @@ function createDefaultThemeConfig(
             background: '#010104',
             surface: '#0e0e10',
             border: '#212121',
-            decorator: '#000000'
+            decorator: '#FFFFFF'
         },
         typography: {
             h1: { ...defaultTypography, fontSize: '2.492', fontWeight: 400, color: customColors?.dark.primary || '#C50707' },
@@ -258,7 +258,7 @@ function createDefaultThemeConfig(
             title: { ...defaultTypography, fontSize: '1.5', fontWeight: 700, color: '#ffffff' },
             subtitle: { ...defaultTypography, fontSize: '1.0', fontWeight: 600, color: '#ffffff' },
             paragraph: { ...defaultTypography, fontSize: '1.0', fontWeight: 400, color: '#d1d1d1' },
-            decorator: { ...defaultTypography, fontSize: '1.0', fontWeight: 500, color: '#000000' }
+            decorator: { ...defaultTypography, fontSize: '1.0', fontWeight: 500, color: '#ffffff' }
         }
     };
 

@@ -12,7 +12,7 @@ export function InvoiceSummaryCards({ summary }: Props) {
                 <Receipt className="w-6 h-6 text-red-600 dark:text-red-400" />
                 <div>
                     <p className="text-sm text-paragraph opacity-75">Total Invoices</p>
-                    <p className="text-2xl font-bold">{summary.total_invoices}</p>
+                    <p className="text-2xl font-bold text-red-600 dark:text-red-400">{summary.total_invoices}</p>
                 </div>
             </div>
             <div className="palette-surface palette-border border rounded-xl p-4 flex items-center gap-4">

@@ -75,6 +75,7 @@
   .palette-surface { background-color: var(--palette-surface); }
   .palette-background { background-color: var(--palette-background); }
   .palette-border { border-color: var(--palette-border); }
+  .bg-palette-border { background-color: var(--palette-border); }
 
   /* ==================== Composite Typography Utilities ==================== */
   .text-h1 { font-family: var(--text-h1-font); font-size: var(--text-h1-size); color: var(--text-h1-color); font-weight: var(--text-h1-weight); line-height: var(--text-h1-line-height); }
@@ -302,7 +303,6 @@
     border: 1px solid var(--palette-border);
     border-radius: 0.75rem;
     padding: 1.5rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
 
   /* ==================== Auth Forms ==================== */

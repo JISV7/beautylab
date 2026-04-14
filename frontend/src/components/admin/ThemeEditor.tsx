@@ -420,7 +420,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                     </button>
                     <button
                         onClick={onPublish}
-                        className="px-3 py-2 text-xs sm:text-sm font-medium decorator-color bg-palette-secondary hover:opacity-90 rounded-lg shadow-sm transition-opacity flex items-center gap-2 shrink-0"
+                        className="px-3 py-2 text-xs sm:text-sm font-medium decorator-color bg-palette-secondary hover:opacity-90 rounded-lg transition-opacity flex items-center gap-2 shrink-0"
                         title="Set theme to site"
                     >
                         <span className="sm:hidden">Set theme</span>
@@ -428,7 +428,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                     </button>
                     <button
                         onClick={handleSave}
-                        className="px-3 py-2 text-xs sm:text-sm font-medium text-white theme-button-primary rounded-lg shadow-sm hover:opacity-90 transition-opacity flex items-center gap-2 shrink-0"
+                        className="px-3 py-2 text-xs sm:text-sm font-medium text-white theme-button-primary rounded-lg hover:opacity-90 transition-opacity flex items-center gap-2 shrink-0"
                         title="Save changes"
                     >
                         <Save className="w-4 h-4 sm:hidden" />

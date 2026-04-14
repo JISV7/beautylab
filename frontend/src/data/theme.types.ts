@@ -304,6 +304,7 @@ export interface ColorPalette {
   background: string;
   surface: string;
   border: string;
+  decorator: string;
 }
 
 export interface TypographyStyle {

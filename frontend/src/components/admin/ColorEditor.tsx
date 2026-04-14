@@ -155,7 +155,7 @@ export const ColorEditor: React.FC<ColorEditorProps> = ({
                             className="theme-button"
                             style={{
                                 backgroundColor: colors.primary,
-                                color: '#FFFFFF',
+                                color: colors.decorator,
                                 borderColor: colors.primary
                             }}
                             onMouseEnter={(e) => {

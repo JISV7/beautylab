@@ -235,12 +235,62 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
                             >
                                 <option value="credit_card">Credit Card</option>
                                 <option value="debit_card">Debit Card</option>
-                                <option value="zelle">Zelle</option>
+                                {/* <option value="zelle">Zelle</option> */}
                                 <option value="pago_movil">Pago Móvil</option>
-                                <option value="paypal">PayPal</option>
-                                <option value="bank_transfer">Bank Transfer</option>
+                                {/* <option value="paypal">PayPal</option> */}
+                                {/* <option value="bank_transfer">Bank Transfer</option> */}
                             </select>
                         </div>
+
+                        {/* Pago Movil Simulation Section */}
+                        {payment.method === 'pago_movil' && (
+                            <div className="palette-surface palette-border border rounded-xl p-4 space-y-4">
+                                <h4 className="text-paragraph font-semibold mb-3">
+                                    Pago Móvil Details (Simulation)
+                                </h4>
+                                <div>
+                                    <label className="text-paragraph font-medium block mb-2">
+                                        Company Phone Number
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value="+584144141234"
+                                        readOnly
+                                        className="theme-input w-full bg-gray-50 dark:bg-gray-800 cursor-not-allowed"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="text-paragraph font-medium block mb-2">
+                                        Company RIF
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value="J-30400858-9"
+                                        readOnly
+                                        className="theme-input w-full bg-gray-50 dark:bg-gray-800 cursor-not-allowed"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="text-paragraph font-medium block mb-2">
+                                        Select Your Bank
+                                    </label>
+                                    <select
+                                        value={payment.values.bank_selector || 'venezuela'}
+                                        onChange={(e) =>
+                                            updatePaymentValues(payment.id, { ...payment.values, bank_selector: e.target.value })
+                                        }
+                                        className="theme-input w-full"
+                                    >
+                                        <option value="venezuela">Venezuela</option>
+                                        <option value="mercantil">Mercantil</option>
+                                        <option value="bancamiga">Bancamiga</option>
+                                        <option value="bancamiga">Banesco</option>
+                                    </select>
+                                </div>
+                            </div>
+                        )}
 
                         {/* Amount Input */}
                         <div>

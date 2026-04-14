@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Plus, Trash2, DollarSign, AlertCircle } from 'lucide-react';
 import type { PaymentMethodType } from './types';
 import { type PaymentFormValues, PaymentForm } from './PaymentForms';
+import type { CompanyInfo } from '../../data/company.types';
 
 export interface SplitPaymentEntry {
     id: string;
@@ -15,12 +16,14 @@ export interface SplitPaymentManagerProps {
     totalAmount: number;
     onPaymentsChange: (payments: SplitPaymentEntry[]) => void;
     onValid?: (isValid: boolean) => void;
+    companyInfo?: CompanyInfo | null;
 }
 
 export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
     totalAmount,
     onPaymentsChange,
     onValid,
+    companyInfo,
 }) => {
     const [payments, setPayments] = useState<SplitPaymentEntry[]>([
         {
@@ -254,7 +257,7 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
                                     </label>
                                     <input
                                         type="text"
-                                        value="+584144141234"
+                                        value={companyInfo?.phone || '+584144141234'}
                                         readOnly
                                         className="theme-input w-full bg-gray-50 dark:bg-gray-800 cursor-not-allowed"
                                     />
@@ -266,7 +269,7 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
                                     </label>
                                     <input
                                         type="text"
-                                        value="J-30400858-9"
+                                        value={companyInfo?.rif || 'J-30400858-9'}
                                         readOnly
                                         className="theme-input w-full bg-gray-50 dark:bg-gray-800 cursor-not-allowed"
                                     />

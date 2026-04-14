@@ -9,6 +9,7 @@ import {
 } from '../components/payment';
 import { ArrowLeft, X, ShoppingCart, Loader2, KeyRound, AlertTriangle } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
+import type { CompanyInfo } from '../data/company.types';
 
 const API_URL = 'http://localhost:8000';
 
@@ -87,6 +88,9 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
     const [isPaymentValid, setIsPaymentValid] = useState(false);
     const [totalAllocated, setTotalAllocated] = useState<number>(0);
 
+    // Company info for Pago Movil
+    const [companyInfo, setCompanyInfo] = useState<CompanyInfo | null>(null);
+
     const fetchCourseDetails = async () => {
         try {
             setIsLoading(true);
@@ -108,8 +112,19 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
         }
     };
 
+    const fetchCompanyInfo = async () => {
+        try {
+            const response = await axios.get(`${API_URL}/company-info/active/public`);
+            setCompanyInfo(response.data);
+        } catch (error) {
+            // Company info is optional for Pago Movil simulation
+            console.warn('Failed to fetch company info:', error);
+        }
+    };
+
     useEffect(() => {
         fetchCourseDetails();
+        fetchCompanyInfo();
     }, [courseId]);
 
     const handleBuy = () => {
@@ -538,6 +553,7 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
                                     totalAmount={coursePrice}
                                     onPaymentsChange={handlePaymentsChange}
                                     onValid={setIsPaymentValid}
+                                    companyInfo={companyInfo}
                                 />
 
                                 <button

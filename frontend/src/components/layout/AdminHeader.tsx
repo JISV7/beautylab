@@ -136,6 +136,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({ onBack, onMenuToggle, 
                 <UserMenu
                     user={user}
                     onNavigateToDashboard={() => navigate('/dashboard?tab=dashboard')}
+                    onNavigateToSettings={() => navigate('/dashboard?tab=settings')}
                     onNavigateToHome={() => navigate('/')}
                     isOnHome={false}
                     onLogout={handleLogout}

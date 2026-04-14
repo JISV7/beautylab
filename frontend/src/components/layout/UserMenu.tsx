@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { User, LogOut, Shield, Home } from 'lucide-react';
+import { User, LogOut, Shield, Home, Settings } from 'lucide-react';
 
 interface UserMenuProps {
     user: {
@@ -9,6 +9,7 @@ interface UserMenuProps {
     } | null;
     onNavigate?: (page: string) => void;
     onNavigateToAdmin?: () => void;
+    onNavigateToSettings?: () => void;
     onNavigateToHome?: () => void;
     onNavigateToDashboard?: () => void;
     onLogout?: () => void;
@@ -56,6 +57,17 @@ export const UserMenu: React.FC<UserMenuProps> = ({
     const handleGoToDashboard = () => {
         if (onNavigateToDashboard) {
             onNavigateToDashboard();
+        }
+        setIsMenuOpen(false);
+    };
+
+    const handleSettings = () => {
+        if (onNavigate) {
+            onNavigate('settings');
+        } else if (onNavigateToSettings) {
+            onNavigateToSettings();
+        } else if (onNavigateToDashboard) {
+            window.location.href = '/dashboard?tab=settings';
         }
         setIsMenuOpen(false);
     };
@@ -112,6 +124,13 @@ export const UserMenu: React.FC<UserMenuProps> = ({
                             Admin Panel
                         </button>
                     )}
+                    <button
+                        onClick={handleSettings}
+                        className="w-full text-left px-4 py-2 text-paragraph hover:bg-palette-primary hover:text-white flex items-center gap-2 transition-colors"
+                    >
+                        <Settings className="w-4 h-4" />
+                        Settings
+                    </button>
                     <button
                         onClick={() => {
                             setIsMenuOpen(false);

@@ -8,12 +8,13 @@ import { CartIcon } from '../cart/CartIcon';
 interface DashboardHeaderProps {
     onNavigate?: (page: string) => void;
     onNavigateToAdmin?: () => void;
+    onNavigateToSettings?: () => void;
     onNavigateToHome?: () => void;
     onLogout?: () => void;
     onMenuToggle?: () => void;
 }
 
-export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNavigate, onNavigateToAdmin, onNavigateToHome, onLogout, onMenuToggle }) => {
+export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNavigate, onNavigateToAdmin, onNavigateToSettings, onNavigateToHome, onLogout, onMenuToggle }) => {
     const { user, logout: authLogout } = useAuth();
     const { currentMode, setPaletteMode } = useTheme();
     const [isNotificationOpen, setIsNotificationOpen] = useState(false);
@@ -131,6 +132,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNavigate, on
                         user={user}
                         onNavigate={onNavigate}
                         onNavigateToAdmin={onNavigateToAdmin}
+                        onNavigateToSettings={onNavigateToSettings}
                         onNavigateToDashboard={onNavigateToHome}
                         onNavigateToHome={onNavigateToHome}
                         onLogout={handleLogout}

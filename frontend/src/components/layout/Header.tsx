@@ -96,6 +96,7 @@ export const Header: React.FC = () => {
               <UserMenu
                 user={user}
                 onNavigateToDashboard={() => navigate('/dashboard')}
+                onNavigateToSettings={() => navigate('/dashboard?tab=settings')}
                 onNavigateToAdmin={() => navigate('/admin')}
                 onNavigateToHome={() => navigate('/')}
                 isOnHome={window.location.pathname === '/'}

@@ -6,6 +6,7 @@ import { CartPage } from '../components/cart/CartPage';
 import InvoicesPage from './InvoicesPage';
 import MyCoursesPage from './MyCoursesPage';
 import { CourseDetailsPage } from './CourseDetailsPage';
+import { SettingsPage } from './SettingsPage';
 
 interface DashboardProps {
     onNavigateToAdmin?: () => void;
@@ -72,6 +73,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 <InvoicesPage />
             ) : activeTab === 'cart' ? (
                 <CartPage onBack={() => handleNavigate('explore')} />
+            ) : activeTab === 'settings' ? (
+                <SettingsPage />
             ) : (
                 <div className="mx-auto p-6">
                     <h1 className="text-h1 text-h1 text-h1">Hello World</h1>

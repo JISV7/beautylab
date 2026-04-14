@@ -38,6 +38,7 @@ interface AuthContextType {
         is_contributor?: boolean,
     ) => Promise<void>;
     logout: () => void;
+    updateProfile: (profileData: { full_name?: string; fiscal_address?: string }) => Promise<void>;
     resetPassword: (email: string) => Promise<void>;
 }
 
@@ -132,7 +133,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 full_name: userData.full_name,
                 name: userData.full_name,
                 roles: userData.roles,
-                isAdmin
+                isAdmin,
+                fiscal_address: userData.fiscal_address,
             });
             setIsAuthenticated(true);
         } catch (error) {
@@ -249,13 +251,52 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(null);
     };
 
+    const updateProfile = async (profileData: { full_name?: string; fiscal_address?: string; }) => {
+        if (!user) {
+            throw new Error('No active user');
+        }
+
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+            throw new Error('No access token available');
+        }
+
+        const updatedUser: Partial<User> = {};
+        const authHeaders = {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        };
+
+        if (profileData.full_name !== undefined) {
+            const response = await axios.patch(
+                `${API_URL}/users/me`,
+                { full_name: profileData.full_name },
+                authHeaders,
+            );
+            updatedUser.full_name = response.data.full_name;
+            updatedUser.name = response.data.full_name;
+        }
+
+        if (profileData.fiscal_address !== undefined) {
+            const response = await axios.patch(
+                `${API_URL}/users/me/fiscal`,
+                { fiscal_address: profileData.fiscal_address },
+                authHeaders,
+            );
+            updatedUser.fiscal_address = response.data.fiscal_address;
+        }
+
+        setUser((prev) => prev ? { ...prev, ...updatedUser } : prev);
+    };
+
     const resetPassword = async (email: string) => {
         console.log('Password reset requested for:', email);
         // Implement API call for password reset if needed
     };
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, user, isLoading, login, register, logout, resetPassword }}>
+        <AuthContext.Provider value={{ isAuthenticated, user, isLoading, login, register, logout, updateProfile, resetPassword }}>
             {children}
         </AuthContext.Provider>
     );

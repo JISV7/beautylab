@@ -91,7 +91,7 @@ export const SettingsPage: React.FC = () => {
                                 value={rif}
                                 onChange={(event) => setRif(event.target.value.toUpperCase().replace(/[-\s]/g, ''))}
                                 className={`auth-input w-full py-3 px-4 rounded-xl ${rifError ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
-                                placeholder="V309583244"
+                                placeholder="V123456784"
                                 maxLength={10}
                             />
                             {rifError ? (
@@ -100,7 +100,7 @@ export const SettingsPage: React.FC = () => {
                                 </p>
                             ) : (
                                 <p className="text-paragraph opacity-60 mt-1">
-                                    Use format <code className="font-mono">V309583244</code> with valid check digit.
+                                    Use format <code className="font-mono">V123456784</code> with valid check digit.
                                 </p>
                             )}
                         </div>

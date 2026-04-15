@@ -15,12 +15,12 @@ def normalize_rif(rif: str) -> str:
         Normalized RIF: V123456789 (10 characters, uppercase, no separators)
 
     Examples:
-        >>> normalize_rif('V-30958324-4')
-        'V309583244'
-        >>> normalize_rif('V309583244')
-        'V309583244'
-        >>> normalize_rif('v-30958324-4')
-        'V309583244'
+        >>> normalize_rif('V123456781')
+        'V123456781'
+        >>> normalize_rif('V123456781')
+        'V123456781'
+        >>> normalize_rif('V123456781')
+        'V123456781'
     """
     # Remove separators and convert to uppercase
     return rif.replace("-", "").replace(" ", "").upper()
@@ -37,7 +37,7 @@ def calculate_rif_check_digit(document_type: str, document_number: str) -> str:
         The check digit (0-9)
 
     Examples:
-        >>> calculate_rif_check_digit('V', '30958324')
+        >>> calculate_rif_check_digit('V', '12345678')
         '4'
         >>> calculate_rif_check_digit('V', '9444510')
         '4'
@@ -135,8 +135,8 @@ def format_rif(document_type: str, document_number: str, check_digit: str | None
         Formatted RIF: V-XXXXXXXX-X
 
     Examples:
-        >>> format_rif('V', '30958324')
-        'V-30958324-4'
+        >>> format_rif('V', '12345678')
+        'V123456781'
         >>> format_rif('V', '9444510')
         'V-09444510-4'
     """
@@ -163,8 +163,8 @@ def parse_rif(rif: str) -> dict[str, str]:
         Dictionary with document_type, document_number, and check_digit
 
     Examples:
-        >>> parse_rif('V-30958324-4')
-        {'document_type': 'V', 'document_number': '30958324', 'check_digit': '4'}
+        >>> parse_rif('V123456781')
+        {'document_type': 'V', 'document_number': '12345678', 'check_digit': '4'}
     """
     # Remove separators and convert to uppercase
     clean_rif = rif.replace("-", "").replace(" ", "").upper()

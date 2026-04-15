@@ -12,9 +12,9 @@
  * @returns Normalized RIF: V123456789 (10 characters, uppercase, no separators)
  *
  * @example
- * normalizeRif('V-30958324-4') // returns 'V309583244'
- * normalizeRif('V309583244') // returns 'V309583244'
- * normalizeRif('v-30958324-4') // returns 'V309583244'
+ * normalizeRif('V123456781') // returns 'V123456781'
+ * normalizeRif('V123456781') // returns 'V123456781'
+ * normalizeRif('V123456781') // returns 'V123456781'
  */
 export function normalizeRif(rif: string): string {
   // Remove separators and convert to uppercase
@@ -29,7 +29,7 @@ export function normalizeRif(rif: string): string {
  * @returns The check digit (0-9)
  * 
  * @example
- * calculateRifCheckDigit('V', '30958324') // returns '4'
+ * calculateRifCheckDigit('V', '12345678') // returns '4'
  * calculateRifCheckDigit('V', '9444510') // returns '4'
  */
 export function calculateRifCheckDigit(documentType: string, documentNumber: string): string {
@@ -119,7 +119,7 @@ export function validateRif(rif: string): { isValid: boolean; errorMessage: stri
     if (providedCheck !== expectedCheck) {
       return {
         isValid: false,
-        errorMessage: `Invalid RIF check digit. Expected: ${documentType}-${docNumber}-${expectedCheck}`,
+        errorMessage: `Invalid RIF check digit. Expected: ${documentType}${docNumber}${expectedCheck}`,
         normalizedRif: ''
       };
     }
@@ -137,7 +137,7 @@ export function validateRif(rif: string): { isValid: boolean; errorMessage: stri
  * @returns Formatted RIF: V-XXXXXXXX-X
  * 
  * @example
- * formatRif('V', '30958324') // returns 'V-30958324-4'
+ * formatRif('V', '12345678') // returns 'V123456781'
  * formatRif('V', '9444510') // returns 'V-09444510-4'
  */
 export function formatRif(
@@ -164,8 +164,8 @@ export function formatRif(
  * @returns Object with documentType, documentNumber, and checkDigit
  * 
  * @example
- * parseRif('V-30958324-4') 
- * // returns { documentType: 'V', documentNumber: '30958324', checkDigit: '4' }
+ * parseRif('V123456781') 
+ * // returns { documentType: 'V', documentNumber: '12345678', checkDigit: '4' }
  */
 export function parseRif(rif: string): { 
   documentType: string; 

@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { validateRif, normalizeRif } from '../utils/rif';
 
 export const SettingsPage: React.FC = () => {
     const { user, updateProfile } = useAuth();
     const [fullName, setFullName] = useState('');
     const [fiscalAddress, setFiscalAddress] = useState('');
+    const [rif, setRif] = useState('');
+    const [rifError, setRifError] = useState('');
     const [isSaving, setIsSaving] = useState(false);
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
@@ -12,18 +15,34 @@ export const SettingsPage: React.FC = () => {
     useEffect(() => {
         setFullName(user?.full_name ?? '');
         setFiscalAddress(user?.fiscal_address ?? '');
+        setRif(user?.rif ? normalizeRif(user.rif) : '');
+        setRifError('');
     }, [user]);
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setError('');
         setMessage('');
+        setRifError('');
         setIsSaving(true);
+
+        let normalizedRif: string | undefined;
+        if (rif) {
+            const validation = validateRif(rif);
+            if (!validation.isValid) {
+                setRifError(validation.errorMessage);
+                setError('Please fix the RIF field before saving.');
+                setIsSaving(false);
+                return;
+            }
+            normalizedRif = validation.normalizedRif;
+        }
 
         try {
             await updateProfile({
                 full_name: fullName || undefined,
                 fiscal_address: fiscalAddress || undefined,
+                rif: normalizedRif,
             });
             setMessage('Your profile was updated successfully.');
         } catch (submitError: any) {
@@ -44,7 +63,7 @@ export const SettingsPage: React.FC = () => {
                 </div>
 
                 <form className="space-y-6" onSubmit={handleSubmit}>
-                    <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="grid gap-4 sm:grid-cols-3">
                         <div className="space-y-2">
                             <label className="text-paragraph block font-medium">Full Name</label>
                             <input
@@ -64,6 +83,26 @@ export const SettingsPage: React.FC = () => {
                                 className="auth-input w-full py-3 px-4 rounded-xl"
                                 placeholder="Complete address for invoices"
                             />
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-paragraph block font-medium">RIF</label>
+                            <input
+                                type="text"
+                                value={rif}
+                                onChange={(event) => setRif(event.target.value.toUpperCase().replace(/[-\s]/g, ''))}
+                                className={`auth-input w-full py-3 px-4 rounded-xl ${rifError ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
+                                placeholder="V309583244"
+                                maxLength={10}
+                            />
+                            {rifError ? (
+                                <p className="text-paragraph text-red-600 dark:text-red-400 mt-1">
+                                    {rifError}
+                                </p>
+                            ) : (
+                                <p className="text-paragraph opacity-60 mt-1">
+                                    Use format <code className="font-mono">V309583244</code> with valid check digit.
+                                </p>
+                            )}
                         </div>
                     </div>
 

@@ -20,6 +20,7 @@ export interface Printer extends Record<string, unknown> {
   businessName: string;
   rif: string;
   authorizationProvidence: string;
+  authorizationDate: string;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
@@ -39,5 +40,6 @@ export interface PrinterCreate {
   businessName: string;
   rif: string;
   authorizationProvidence: string;
+  authorizationDate: string;
   isActive?: boolean;
 }

@@ -36,6 +36,7 @@ export default function PrinterInfoPage() {
     businessName: '',
     rif: '',
     authorizationProvidence: '',
+    authorizationDate: '',
     isActive: false,
   });
   const [confirmModal, setConfirmModal] = useState<{
@@ -84,6 +85,7 @@ export default function PrinterInfoPage() {
         businessName: printer.businessName,
         rif: printer.rif,
         authorizationProvidence: printer.authorizationProvidence,
+        authorizationDate: printer.authorizationDate || '',
         isActive: printer.isActive,
       });
     } else {
@@ -92,6 +94,7 @@ export default function PrinterInfoPage() {
         businessName: '',
         rif: '',
         authorizationProvidence: '',
+        authorizationDate: '',
         isActive: false,
       });
     }

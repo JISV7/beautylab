@@ -38,7 +38,7 @@ interface AuthContextType {
         is_contributor?: boolean,
     ) => Promise<void>;
     logout: () => void;
-    updateProfile: (profileData: { full_name?: string; fiscal_address?: string }) => Promise<void>;
+    updateProfile: (profileData: { full_name?: string; fiscal_address?: string; rif?: string }) => Promise<void>;
     resetPassword: (email: string) => Promise<void>;
 }
 
@@ -251,7 +251,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(null);
     };
 
-    const updateProfile = async (profileData: { full_name?: string; fiscal_address?: string; }) => {
+    const updateProfile = async (profileData: { full_name?: string; fiscal_address?: string; rif?: string }) => {
         if (!user) {
             throw new Error('No active user');
         }
@@ -278,13 +278,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             updatedUser.name = response.data.full_name;
         }
 
-        if (profileData.fiscal_address !== undefined) {
+        if (profileData.fiscal_address !== undefined || profileData.rif !== undefined) {
             const response = await axios.patch(
                 `${API_URL}/users/me/fiscal`,
-                { fiscal_address: profileData.fiscal_address },
+                {
+                    fiscal_address: profileData.fiscal_address,
+                    rif: profileData.rif,
+                },
                 authHeaders,
             );
-            updatedUser.fiscal_address = response.data.fiscal_address;
+            if (response.data.fiscal_address !== undefined) {
+                updatedUser.fiscal_address = response.data.fiscal_address;
+            }
+            if (response.data.rif !== undefined) {
+                updatedUser.rif = response.data.rif;
+            }
         }
 
         setUser((prev) => prev ? { ...prev, ...updatedUser } : prev);

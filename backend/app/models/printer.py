@@ -20,6 +20,7 @@ class Printer(Base, TimestampMixin):
     business_name: Mapped[str] = mapped_column(String(255), nullable=False)
     rif: Mapped[str] = mapped_column(String(20), nullable=False, index=True, unique=True)
     authorization_providence: Mapped[str] = mapped_column(String(255), nullable=False)
+    authorization_date: Mapped[str | None] = mapped_column(String(10), nullable=True)
     is_active: Mapped[bool] = mapped_column(
         Boolean, nullable=False, default=True, index=True, server_default="true"
     )

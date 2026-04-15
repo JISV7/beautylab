@@ -31,10 +31,30 @@ class PrinterBase(BaseModel):
 class PrinterCreate(PrinterBase):
     """Schema for creating printer."""
 
+    authorization_date: str = Field(
+        ..., max_length=8, description="Authorization date in DDMMAAAA format"
+    )
+
     model_config = ConfigDict(
         alias_generator=to_camel,
         populate_by_name=True,
     )
+
+    @field_validator("authorization_date")
+    @classmethod
+    def validate_authorization_date(cls, v: str) -> str:
+        if not v:
+            raise ValueError("Authorization date is required")
+        if len(v) != 8 or not v.isdigit():
+            raise ValueError("Authorization date must be 8 digits in DDMMAAAA format")
+        day = int(v[:2])
+        month = int(v[2:4])
+        year = int(v[4:8])
+        try:
+            datetime(year, month, day)
+        except ValueError:
+            raise ValueError("Authorization date must be a valid calendar date")
+        return v
 
 
 class PrinterUpdate(BaseModel):
@@ -43,7 +63,26 @@ class PrinterUpdate(BaseModel):
     business_name: str | None = Field(None, max_length=255)
     rif: str | None = Field(None, max_length=20)
     authorization_providence: str | None = Field(None, max_length=255)
+    authorization_date: str | None = Field(
+        None, max_length=8, description="Authorization date in DDMMAAAA format"
+    )
     is_active: bool | None = Field(None, description="Whether this printer is active")
+
+    @field_validator("authorization_date")
+    @classmethod
+    def validate_authorization_date(cls, v: str | None) -> str | None:
+        if v is None:
+            return None
+        if len(v) != 8 or not v.isdigit():
+            raise ValueError("Authorization date must be 8 digits in DDMMAAAA format")
+        day = int(v[:2])
+        month = int(v[2:4])
+        year = int(v[4:8])
+        try:
+            datetime(year, month, day)
+        except ValueError:
+            raise ValueError("Authorization date must be a valid calendar date")
+        return v
 
     model_config = ConfigDict(
         alias_generator=to_camel,
@@ -66,6 +105,7 @@ class PrinterResponse(PrinterBase):
     """Schema for printer response."""
 
     id: int
+    authorization_date: str | None = None
     created_at: str
     updated_at: str
 

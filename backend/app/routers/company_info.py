@@ -141,14 +141,16 @@ async def update_company_info(
                 detail="Company with this RIF already exists",
             )
 
-    # Handle is_active change through service
-    if company_data.is_active is not None and company_data.is_active:
+    update_data = company_data.model_dump(exclude_unset=True)
+    is_active = update_data.pop("is_active", None)
+
+    for field, value in update_data.items():
+        setattr(company, field, value)
+
+    if is_active is True:
+        await db.commit()
         company = await service.set_active(company_id)
     else:
-        # Update other fields
-        update_data = company_data.model_dump(exclude_unset=True, exclude={"is_active"})
-        for field, value in update_data.items():
-            setattr(company, field, value)
         await db.commit()
         await db.refresh(company)
 

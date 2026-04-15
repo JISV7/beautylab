@@ -26,7 +26,6 @@ export const PrinterForm: React.FC<PrinterFormProps> = ({
   const [expectedRif, setExpectedRif] = useState('');
   const [documentType, setDocumentType] = useState('J');
   const [documentNumber, setDocumentNumber] = useState('');
-  const [authorizationDate, setAuthorizationDate] = useState('');
   const [authorizationDateError, setAuthorizationDateError] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
@@ -71,6 +70,8 @@ export const PrinterForm: React.FC<PrinterFormProps> = ({
       setRifValid(false);
     }
   }, [documentType, documentNumber, formData.rif]);
+
+  const authorizationDate = formData.authorizationDate ?? '';
 
   // Validate authorization date format (DDMMAAAA)
   useEffect(() => {
@@ -126,7 +127,7 @@ export const PrinterForm: React.FC<PrinterFormProps> = ({
   const handleAuthorizationDateChange = (value: string) => {
     const cleanValue = value.replace(/[^0-9]/g, '');
     if (cleanValue.length <= 8) {
-      setAuthorizationDate(cleanValue);
+      onChange('authorizationDate', cleanValue);
     }
   };
 

@@ -81,14 +81,16 @@ async def update_printer(
                 detail="Printer with this RIF already exists",
             )
 
-    # Handle is_active change through service
-    if printer_data.is_active is not None and printer_data.is_active:
+    update_data = printer_data.model_dump(exclude_unset=True)
+    is_active = update_data.pop("is_active", None)
+
+    for field, value in update_data.items():
+        setattr(printer, field, value)
+
+    if is_active is True:
+        await db.commit()
         printer = await service.set_active(printer_id)
     else:
-        # Update other fields
-        update_data = printer_data.model_dump(exclude_unset=True, exclude={"is_active"})
-        for field, value in update_data.items():
-            setattr(printer, field, value)
         await db.commit()
         await db.refresh(printer)
 

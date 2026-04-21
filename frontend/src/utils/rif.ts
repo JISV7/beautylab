@@ -111,8 +111,14 @@ export function validateRif(rif: string): { isValid: boolean; errorMessage: stri
   // Extract document number (positions 1-8, padded if needed)
   const docNumber = cleanRif.slice(1, 9);
 
+  let finalRif = cleanRif;
+  // If RIF has 9 characters, append the calculated check digit
+  if (cleanRif.length === 9) {
+    const expectedCheck = calculateRifCheckDigit(documentType, docNumber);
+    finalRif = cleanRif + expectedCheck;
+  }
   // If RIF has 10 characters, validate the check digit
-  if (cleanRif.length === 10) {
+  else if (cleanRif.length === 10) {
     const providedCheck = cleanRif[9];
     const expectedCheck = calculateRifCheckDigit(documentType, docNumber);
 
@@ -125,7 +131,7 @@ export function validateRif(rif: string): { isValid: boolean; errorMessage: stri
     }
   }
 
-  return { isValid: true, errorMessage: '', normalizedRif: cleanRif };
+  return { isValid: true, errorMessage: '', normalizedRif: finalRif };
 }
 
 /**

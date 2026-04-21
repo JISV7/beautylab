@@ -19,6 +19,18 @@ export const SettingsPage: React.FC = () => {
         setRifError('');
     }, [user]);
 
+    const handleRifBlur = () => {
+        if (rif) {
+            const validation = validateRif(rif);
+            if (validation.isValid) {
+                setRif(validation.normalizedRif);
+                setRifError('');
+            } else {
+                setRifError(validation.errorMessage);
+            }
+        }
+    };
+
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setError('');
@@ -36,6 +48,8 @@ export const SettingsPage: React.FC = () => {
                 return;
             }
             normalizedRif = validation.normalizedRif;
+            // Update UI with autocompleted RIF if necessary
+            setRif(normalizedRif);
         }
 
         try {
@@ -90,6 +104,7 @@ export const SettingsPage: React.FC = () => {
                                 type="text"
                                 value={rif}
                                 onChange={(event) => setRif(event.target.value.toUpperCase().replace(/[-\s]/g, ''))}
+                                onBlur={handleRifBlur}
                                 className={`auth-input w-full py-3 px-4 rounded-xl ${rifError ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
                                 placeholder="V123456784"
                                 maxLength={10}

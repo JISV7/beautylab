@@ -134,7 +134,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 name: userData.full_name,
                 roles: userData.roles,
                 isAdmin,
+                rif: userData.rif,
+                document_type: userData.document_type,
+                document_number: userData.document_number,
+                business_name: userData.business_name,
                 fiscal_address: userData.fiscal_address,
+                phone: userData.phone,
+                is_contributor: userData.is_contributor,
             });
             setIsAuthenticated(true);
         } catch (error) {

@@ -14,6 +14,7 @@ export function Home() {
     const { activeTheme, currentMode } = useTheme();
     const { user } = useAuth();
     const [showLoader, setShowLoader] = useState(false);
+    const [hasCheckedLoader, setHasCheckedLoader] = useState(false);
 
     useEffect(() => {
         // Check if loader should be shown
@@ -21,6 +22,7 @@ export function Home() {
         // 2. User must not be an admin/root
         if (!activeTheme) {
             console.log('[Home] Waiting for activeTheme...');
+            setHasCheckedLoader(false);
             return;
         }
 
@@ -49,12 +51,19 @@ export function Home() {
                 console.log('[Home] Loader already seen in this session');
             }
         }
+
+        setHasCheckedLoader(true);
     }, [activeTheme, user, currentMode]);
 
     const handleLoaderFinish = () => {
         setShowLoader(false);
         sessionStorage.setItem('hasSeenTangramLoader', 'true');
     };
+
+    if (!activeTheme || !hasCheckedLoader) {
+        // Don't render anything until theme is loaded and loader check is done to prevent flash
+        return null;
+    }
 
     if (showLoader) {
         const currentPalette = activeTheme?.config?.[currentMode];

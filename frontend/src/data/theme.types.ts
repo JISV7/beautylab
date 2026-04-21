@@ -16,6 +16,7 @@ export interface PaletteColors {
   surface: string;
   border: string;
   decorator?: string;
+  loader?: LoaderConfig;
   // Note: text colors are defined in typography config, not here
 }
 
@@ -48,6 +49,11 @@ export interface TypographyConfig {
 export interface ThemePalette {
   colors: PaletteColors;
   typography: TypographyConfig;
+}
+
+export interface LoaderConfig {
+  enabled: boolean;
+  selectedTangram: number; // 1, 2, or 3
 }
 
 // ==================== Theme Config Types ====================

@@ -14,6 +14,21 @@ from pydantic import (
 )
 from pydantic.alias_generators import to_camel
 
+# ==================== Loader Schemas ====================
+
+
+class LoaderConfig(BaseModel):
+    """Configuration for the animated Tangram loader."""
+
+    enabled: bool = Field(default=False, description="Whether the loader is enabled")
+    selected_tangram: int = Field(default=1, ge=1, le=3, description="Selected Tangram variant (1-3)", alias="selectedTangram")
+
+    model_config = ConfigDict(
+        alias_generator=AliasGenerator(serialization_alias=to_camel),
+        populate_by_name=True,
+    )
+
+
 # ==================== Color Schemas ====================
 
 
@@ -30,6 +45,7 @@ class PaletteColors(BaseModel):
     background: str = Field(..., description="Main page background color")
     surface: str = Field(..., description="Surface color for cards, panels")
     border: str = Field(..., description="Border and divider color")
+    loader: LoaderConfig | None = Field(None, description="Animated loader configuration")
 
     @field_validator("primary", "secondary", "accent", "background", "surface", "border")
     @classmethod

@@ -335,6 +335,7 @@ async def seed_default_theme(
                     "background": "#FBFBFE",
                     "surface": "#EEEEF0",
                     "border": "#DDDDDD",
+                    "loader": {"enabled": False, "selectedTangram": 1},
                 },
                 "typography": {
                     "h1": make_typography_element("2.492", 400, "#F83A3A"),
@@ -357,6 +358,7 @@ async def seed_default_theme(
                     "background": "#010104",
                     "surface": "#0E0E10",
                     "border": "#212121",
+                    "loader": {"enabled": False, "selectedTangram": 1},
                 },
                 "typography": {
                     "h1": make_typography_element("2.492", 400, "#C50707"),
@@ -379,6 +381,7 @@ async def seed_default_theme(
                     "background": "#FBFBFE",
                     "surface": "#EEEEF0",
                     "border": "#DDDDDD",
+                    "loader": {"enabled": False, "selectedTangram": 1},
                 },
                 "typography": {
                     "h1": make_typography_element("2.492", 400, "#2F27CE"),

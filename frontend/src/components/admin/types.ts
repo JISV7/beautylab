@@ -32,7 +32,7 @@ export interface ThemeEditorProps {
     theme: Theme;
     activeMode: 'light' | 'dark' | 'accessibility';
     onModeChange: (mode: 'light' | 'dark' | 'accessibility') => void;
-    onSave: (buffers: Record<string, { colors: ColorPalette; styles: Record<string, TypographyStyle> }>, activeMode: string) => void;
+    onSave: (buffers: Record<string, { colors: ColorPalette; styles: Record<string, TypographyStyle>; loader: { enabled: boolean; selectedTangram: number } }>, activeMode: string) => void;
     onPublish: () => void;
     onPreview: () => void;
     onBack: () => void;

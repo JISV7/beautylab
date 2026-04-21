@@ -222,7 +222,8 @@ function createDefaultThemeConfig(
             background: '#FBFBFE',
             surface: '#EEEEF0',
             border: '#DDDDDD',
-            decorator: '#FFFFFF'
+            decorator: '#FFFFFF',
+            loader: { enabled: false, selectedTangram: 1 }
         },
         typography: {
             h1: { ...defaultTypography, fontSize: '2.492', fontWeight: 400, color: customColors?.light.primary || '#F83A3A' },
@@ -246,7 +247,8 @@ function createDefaultThemeConfig(
             background: '#010104',
             surface: '#0e0e10',
             border: '#212121',
-            decorator: '#FFFFFF'
+            decorator: '#FFFFFF',
+            loader: { enabled: false, selectedTangram: 1 }
         },
         typography: {
             h1: { ...defaultTypography, fontSize: '2.492', fontWeight: 400, color: customColors?.dark.primary || '#C50707' },
@@ -274,9 +276,13 @@ function createDefaultThemeConfig(
 const toThemePalette = (
     colors: ColorPalette,
     styles: Record<string, TypographyStyle>,
-    currentPalette: ThemePalette
+    currentPalette: ThemePalette,
+    loader: { enabled: boolean; selectedTangram: number }
 ): ThemePalette => ({
-    colors,
+    colors: {
+        ...colors,
+        loader
+    },
     typography: {
         h1: {
             fontId: styles.h1.fontId || currentPalette.typography.h1?.fontId || '',
@@ -653,19 +659,21 @@ export const UnifiedThemeConfig: React.FC = () => {
     };
 
     const handleSaveTheme = async (
-        buffers: Record<string, { colors: ColorPalette; styles: Record<string, TypographyStyle> }>,
+        buffers: Record<string, { colors: ColorPalette; styles: Record<string, TypographyStyle>; loader: { enabled: boolean; selectedTangram: number } }>,
         _activeMode: string
     ) => {
         if (!activeTheme) return;
 
         // Build the full config with ALL three modes from the editor buffers
         const modes = ['light', 'dark', 'accessibility'] as const;
-        const newConfig: ThemeConfig = { ...activeTheme.config };
+        const newConfig: ThemeConfig = { 
+            ...activeTheme.config
+        };
 
         for (const mode of modes) {
             const buf = buffers[mode];
             if (buf) {
-                newConfig[mode] = toThemePalette(buf.colors, buf.styles, activeTheme.config[mode]);
+                newConfig[mode] = toThemePalette(buf.colors, buf.styles, activeTheme.config[mode], buf.loader);
             }
         }
 

@@ -17,7 +17,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
     onBack,
 }) => {
     const { fetchFonts, uploadFont, deleteFont } = useTheme();
-    const [activeTab, setActiveTab] = React.useState<'colors' | 'typography'>('colors');
+    const [activeTab, setActiveTab] = React.useState<'colors' | 'typography' | 'loader'>('colors');
     const [fonts, setFonts] = React.useState<Font[]>([]);
     const [uploading, setUploading] = React.useState(false);
     const fileInputRef = React.useRef<HTMLInputElement>(null);
@@ -157,12 +157,39 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
 
     // Per-mode editing buffers: each mode has its own colors/styles that persist
     // across mode switches. Only reset by Discard or on component unmount.
-    type EditBuffer = { colors: ColorPalette; styles: Record<string, TypographyStyle> };
+    type EditBuffer = { 
+        colors: ColorPalette; 
+        styles: Record<string, TypographyStyle>;
+        loader: { enabled: boolean; selectedTangram: number };
+    };
     const editBufferRef = React.useRef<Record<string, EditBuffer>>({
-        light: { colors: initialColors, styles: initialStyles },
-        dark: { colors: initialColors, styles: initialStyles },
-        accessibility: { colors: initialColors, styles: initialStyles },
+        light: { 
+            colors: initialColors, 
+            styles: initialStyles,
+            loader: { 
+                enabled: theme.config.light.colors.loader?.enabled ?? false,
+                selectedTangram: theme.config.light.colors.loader?.selectedTangram ?? 1
+            }
+        },
+        dark: { 
+            colors: initialColors, 
+            styles: initialStyles,
+            loader: { 
+                enabled: theme.config.dark.colors.loader?.enabled ?? false,
+                selectedTangram: theme.config.dark.colors.loader?.selectedTangram ?? 1
+            }
+        },
+        accessibility: { 
+            colors: initialColors, 
+            styles: initialStyles,
+            loader: { 
+                enabled: theme.config.accessibility.colors.loader?.enabled ?? false,
+                selectedTangram: theme.config.accessibility.colors.loader?.selectedTangram ?? 1
+            }
+        },
     });
+
+    const [loader, setLoader] = React.useState(editBufferRef.current[initialMode].loader);
     const lastModeRef = React.useRef<string>(initialMode);
 
     // Active view state — mirrors the buffer for the current mode
@@ -176,12 +203,14 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
         editBufferRef.current[prevMode] = {
             colors: { ...colors },
             styles: { ...styles },
+            loader: { ...loader }
         };
         lastModeRef.current = activeMode;
         // Load the target mode's buffer
         const buf = editBufferRef.current[activeMode];
         setColors(buf.colors);
         setStyles(buf.styles);
+        setLoader(buf.loader);
     }, [activeMode]);
 
     // When the saved theme config changes (after a successful save),
@@ -209,6 +238,10 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                     h6: { fontFamily: md.typography.h6?.fontName || 'Roboto', fontId: md.typography.h6?.fontId || '', size: parseFloat(md.typography.h6?.fontSize || '1.0'), color: md.typography.h6?.color || '#000000', fontWeight: md.typography.h6?.fontWeight || 400, lineHeight: md.typography.h6?.lineHeight || '1.5' },
                     p: { fontFamily: md.typography.paragraph?.fontName || 'Roboto', fontId: md.typography.paragraph?.fontId || '', size: parseFloat(md.typography.paragraph?.fontSize || '1.0'), color: md.typography.paragraph?.color || '#000000', fontWeight: md.typography.paragraph?.fontWeight || 400, lineHeight: md.typography.paragraph?.lineHeight || '1.6' },
                 },
+                loader: {
+                    enabled: md.colors.loader?.enabled ?? false,
+                    selectedTangram: md.colors.loader?.selectedTangram ?? 1
+                }
             };
         }
         // Also sync the current view
@@ -226,6 +259,10 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
             h5: { fontFamily: md.typography.h5?.fontName || 'Roboto', fontId: md.typography.h5?.fontId || '', size: parseFloat(md.typography.h5?.fontSize || '1.2'), color: md.typography.h5?.color || '#000000', fontWeight: md.typography.h5?.fontWeight || 400, lineHeight: md.typography.h5?.lineHeight || '1.4' },
             h6: { fontFamily: md.typography.h6?.fontName || 'Roboto', fontId: md.typography.h6?.fontId || '', size: parseFloat(md.typography.h6?.fontSize || '1.0'), color: md.typography.h6?.color || '#000000', fontWeight: md.typography.h6?.fontWeight || 400, lineHeight: md.typography.h6?.lineHeight || '1.5' },
             p: { fontFamily: md.typography.paragraph?.fontName || 'Roboto', fontId: md.typography.paragraph?.fontId || '', size: parseFloat(md.typography.paragraph?.fontSize || '1.0'), color: md.typography.paragraph?.color || '#000000', fontWeight: md.typography.paragraph?.fontWeight || 400, lineHeight: md.typography.paragraph?.lineHeight || '1.6' },
+        });
+        setLoader({
+            enabled: md.colors.loader?.enabled ?? false,
+            selectedTangram: md.colors.loader?.selectedTangram ?? 1
         });
     }, [
         theme.config.light.colors.primary, theme.config.light.colors.secondary, theme.config.light.colors.accent,
@@ -303,6 +340,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
         editBufferRef.current[activeMode] = {
             colors: { ...colors },
             styles: { ...styles },
+            loader: { ...loader }
         };
         // Pass ALL mode buffers to the parent for full save
         onSave(editBufferRef.current, activeMode);
@@ -380,10 +418,16 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
             }
         };
 
+        const resetLoader = {
+            enabled: modeData.colors.loader?.enabled ?? false,
+            selectedTangram: modeData.colors.loader?.selectedTangram ?? 1
+        };
+
         // Update the buffer AND the view
-        editBufferRef.current[activeMode] = { colors: resetColors, styles: resetStyles };
+        editBufferRef.current[activeMode] = { colors: resetColors, styles: resetStyles, loader: resetLoader };
         setColors(resetColors);
         setStyles(resetStyles);
+        setLoader(resetLoader);
     };
 
     return (
@@ -500,6 +544,16 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                             <Type className="w-4 h-4" />
                             Typography
                         </button>
+                        <button
+                            onClick={() => setActiveTab('loader')}
+                            className={`pb-2 flex items-center gap-2 font-medium transition-colors ${activeTab === 'loader'
+                                    ? 'text-palette-primary border-b-2 border-palette-primary'
+                                    : 'text-paragraph hover:text-slate-900 dark:hover:text-white'
+                                }`}
+                        >
+                            <Palette className="w-4 h-4" />
+                            Loader
+                        </button>
                     </div>
 
                     {/* Tab Content */}
@@ -510,7 +564,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                             styles={styles}
                             onColorChange={handleColorChange}
                         />
-                    ) : (
+                    ) : activeTab === 'typography' ? (
                         <div className="space-y-8">
                             <FontManager
                                 installedFonts={fonts}
@@ -528,6 +582,51 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                                     onStyleChange={handleStyleChange}
                                     validationErrors={validationErrors}
                                 />
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                            <div className="theme-card">
+                                <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
+                                    <Palette className="w-5 h-5 text-palette-primary" />
+                                    Tangram Loader Settings
+                                </h3>
+                                
+                                <div className="space-y-6">
+                                    <div className="flex items-center justify-between p-4 bg-black/5 dark:bg-white/5 rounded-xl border palette-border">
+                                        <div>
+                                            <p className="font-bold">Enable Animated Loader</p>
+                                            <p className="text-sm text-paragraph opacity-70">Shows a 3D Tangram animation before loading the site.</p>
+                                        </div>
+                                        <button 
+                                            onClick={() => setLoader(prev => ({ ...prev, enabled: !prev.enabled }))}
+                                            className={`w-14 h-8 rounded-full transition-colors relative ${loader.enabled ? 'bg-palette-primary' : 'bg-slate-300 dark:bg-slate-700'}`}
+                                        >
+                                            <div className={`absolute top-1 left-1 w-6 h-6 bg-white rounded-full transition-transform ${loader.enabled ? 'translate-x-6' : 'translate-x-0'}`} />
+                                        </button>
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        <p className="font-bold">Select Animation Style</p>
+                                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                            {[1, 2, 3].map((num) => (
+                                                <button
+                                                    key={num}
+                                                    onClick={() => setLoader(prev => ({ ...prev, selectedTangram: num }))}
+                                                    className={`p-6 rounded-2xl border-2 transition-all text-center ${loader.selectedTangram === num 
+                                                        ? 'border-palette-primary bg-palette-primary/10' 
+                                                        : 'palette-border hover:border-palette-primary/50'}`}
+                                                >
+                                                    <div className="text-3xl mb-2">💎</div>
+                                                    <p className="font-bold">Tangram {num}</p>
+                                                    <p className="text-xs text-paragraph opacity-60">
+                                                        {num === 1 ? '3D Explode' : num === 2 ? 'Side Slide' : 'Bottom Pop'}
+                                                    </p>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     )}

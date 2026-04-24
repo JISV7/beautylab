@@ -20,6 +20,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({
     user,
     onNavigate,
     onNavigateToAdmin,
+    onNavigateToSettings,
     onNavigateToHome,
     onNavigateToDashboard,
     onLogout,

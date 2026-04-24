@@ -27,6 +27,9 @@ export interface PaymentFormValues {
     transaction_id?: string;
     payer_name?: string;
 
+    // Pago Móvil
+    bank_selector?: string;
+
     // Bank Transfer
     transfer_reference?: string;
     account_holder?: string;

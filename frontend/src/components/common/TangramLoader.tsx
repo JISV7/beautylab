@@ -36,7 +36,7 @@ export const TangramLoader: React.FC<TangramLoaderProps> = ({ onFinish, selected
     ];
 
     return (
-        <div className={`fixed inset-0 z-[9999] flex items-center justify-center bg-background transition-opacity duration-500 ${isExiting ? 'opacity-0' : 'opacity-100'} ${currentMode}`}>
+        <div className={`fixed inset-0 z-[9999] flex items-center justify-center palette-background transition-opacity duration-500 ${isExiting ? 'opacity-0' : 'opacity-100'} ${currentMode}`}>
             <style>{`
                 .tangram-container {
                     width: 300px;

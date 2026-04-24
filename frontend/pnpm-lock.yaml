@@ -20,6 +20,9 @@ importers:
       datatables.net-dt:
         specifier: ^2.3.7
         version: 2.3.7
+      gsap:
+        specifier: ^3.15.0
+        version: 3.15.0
       lucide-react:
         specifier: ^0.577.0
         version: 0.577.0(react@19.2.4)
@@ -47,6 +50,9 @@ importers:
       tailwindcss:
         specifier: ^4.2.2
         version: 4.2.2
+      three:
+        specifier: ^0.184.0
+        version: 0.184.0
       zod:
         specifier: ^4.3.6
         version: 4.3.6
@@ -1832,6 +1838,9 @@ packages:
   graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
 
+  gsap@3.15.0:
+    resolution: {integrity: sha512-dMW4CWBTUK1AEEDeZc1g4xpPGIrSf9fJF960qbTZmN/QwZIWY5wgliS6JWl9/25fpTGJrMRtSjGtOmPnfjZB+A==}
+
   has-flag@4.0.0:
     resolution: {integrity: sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==}
     engines: {node: '>=8'}
@@ -2231,6 +2240,9 @@ packages:
   tapable@2.3.2:
     resolution: {integrity: sha512-1MOpMXuhGzGL5TTCZFItxCc0AARf1EZFQkGqMm7ERKj8+Hgr5oLvJOVFcC+lRmR8hCe2S3jC4T5D7Vg/d7/fhA==}
     engines: {node: '>=6'}
+
+  three@0.184.0:
+    resolution: {integrity: sha512-wtTRjG92pM5eUg/KuUnHsqSAlPM296brTOcLgMRqEeylYTh/CdtvKUvCyyCQTzFuStieWxvZb8mVTMvdPyUpxg==}
 
   tinyglobby@0.2.15:
     resolution: {integrity: sha512-j2Zq4NyQYG5XMST4cbs02Ak8iJUdxRM0XI5QyxXuZOzKOINmWurp3smXu3y5wDcJrptwpSjgXHzIQxR0omXljQ==}
@@ -4055,6 +4067,8 @@ snapshots:
 
   graceful-fs@4.2.11: {}
 
+  gsap@3.15.0: {}
+
   has-flag@4.0.0: {}
 
   has-symbols@1.1.0: {}
@@ -4433,6 +4447,8 @@ snapshots:
   tailwindcss@4.2.2: {}
 
   tapable@2.3.2: {}
+
+  three@0.184.0: {}
 
   tinyglobby@0.2.15:
     dependencies:

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Tangram 104 - Ibex</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #ffffff;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</head>
+
+<body>
+
+    <script>
+        // 1. SCENE SETUP
+        const scene = new THREE.Scene();
+        // GRID USED DURING CREATION OR EDITING
+        // const gridHelper = new THREE.GridHelper(20, 20);
+        // gridHelper.rotation.x = -Math.PI / 2;
+        // gridHelper.position.z = 5;
+        // scene.add(gridHelper);
+        // const axesHelper = new THREE.AxesHelper(5);
+        // scene.add(axesHelper);
+
+        const aspect = window.innerWidth / window.innerHeight;
+        const camera = new THREE.PerspectiveCamera(35, aspect, 0.1, 100);
+        camera.position.set(0, 0, 18);
+        camera.lookAt(0, 0, 0);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = false;
+        document.body.appendChild(renderer.domElement);
+
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.6);
+        directionalLight.position.set(4, 8, 12);
+        scene.add(directionalLight);
+
+        // 2. TANGRAM DATA
+        const piecesData = [
+            {
+                id: 'p-l1_green', color: 0x00cc7c,
+                stateA: [[0, 4], [0, 0], [2, 2]],
+                stateB: [[-1, 1], [-1, -3], [-3, -1]],
+                rotX: Math.PI * 2, rotY: Math.PI, rotZ: 0
+            },
+            {
+                id: 'p-l2_blue', color: 0x2583ef,
+                stateA: [[0, 0], [4, 0], [2, 2]],
+                stateB: [[-1, 3], [-1, -1], [1, 1]],
+                rotX: 0, rotY: Math.PI * 2, rotZ: -Math.PI / 2
+            },
+            {
+                id: 'p-s1_red', color: 0xec4654,
+                stateA: [[0, 4], [1, 3], [2, 4]],
+                stateB: [[2, 2], [0, 2], [1, 3]],
+                rotX: Math.PI * 2, rotY: 0, rotZ: Math.PI
+            },
+            {
+                id: 'p-sq_yellow', color: 0xfad405,
+                stateA: [[2, 4], [1, 3], [2, 2], [3, 3]],
+                stateB: [[0, 4], [-1, 3], [0, 2], [1, 3]],
+                rotX: 0, rotY: Math.PI * 2, rotZ: 0
+            },
+            {
+                id: 'p-m_purple', color: 0xad43df,
+                stateA: [[4, 4], [2, 4], [4, 2]],
+                stateB: [[-0.13, 0.93], [1.87, -1.07], [-0.13, -1.07]],
+                rotX: Math.PI * 2, rotY: Math.PI, rotZ: -Math.PI / 4
+            },
+            {
+                id: 'p-s2_cyan', color: 0x0fc8e6,
+                stateA: [[3, 3], [2, 2], [3, 1]],
+                stateB: [[-3.1, -0.1], [-3.1, -2.1], [-4.1, -1.1]],
+                rotX: 0, rotY: Math.PI * 2, rotZ: Math.PI / 4
+            },
+            {
+                id: 'p-p_orange', color: 0xfd8b01,
+                stateA: [[3, 3], [3, 1], [4, 0], [4, 2]],
+                stateB: [[-3, 3], [-1, 3], [0, 4], [-2, 4]],
+                rotX: Math.PI * 2, rotY: 0, rotZ: Math.PI / 2
+            }
+        ];
+
+        function getCentroid(pts) {
+            let x = 0, y = 0;
+            for (let p of pts) { x += p[0]; y += p[1]; }
+            return { x: x / pts.length, y: y / pts.length };
+        }
+
+        // 3. BUILD THE 3D MESHES
+        const meshes = [];
+        const tangramGroup = new THREE.Group();
+        scene.add(tangramGroup);
+
+        const depth = 0.4;
+
+        piecesData.forEach(data => {
+            const centroidA = getCentroid(data.stateA);
+            const centroidB = getCentroid(data.stateB);
+
+            const shape = new THREE.Shape();
+            data.stateA.forEach((pt, index) => {
+                const localX = pt[0] - centroidA.x;
+                const localY = pt[1] - centroidA.y;
+                if (index === 0) shape.moveTo(localX, localY);
+                else shape.lineTo(localX, localY);
+            });
+            shape.closePath();
+
+            const extrudeSettings = { depth: depth, bevelEnabled: false };
+            const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+            geometry.translate(0, 0, -depth / 2);
+
+            const material = new THREE.MeshStandardMaterial({
+                color: data.color,
+                roughness: 0.3,
+                metalness: 0.1,
+                side: THREE.DoubleSide
+            });
+
+            const mesh = new THREE.Mesh(geometry, material);
+            mesh.name = data.id;
+
+            mesh.position.set(centroidA.x - 2, centroidA.y - 2, 0);
+
+            mesh.userData = {
+                stateA: {
+                    x: centroidA.x - 2, y: centroidA.y - 2, rotX: 0, rotY: 0, rotZ: 0
+                },
+                stateB: {
+                    x: centroidB.x, y: centroidB.y, rotX: data.rotX, rotY: data.rotY, rotZ: data.rotZ
+                }
+            };
+
+            tangramGroup.add(mesh);
+            meshes.push(mesh);
+        });
+
+        // 4. ANIMATION LOGIC
+        const tl = gsap.timeline({ repeat: -1, yoyo: true, repeatDelay: 1.5 });
+
+        meshes.forEach((mesh, index) => {
+            const target = mesh.userData.stateB;
+            const duration = 3;
+
+            const peakZHeight = 1 + (index * 0.4);
+
+            tl.to(mesh.position, {
+                x: target.x,
+                y: target.y,
+                duration: duration,
+                ease: "power3.inOut"
+            }, 0);
+
+            tl.to(mesh.position, {
+                z: peakZHeight,
+                duration: duration / 2,
+                ease: "power1.out"
+            }, 0);
+
+            tl.to(mesh.position, {
+                z: 0,
+                duration: duration / 2,
+                ease: "power1.in"
+            }, duration / 2);
+
+            tl.to(mesh.rotation, {
+                x: target.rotX,
+                y: target.rotY,
+                z: target.rotZ,
+                duration: duration,
+                ease: "power3.inOut"
+            }, 0);
+        });
+
+        // 5. RENDER LOOP
+        function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+
+</html>

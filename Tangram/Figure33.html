@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Tangram - 33 - Factory</title>
+    <style>
+        /* Base page styling to keep the camera fixed and centered */
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #ffffff;
+            overflow: hidden;
+            font-family: sans-serif;
+        }
+
+        /* The scene container sets the 3D perspective */
+        .scene {
+            perspective: 1200px;
+        }
+
+        /* The main tangram board. 
+           We rotate it on the X and Z axis to simulate a fixed upper/isometric camera view */
+        .tangram {
+            width: 400px;
+            height: 400px;
+            position: relative;
+            transform-style: preserve-3d;
+            /* transform: rotateX(50deg) rotateZ(-25deg); */
+            transform: translateZ(-900px);
+            /* Shift slightly to ensure the final figure stays centered */
+            margin-left: -50px;
+            margin-top: -50px;
+        }
+
+        /* * INDEPENDENT PIECES
+         * Each piece is a full-sized absolute div, cut down to shape using clip-path.
+         * Transform-origin is now set per-piece to match its geometric center.
+         * This decouples rotation from translation: rotate() spins in place, translate() moves the center.
+         */
+        .piece {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* Initial state locked to perfect alignment */
+            transform: translate3d(0, 0, 0) rotate(0deg);
+            filter: drop-shadow(2px 2px 0px rgba(0, 0, 0, 0.5)) drop-shadow(4px 4px 8px rgba(0, 0, 0, 0.2));
+            animation-duration: 2.5s;
+            animation-delay: 0s;
+            animation-timing-function: ease-in-out;
+            animation-fill-mode: forwards;
+        }
+
+        /* 1. Large Triangle 1 (Left/Middle) */
+        .p-l1 {
+            clip-path: polygon(0 0, 0 100%, 50% 50%);
+            background-color: #00cc7c;
+            /* Green */
+            transform-origin: 66.67px 200px;
+            animation-name: morph-l1;
+        }
+
+        @keyframes morph-l1 {
+            0% {
+                transform: translate3d(0, 0, 0) rotate(0deg);
+                filter: drop-shadow(2px 2px 0px rgba(0, 0, 0, 0.5)) drop-shadow(4px 4px 8px rgba(0, 0, 0, 0.2));
+            }
+
+            50% {}
+
+            100% {
+                transform: translate3d(267px, 0px, 0) rotate(180deg);
+                filter: drop-shadow(2px 2px 0px rgba(0, 0, 0, 0.5)) drop-shadow(4px 4px 8px rgba(0, 0, 0, 0.2));
+            }
+        }
+
+        /* 2. Large Triangle 2 (Bottom/Middle) */
+        .p-l2 {
+            clip-path: polygon(0 100%, 100% 100%, 50% 50%);
+            background-color: #2583ef;
+            /* Blue */
+            transform-origin: 200px 333.33px;
+            animation-name: morph-l2;
+        }
+
+        @keyframes morph-l2 {
+            0% {
+                transform: translate3d(0, 0, 0) rotate(0deg);
+                filter: drop-shadow(2px 2px 0px rgba(0, 0, 0, 0.5)) drop-shadow(4px 4px 8px rgba(0, 0, 0, 0.2));
+            }
+
+            50% {}
+
+            100% {
+                transform: translate3d(0, 0, 0) rotate(0deg);
+                filter: drop-shadow(2px 2px 0px rgba(0, 0, 0, 0.5)) drop-shadow(4px 4px 8px rgba(0, 0, 0, 0.2));
+            }
+        }
+
+        /* 3. Small Triangle 1 (Top Left) */
+        .p-s1 {
+            clip-path: polygon(0 0, 50% 0, 25% 25%);
+            background-color: #ec4654;
+            /* Red */
+            transform-origin: 100px 33.33px;
+            animation-name: morph-s1;
+        }
+
+        @keyframes morph-s1 {
+            0% {
+                transform: translate3d(0, 0, 0) rotate(0deg);
+                filter: drop-shadow(2px 2px 0px rgba(0, 0, 0, 0.5)) drop-shadow(4px 4px 8px rgba(0, 0, 0, 0.2));
+            }
+
+            50% {}
+
+            100% {
+                transform: translate3d(0px, 133px, 0) rotate(180deg);
+                filter: drop-shadow(2px 2px 0px rgba(0, 0, 0, 0.5)) drop-shadow(4px 4px 8px rgba(0, 0, 0, 0.2));
+            }
+        }
+
+        /* 4. Square (Top Middle) */
+        .p-sq {
+            clip-path: polygon(50% 0, 75% 25%, 50% 50%, 25% 25%);
+            background-color: #fad405;
+            /* Yellow */
+            transform-origin: 200px 100px;
+            animation-name: morph-sq;
+        }
+
+        @keyframes morph-sq {
+            0% {
+                transform: translate3d(0, 0, 0) rotate(0deg);
+                filter: drop-shadow(2px 2px 0px rgba(0, 0, 0, 0.5)) drop-shadow(4px 4px 8px rgba(0, 0, 0, 0.2));
+            }
+
+            50% {}
+
+            100% {
+                transform: translate3d(0, 0, 0) rotate(0deg);
+                filter: drop-shadow(2px 2px 0px rgba(0, 0, 0, 0.5)) drop-shadow(4px 4px 8px rgba(0, 0, 0, 0.2));
+            }
+        }
+
+        /* 5. Medium Triangle (Top Right) */
+        .p-m {
+            clip-path: polygon(50% 0, 100% 0, 100% 50%);
+            background-color: #ad43df;
+            /* Purple */
+            transform-origin: 333.33px 66.67px;
+            animation-name: morph-m;
+        }
+
+        @keyframes morph-m {
+            0% {
+                transform: translate3d(0, 0, 0) rotate(0deg);
+                filter: drop-shadow(2px 2px 0px rgba(0, 0, 0, 0.5)) drop-shadow(4px 4px 8px rgba(0, 0, 0, 0.2));
+            }
+
+            50% {}
+
+            100% {
+                transform: translate3d(-266.5px, 200px, 0) rotate(-90deg);
+                filter: drop-shadow(2px 2px 0px rgba(0, 0, 0, 0.5)) drop-shadow(4px 4px 8px rgba(0, 0, 0, 0.2));
+            }
+        }
+
+        /* 6. Small Triangle 2 (Center Right) */
+        .p-s2 {
+            clip-path: polygon(50% 50%, 75% 25%, 75% 75%);
+            background-color: #0fc8e6;
+            /* Cyan */
+            transform-origin: 266.67px 200px;
+            animation-name: morph-s2;
+        }
+
+        @keyframes morph-s2 {
+            0% {
+                transform: translate3d(0, 0, 0) rotate(0deg);
+                filter: drop-shadow(2px 2px 0px rgba(0, 0, 0, 0.5)) drop-shadow(4px 4px 8px rgba(0, 0, 0, 0.2));
+            }
+
+            50% {}
+
+            100% {
+                transform: translate3d(67px, -400px, 0) rotate(180deg);
+                filter: drop-shadow(2px 2px 0px rgba(0, 0, 0, 0.5)) drop-shadow(4px 4px 8px rgba(0, 0, 0, 0.2));
+            }
+        }
+
+        /* 7. Parallelogram (Bottom Right) */
+        .p-p {
+            clip-path: polygon(75% 25%, 100% 50%, 100% 100%, 75% 75%);
+            background-color: #fd8b01;
+            /* Orange */
+            transform-origin: 350px 250px;
+            animation-name: morph-p;
+        }
+
+        @keyframes morph-p {
+            0% {
+                transform: translate3d(0, 0, 0) rotate(0deg);
+                filter: drop-shadow(2px 2px 0px rgba(0, 0, 0, 0.5)) drop-shadow(4px 4px 8px rgba(0, 0, 0, 0.2));
+            }
+
+            50% {}
+
+            100% {
+                transform: translate3d(0px, -300px, 0) rotateX(180deg);
+                filter: drop-shadow(2px 2px 0px rgba(0, 0, 0, 0.5)) drop-shadow(4px 4px 8px rgba(0, 0, 0, 0.2));
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="scene">
+        <div class="tangram">
+            <div class="piece p-l1"></div>
+            <div class="piece p-l2"></div>
+            <div class="piece p-s1"></div>
+            <div class="piece p-sq"></div>
+            <div class="piece p-m"></div>
+            <div class="piece p-s2"></div>
+            <div class="piece p-p"></div>
+        </div>
+    </div>
+
+</body>
+
+</html>

@@ -14,7 +14,6 @@ export function Home() {
     const { activeTheme, currentMode } = useTheme();
     const { user } = useAuth();
     const [showLoader, setShowLoader] = useState(false);
-    const [hasCheckedLoader, setHasCheckedLoader] = useState(false);
 
     useEffect(() => {
         // Check if loader should be shown
@@ -22,7 +21,6 @@ export function Home() {
         // 2. User must not be an admin/root
         if (!activeTheme) {
             console.log('[Home] Waiting for activeTheme...');
-            setHasCheckedLoader(false);
             return;
         }
 
@@ -41,18 +39,16 @@ export function Home() {
             user: user?.email || 'guest'
         });
 
-        if (loaderEnabled && !isAdmin) {
-            // Check session storage so we only show it once per session
-            const hasSeenLoader = sessionStorage.getItem('hasSeenTangramLoader');
-            if (!hasSeenLoader) {
-                console.log('[Home] Showing loader');
-                setShowLoader(true);
-            } else {
-                console.log('[Home] Loader already seen in this session');
-            }
+        const hasSeenLoader = sessionStorage.getItem('hasSeenTangramLoader');
+        const shouldShowLoader = !!loaderEnabled && !isAdmin && !hasSeenLoader;
+
+        if (shouldShowLoader) {
+            console.log('[Home] Showing loader');
+        } else {
+            console.log('[Home] Loader not shown', { hasSeenLoader, loaderEnabled, isAdmin });
         }
 
-        setHasCheckedLoader(true);
+        setShowLoader(shouldShowLoader);
     }, [activeTheme, user, currentMode]);
 
     const handleLoaderFinish = () => {
@@ -60,18 +56,11 @@ export function Home() {
         sessionStorage.setItem('hasSeenTangramLoader', 'true');
     };
 
-    if (!activeTheme || !hasCheckedLoader) {
-        // Don't render anything until theme is loaded and loader check is done to prevent flash
+    if (!activeTheme) {
         return null;
     }
 
-    if (showLoader) {
-        const currentPalette = activeTheme?.config?.[currentMode];
-        return <TangramLoader 
-            onFinish={handleLoaderFinish} 
-            selectedTangram={currentPalette?.colors?.loader?.selectedTangram || 1} 
-        />;
-    }
+    const currentPalette = activeTheme.config[currentMode];
 
     return (
         <div className={`min-h-screen flex flex-col ${currentMode}`}>
@@ -84,6 +73,12 @@ export function Home() {
                 <ContactForm />
             </main>
             <Footer />
+            {showLoader && (
+                <TangramLoader
+                    onFinish={handleLoaderFinish}
+                    selectedTangram={currentPalette?.colors?.loader?.selectedTangram || 1}
+                />
+            )}
         </div>
     );
 }

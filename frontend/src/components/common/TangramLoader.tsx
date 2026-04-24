@@ -26,13 +26,13 @@ export const TangramLoader: React.FC<TangramLoaderProps> = ({ onFinish, selected
 
     // Tangram pieces - 7 pieces as requested
     const pieces = [
-        { id: 1, color: 'var(--palette-primary)', delay: '0s', type: 'large-tri' },
-        { id: 2, color: 'var(--palette-secondary)', delay: '0.2s', type: 'large-tri' },
-        { id: 3, color: 'var(--palette-accent)', delay: '0.4s', type: 'med-tri' },
-        { id: 4, color: 'var(--palette-surface)', delay: '0.6s', type: 'small-tri' },
-        { id: 5, color: 'var(--palette-primary)', opacity: 0.7, delay: '0.8s', type: 'small-tri' },
-        { id: 6, color: 'var(--palette-secondary)', opacity: 0.7, delay: '1.0s', type: 'square' },
-        { id: 7, color: 'var(--palette-accent)', opacity: 0.7, delay: '1.2s', type: 'parallelogram' },
+        { id: 1, className: 'piece-1' },
+        { id: 2, className: 'piece-2' },
+        { id: 3, className: 'piece-3' },
+        { id: 4, className: 'piece-4' },
+        { id: 5, className: 'piece-5' },
+        { id: 6, className: 'piece-6' },
+        { id: 7, className: 'piece-7' },
     ];
 
     return (
@@ -86,13 +86,23 @@ export const TangramLoader: React.FC<TangramLoaderProps> = ({ onFinish, selected
                 }
 
                 /* Basic shapes for the "simple rectangles" request, but layout like a tangram */
-                .piece-1 { top: 0; left: 0; width: 150px; height: 150px; clip-path: polygon(0 0, 100% 0, 0 100%); }
-                .piece-2 { top: 0; left: 0; width: 150px; height: 150px; clip-path: polygon(100% 0, 100% 100%, 0 100%); }
-                .piece-3 { top: 75px; left: 75px; width: 150px; height: 150px; clip-path: polygon(0 0, 100% 100%, 0 100%); }
-                .piece-4 { top: 150px; left: 0; width: 75px; height: 75px; clip-path: polygon(0 0, 100% 0, 0 100%); }
-                .piece-5 { top: 225px; left: 75px; width: 75px; height: 75px; clip-path: polygon(0 0, 100% 0, 100% 100%); }
-                .piece-6 { top: 150px; left: 75px; width: 75px; height: 75px; }
-                .piece-7 { top: 0; left: 150px; width: 75px; height: 75px; clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+                .tangram-piece {
+                    position: absolute;
+                    width: 100px;
+                    height: 100px;
+                    transition: transform 1s ease-out, opacity 1s ease-out;
+                    animation: float 4s infinite ease-in-out;
+                    animation-duration: 5s;
+                    animation-fill-mode: both;
+                }
+
+                .piece-1 { top: 0; left: 0; width: 150px; height: 150px; clip-path: polygon(0 0, 100% 0, 0 100%); background-color: var(--palette-primary); animation-delay: 0s; }
+                .piece-2 { top: 0; left: 0; width: 150px; height: 150px; clip-path: polygon(100% 0, 100% 100%, 0 100%); background-color: var(--palette-secondary); animation-delay: 0.2s; }
+                .piece-3 { top: 75px; left: 75px; width: 150px; height: 150px; clip-path: polygon(0 0, 100% 100%, 0 100%); background-color: var(--palette-accent); animation-delay: 0.4s; }
+                .piece-4 { top: 150px; left: 0; width: 75px; height: 75px; clip-path: polygon(0 0, 100% 0, 0 100%); background-color: var(--palette-surface); animation-delay: 0.6s; }
+                .piece-5 { top: 225px; left: 75px; width: 75px; height: 75px; clip-path: polygon(0 0, 100% 0, 100% 100%); background-color: var(--palette-primary); opacity: 0.7; animation-delay: 0.8s; }
+                .piece-6 { top: 150px; left: 75px; width: 75px; height: 75px; background-color: var(--palette-secondary); opacity: 0.7; animation-delay: 1s; }
+                .piece-7 { top: 0; left: 150px; width: 75px; height: 75px; clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); background-color: var(--palette-accent); opacity: 0.7; animation-delay: 1.2s; }
 
                 .skip-button {
                     position: fixed;
@@ -122,13 +132,7 @@ export const TangramLoader: React.FC<TangramLoaderProps> = ({ onFinish, selected
                     <div
                         key={piece.id}
                         className={`tangram-piece piece-${piece.id}`}
-                        style={{
-                            backgroundColor: piece.color,
-                            opacity: piece.opacity || 1,
-                            animationDelay: piece.delay,
-                            animationDuration: '5s',
-                            animationFillMode: 'both'
-                        }}
+
                     />
                 ))}
             </div>

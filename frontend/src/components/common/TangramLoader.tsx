@@ -176,10 +176,30 @@ function buildTangram(scene: THREE.Scene, piecesData: TangramPieceData[]) {
         meshes.push(mesh);
     });
 
-    const box = new THREE.Box3().setFromObject(tangramGroup);
-    const center = new THREE.Vector3();
-    box.getCenter(center);
-    tangramGroup.position.set(-center.x, -center.y, 0);
+    const startBox = new THREE.Box3().setFromObject(tangramGroup);
+    const startCenter = new THREE.Vector3();
+    startBox.getCenter(startCenter);
+
+    const endGroup = new THREE.Group();
+    meshes.forEach((mesh) => {
+        const target = mesh.userData.stateB as { x: number; y: number; rotX: number; rotY: number; rotZ: number };
+        const clone = mesh.clone();
+        clone.position.set(target.x, target.y, 0);
+        endGroup.add(clone);
+    });
+
+    const endBox = new THREE.Box3().setFromObject(endGroup);
+    const endCenter = new THREE.Vector3();
+    endBox.getCenter(endCenter);
+
+    const centerOffset = new THREE.Vector3().subVectors(startCenter, endCenter);
+    meshes.forEach((mesh) => {
+        const target = mesh.userData.stateB as { x: number; y: number; rotX: number; rotY: number; rotZ: number };
+        target.x += centerOffset.x;
+        target.y += centerOffset.y;
+    });
+
+    tangramGroup.position.set(-startCenter.x, -startCenter.y, 0);
 
     scene.add(tangramGroup);
     return meshes;
@@ -240,7 +260,7 @@ function buildTimeline(
         );
     });
 
-    timeline.to({}, { duration: 1 }, 3);
+    timeline.to({}, { duration: 2.5 }, 3);
 
     return timeline;
 }

@@ -65,7 +65,7 @@ export const TangramLoader: React.FC<TangramLoaderProps> = ({ onFinish, selected
         };
         animate();
 
-        const tl = buildTimeline(meshes);
+        const tl = buildTimeline(meshes, handleFinish);
         timelineRef.current = tl;
 
         const handleResize = () => {
@@ -176,12 +176,20 @@ function buildTangram(scene: THREE.Scene, piecesData: TangramPieceData[]) {
         meshes.push(mesh);
     });
 
+    const box = new THREE.Box3().setFromObject(tangramGroup);
+    const center = new THREE.Vector3();
+    box.getCenter(center);
+    tangramGroup.position.set(-center.x, -center.y, 0);
+
     scene.add(tangramGroup);
     return meshes;
 }
 
-function buildTimeline(meshes: THREE.Mesh<THREE.ExtrudeGeometry, THREE.MeshStandardMaterial>[]) {
-    const timeline = gsap.timeline({ repeat: -1, yoyo: true, repeatDelay: 1.5 });
+function buildTimeline(
+    meshes: THREE.Mesh<THREE.ExtrudeGeometry, THREE.MeshStandardMaterial>[],
+    onComplete: () => void
+) {
+    const timeline = gsap.timeline({ repeat: 1, yoyo: true, repeatDelay: 0, onComplete: onComplete });
 
     meshes.forEach((mesh, index) => {
         const target = mesh.userData.stateB as { x: number; y: number; rotX: number; rotY: number; rotZ: number };
@@ -231,6 +239,8 @@ function buildTimeline(meshes: THREE.Mesh<THREE.ExtrudeGeometry, THREE.MeshStand
             0
         );
     });
+
+    timeline.to({}, { duration: 1 }, 3);
 
     return timeline;
 }

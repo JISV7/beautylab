@@ -526,126 +526,52 @@ function getTangramConfig(selectedTangram: number) {
                 {
                     id: 'p-l1_green',
                     color: 0x00cc7c,
-                    stateA: [
-                        [0, 0],
-                        [0, -4],
-                        [2, -2],
-                    ],
-                    stateB: [
-                        [2.67, -2],
-                        [2.67, -6],
-                        [4.67, -4],
-                    ],
-                    rotX: 0,
-                    rotY: 0,
-                    rotZ: Math.PI,
+                    stateA: [[0, 4], [0, 0], [2, 2]],
+                    stateB: [[0.65, 0.8], [0.65, -3.2], [2.65, -1.2]],
+                    rotX: Math.PI * 2, rotY: Math.PI, rotZ: 0
                 },
                 {
                     id: 'p-l2_blue',
                     color: 0x2583ef,
-                    stateA: [
-                        [0, -4],
-                        [4, -4],
-                        [2, -2],
-                    ],
-                    stateB: [
-                        [0, -4],
-                        [4, -4],
-                        [2, -2],
-                    ],
-                    rotX: 0,
-                    rotY: 0,
-                    rotZ: 0,
+                    stateA: [[0, 0], [4, 0], [2, 2]],
+                    stateB: [[-2, -3.2], [2, -3.2], [0, -1.2]],
+                    rotX: Math.PI * 2, rotY: Math.PI * 2, rotZ: Math.PI * 2
                 },
                 {
                     id: 'p-s1_red',
                     color: 0xec4654,
-                    stateA: [
-                        [0, 0],
-                        [2, 0],
-                        [1, -1],
-                    ],
-                    stateB: [
-                        [0, 1.33],
-                        [2, 1.33],
-                        [1, 0.33],
-                    ],
-                    rotX: 0,
-                    rotY: 0,
-                    rotZ: Math.PI,
+                    stateA: [[0, 4], [1, 3], [2, 4]],
+                    stateB: [[-2, -0.54], [-1, -1.54], [0, -0.54]],
+                    rotX: Math.PI * 2, rotY: 0, rotZ: Math.PI
                 },
                 {
                     id: 'p-sq_yellow',
                     color: 0xfad405,
-                    stateA: [
-                        [2, 0],
-                        [3, -1],
-                        [2, -2],
-                        [1, -1],
-                    ],
-                    stateB: [
-                        [2, 0],
-                        [3, -1],
-                        [2, -2],
-                        [1, -1],
-                    ],
-                    rotX: 0,
-                    rotY: 0,
-                    rotZ: 0,
+                    stateA: [[2, 4], [1, 3], [2, 2], [3, 3]],
+                    stateB: [[0, 0.8], [-1, -0.2], [0, -1.2], [1, -0.2]],
+                    rotX: Math.PI * 2, rotY: Math.PI * 2, rotZ: 0
                 },
                 {
                     id: 'p-m_purple',
                     color: 0xad43df,
-                    stateA: [
-                        [2, 0],
-                        [4, 0],
-                        [4, -2],
-                    ],
-                    stateB: [
-                        [-0.02, 2],
-                        [-2.02, 2],
-                        [-0.02, 0],
-                    ],
-                    rotX: 0,
-                    rotY: 0,
-                    rotZ: -Math.PI / 2,
+                    stateA: [[4, 4], [2, 4], [4, 2]],
+                    stateB: [[-2, -1.2], [0, -1.2], [-2, -3.2]],
+                    rotX: Math.PI * 2, rotY: Math.PI, rotZ: 0
                 },
                 {
                     id: 'p-s2_cyan',
                     color: 0x0fc8e6,
-                    stateA: [
-                        [2, -2],
-                        [3, -1],
-                        [3, -3],
-                    ],
-                    stateB: [
-                        [0.67, 2],
-                        [-0.33, 1.4],
-                        [0.67, 0.4],
-                    ],
-                    rotX: Math.PI,
-                    rotY: 0,
-                    rotZ: Math.PI / 2,
+                    stateA: [[3, 3], [2, 2], [3, 1]],
+                    stateB: [[1.65, 3.78], [0.65, 2.78], [1.65, 1.78]],
+                    rotX: Math.PI * 2, rotY: Math.PI, rotZ: 0
                 },
                 {
                     id: 'p-p_orange',
                     color: 0xfd8b01,
-                    stateA: [
-                        [3, -1],
-                        [4, 0],
-                        [4, -2],
-                        [3, -3],
-                    ],
-                    stateB: [
-                        [3, 2],
-                        [4, 2],
-                        [4, -1],
-                        [3, -1],
-                    ],
-                    rotX: Math.PI,
-                    rotY: 0,
-                    rotZ: 0,
-                },
+                    stateA: [[3, 3], [3, 1], [4, 0], [4, 2]],
+                    stateB: [[0.98, 2.78], [0.98, 0.78], [1.98, -0.22], [1.98, 1.78]],
+                    rotX: Math.PI * 2, rotY: Math.PI, rotZ: 0
+                }
             ],
         },
     };

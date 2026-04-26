@@ -15,45 +15,24 @@ export function Home() {
     const { user } = useAuth();
     const [showLoader, setShowLoader] = useState(false);
 
-    useEffect(() => {
-        // Check if loader should be shown
-        // 1. Loader must be enabled in theme config for the current mode
-        // 2. User must not be an admin/root
-        if (!activeTheme) {
-            console.log('[Home] Waiting for activeTheme...');
-            return;
-        }
 
+    useEffect(() => {
+        // Loader enabled in theme config and not admin/root
+        if (!activeTheme) return;
         const currentPalette = activeTheme.config[currentMode];
         const loaderEnabled = currentPalette?.colors?.loader?.enabled;
-        const selectedTangram = currentPalette?.colors?.loader?.selectedTangram;
+        // --- Session logic (deactivated, just uncomment to reactivate) ---
+        // const hasSeenLoader = sessionStorage.getItem('hasSeenTangramLoader');
+        // const shouldShowLoader = !!loaderEnabled && !hasSeenLoader;
+        // setShowLoader(shouldShowLoader);
 
-        const roles = user?.roles ?? [];
-        const isAdmin = roles.includes('admin') || roles.includes('root');
-
-        console.log('[Home] Loader check:', {
-            mode: currentMode,
-            enabled: loaderEnabled,
-            tangram: selectedTangram,
-            isAdmin,
-            user: user?.email || 'guest'
-        });
-
-        const hasSeenLoader = sessionStorage.getItem('hasSeenTangramLoader');
-        const shouldShowLoader = !!loaderEnabled && !isAdmin && !hasSeenLoader;
-
-        if (shouldShowLoader) {
-            console.log('[Home] Showing loader');
-        } else {
-            console.log('[Home] Loader not shown', { hasSeenLoader, loaderEnabled, isAdmin });
-        }
-
-        setShowLoader(shouldShowLoader);
+        // --- Always show loader on Home reload (current behavior) ---
+        setShowLoader(!!loaderEnabled);
     }, [activeTheme, user, currentMode]);
 
     const handleLoaderFinish = () => {
         setShowLoader(false);
-        sessionStorage.setItem('hasSeenTangramLoader', 'true');
+        // sessionStorage.setItem('hasSeenTangramLoader', 'true'); // (deactivated)
     };
 
     if (!activeTheme) {

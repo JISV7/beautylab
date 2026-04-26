@@ -294,7 +294,7 @@ function getTangramConfig(selectedTangram: number) {
                 },
                 {
                     id: 'p-l2_blue',
-                    color: 'var(--palette-surface)',
+                    color: 'var(--palette-accent)',
                     stateA: [
                         [0, 0],
                         [4, 0],
@@ -347,7 +347,7 @@ function getTangramConfig(selectedTangram: number) {
                 },
                 {
                     id: 'p-m_purple',
-                    color: 'var(--palette-secondary)',
+                    color: 'var(--palette-border)',
                     stateA: [
                         [4, 4],
                         [2, 4],
@@ -381,7 +381,7 @@ function getTangramConfig(selectedTangram: number) {
                 },
                 {
                     id: 'p-p_orange',
-                    color: 'var(--palette-accent)',
+                    color: 'var(--palette-surface)',
                     stateA: [
                         [3, 3],
                         [3, 1],
@@ -421,7 +421,7 @@ function getTangramConfig(selectedTangram: number) {
                 },
                 {
                     id: 'p-l2_blue',
-                    color: 'var(--palette-accent)',
+                    color: 'var(--palette-primary)',
                     stateA: [
                         [0, 0],
                         [4, 0],
@@ -438,7 +438,7 @@ function getTangramConfig(selectedTangram: number) {
                 },
                 {
                     id: 'p-s1_red',
-                    color: 'var(--palette-primary)',
+                    color: 'var(--palette-border)',
                     stateA: [
                         [0, 4],
                         [1, 3],
@@ -455,7 +455,7 @@ function getTangramConfig(selectedTangram: number) {
                 },
                 {
                     id: 'p-sq_yellow',
-                    color: 'var(--palette-secondary)',
+                    color: 'var(--palette-accent)',
                     stateA: [
                         [2, 4],
                         [1, 3],
@@ -491,7 +491,7 @@ function getTangramConfig(selectedTangram: number) {
                 },
                 {
                     id: 'p-s2_cyan',
-                    color: 'var(--palette-secondary)',
+                    color: 'var(--palette-surface)',
                     stateA: [
                         [3, 3],
                         [2, 2],
@@ -508,7 +508,7 @@ function getTangramConfig(selectedTangram: number) {
                 },
                 {
                     id: 'p-p_orange',
-                    color: 'var(--palette-accent)',
+                    color: 'var(--palette-border)',
                     stateA: [
                         [3, 3],
                         [3, 1],
@@ -531,49 +531,49 @@ function getTangramConfig(selectedTangram: number) {
             piecesData: [
                 {
                     id: 'p-l1_green',
-                    color: 'var(--palette-primary)',
+                    color: 'var(--palette-border)',
                     stateA: [[0, 4], [0, 0], [2, 2]],
                     stateB: [[0.65, 0.8], [0.65, -3.2], [2.65, -1.2]],
                     rotX: Math.PI * 2, rotY: Math.PI, rotZ: 0
                 },
                 {
                     id: 'p-l2_blue',
-                    color: 'var(--palette-accent)',
+                    color: 'var(--palette-surface)',
                     stateA: [[0, 0], [4, 0], [2, 2]],
                     stateB: [[-2, -3.2], [2, -3.2], [0, -1.2]],
                     rotX: Math.PI * 2, rotY: Math.PI * 2, rotZ: Math.PI * 2
                 },
                 {
                     id: 'p-s1_red',
-                    color: 'var(--palette-primary)',
+                    color: 'var(--palette-accent)',
                     stateA: [[0, 4], [1, 3], [2, 4]],
                     stateB: [[-2, -0.54], [-1, -1.54], [0, -0.54]],
                     rotX: Math.PI * 2, rotY: 0, rotZ: Math.PI
                 },
                 {
                     id: 'p-sq_yellow',
-                    color: 'var(--palette-secondary)',
+                    color: 'var(--palette-primary)',
                     stateA: [[2, 4], [1, 3], [2, 2], [3, 3]],
                     stateB: [[0, 0.8], [-1, -0.2], [0, -1.2], [1, -0.2]],
                     rotX: Math.PI * 2, rotY: Math.PI * 2, rotZ: 0
                 },
                 {
                     id: 'p-m_purple',
-                    color: 'var(--palette-secondary)',
+                    color: 'var(--palette-border)',
                     stateA: [[4, 4], [2, 4], [4, 2]],
                     stateB: [[-2, -1.2], [0, -1.2], [-2, -3.2]],
                     rotX: Math.PI * 2, rotY: Math.PI, rotZ: 0
                 },
                 {
                     id: 'p-s2_cyan',
-                    color: 'var(--palette-secondary)',
+                    color: 'var(--palette-primary)',
                     stateA: [[3, 3], [2, 2], [3, 1]],
                     stateB: [[1.65, 3.78], [0.65, 2.78], [1.65, 1.78]],
                     rotX: Math.PI * 2, rotY: Math.PI, rotZ: 0
                 },
                 {
                     id: 'p-p_orange',
-                    color: 'var(--palette-accent)',
+                    color: 'var(--palette-secondary)',
                     stateA: [[3, 3], [3, 1], [4, 0], [4, 2]],
                     stateB: [[0.98, 2.78], [0.98, 0.78], [1.98, -0.22], [1.98, 1.78]],
                     rotX: Math.PI * 2, rotY: Math.PI, rotZ: 0

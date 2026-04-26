@@ -139,7 +139,7 @@ function getCentroid(points: [number, number][]) {
 
 function buildTangram(scene: THREE.Scene, piecesData: TangramPieceData[]) {
     const tangramGroup = new THREE.Group();
-    const meshes: THREE.Mesh<THREE.ExtrudeGeometry, THREE.MeshStandardMaterial>[] = [];
+    const meshes: THREE.Mesh[] = [];
     const depth = 0.4;
 
     piecesData.forEach((data) => {
@@ -157,10 +157,8 @@ function buildTangram(scene: THREE.Scene, piecesData: TangramPieceData[]) {
         const geometry = new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: false });
         geometry.translate(0, 0, -depth / 2);
 
-        const material = new THREE.MeshStandardMaterial({
+        const material = new THREE.MeshBasicMaterial({
             color: resolveCSSColor(data.color),
-            roughness: 1,
-            metalness: 0,
             side: THREE.DoubleSide,
         });
 
@@ -212,7 +210,7 @@ function buildTangram(scene: THREE.Scene, piecesData: TangramPieceData[]) {
 }
 
 function buildTimeline(
-    meshes: THREE.Mesh<THREE.ExtrudeGeometry, THREE.MeshStandardMaterial>[],
+    meshes: THREE.Mesh[],
     onComplete: () => void
 ) {
     const timeline = gsap.timeline({ repeat: 1, yoyo: true, repeatDelay: 0, onComplete: onComplete });

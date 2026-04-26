@@ -13,7 +13,12 @@ import { TangramLoader } from '../components/common/TangramLoader';
 export function Home() {
     const { activeTheme, currentMode } = useTheme();
     const { user } = useAuth();
-    const [showLoader, setShowLoader] = useState(false);
+    
+    // Check if this is a redirect after login
+    const isRedirectAfterLogin = typeof window !== 'undefined' && sessionStorage.getItem('redirectAfterLogin') === 'true';
+    
+    // Initialize state - delay only applies for redirects
+    const [showLoader, setShowLoader] = useState(!isRedirectAfterLogin);
 
 
     useEffect(() => {
@@ -21,13 +26,23 @@ export function Home() {
         if (!activeTheme) return;
         const currentPalette = activeTheme.config[currentMode];
         const loaderEnabled = currentPalette?.colors?.loader?.enabled;
+        
         // --- Session logic (deactivated, just uncomment to reactivate) ---
         // const hasSeenLoader = sessionStorage.getItem('hasSeenTangramLoader');
         // const shouldShowLoader = !!loaderEnabled && !hasSeenLoader;
         // setShowLoader(shouldShowLoader);
 
-        // --- Always show loader on Home reload (current behavior) ---
-        setShowLoader(!!loaderEnabled);
+        // Check if this is a redirect after login (add delay)
+        const wasRedirect = sessionStorage.getItem('redirectAfterLogin') === 'true';
+        
+        if (wasRedirect) {
+            // Add 1-second delay for redirect transitions
+            const timer = setTimeout(() => {
+                setShowLoader(!!loaderEnabled);
+                sessionStorage.removeItem('redirectAfterLogin');
+            }, 1000);
+            return () => clearTimeout(timer);
+        }
     }, [activeTheme, user, currentMode]);
 
     const handleLoaderFinish = () => {

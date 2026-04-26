@@ -196,6 +196,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             }
             // Navigate to dashboard after login
             localStorage.setItem('currentPage', 'dashboard');
+            // Flag to add delay to tangram loader on redirect
+            sessionStorage.setItem('redirectAfterLogin', 'true');
 
             await fetchUser(data.access_token);
 

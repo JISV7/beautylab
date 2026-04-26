@@ -57,8 +57,8 @@ export const TangramLoader: React.FC<TangramLoaderProps> = ({ onFinish, selected
         container.appendChild(renderer.domElement);
         rendererRef.current = renderer;
 
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.6);
+        const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
         directionalLight.position.set(4, 8, 12);
         scene.add(ambientLight, directionalLight);
 
@@ -159,8 +159,8 @@ function buildTangram(scene: THREE.Scene, piecesData: TangramPieceData[]) {
 
         const material = new THREE.MeshStandardMaterial({
             color: resolveCSSColor(data.color),
-            roughness: 0.3,
-            metalness: 0.1,
+            roughness: 1,
+            metalness: 0,
             side: THREE.DoubleSide,
         });
 

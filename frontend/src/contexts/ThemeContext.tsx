@@ -14,6 +14,18 @@ const getCachedTheme = (): Theme | null => {
     }
 };
 
+const getCachedMode = (): 'light' | 'dark' | 'accessibility' => {
+    try {
+        const cached = localStorage.getItem('paletteMode');
+        if (cached === 'light' || cached === 'dark' || cached === 'accessibility') {
+            return cached;
+        }
+    } catch {
+        // Ignore
+    }
+    return 'light';
+};
+
 const cacheTheme = (theme: Theme) => {
     try {
         localStorage.setItem('cachedActiveTheme', JSON.stringify(theme));
@@ -22,8 +34,9 @@ const cacheTheme = (theme: Theme) => {
     }
 };
 
-// Get cached theme for initial state
+// Get cached theme and mode for initial state
 const cachedTheme = getCachedTheme();
+const cachedMode = getCachedMode();
 
 // Theme state for useReducer
 interface ThemeState {
@@ -49,8 +62,8 @@ type ThemeAction =
 // Initial state
 const initialState: ThemeState = {
     activeTheme: cachedTheme,
-    currentPalette: cachedTheme?.config.light || null,
-    currentMode: cachedTheme ? ('light' as const) : 'light',
+    currentPalette: cachedTheme?.config[cachedMode] || null,
+    currentMode: cachedMode,
     availableThemes: cachedTheme ? [cachedTheme] : [],
     isLoading: false,
     error: null,

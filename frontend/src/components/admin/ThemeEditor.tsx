@@ -595,7 +595,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                                 <div className="space-y-6">
                                     <div className="flex items-center justify-between p-4 bg-black/5 dark:bg-white/5 rounded-xl border palette-border">
                                         <div>
-                                            <p className="font-bold">Enable Animated Loader</p>
+                                            <p className="text-paragraph font-bold">Enable Animated Loader</p>
                                             <p className="text-sm text-paragraph opacity-70">Shows a 3D Tangram animation before loading the site.</p>
                                         </div>
                                         <button 
@@ -607,7 +607,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                                     </div>
 
                                     <div className="space-y-4">
-                                        <p className="font-bold">Select Animation Style</p>
+                                        <p className="text-paragraph font-bold">Select Tangram Animation Style</p>
                                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                             {[1, 2, 3].map((num) => (
                                                 <button
@@ -617,11 +617,8 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                                                         ? 'border-palette-primary bg-palette-primary/10' 
                                                         : 'palette-border hover:border-palette-primary/50'}`}
                                                 >
-                                                    <div className="text-3xl mb-2">💎</div>
-                                                    <p className="font-bold">Tangram {num}</p>
-                                                    <p className="text-xs text-paragraph opacity-60">
-                                                        {num === 1 ? '3D Explode' : num === 2 ? 'Side Slide' : 'Bottom Pop'}
-                                                    </p>
+                                                    <div className="text-3xl mb-2">{num === 1 ? '🐐' : num === 2 ? '🦇' : '🏭'}</div>
+                                                    <p className="text-paragraph font-bold">{num === 1 ? 'Ibex' : num === 2 ? 'Bat' : 'Factory'}</p>
                                                 </button>
                                             ))}
                                         </div>

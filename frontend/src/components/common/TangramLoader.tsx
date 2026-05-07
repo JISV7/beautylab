@@ -5,7 +5,6 @@ import { useTheme } from '../../contexts/ThemeContext';
 
 interface TangramLoaderProps {
     onFinish: () => void;
-    selectedTangram?: number;
 }
 
 type TangramPieceData = {
@@ -24,7 +23,7 @@ const resolveCSSColor = (cssVar: string): THREE.Color => {
     return new THREE.Color(val || '#00a86b');
 };
 
-export const TangramLoader: React.FC<TangramLoaderProps> = ({ onFinish, selectedTangram = 1 }) => {
+export const TangramLoader: React.FC<TangramLoaderProps> = ({ onFinish }) => {
     const { currentMode } = useTheme();
     const [isExiting, setIsExiting] = useState(false);
     const containerRef = useRef<HTMLDivElement | null>(null);
@@ -62,8 +61,8 @@ export const TangramLoader: React.FC<TangramLoaderProps> = ({ onFinish, selected
         directionalLight.position.set(4, 8, 12);
         scene.add(ambientLight, directionalLight);
 
-        const { piecesData } = getTangramConfig(selectedTangram);
-        const meshes = buildTangram(scene, piecesData);
+        // Build the tangram and get the sequence of targets
+        const { meshes, sequenceTargets } = buildTangram(scene);
 
         const animate = () => {
             frameRef.current = requestAnimationFrame(animate);
@@ -71,7 +70,7 @@ export const TangramLoader: React.FC<TangramLoaderProps> = ({ onFinish, selected
         };
         animate();
 
-        const tl = buildTimeline(meshes, handleFinish);
+        const tl = buildTimeline(meshes, sequenceTargets, handleFinish);
         timelineRef.current = tl;
 
         const handleResize = () => {
@@ -94,7 +93,7 @@ export const TangramLoader: React.FC<TangramLoaderProps> = ({ onFinish, selected
                 rendererRef.current = null;
             }
         };
-    }, [selectedTangram]);
+    }, []);
 
     return (
         <div className={`fixed inset-0 z-[9999] flex items-center justify-center palette-background transition-opacity duration-500 ${isExiting ? 'opacity-0' : 'opacity-100'} ${currentMode}`}>
@@ -137,12 +136,18 @@ function getCentroid(points: [number, number][]) {
     return { x: sum.x / points.length, y: sum.y / points.length };
 }
 
-function buildTangram(scene: THREE.Scene, piecesData: TangramPieceData[]) {
+type TargetPos = { x: number; y: number; rotX: number; rotY: number; rotZ: number };
+
+function buildTangram(scene: THREE.Scene) {
     const tangramGroup = new THREE.Group();
     const meshes: THREE.Mesh[] = [];
     const depth = 0.4;
 
-    piecesData.forEach((data) => {
+    // Use variant 1 to define the base meshes (Square stateA is same for all)
+    const basePieces = getTangramConfig(1).piecesData;
+    
+    // 1. Create the meshes in their base Square positions
+    basePieces.forEach((data) => {
         const centroidA = getCentroid(data.stateA);
         const shape = new THREE.Shape();
 
@@ -165,106 +170,151 @@ function buildTangram(scene: THREE.Scene, piecesData: TangramPieceData[]) {
         const mesh = new THREE.Mesh(geometry, material);
         mesh.name = data.id;
         mesh.position.set(centroidA.x, centroidA.y, 0);
-        const centroidB = getCentroid(data.stateB);
-        mesh.userData = {
-            stateB: {
-                x: centroidB.x,
-                y: centroidB.y,
-                rotX: data.rotX,
-                rotY: data.rotY,
-                rotZ: data.rotZ,
-            },
-        };
-
+        
         tangramGroup.add(mesh);
         meshes.push(mesh);
     });
 
+    // 2. Calculate the center of the Square for global group positioning
     const startBox = new THREE.Box3().setFromObject(tangramGroup);
     const startCenter = new THREE.Vector3();
     startBox.getCenter(startCenter);
-
-    const endGroup = new THREE.Group();
-    meshes.forEach((mesh) => {
-        const target = mesh.userData.stateB as { x: number; y: number; rotX: number; rotY: number; rotZ: number };
-        const clone = mesh.clone();
-        clone.position.set(target.x, target.y, 0);
-        endGroup.add(clone);
-    });
-
-    const endBox = new THREE.Box3().setFromObject(endGroup);
-    const endCenter = new THREE.Vector3();
-    endBox.getCenter(endCenter);
-
-    const centerOffset = new THREE.Vector3().subVectors(startCenter, endCenter);
-    meshes.forEach((mesh) => {
-        const target = mesh.userData.stateB as { x: number; y: number; rotX: number; rotY: number; rotZ: number };
-        target.x += centerOffset.x;
-        target.y += centerOffset.y;
-    });
-
     tangramGroup.position.set(-startCenter.x, -startCenter.y, 0);
 
+    // 3. Pre-calculate the target positions for all 3 variants (Ibex, Bat, Factory)
+    const sequenceTargets: TargetPos[][] = [];
+
+    [1, 2, 3].forEach(num => {
+        const variantData = getTangramConfig(num).piecesData;
+        const variantTargets: TargetPos[] = [];
+        const variantGroup = new THREE.Group();
+
+        // Temporary meshes to calculate the bounding box of the target shape
+        variantData.forEach((data, i) => {
+            const centroidB = getCentroid(data.stateB);
+            const meshClone = meshes[i].clone();
+            meshClone.position.set(centroidB.x, centroidB.y, 0);
+            meshClone.rotation.set(data.rotX, data.rotY, data.rotZ);
+            variantGroup.add(meshClone);
+        });
+
+        const endBox = new THREE.Box3().setFromObject(variantGroup);
+        const endCenter = new THREE.Vector3();
+        endBox.getCenter(endCenter);
+
+        // Calculate offset to keep the target shape centered relative to the origin
+        const centerOffset = new THREE.Vector3().subVectors(startCenter, endCenter);
+
+        variantData.forEach((data) => {
+            const centroidB = getCentroid(data.stateB);
+            variantTargets.push({
+                x: centroidB.x + centerOffset.x,
+                y: centroidB.y + centerOffset.y,
+                rotX: data.rotX,
+                rotY: data.rotY,
+                rotZ: data.rotZ
+            });
+        });
+
+        sequenceTargets.push(variantTargets);
+    });
+
     scene.add(tangramGroup);
-    return meshes;
+    return { meshes, sequenceTargets };
 }
 
 function buildTimeline(
     meshes: THREE.Mesh[],
+    sequenceTargets: TargetPos[][],
     onComplete: () => void
 ) {
-    const timeline = gsap.timeline({ repeat: 1, yoyo: true, repeatDelay: 0, onComplete: onComplete });
+    const timeline = gsap.timeline({ onComplete: onComplete });
+    
+    // Store original Square positions for returning to base
+    const basePositions = meshes.map(m => ({ x: m.position.x, y: m.position.y, z: 0, rotX: 0, rotY: 0, rotZ: 0 }));
 
-    meshes.forEach((mesh, index) => {
-        const target = mesh.userData.stateB as { x: number; y: number; rotX: number; rotY: number; rotZ: number };
-        const duration = 3;
-        const peakZHeight = 1 + index * 0.4;
+    sequenceTargets.forEach((targetSet, shapeIndex) => {
+        const duration = 2.5;
+        const startTime = timeline.duration();
 
-        timeline.to(
-            mesh.position,
-            {
+        // --- Step A: Animate from Square to Target Shape ---
+        targetSet.forEach((target, i) => {
+            const mesh = meshes[i];
+            const peakZ = 1 + i * 0.3;
+
+            // Move X, Y
+            timeline.to(mesh.position, {
                 x: target.x,
                 y: target.y,
                 duration,
-                ease: 'power3.inOut',
-            },
-            0
-        );
+                ease: 'power3.inOut'
+            }, startTime);
 
-        timeline.to(
-            mesh.position,
-            {
-                z: peakZHeight,
+            // Move Z (peak)
+            timeline.to(mesh.position, {
+                z: peakZ,
                 duration: duration / 2,
-                ease: 'power1.out',
-            },
-            0
-        );
+                ease: 'power1.out'
+            }, startTime);
 
-        timeline.to(
-            mesh.position,
-            {
+            timeline.to(mesh.position, {
                 z: 0,
                 duration: duration / 2,
-                ease: 'power1.in',
-            },
-            duration / 2
-        );
+                ease: 'power1.in'
+            }, startTime + duration / 2);
 
-        timeline.to(
-            mesh.rotation,
-            {
+            // Rotate
+            timeline.to(mesh.rotation, {
                 x: target.rotX,
                 y: target.rotY,
                 z: target.rotZ,
                 duration,
-                ease: 'power3.inOut',
-            },
-            0
-        );
-    });
+                ease: 'power3.inOut'
+            }, startTime);
+        });
 
-    timeline.to({}, { duration: 2.5 }, 3);
+        // Pause at the shape for a moment
+        timeline.to({}, { duration: 1.5 });
+
+        // --- Step B: Animate from Target Shape back to Square ---
+        const backStartTime = timeline.duration();
+        basePositions.forEach((base, i) => {
+            const mesh = meshes[i];
+            const peakZ = 1 + (meshes.length - i) * 0.3;
+
+            timeline.to(mesh.position, {
+                x: base.x,
+                y: base.y,
+                duration: duration * 0.8,
+                ease: 'power2.inOut'
+            }, backStartTime);
+
+            timeline.to(mesh.position, {
+                z: peakZ,
+                duration: (duration * 0.8) / 2,
+                ease: 'power1.out'
+            }, backStartTime);
+
+            timeline.to(mesh.position, {
+                z: 0,
+                duration: (duration * 0.8) / 2,
+                ease: 'power1.in'
+            }, backStartTime + (duration * 0.8) / 2);
+
+            timeline.to(mesh.rotation, {
+                x: base.rotX,
+                y: base.rotY,
+                z: base.rotZ,
+                duration: duration * 0.8,
+                ease: 'power2.inOut'
+            }, backStartTime);
+        });
+
+        // Brief pause at square before next shape
+        if (shapeIndex < sequenceTargets.length - 1) {
+            timeline.to({}, { duration: 0.5 });
+        }
+    });
 
     return timeline;
 }

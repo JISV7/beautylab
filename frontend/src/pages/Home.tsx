@@ -17,15 +17,18 @@ export function Home() {
     // Check if this is a redirect after login
     const isRedirectAfterLogin = typeof window !== 'undefined' && sessionStorage.getItem('redirectAfterLogin') === 'true';
     
-    // Initialize state - delay only applies for redirects
-    const [showLoader, setShowLoader] = useState(!isRedirectAfterLogin);
+    // Initialize state - follow theme config if available to avoid flicker
+    const [showLoader, setShowLoader] = useState(() => {
+        if (isRedirectAfterLogin) return false;
+        return !!activeTheme?.config[currentMode]?.colors?.loader?.enabled;
+    });
 
 
     useEffect(() => {
         // Loader enabled in theme config and not admin/root
         if (!activeTheme) return;
         const currentPalette = activeTheme.config[currentMode];
-        const loaderEnabled = currentPalette?.colors?.loader?.enabled;
+        const loaderEnabled = !!currentPalette?.colors?.loader?.enabled;
         
         // --- Session logic (deactivated, just uncomment to reactivate) ---
         // const hasSeenLoader = sessionStorage.getItem('hasSeenTangramLoader');
@@ -38,10 +41,13 @@ export function Home() {
         if (wasRedirect) {
             // Add 1-second delay for redirect transitions
             const timer = setTimeout(() => {
-                setShowLoader(!!loaderEnabled);
+                setShowLoader(loaderEnabled);
                 sessionStorage.removeItem('redirectAfterLogin');
             }, 1000);
             return () => clearTimeout(timer);
+        } else {
+            // Standard load: follow theme config
+            setShowLoader(loaderEnabled);
         }
     }, [activeTheme, user, currentMode]);
 
@@ -53,8 +59,6 @@ export function Home() {
     if (!activeTheme) {
         return null;
     }
-
-    const currentPalette = activeTheme.config[currentMode];
 
     return (
         <div className={`min-h-screen flex flex-col ${currentMode}`}>
@@ -70,7 +74,6 @@ export function Home() {
             {showLoader && (
                 <TangramLoader
                     onFinish={handleLoaderFinish}
-                    selectedTangram={currentPalette?.colors?.loader?.selectedTangram || 1}
                 />
             )}
         </div>

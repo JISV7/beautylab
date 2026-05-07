@@ -160,31 +160,28 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
     type EditBuffer = { 
         colors: ColorPalette; 
         styles: Record<string, TypographyStyle>;
-        loader: { enabled: boolean; selectedTangram: number };
+        loader: { enabled: boolean };
     };
     const editBufferRef = React.useRef<Record<string, EditBuffer>>({
         light: { 
             colors: initialColors, 
             styles: initialStyles,
             loader: { 
-                enabled: theme.config.light.colors.loader?.enabled ?? false,
-                selectedTangram: theme.config.light.colors.loader?.selectedTangram ?? 1
+                enabled: theme.config.light.colors.loader?.enabled ?? false
             }
         },
         dark: { 
             colors: initialColors, 
             styles: initialStyles,
             loader: { 
-                enabled: theme.config.dark.colors.loader?.enabled ?? false,
-                selectedTangram: theme.config.dark.colors.loader?.selectedTangram ?? 1
+                enabled: theme.config.dark.colors.loader?.enabled ?? false
             }
         },
         accessibility: { 
             colors: initialColors, 
             styles: initialStyles,
             loader: { 
-                enabled: theme.config.accessibility.colors.loader?.enabled ?? false,
-                selectedTangram: theme.config.accessibility.colors.loader?.selectedTangram ?? 1
+                enabled: theme.config.accessibility.colors.loader?.enabled ?? false
             }
         },
     });
@@ -239,8 +236,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                     p: { fontFamily: md.typography.paragraph?.fontName || 'Roboto', fontId: md.typography.paragraph?.fontId || '', size: parseFloat(md.typography.paragraph?.fontSize || '1.0'), color: md.typography.paragraph?.color || '#000000', fontWeight: md.typography.paragraph?.fontWeight || 400, lineHeight: md.typography.paragraph?.lineHeight || '1.6' },
                 },
                 loader: {
-                    enabled: md.colors.loader?.enabled ?? false,
-                    selectedTangram: md.colors.loader?.selectedTangram ?? 1
+                    enabled: md.colors.loader?.enabled ?? false
                 }
             };
         }
@@ -261,8 +257,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
             p: { fontFamily: md.typography.paragraph?.fontName || 'Roboto', fontId: md.typography.paragraph?.fontId || '', size: parseFloat(md.typography.paragraph?.fontSize || '1.0'), color: md.typography.paragraph?.color || '#000000', fontWeight: md.typography.paragraph?.fontWeight || 400, lineHeight: md.typography.paragraph?.lineHeight || '1.6' },
         });
         setLoader({
-            enabled: md.colors.loader?.enabled ?? false,
-            selectedTangram: md.colors.loader?.selectedTangram ?? 1
+            enabled: md.colors.loader?.enabled ?? false
         });
     }, [
         theme.config.light.colors.primary, theme.config.light.colors.secondary, theme.config.light.colors.accent,
@@ -419,8 +414,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
         };
 
         const resetLoader = {
-            enabled: modeData.colors.loader?.enabled ?? false,
-            selectedTangram: modeData.colors.loader?.selectedTangram ?? 1
+            enabled: modeData.colors.loader?.enabled ?? false
         };
 
         // Update the buffer AND the view
@@ -604,24 +598,6 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                                         >
                                             <div className={`absolute top-1 left-1 w-6 h-6 bg-white rounded-full transition-transform ${loader.enabled ? 'translate-x-6' : 'translate-x-0'}`} />
                                         </button>
-                                    </div>
-
-                                    <div className="space-y-4">
-                                        <p className="text-paragraph font-bold">Select Tangram Animation Style</p>
-                                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                            {[1, 2, 3].map((num) => (
-                                                <button
-                                                    key={num}
-                                                    onClick={() => setLoader(prev => ({ ...prev, selectedTangram: num }))}
-                                                    className={`p-6 rounded-2xl border-2 transition-all text-center ${loader.selectedTangram === num 
-                                                        ? 'border-palette-primary bg-palette-primary/10' 
-                                                        : 'palette-border hover:border-palette-primary/50'}`}
-                                                >
-                                                    <div className="text-3xl mb-2">{num === 1 ? '🐐' : num === 2 ? '🦇' : '🏭'}</div>
-                                                    <p className="text-paragraph font-bold">{num === 1 ? 'Ibex' : num === 2 ? 'Bat' : 'Factory'}</p>
-                                                </button>
-                                            ))}
-                                        </div>
                                     </div>
                                 </div>
                             </div>

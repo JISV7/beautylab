@@ -277,11 +277,14 @@ const toThemePalette = (
     colors: ColorPalette,
     styles: Record<string, TypographyStyle>,
     currentPalette: ThemePalette,
-    loader: { enabled: boolean; selectedTangram: number }
+    loader: { enabled: boolean }
 ): ThemePalette => ({
     colors: {
         ...colors,
-        loader
+        loader: {
+            ...loader,
+            selectedTangram: currentPalette.colors.loader?.selectedTangram || 1 // Keep existing or default to 1 for backend compatibility
+        }
     },
     typography: {
         h1: {
@@ -659,7 +662,7 @@ export const UnifiedThemeConfig: React.FC = () => {
     };
 
     const handleSaveTheme = async (
-        buffers: Record<string, { colors: ColorPalette; styles: Record<string, TypographyStyle>; loader: { enabled: boolean; selectedTangram: number } }>,
+        buffers: Record<string, { colors: ColorPalette; styles: Record<string, TypographyStyle>; loader: { enabled: boolean } }>,
         _activeMode: string
     ) => {
         if (!activeTheme) return;

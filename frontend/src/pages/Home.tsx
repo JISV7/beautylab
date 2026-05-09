@@ -3,7 +3,6 @@ import axios from 'axios';
 import { Header } from '../components/layout/Header';
 import { Footer } from '../components/layout/Footer';
 import { Hero } from '../components/home/Hero';
-import { CourseCarousel } from '../components/home/CourseCarousel';
 import { Services } from '../components/home/Services';
 import { About } from '../components/home/About';
 import { ContactForm } from '../components/home/ContactForm';
@@ -74,10 +73,8 @@ export function Home() {
         <div className={`min-h-screen flex flex-col ${currentMode}`}>
             <Header />
             <main className="flex-1">
-                {homeConfig?.carousel?.slides?.length > 0 && (
-                    <AdvancedCarousel slides={homeConfig.carousel.slides} />
-                )}
                 <Hero />
+                
                 {homeConfig?.video?.enabled && homeConfig?.video?.url && (
                     <PromotionalVideo 
                         url={homeConfig.video.url}
@@ -88,7 +85,11 @@ export function Home() {
                         autoplay={homeConfig.video.autoplay}
                     />
                 )}
-                <CourseCarousel />
+
+                {homeConfig?.carousel?.slides?.length > 0 && (
+                    <AdvancedCarousel slides={homeConfig.carousel.slides} />
+                )}
+
                 <Services />
                 <About />
                 <ContactForm />

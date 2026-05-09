@@ -14,7 +14,6 @@ import {
     Image as ImageIcon,
     FileVideo
 } from 'lucide-react';
-import { useTheme } from '../../contexts/ThemeContext';
 import { ImageCropper } from '../common/ImageCropper';
 
 const API_URL = 'http://localhost:8000';
@@ -86,7 +85,6 @@ interface HomeConfig {
 }
 
 export function HomeManagement() {
-    const { activeTheme, currentMode } = useTheme();
     const [config, setConfig] = useState<HomeConfig | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -97,11 +95,6 @@ export function HomeManagement() {
     const [cropperOpen, setCropperOpen] = useState(false);
     const [currentImageToCrop, setCurrentImageToCrop] = useState<string | null>(null);
     const [pendingSlideId, setPendingSlideId] = useState<string | null>(null);
-
-    const colors = activeTheme?.config[currentMode]?.colors as any || {};
-    const primaryColor = colors.primary || '#000';
-    const textColor = colors.text || '#000';
-    const cardColor = currentMode === 'dark' ? '#1f2937' : '#f3f4f6';
 
     useEffect(() => {
         fetchConfig();
@@ -219,7 +212,6 @@ export function HomeManagement() {
         const file = e.target.files?.[0];
         if (!file || !config) return;
 
-        // Check dimensions
         const reader = new FileReader();
         reader.onload = (event) => {
             const img = new Image();
@@ -309,15 +301,14 @@ export function HomeManagement() {
         });
     };
 
-    if (loading) return <div className="flex h-64 items-center justify-center">Loading...</div>;
+    if (loading) return <div className="flex h-64 items-center justify-center text-paragraph">Loading...</div>;
     if (error || !config) return (
-        <div className="p-8 text-center">
-            <h2 className="text-2xl font-bold text-red-500 mb-4">Error loading configuration</h2>
-            <p className="mb-4">{error || 'Configuration data is missing'}</p>
+        <div className="p-8 text-center theme-card">
+            <h2 className="text-h2 text-red-500 mb-4">Error loading configuration</h2>
+            <p className="text-paragraph mb-4">{error || 'Configuration data is missing'}</p>
             <button 
                 onClick={() => { setError(null); setLoading(true); fetchConfig(); }}
-                className="px-4 py-2 text-white rounded-lg transition-transform hover:scale-105"
-                style={{ backgroundColor: primaryColor }}
+                className="theme-button theme-button-primary"
             >
                 Retry
             </button>
@@ -328,14 +319,13 @@ export function HomeManagement() {
         <div className="w-full">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
                 <div>
-                    <h1 className="text-4xl font-bold mb-2" style={{ color: textColor }}>Home Management</h1>
-                    <p style={{ color: textColor, opacity: 0.7 }}>Manage your promotional video and carousel slides.</p>
+                    <h1 className="text-h1 mb-2">Home Management</h1>
+                    <p className="text-paragraph opacity-70">Manage your promotional video and carousel slides.</p>
                 </div>
                 <button
                     onClick={handleSave}
                     disabled={saving}
-                    className="flex items-center gap-2 px-6 py-3 rounded-xl text-white font-semibold transition-transform hover:scale-105 disabled:opacity-50"
-                    style={{ backgroundColor: primaryColor }}
+                    className="theme-button theme-button-primary"
                 >
                     <Save size={20} />
                     {saving ? 'Saving...' : 'Save Changes'}
@@ -343,19 +333,17 @@ export function HomeManagement() {
             </div>
 
             {/* Tabs */}
-            <div className="flex gap-4 mb-8 border-b border-gray-200 dark:border-gray-700">
+            <div className="flex gap-4 mb-8 border-b palette-border">
                 <button
                     onClick={() => setActiveTab('video')}
-                    className={`flex items-center gap-2 px-6 py-3 font-semibold transition-colors border-b-2 ${activeTab === 'video' ? 'border-primary' : 'border-transparent text-gray-500'}`}
-                    style={activeTab === 'video' ? { borderColor: primaryColor, color: primaryColor } : {}}
+                    className={`flex items-center gap-2 px-6 py-3 font-semibold transition-colors border-b-2 ${activeTab === 'video' ? 'border-palette-primary text-palette-primary' : 'border-transparent text-paragraph opacity-60'}`}
                 >
                     <Video size={20} />
                     Promotional Video
                 </button>
                 <button
                     onClick={() => setActiveTab('carousel')}
-                    className={`flex items-center gap-2 px-6 py-3 font-semibold transition-colors border-b-2 ${activeTab === 'carousel' ? 'border-primary' : 'border-transparent text-gray-500'}`}
-                    style={activeTab === 'carousel' ? { borderColor: primaryColor, color: primaryColor } : {}}
+                    className={`flex items-center gap-2 px-6 py-3 font-semibold transition-colors border-b-2 ${activeTab === 'carousel' ? 'border-palette-primary text-palette-primary' : 'border-transparent text-paragraph opacity-60'}`}
                 >
                     <Layout size={20} />
                     Carousel Slides
@@ -365,11 +353,11 @@ export function HomeManagement() {
             {/* Video Tab */}
             {activeTab === 'video' && (
                 <div className="space-y-8 animate-fadeIn">
-                    <div className="p-6 rounded-2xl shadow-sm" style={{ backgroundColor: cardColor }}>
+                    <div className="theme-card">
                         <div className="flex items-center justify-between mb-6">
-                            <h3 className="text-xl font-bold" style={{ color: textColor }}>Video Settings</h3>
+                            <h3 className="text-h3">Video Settings</h3>
                             <label className="flex items-center gap-2 cursor-pointer">
-                                <span style={{ color: textColor }}>{config.video.enabled ? 'Enabled' : 'Disabled'}</span>
+                                <span className="text-paragraph">{config.video.enabled ? 'Enabled' : 'Disabled'}</span>
                                 <input
                                     type="checkbox"
                                     checked={config.video.enabled}
@@ -379,29 +367,27 @@ export function HomeManagement() {
                                     })}
                                     className="sr-only peer"
                                 />
-                                <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary" style={config.video.enabled ? { backgroundColor: primaryColor } : {}}></div>
+                                <div className="relative w-11 h-6 bg-palette-surface border palette-border rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-palette-primary"></div>
                             </label>
                         </div>
 
                         <div className="grid md:grid-cols-2 gap-6">
                             <div className="space-y-4">
                                 <div>
-                                    <label className="block text-sm font-medium mb-1" style={{ color: textColor }}>Video Title</label>
+                                    <label className="text-paragraph block mb-1.5 opacity-60">Video Title</label>
                                     <input
                                         type="text"
                                         value={config.video.title}
                                         onChange={(e) => setConfig({ ...config, video: { ...config.video, title: e.target.value } })}
-                                        className="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-transparent"
-                                        style={{ color: textColor }}
+                                        className="w-full theme-input"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium mb-1" style={{ color: textColor }}>Description</label>
+                                    <label className="text-paragraph block mb-1.5 opacity-60">Description</label>
                                     <textarea
                                         value={config.video.description}
                                         onChange={(e) => setConfig({ ...config, video: { ...config.video, description: e.target.value } })}
-                                        className="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-transparent h-24"
-                                        style={{ color: textColor }}
+                                        className="w-full theme-input h-24 resize-none"
                                     />
                                 </div>
                                 <div className="flex items-center gap-4">
@@ -410,21 +396,20 @@ export function HomeManagement() {
                                             type="checkbox"
                                             checked={config.video.autoplay}
                                             onChange={(e) => setConfig({ ...config, video: { ...config.video, autoplay: e.target.checked } })}
-                                            className="w-4 h-4 rounded text-primary"
-                                            style={{ accentColor: primaryColor }}
+                                            className="w-4 h-4 rounded accent-palette-primary"
                                         />
-                                        <span style={{ color: textColor }}>Autoplay</span>
+                                        <span className="text-paragraph">Autoplay</span>
                                     </label>
                                 </div>
                             </div>
 
                             <div className="space-y-4">
-                                <label className="block text-sm font-medium mb-1" style={{ color: textColor }}>Video File</label>
-                                <div className="relative border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-2xl p-8 flex flex-col items-center justify-center gap-2">
+                                <label className="text-paragraph block mb-1.5 opacity-60">Video File</label>
+                                <div className="relative border-2 border-dashed palette-border rounded-2xl p-8 flex flex-col items-center justify-center gap-2 hover:bg-palette-surface transition-colors cursor-pointer overflow-hidden">
                                     {config.video.url ? (
-                                        <div className="text-center">
-                                            <FileVideo size={48} className="mx-auto mb-2 opacity-50" />
-                                            <p className="text-sm truncate max-w-[200px] mb-4" style={{ color: textColor }}>{config.video.url}</p>
+                                        <div className="text-center w-full">
+                                            <FileVideo size={48} className="mx-auto mb-2 opacity-50 text-palette-primary" />
+                                            <p className="text-paragraph text-xs truncate max-w-full px-4">{config.video.url}</p>
                                         </div>
                                     ) : (
                                         <Upload size={48} className="opacity-50" />
@@ -435,50 +420,48 @@ export function HomeManagement() {
                                         onChange={handleVideoUpload}
                                         className="absolute inset-0 opacity-0 cursor-pointer"
                                     />
-                                    <p style={{ color: textColor, opacity: 0.6 }}>Click or drag video to upload</p>
+                                    <p className="text-paragraph text-xs opacity-60">Click or drag video to upload</p>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     {/* Subtitles Section */}
-                    <div className="p-6 rounded-2xl shadow-sm" style={{ backgroundColor: cardColor }}>
-                        <h3 className="text-xl font-bold mb-6" style={{ color: textColor }}>Subtitles</h3>
+                    <div className="theme-card">
+                        <h3 className="text-h3 mb-6">Subtitles</h3>
                         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                             {config.video.subtitles.map((sub, idx) => (
-                                <div key={idx} className="p-4 rounded-xl border border-gray-300 dark:border-gray-600 flex justify-between items-center">
+                                <div key={idx} className="p-4 rounded-xl border palette-border flex justify-between items-center palette-surface">
                                     <div>
-                                        <p className="font-semibold" style={{ color: textColor }}>{sub.label}</p>
-                                        <p className="text-xs opacity-60" style={{ color: textColor }}>{sub.srcLang}</p>
+                                        <p className="text-paragraph font-semibold">{sub.label}</p>
+                                        <p className="text-xs opacity-60">{sub.srcLang}</p>
                                     </div>
                                     <button
                                         onClick={() => {
                                             const newSubs = config.video.subtitles.filter((_, i) => i !== idx);
                                             setConfig({ ...config, video: { ...config.video, subtitles: newSubs } });
                                         }}
-                                        className="text-red-500 hover:bg-red-500/10 p-2 rounded-lg transition-colors"
+                                        className="delete-action p-2 rounded-lg"
                                     >
                                         <Trash2 size={18} />
                                     </button>
                                 </div>
                             ))}
-                            <div className="p-4 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 flex flex-col gap-2">
+                            <div className="p-4 rounded-xl border-2 border-dashed palette-border flex flex-col gap-2">
                                 <input 
                                     type="text" 
                                     placeholder="Label (e.g. Spanish)" 
-                                    className="text-sm p-2 bg-transparent border-b border-gray-300 dark:border-gray-600"
-                                    style={{ color: textColor }}
+                                    className="theme-input text-sm py-1.5"
                                     id="sub-label"
                                 />
                                 <input 
                                     type="text" 
                                     placeholder="Lang (e.g. es)" 
-                                    className="text-sm p-2 bg-transparent border-b border-gray-300 dark:border-gray-600"
-                                    style={{ color: textColor }}
+                                    className="theme-input text-sm py-1.5"
                                     id="sub-lang"
                                 />
                                 <div className="relative">
-                                    <button className="w-full py-2 bg-primary/10 text-primary rounded-lg text-sm font-semibold" style={{ color: primaryColor }}>
+                                    <button className="theme-button theme-button-secondary w-full py-1.5 text-sm">
                                         Upload .vtt
                                     </button>
                                     <input
@@ -501,43 +484,41 @@ export function HomeManagement() {
                     </div>
 
                     {/* Audio Tracks Section */}
-                    <div className="p-6 rounded-2xl shadow-sm mt-8" style={{ backgroundColor: cardColor }}>
-                        <h3 className="text-xl font-bold mb-6" style={{ color: textColor }}>Audio Tracks</h3>
+                    <div className="theme-card">
+                        <h3 className="text-h3 mb-6">Audio Tracks</h3>
                         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                             {config.video.audio_tracks?.map((track, idx) => (
-                                <div key={idx} className="p-4 rounded-xl border border-gray-300 dark:border-gray-600 flex justify-between items-center">
+                                <div key={idx} className="p-4 rounded-xl border palette-border flex justify-between items-center palette-surface">
                                     <div>
-                                        <p className="font-semibold" style={{ color: textColor }}>{track.label}</p>
-                                        <p className="text-xs opacity-60" style={{ color: textColor }}>{track.lang}</p>
+                                        <p className="text-paragraph font-semibold">{track.label}</p>
+                                        <p className="text-xs opacity-60">{track.lang}</p>
                                     </div>
                                     <button
                                         onClick={() => {
                                             const newTracks = config.video.audio_tracks.filter((_, i) => i !== idx);
                                             setConfig({ ...config, video: { ...config.video, audio_tracks: newTracks } });
                                         }}
-                                        className="text-red-500 hover:bg-red-500/10 p-2 rounded-lg transition-colors"
+                                        className="delete-action p-2 rounded-lg"
                                     >
                                         <Trash2 size={18} />
                                     </button>
                                 </div>
                             ))}
-                            <div className="p-4 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 flex flex-col gap-2">
+                            <div className="p-4 rounded-xl border-2 border-dashed palette-border flex flex-col gap-2">
                                 <input 
                                     type="text" 
                                     placeholder="Label (e.g. French)" 
-                                    className="text-sm p-2 bg-transparent border-b border-gray-300 dark:border-gray-600"
-                                    style={{ color: textColor }}
+                                    className="theme-input text-sm py-1.5"
                                     id="audio-label"
                                 />
                                 <input 
                                     type="text" 
                                     placeholder="Lang (e.g. fr)" 
-                                    className="text-sm p-2 bg-transparent border-b border-gray-300 dark:border-gray-600"
-                                    style={{ color: textColor }}
+                                    className="theme-input text-sm py-1.5"
                                     id="audio-lang"
                                 />
                                 <div className="relative">
-                                    <button className="w-full py-2 bg-primary/10 text-primary rounded-lg text-sm font-semibold" style={{ color: primaryColor }}>
+                                    <button className="theme-button theme-button-secondary w-full py-1.5 text-sm">
                                         Upload Audio
                                     </button>
                                     <input
@@ -565,11 +546,10 @@ export function HomeManagement() {
             {activeTab === 'carousel' && (
                 <div className="space-y-6 animate-fadeIn">
                     <div className="flex justify-between items-center">
-                        <h3 className="text-xl font-bold" style={{ color: textColor }}>Slides</h3>
+                        <h3 className="text-h3">Slides</h3>
                         <button
                             onClick={addNewSlide}
-                            className="flex items-center gap-2 px-4 py-2 rounded-xl text-white font-semibold transition-transform hover:scale-105"
-                            style={{ backgroundColor: primaryColor }}
+                            className="theme-button theme-button-primary"
                         >
                             <Plus size={20} />
                             Add Slide
@@ -580,14 +560,13 @@ export function HomeManagement() {
                         {config.carousel.slides.map((slide, index) => (
                             <div 
                                 key={slide.id} 
-                                className="p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col lg:flex-row gap-6"
-                                style={{ backgroundColor: cardColor }}
+                                className="theme-card flex flex-col lg:flex-row gap-6 items-start"
                             >
-                                <div className="w-full lg:w-72 h-40 relative rounded-xl overflow-hidden group">
+                                <div className="w-full lg:w-72 h-40 relative rounded-xl overflow-hidden group palette-background border palette-border">
                                     {slide.image_url ? (
                                         <img src={slide.image_url} alt="" className="w-full h-full object-cover" />
                                     ) : (
-                                        <div className="w-full h-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center">
+                                        <div className="w-full h-full flex items-center justify-center">
                                             <ImageIcon size={48} className="opacity-20" />
                                         </div>
                                     )}
@@ -602,10 +581,10 @@ export function HomeManagement() {
                                     </div>
                                 </div>
 
-                                <div className="flex-1 grid md:grid-cols-2 gap-4">
+                                <div className="flex-1 grid md:grid-cols-2 gap-4 w-full">
                                     <div className="space-y-4">
                                         <div>
-                                            <label className="block text-xs font-medium mb-1 opacity-60" style={{ color: textColor }}>Title</label>
+                                            <label className="text-paragraph text-xs font-medium mb-1 opacity-60 block">Title</label>
                                             <input
                                                 type="text"
                                                 value={slide.title}
@@ -613,12 +592,11 @@ export function HomeManagement() {
                                                     const updated = config.carousel.slides.map(s => s.id === slide.id ? { ...s, title: e.target.value } : s);
                                                     setConfig({ ...config, carousel: { ...config.carousel, slides: updated } });
                                                 }}
-                                                className="w-full p-2 bg-transparent border-b border-gray-300 dark:border-gray-600"
-                                                style={{ color: textColor }}
+                                                className="w-full theme-input py-1.5"
                                             />
                                         </div>
                                         <div>
-                                            <label className="block text-xs font-medium mb-1 opacity-60" style={{ color: textColor }}>Description</label>
+                                            <label className="text-paragraph text-xs font-medium mb-1 opacity-60 block">Description</label>
                                             <input
                                                 type="text"
                                                 value={slide.description}
@@ -626,14 +604,13 @@ export function HomeManagement() {
                                                     const updated = config.carousel.slides.map(s => s.id === slide.id ? { ...s, description: e.target.value } : s);
                                                     setConfig({ ...config, carousel: { ...config.carousel, slides: updated } });
                                                 }}
-                                                className="w-full p-2 bg-transparent border-b border-gray-300 dark:border-gray-600"
-                                                style={{ color: textColor }}
+                                                className="w-full theme-input py-1.5"
                                             />
                                         </div>
                                     </div>
                                     <div className="space-y-4">
                                         <div>
-                                            <label className="block text-xs font-medium mb-1 opacity-60" style={{ color: textColor }}>Link URL</label>
+                                            <label className="text-paragraph text-xs font-medium mb-1 opacity-60 block">Link URL</label>
                                             <input
                                                 type="text"
                                                 value={slide.link_url}
@@ -641,26 +618,25 @@ export function HomeManagement() {
                                                     const updated = config.carousel.slides.map(s => s.id === slide.id ? { ...s, link_url: e.target.value } : s);
                                                     setConfig({ ...config, carousel: { ...config.carousel, slides: updated } });
                                                 }}
-                                                className="w-full p-2 bg-transparent border-b border-gray-300 dark:border-gray-600"
-                                                style={{ color: textColor }}
+                                                className="w-full theme-input py-1.5"
                                             />
                                         </div>
-                                        <div className="flex items-center justify-between">
+                                        <div className="flex items-center justify-between pt-2">
                                             <button
                                                 onClick={() => {
                                                     const updated = config.carousel.slides.map(s => s.id === slide.id ? { ...s, is_active: !s.is_active } : s);
                                                     setConfig({ ...config, carousel: { ...config.carousel, slides: updated } });
                                                 }}
-                                                className={`flex items-center gap-2 text-sm font-semibold ${slide.is_active ? 'text-green-500' : 'text-gray-500'}`}
+                                                className={`flex items-center gap-2 text-sm font-semibold transition-colors ${slide.is_active ? 'text-green-500' : 'text-paragraph opacity-50'}`}
                                             >
                                                 {slide.is_active ? <Eye size={18} /> : <EyeOff size={18} />}
                                                 {slide.is_active ? 'Visible' : 'Hidden'}
                                             </button>
                                             
                                             <div className="flex items-center gap-2">
-                                                <button onClick={() => moveSlide(index, 'up')} className="p-2 hover:bg-black/5 rounded-lg"><ChevronUp size={20} /></button>
-                                                <button onClick={() => moveSlide(index, 'down')} className="p-2 hover:bg-black/5 rounded-lg"><ChevronDown size={20} /></button>
-                                                <button onClick={() => removeSlide(slide.id)} className="p-2 text-red-500 hover:bg-red-500/10 rounded-lg ml-2"><Trash2 size={20} /></button>
+                                                <button onClick={() => moveSlide(index, 'up')} className="p-2 hover:bg-palette-surface rounded-lg border palette-border transition-colors"><ChevronUp size={20} className="text-paragraph" /></button>
+                                                <button onClick={() => moveSlide(index, 'down')} className="p-2 hover:bg-palette-surface rounded-lg border palette-border transition-colors"><ChevronDown size={20} className="text-paragraph" /></button>
+                                                <button onClick={() => removeSlide(slide.id)} className="p-2 delete-action rounded-lg ml-2 transition-colors"><Trash2 size={20} /></button>
                                             </div>
                                         </div>
                                     </div>

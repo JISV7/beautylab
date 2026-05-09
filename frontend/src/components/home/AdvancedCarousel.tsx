@@ -6,7 +6,6 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 // @ts-ignore
 import 'swiper/css/effect-fade';
-import { useTheme } from '../../contexts/ThemeContext';
 
 interface Slide {
     id: string;
@@ -22,16 +21,12 @@ interface CarouselProps {
 }
 
 export const AdvancedCarousel: React.FC<CarouselProps> = ({ slides }) => {
-    const { activeTheme, currentMode } = useTheme();
     const activeSlides = slides.filter(s => s.is_active);
-
-    const colors = activeTheme?.config[currentMode]?.colors as any || {};
-    const primaryColor = colors.primary || '#000';
 
     if (activeSlides.length === 0) return null;
 
     return (
-        <section className="relative w-full h-[600px]">
+        <section className="relative w-full h-[500px] md:h-[600px]">
             <Swiper
                 modules={[Autoplay, Navigation, Pagination, EffectFade]}
                 effect="fade"
@@ -42,11 +37,6 @@ export const AdvancedCarousel: React.FC<CarouselProps> = ({ slides }) => {
                 autoplay={{ delay: 5000, disableOnInteraction: false }}
                 loop={activeSlides.length > 1}
                 className="w-full h-full"
-                style={{
-                    // @ts-ignore
-                    '--swiper-navigation-color': primaryColor,
-                    '--swiper-pagination-color': primaryColor,
-                }}
             >
                 {activeSlides.map((slide) => (
                     <SwiperSlide key={slide.id}>
@@ -59,20 +49,19 @@ export const AdvancedCarousel: React.FC<CarouselProps> = ({ slides }) => {
                             />
                             <div className="absolute inset-0 bg-black/40 flex flex-col justify-center items-center text-center p-6">
                                 {slide.title && (
-                                    <h2 className="text-4xl md:text-6xl font-bold text-white mb-4 animate-fadeInUp">
+                                    <h2 className="text-h1 text-white mb-4 animate-fadeInUp">
                                         {slide.title}
                                     </h2>
                                 )}
                                 {slide.description && (
-                                    <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-2xl animate-fadeInUp delay-100">
+                                    <p className="text-paragraph text-white/90 mb-8 max-w-2xl animate-fadeInUp delay-100">
                                         {slide.description}
                                     </p>
                                 )}
                                 {slide.link_url && (
                                     <a
                                         href={slide.link_url}
-                                        className="px-8 py-3 rounded-full text-white font-semibold transition-transform hover:scale-105 animate-fadeInUp delay-200"
-                                        style={{ backgroundColor: primaryColor }}
+                                        className="theme-button theme-button-primary transition-transform hover:scale-105 animate-fadeInUp delay-200"
                                     >
                                         Learn More
                                     </a>
@@ -100,12 +89,20 @@ export const AdvancedCarousel: React.FC<CarouselProps> = ({ slides }) => {
                 .delay-100 { animation-delay: 0.1s; }
                 .delay-200 { animation-delay: 0.2s; }
                 
+                :root {
+                  --swiper-navigation-color: var(--palette-primary);
+                  --swiper-pagination-color: var(--palette-primary);
+                  --swiper-pagination-bullet-inactive-color: #fff;
+                  --swiper-pagination-bullet-inactive-opacity: 0.5;
+                }
+
                 .swiper-button-next, .swiper-button-prev {
                     background: rgba(255,255,255,0.1);
                     backdrop-filter: blur(4px);
                     width: 50px;
                     height: 50px;
                     border-radius: 50%;
+                    color: white !important;
                 }
                 .swiper-button-next:after, .swiper-button-prev:after {
                     font-size: 20px;

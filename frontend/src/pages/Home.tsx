@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import axios from 'axios';
 import { Header } from '../components/layout/Header';
 import { Footer } from '../components/layout/Footer';
 import { Hero } from '../components/home/Hero';
@@ -6,6 +7,8 @@ import { CourseCarousel } from '../components/home/CourseCarousel';
 import { Services } from '../components/home/Services';
 import { About } from '../components/home/About';
 import { ContactForm } from '../components/home/ContactForm';
+import { PromotionalVideo } from '../components/home/PromotionalVideo';
+import { AdvancedCarousel } from '../components/home/AdvancedCarousel';
 import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
 import { TangramLoader } from '../components/common/TangramLoader';
@@ -13,6 +16,7 @@ import { TangramLoader } from '../components/common/TangramLoader';
 export function Home() {
     const { activeTheme, currentMode } = useTheme();
     const { user } = useAuth();
+    const [homeConfig, setHomeConfig] = useState<any>(null);
     
     // Check if this is a redirect after login
     const isRedirectAfterLogin = typeof window !== 'undefined' && sessionStorage.getItem('redirectAfterLogin') === 'true';
@@ -25,16 +29,21 @@ export function Home() {
 
 
     useEffect(() => {
+        const fetchHomeConfig = async () => {
+            try {
+                const response = await axios.get('/api/v1/home-config');
+                setHomeConfig(response.data.config);
+            } catch (error) {
+                console.error('Error fetching home config:', error);
+            }
+        };
+        fetchHomeConfig();
+
         // Loader enabled in theme config and not admin/root
         if (!activeTheme) return;
         const currentPalette = activeTheme.config[currentMode];
         const loaderEnabled = !!currentPalette?.colors?.loader?.enabled;
         
-        // --- Session logic (deactivated, just uncomment to reactivate) ---
-        // const hasSeenLoader = sessionStorage.getItem('hasSeenTangramLoader');
-        // const shouldShowLoader = !!loaderEnabled && !hasSeenLoader;
-        // setShowLoader(shouldShowLoader);
-
         // Check if this is a redirect after login (add delay)
         const wasRedirect = sessionStorage.getItem('redirectAfterLogin') === 'true';
         
@@ -53,7 +62,6 @@ export function Home() {
 
     const handleLoaderFinish = () => {
         setShowLoader(false);
-        // sessionStorage.setItem('hasSeenTangramLoader', 'true'); // (deactivated)
     };
 
     if (!activeTheme) {
@@ -64,7 +72,19 @@ export function Home() {
         <div className={`min-h-screen flex flex-col ${currentMode}`}>
             <Header />
             <main className="flex-1">
+                {homeConfig?.carousel?.slides?.length > 0 && (
+                    <AdvancedCarousel slides={homeConfig.carousel.slides} />
+                )}
                 <Hero />
+                {homeConfig?.video?.enabled && homeConfig?.video?.url && (
+                    <PromotionalVideo 
+                        url={homeConfig.video.url}
+                        subtitles={homeConfig.video.subtitles}
+                        title={homeConfig.video.title}
+                        description={homeConfig.video.description}
+                        autoplay={homeConfig.video.autoplay}
+                    />
+                )}
                 <CourseCarousel />
                 <Services />
                 <About />

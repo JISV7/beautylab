@@ -18,6 +18,7 @@ from app.routers import (
     coupons,
     enrollments,
     fonts,
+    home_config,
     invoices,
     licenses,
     payments,
@@ -71,6 +72,7 @@ app.include_router(payments.router)
 app.include_router(licenses.router)
 app.include_router(enrollments.router)
 app.include_router(themes.router)
+app.include_router(home_config.router)
 app.include_router(admin.router)
 app.include_router(fonts.router)
 app.include_router(company_info.router)
@@ -82,6 +84,8 @@ app.mount("/static/courses", StaticFiles(directory="uploads/courses"), name="cou
 app.mount(
     "/static/company_logos", StaticFiles(directory="uploads/company_logos"), name="company_logos"
 )
+app.mount("/static/videos", StaticFiles(directory="uploads/videos"), name="videos")
+app.mount("/static/carousel", StaticFiles(directory="uploads/carousel"), name="carousel")
 
 
 @app.get("/", tags=["Health"])

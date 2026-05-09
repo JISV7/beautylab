@@ -9,8 +9,9 @@ import { CouponManagement } from '../components/admin/CouponManagement';
 import InvoicesPage from '../pages/InvoicesPage';
 import CompanyInfoPage from '../pages/CompanyInfoPage';
 import PrinterInfoPage from '../pages/PrinterInfoPage';
+import { HomeManagement } from '../components/admin/HomeManagement';
 
-type AdminTab = 'dashboard' | 'themes' | 'categories' | 'users' | 'content' | 'invoices' | 'coupons' | 'company-info' | 'printer-info';
+type AdminTab = 'dashboard' | 'themes' | 'home' | 'categories' | 'users' | 'content' | 'invoices' | 'coupons' | 'company-info' | 'printer-info';
 
 type ContentView = 'list' | 'create' | 'edit';
 
@@ -82,6 +83,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToDash
                     {activeTab === 'themes' && (
                         <div>
                             <UnifiedThemeConfig />
+                        </div>
+                    )}
+                    {activeTab === 'home' && (
+                        <div>
+                            <HomeManagement />
                         </div>
                     )}
                     {activeTab === 'categories' && (

@@ -21,7 +21,9 @@ class LoaderConfig(BaseModel):
     """Configuration for the animated Tangram loader."""
 
     enabled: bool = Field(default=False, description="Whether the loader is enabled")
-    selected_tangram: int = Field(default=1, ge=1, le=3, description="Selected Tangram variant (1-3)", alias="selectedTangram")
+    selected_tangram: int = Field(
+        default=1, ge=1, le=3, description="Selected Tangram variant (1-3)", alias="selectedTangram"
+    )
 
     model_config = ConfigDict(
         alias_generator=AliasGenerator(serialization_alias=to_camel),

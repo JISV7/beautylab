@@ -10,6 +10,7 @@ from app.models.coupon import Coupon, CouponUsage
 from app.models.course import Course
 from app.models.enrollment import Enrollment
 from app.models.font import Font
+from app.models.home_config import HomeConfig
 from app.models.invoice import Invoice, InvoiceAdjustment, InvoiceLine
 from app.models.learning_path import LearningPath
 from app.models.learning_path_course import LearningPathCourse
@@ -34,6 +35,7 @@ __all__ = [
     "User",
     "UserRole",
     "Theme",
+    "HomeConfig",
     "AuditLog",
     "Font",
     "Product",

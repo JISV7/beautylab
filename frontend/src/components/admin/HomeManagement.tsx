@@ -24,6 +24,13 @@ interface Subtitle {
     default: boolean;
 }
 
+interface AudioTrack {
+    label: string;
+    src: string;
+    lang: string;
+    default: boolean;
+}
+
 interface VideoConfig {
     enabled: boolean;
     url: string;
@@ -31,6 +38,7 @@ interface VideoConfig {
     description: string;
     autoplay: boolean;
     subtitles: Subtitle[];
+    audio_tracks: AudioTrack[];
 }
 
 interface Slide {
@@ -141,6 +149,33 @@ export function HomeManagement() {
             });
         } catch (error) {
             console.error('Error uploading subtitle:', error);
+        }
+    };
+
+    const handleAudioUpload = async (e: React.ChangeEvent<HTMLInputElement>, label: string, lang: string) => {
+        const file = e.target.files?.[0];
+        if (!file || !config) return;
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            const response = await axios.post('/api/v1/home-config/upload/audio', formData);
+            const newAudio: AudioTrack = {
+                label,
+                src: response.data.url,
+                lang: lang,
+                default: (config.video.audio_tracks || []).length === 0
+            };
+            setConfig({
+                ...config,
+                video: {
+                    ...config.video,
+                    audio_tracks: [...(config.video.audio_tracks || []), newAudio]
+                }
+            });
+        } catch (error) {
+            console.error('Error uploading audio track:', error);
         }
     };
 
@@ -411,10 +446,70 @@ export function HomeManagement() {
                                         className="absolute inset-0 opacity-0 cursor-pointer"
                                     />
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                                </div>
+                                </div>
+                                </div>
+
+                                {/* Audio Tracks Section */}
+                                <div className="p-6 rounded-2xl shadow-sm mt-8" style={{ backgroundColor: cardColor }}>
+                                <h3 className="text-xl font-bold mb-6" style={{ color: textColor }}>Audio Tracks</h3>
+                                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                {config.video.audio_tracks?.map((track, idx) => (
+                                <div key={idx} className="p-4 rounded-xl border border-gray-300 dark:border-gray-600 flex justify-between items-center">
+                                    <div>
+                                        <p className="font-semibold" style={{ color: textColor }}>{track.label}</p>
+                                        <p className="text-xs opacity-60" style={{ color: textColor }}>{track.lang}</p>
+                                    </div>
+                                    <button
+                                        onClick={() => {
+                                            const newTracks = config.video.audio_tracks.filter((_, i) => i !== idx);
+                                            setConfig({ ...config, video: { ...config.video, audio_tracks: newTracks } });
+                                        }}
+                                        className="text-red-500 hover:bg-red-500/10 p-2 rounded-lg transition-colors"
+                                    >
+                                        <Trash2 size={18} />
+                                    </button>
+                                </div>
+                                ))}
+                                <div className="p-4 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 flex flex-col gap-2">
+                                <input 
+                                    type="text" 
+                                    placeholder="Label (e.g. French)" 
+                                    className="text-sm p-2 bg-transparent border-b border-gray-300 dark:border-gray-600"
+                                    style={{ color: textColor }}
+                                    id="audio-label"
+                                />
+                                <input 
+                                    type="text" 
+                                    placeholder="Lang (e.g. fr)" 
+                                    className="text-sm p-2 bg-transparent border-b border-gray-300 dark:border-gray-600"
+                                    style={{ color: textColor }}
+                                    id="audio-lang"
+                                />
+                                <div className="relative">
+                                    <button className="w-full py-2 bg-primary/10 text-primary rounded-lg text-sm font-semibold" style={{ color: primaryColor }}>
+                                        Upload Audio
+                                    </button>
+                                    <input
+                                        type="file"
+                                        accept="audio/*"
+                                        onChange={(e) => {
+                                            const label = (document.getElementById('audio-label') as HTMLInputElement).value;
+                                            const lang = (document.getElementById('audio-lang') as HTMLInputElement).value;
+                                            if (!label || !lang) {
+                                                alert('Please provide label and lang first');
+                                                return;
+                                            }
+                                            handleAudioUpload(e, label, lang);
+                                        }}
+                                        className="absolute inset-0 opacity-0 cursor-pointer"
+                                    />
+                                </div>
+                                </div>
+                                </div>
+                                </div>
+                                </div>
+
             )}
 
             {/* Carousel Tab */}

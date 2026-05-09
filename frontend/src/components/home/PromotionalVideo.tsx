@@ -35,17 +35,21 @@ export const PromotionalVideo: React.FC<VideoProps> = ({
 }) => {
     const { activeTheme, currentMode } = useTheme();
     const videoRef = useRef<HTMLVideoElement>(null);
+    const audioRef = useRef<HTMLAudioElement>(null);
+    
     const [isPlaying, setIsPlaying] = useState(false);
     const [progress, setProgress] = useState(0);
     const [volume, setVolume] = useState(1);
     const [isMuted, setIsMuted] = useState(false);
     const [showControls, setShowControls] = useState(true);
+    
     const [selectedSubtitle, setSelectedSubtitle] = useState<string>(
         subtitles.find(s => s.default)?.srcLang || 'none'
     );
-    const [selectedAudio, setSelectedAudio] = useState<string>(
-        audioTracks.find(a => a.default)?.lang || 'default'
-    );
+    
+    // 'default' means we use the video's embedded audio.
+    const [selectedAudio, setSelectedAudio] = useState<string>('default');
+    
     const controlsTimeoutRef = useRef<any>(null);
 
     const colors = activeTheme?.config[currentMode]?.colors as any || {};
@@ -53,26 +57,72 @@ export const PromotionalVideo: React.FC<VideoProps> = ({
     const backgroundColor = colors.background || '#fff';
     const textColor = colors.text || '#000';
 
+    const isUsingSeparateAudio = selectedAudio !== 'default';
+    const currentAudioTrack = audioTracks.find(a => a.lang === selectedAudio);
+
     useEffect(() => {
         const video = videoRef.current;
+        const audio = audioRef.current;
         if (!video) return;
 
         const handleTimeUpdate = () => {
             setProgress((video.currentTime / video.duration) * 100);
+            
+            // Sync audio with video if needed
+            if (isUsingSeparateAudio && audio) {
+                if (Math.abs(audio.currentTime - video.currentTime) > 0.3) {
+                    audio.currentTime = video.currentTime;
+                }
+            }
         };
 
         const handleEnded = () => {
             setIsPlaying(false);
         };
 
+        const handlePlay = () => {
+            setIsPlaying(true);
+            if (isUsingSeparateAudio && audio) audio.play();
+        };
+
+        const handlePause = () => {
+            setIsPlaying(false);
+            if (audio) audio.pause();
+        };
+
+        const handleSeeking = () => {
+            if (isUsingSeparateAudio && audio) {
+                audio.currentTime = video.currentTime;
+            }
+        };
+
         video.addEventListener('timeupdate', handleTimeUpdate);
         video.addEventListener('ended', handleEnded);
+        video.addEventListener('play', handlePlay);
+        video.addEventListener('pause', handlePause);
+        video.addEventListener('seeking', handleSeeking);
 
         return () => {
             video.removeEventListener('timeupdate', handleTimeUpdate);
             video.removeEventListener('ended', handleEnded);
+            video.removeEventListener('play', handlePlay);
+            video.removeEventListener('pause', handlePause);
+            video.removeEventListener('seeking', handleSeeking);
         };
-    }, []);
+    }, [isUsingSeparateAudio]);
+
+    // Handle Volume & Mute across both elements
+    useEffect(() => {
+        if (videoRef.current) {
+            // If using separate audio, video itself is always muted
+            videoRef.current.muted = isMuted || isUsingSeparateAudio;
+            videoRef.current.volume = volume;
+        }
+        if (audioRef.current) {
+            audioRef.current.muted = isMuted;
+            audioRef.current.volume = volume;
+        }
+    }, [volume, isMuted, isUsingSeparateAudio]);
 
     const togglePlay = () => {
         if (videoRef.current) {
@@ -81,14 +131,15 @@ export const PromotionalVideo: React.FC<VideoProps> = ({
             } else {
                 videoRef.current.play();
             }
-            setIsPlaying(!isPlaying);
         }
     };
 
     const handleProgressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newProgress = parseFloat(e.target.value);
         if (videoRef.current) {
-            videoRef.current.currentTime = (newProgress / 100) * videoRef.current.duration;
+            const newTime = (newProgress / 100) * videoRef.current.duration;
+            videoRef.current.currentTime = newTime;
+            if (audioRef.current) audioRef.current.currentTime = newTime;
             setProgress(newProgress);
         }
     };
@@ -96,17 +147,11 @@ export const PromotionalVideo: React.FC<VideoProps> = ({
     const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newVolume = parseFloat(e.target.value);
         setVolume(newVolume);
-        if (videoRef.current) {
-            videoRef.current.volume = newVolume;
-            setIsMuted(newVolume === 0);
-        }
+        setIsMuted(newVolume === 0);
     };
 
     const toggleMute = () => {
-        if (videoRef.current) {
-            videoRef.current.muted = !isMuted;
-            setIsMuted(!isMuted);
-        }
+        setIsMuted(!isMuted);
     };
 
     const toggleFullscreen = () => {
@@ -130,9 +175,16 @@ export const PromotionalVideo: React.FC<VideoProps> = ({
     };
 
     const handleAudioChange = (lang: string) => {
+        const wasPlaying = isPlaying;
         setSelectedAudio(lang);
-        // In a real implementation with multiple audio tracks, we would switch tracks here.
-        // For simplicity and standard HTML5 video, we assume the main URL might change or we use different track elements if supported.
+        
+        // Reset and play new track if it was playing
+        setTimeout(() => {
+            if (videoRef.current && audioRef.current) {
+                audioRef.current.currentTime = videoRef.current.currentTime;
+                if (wasPlaying) audioRef.current.play();
+            }
+        }, 100);
     };
 
     const handleMouseMove = () => {
@@ -208,9 +260,10 @@ export const PromotionalVideo: React.FC<VideoProps> = ({
                     <video
                         ref={videoRef}
                         className="w-full h-full"
-                        src={selectedAudio === 'default' ? url : audioTracks.find(a => a.lang === selectedAudio)?.src || url}
+                        src={url}
                         autoPlay={autoplay}
                         onClick={togglePlay}
+                        playsInline
                     >
                         {subtitles.map((sub, idx) => (
                             <track
@@ -223,6 +276,15 @@ export const PromotionalVideo: React.FC<VideoProps> = ({
                             />
                         ))}
                     </video>
+
+                    {/* Separate Audio Track Element */}
+                    {isUsingSeparateAudio && currentAudioTrack && (
+                        <audio 
+                            ref={audioRef}
+                            src={currentAudioTrack.src}
+                            preload="auto"
+                        />
+                    )}
 
                     {/* Custom Controls */}
                     <div 
@@ -316,7 +378,7 @@ export const PromotionalVideo: React.FC<VideoProps> = ({
                                                 className={`w-full text-left px-3 py-1 text-sm rounded ${selectedAudio === 'default' ? 'bg-primary text-white' : 'text-gray-300 hover:bg-white/10'}`}
                                                 style={selectedAudio === 'default' ? { backgroundColor: primaryColor } : {}}
                                             >
-                                                Default
+                                                Original
                                             </button>
                                             {audioTracks.map((track, idx) => (
                                                 <button 

@@ -20,6 +20,7 @@ os.makedirs(CAROUSEL_UPLOAD_DIR, exist_ok=True)
 
 ALLOWED_VIDEO_EXT = {".mp4", ".webm", ".ogg"}
 ALLOWED_SUBTITLE_EXT = {".vtt", ".srt"}
+ALLOWED_AUDIO_EXT = {".mp3", ".wav", ".aac", ".m4a", ".ogg"}
 ALLOWED_IMAGE_EXT = {".jpg", ".jpeg", ".png", ".webp", ".svg"}
 
 
@@ -82,6 +83,24 @@ async def upload_subtitle(file: UploadFile = File(...), admin=Depends(RequireAdm
 
     filename = f"{uuid.uuid4()}{ext}"
     filepath = os.path.join(VIDEO_UPLOAD_DIR, filename)  # Keep subtitles with videos
+
+    with open(filepath, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    return {"url": f"/static/videos/{filename}", "filename": filename}
+
+
+@router.post("/upload/audio", status_code=status.HTTP_201_CREATED)
+async def upload_audio(file: UploadFile = File(...), admin=Depends(RequireAdmin)):
+    """Upload an audio track file (Admin only)."""
+    ext = os.path.splitext(file.filename)[1].lower()
+    if ext not in ALLOWED_AUDIO_EXT:
+        raise HTTPException(
+            status_code=400, detail=f"Invalid audio extension. Allowed: {ALLOWED_AUDIO_EXT}"
+        )
+
+    filename = f"{uuid.uuid4()}{ext}"
+    filepath = os.path.join(VIDEO_UPLOAD_DIR, filename)  # Keep audio tracks with videos
 
     with open(filepath, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)

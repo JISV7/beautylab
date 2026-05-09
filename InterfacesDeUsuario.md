@@ -83,3 +83,29 @@ Por lógica, para poder facturar, se requieren previamente los siguientes módul
 - KLM de información de la compañía.
 - KLM de imprenta autorizada.
 - KLM de compra.
+
+---
+
+# Evaluación 3 - Loader y Animación Tangram 3D
+
+## 1. Comportamiento y Secuencia de Carga
+- El loader debe mostrarse automáticamente al acceder al sitio web, antes de renderizar cualquier contenido de la vista Home.
+- La secuencia de animación debe seguir el flujo: **Tangram 1 → Tangram 2 → Tangram 3 → Home**.
+- La transición entre cada estado (T1, T2, T3 y Home) debe ser fluida, con interpolación de posiciones y rotaciones para evitar cortes visuales bruscos.
+
+## 2. Especificaciones del Tangram 3D
+- Se deben implementar 3 modelos 3D de Tangram (T1, T2, T3), cada uno con una configuración geométrica o disposición de piezas distinta.
+- La tecnología 3D (ej. Three.js, WebGL, Spline o similar) debe estar optimizada para navegadores modernos y dispositivos móviles.
+- Las piezas deben mantener proporciones reales de un Tangram clásico (7 polígonos: 5 triángulos, 1 cuadrado, 1 paralelogramo).
+
+## 3. Sincronización con la Paleta de Colores (EV 1)
+- Los colores de las piezas del Tangram deben actualizarse dinámicamente según el tema activo configurado por el usuario o administrador: **Modo claro**, **Modo oscuro** y **Modo accesibilidad**.
+
+## 4. Configuración desde el Panel de Administrador
+- El administrador debe disponer de un control dentro del **Módulo de configuración de temas** para:
+  - **Activar/Desactivar** el loader Tangram 3D.
+  - Si se desactiva, el sitio debe omitir la animación y cargar directamente la vista Home.
+
+## 5. Integración con Evaluaciones Anteriores
+- El loader debe heredar las variables de diseño definidas en el sistema de temas de la **Evaluación 1**.
+- La transición final al Home debe respetar la estructura de secciones definida previamente (Header, Hero, Carousel, Servicios, Footer).

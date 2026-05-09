@@ -13,6 +13,8 @@ import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
 import { TangramLoader } from '../components/common/TangramLoader';
 
+const API_URL = 'http://localhost:8000';
+
 export function Home() {
     const { activeTheme, currentMode } = useTheme();
     const { user } = useAuth();
@@ -31,7 +33,7 @@ export function Home() {
     useEffect(() => {
         const fetchHomeConfig = async () => {
             try {
-                const response = await axios.get('/api/v1/home-config');
+                const response = await axios.get(`${API_URL}/home-config`);
                 setHomeConfig(response.data.config);
             } catch (error) {
                 console.error('Error fetching home config:', error);
@@ -80,6 +82,7 @@ export function Home() {
                     <PromotionalVideo 
                         url={homeConfig.video.url}
                         subtitles={homeConfig.video.subtitles}
+                        audioTracks={homeConfig.video.audio_tracks}
                         title={homeConfig.video.title}
                         description={homeConfig.video.description}
                         autoplay={homeConfig.video.autoplay}

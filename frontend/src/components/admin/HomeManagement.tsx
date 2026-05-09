@@ -17,6 +17,30 @@ import {
 import { useTheme } from '../../contexts/ThemeContext';
 import { ImageCropper } from '../common/ImageCropper';
 
+const API_URL = 'http://localhost:8000';
+
+// Get auth token from localStorage
+const getAuthToken = (): string | null => {
+    return localStorage.getItem('access_token');
+};
+
+// Axios instance with auth
+const api = axios.create({
+    baseURL: API_URL,
+    headers: {
+        'Content-Type': 'application/json',
+    },
+});
+
+// Add request interceptor for auth token
+api.interceptors.request.use((config) => {
+    const token = getAuthToken();
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+});
+
 interface Subtitle {
     label: string;
     src: string;
@@ -65,6 +89,7 @@ export function HomeManagement() {
     const { activeTheme, currentMode } = useTheme();
     const [config, setConfig] = useState<HomeConfig | null>(null);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const [saving, setSaving] = useState(false);
     const [activeTab, setActiveTab] = useState<'video' | 'carousel'>('video');
     
@@ -84,10 +109,15 @@ export function HomeManagement() {
 
     const fetchConfig = async () => {
         try {
-            const response = await axios.get('/api/v1/home-config');
-            setConfig(response.data.config);
-        } catch (error) {
+            const response = await api.get('/home-config');
+            if (response.data && response.data.config) {
+                setConfig(response.data.config);
+            } else {
+                throw new Error('Invalid response structure from server');
+            }
+        } catch (error: any) {
             console.error('Error fetching home config:', error);
+            setError(error.message || 'Failed to fetch configuration');
         } finally {
             setLoading(false);
         }
@@ -97,7 +127,7 @@ export function HomeManagement() {
         if (!config) return;
         setSaving(true);
         try {
-            await axios.put('/api/v1/home-config', { config });
+            await api.put('/home-config', { config });
             alert('Settings saved successfully!');
         } catch (error) {
             console.error('Error saving home config:', error);
@@ -115,7 +145,9 @@ export function HomeManagement() {
         formData.append('file', file);
 
         try {
-            const response = await axios.post('/api/v1/home-config/upload/video', formData);
+            const response = await api.post('/home-config/upload/video', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
             setConfig({
                 ...config,
                 video: { ...config.video, url: response.data.url }
@@ -133,7 +165,9 @@ export function HomeManagement() {
         formData.append('file', file);
 
         try {
-            const response = await axios.post('/api/v1/home-config/upload/subtitle', formData);
+            const response = await api.post('/home-config/upload/subtitle', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
             const newSubtitle: Subtitle = {
                 label,
                 src: response.data.url,
@@ -160,7 +194,9 @@ export function HomeManagement() {
         formData.append('file', file);
 
         try {
-            const response = await axios.post('/api/v1/home-config/upload/audio', formData);
+            const response = await api.post('/home-config/upload/audio', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
             const newAudio: AudioTrack = {
                 label,
                 src: response.data.url,
@@ -209,7 +245,9 @@ export function HomeManagement() {
         formData.append('file', blob);
 
         try {
-            const response = await axios.post('/api/v1/home-config/upload/carousel', formData);
+            const response = await api.post('/home-config/upload/carousel', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
             const updatedSlides = config.carousel.slides.map(s => 
                 s.id === slideId ? { ...s, image_url: response.data.url } : s
             );
@@ -272,7 +310,19 @@ export function HomeManagement() {
     };
 
     if (loading) return <div className="flex h-64 items-center justify-center">Loading...</div>;
-    if (!config) return <div>Error loading configuration</div>;
+    if (error || !config) return (
+        <div className="p-8 text-center">
+            <h2 className="text-2xl font-bold text-red-500 mb-4">Error loading configuration</h2>
+            <p className="mb-4">{error || 'Configuration data is missing'}</p>
+            <button 
+                onClick={() => { setError(null); setLoading(true); fetchConfig(); }}
+                className="px-4 py-2 text-white rounded-lg transition-transform hover:scale-105"
+                style={{ backgroundColor: primaryColor }}
+            >
+                Retry
+            </button>
+        </div>
+    );
 
     return (
         <div className="w-full">
@@ -446,15 +496,15 @@ export function HomeManagement() {
                                         className="absolute inset-0 opacity-0 cursor-pointer"
                                     />
                                 </div>
-                                </div>
-                                </div>
-                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                                {/* Audio Tracks Section */}
-                                <div className="p-6 rounded-2xl shadow-sm mt-8" style={{ backgroundColor: cardColor }}>
-                                <h3 className="text-xl font-bold mb-6" style={{ color: textColor }}>Audio Tracks</h3>
-                                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                {config.video.audio_tracks?.map((track, idx) => (
+                    {/* Audio Tracks Section */}
+                    <div className="p-6 rounded-2xl shadow-sm mt-8" style={{ backgroundColor: cardColor }}>
+                        <h3 className="text-xl font-bold mb-6" style={{ color: textColor }}>Audio Tracks</h3>
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {config.video.audio_tracks?.map((track, idx) => (
                                 <div key={idx} className="p-4 rounded-xl border border-gray-300 dark:border-gray-600 flex justify-between items-center">
                                     <div>
                                         <p className="font-semibold" style={{ color: textColor }}>{track.label}</p>
@@ -470,8 +520,8 @@ export function HomeManagement() {
                                         <Trash2 size={18} />
                                     </button>
                                 </div>
-                                ))}
-                                <div className="p-4 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 flex flex-col gap-2">
+                            ))}
+                            <div className="p-4 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 flex flex-col gap-2">
                                 <input 
                                     type="text" 
                                     placeholder="Label (e.g. French)" 
@@ -505,11 +555,10 @@ export function HomeManagement() {
                                         className="absolute inset-0 opacity-0 cursor-pointer"
                                     />
                                 </div>
-                                </div>
-                                </div>
-                                </div>
-                                </div>
-
+                            </div>
+                        </div>
+                    </div>
+                </div>
             )}
 
             {/* Carousel Tab */}

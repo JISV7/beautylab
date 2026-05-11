@@ -72,6 +72,29 @@ export const AdvancedCarousel: React.FC<CarouselProps> = ({ slides }) => {
                     </SwiperSlide>
                 ))}
             </Swiper>
+
+            {/* Global CSS Overrides for Swiper specific to this component */}
+            <style>{`
+                .swiper-button-next,
+                .swiper-button-prev {
+                    color: var(--palette-primary) !important;
+                    transition: transform 0.2s;
+                }
+                .swiper-button-next:hover,
+                .swiper-button-prev:hover {
+                    transform: scale(1.1);
+                    color: var(--palette-accent) !important;
+                }
+                .swiper-pagination-bullet {
+                    background-color: var(--palette-secondary) !important;
+                    opacity: 0.6;
+                    transition: opacity 0.2s, background-color 0.2s;
+                }
+                .swiper-pagination-bullet-active {
+                    background-color: var(--palette-primary) !important;
+                    opacity: 1;
+                }
+            `}</style>
         </section>
     );
 };

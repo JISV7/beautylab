@@ -273,7 +273,10 @@ export function HomeManagement() {
     const uploadImage = async (blob: Blob | File, slideId: string) => {
         if (!config) return;
         const formData = new FormData();
-        formData.append('file', blob);
+        
+        // Ensure a filename with extension is provided, especially for Blobs from cropper
+        const filename = (blob as File).name || `carousel_${Date.now()}.jpg`;
+        formData.append('file', blob, filename);
 
         try {
             const response = await api.post('/home-config/upload/carousel', formData, {

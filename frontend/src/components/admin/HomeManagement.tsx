@@ -15,6 +15,8 @@ import {
     FileVideo
 } from 'lucide-react';
 import { ImageCropper } from '../common/ImageCropper';
+import { MessageModal } from './MessageModal';
+import { ConfirmModal } from './ConfirmModal';
 
 const API_URL = 'http://localhost:8000';
 
@@ -91,6 +93,29 @@ export function HomeManagement() {
     const [saving, setSaving] = useState(false);
     const [activeTab, setActiveTab] = useState<'video' | 'carousel'>('video');
     
+    // Notification and Confirmation Modals
+    const [messageModal, setMessageModal] = useState<{
+        isOpen: boolean;
+        type: 'success' | 'error';
+        message: string;
+    }>({
+        isOpen: false,
+        type: 'success',
+        message: '',
+    });
+
+    const [confirmModal, setConfirmModal] = useState<{
+        isOpen: boolean;
+        title: string;
+        message: string;
+        onConfirm: () => void;
+    }>({
+        isOpen: false,
+        title: '',
+        message: '',
+        onConfirm: () => {},
+    });
+
     // Cropper state
     const [cropperOpen, setCropperOpen] = useState(false);
     const [currentImageToCrop, setCurrentImageToCrop] = useState<string | null>(null);
@@ -121,10 +146,18 @@ export function HomeManagement() {
         setSaving(true);
         try {
             await api.put('/home-config', { config });
-            alert('Settings saved successfully!');
+            setMessageModal({
+                isOpen: true,
+                type: 'success',
+                message: 'Settings saved successfully!',
+            });
         } catch (error) {
             console.error('Error saving home config:', error);
-            alert('Error saving settings');
+            setMessageModal({
+                isOpen: true,
+                type: 'error',
+                message: 'Error saving settings',
+            });
         } finally {
             setSaving(false);
         }
@@ -217,11 +250,16 @@ export function HomeManagement() {
             const img = new Image();
             img.onload = () => {
                 if (img.width > config.carousel.max_width || img.height > config.carousel.max_height) {
-                    if (window.confirm(`Image exceeds max size (${config.carousel.max_width}x${config.carousel.max_height}). Do you want to crop it?`)) {
-                        setCurrentImageToCrop(event.target?.result as string);
-                        setPendingSlideId(slideId);
-                        setCropperOpen(true);
-                    }
+                    setConfirmModal({
+                        isOpen: true,
+                        title: 'Image Size Warning',
+                        message: `Image exceeds max size (${config.carousel.max_width}x${config.carousel.max_height}). Do you want to crop it?`,
+                        onConfirm: () => {
+                            setCurrentImageToCrop(event.target?.result as string);
+                            setPendingSlideId(slideId);
+                            setCropperOpen(true);
+                        }
+                    });
                 } else {
                     uploadImage(file, slideId);
                 }
@@ -356,17 +394,31 @@ export function HomeManagement() {
                     <div className="theme-card">
                         <div className="flex items-center justify-between mb-6">
                             <h3 className="text-h3">Video Settings</h3>
-                            <div className="flex items-center gap-3">
-                                <span className="text-paragraph font-medium">{config.video.enabled ? 'Enabled' : 'Disabled'}</span>
-                                <button
-                                    onClick={() => setConfig({
-                                        ...config,
-                                        video: { ...config.video, enabled: !config.video.enabled }
-                                    })}
-                                    className={`w-14 h-8 rounded-full transition-colors relative ${config.video.enabled ? 'bg-palette-primary' : 'bg-slate-300 dark:bg-slate-700'}`}
-                                >
-                                    <div className={`absolute top-1 left-1 w-6 h-6 bg-white rounded-full transition-transform ${config.video.enabled ? 'translate-x-6' : 'translate-x-0'}`} />
-                                </button>
+                            <div className="flex flex-col gap-4">
+                                <div className="flex items-center gap-3">
+                                    <span className="text-paragraph font-medium min-w-[80px]">{config.video.enabled ? 'Enabled' : 'Disabled'}</span>
+                                    <button
+                                        onClick={() => setConfig({
+                                            ...config,
+                                            video: { ...config.video, enabled: !config.video.enabled }
+                                        })}
+                                        className={`w-14 h-8 rounded-full transition-colors relative ${config.video.enabled ? 'bg-palette-primary' : 'bg-slate-300 dark:bg-slate-700'}`}
+                                    >
+                                        <div className={`absolute top-1 left-1 w-6 h-6 bg-white rounded-full transition-transform ${config.video.enabled ? 'translate-x-6' : 'translate-x-0'}`} />
+                                    </button>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    <span className="text-paragraph font-medium min-w-[80px]">Autoplay</span>
+                                    <button
+                                        onClick={() => setConfig({
+                                            ...config,
+                                            video: { ...config.video, autoplay: !config.video.autoplay }
+                                        })}
+                                        className={`w-14 h-8 rounded-full transition-colors relative ${config.video.autoplay ? 'bg-palette-primary' : 'bg-slate-300 dark:bg-slate-700'}`}
+                                    >
+                                        <div className={`absolute top-1 left-1 w-6 h-6 bg-white rounded-full transition-transform ${config.video.autoplay ? 'translate-x-6' : 'translate-x-0'}`} />
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
@@ -388,17 +440,6 @@ export function HomeManagement() {
                                         onChange={(e) => setConfig({ ...config, video: { ...config.video, description: e.target.value } })}
                                         className="w-full theme-input h-24 resize-none"
                                     />
-                                </div>
-                                <div className="flex items-center gap-4">
-                                    <label className="flex items-center gap-2 cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            checked={config.video.autoplay}
-                                            onChange={(e) => setConfig({ ...config, video: { ...config.video, autoplay: e.target.checked } })}
-                                            className="w-4 h-4 rounded accent-palette-primary"
-                                        />
-                                        <span className="text-paragraph">Autoplay</span>
-                                    </label>
                                 </div>
                             </div>
 
@@ -470,7 +511,11 @@ export function HomeManagement() {
                                             const label = (document.getElementById('sub-label') as HTMLInputElement).value;
                                             const lang = (document.getElementById('sub-lang') as HTMLInputElement).value;
                                             if (!label || !lang) {
-                                                alert('Please provide label and lang first');
+                                                setMessageModal({
+                                                    isOpen: true,
+                                                    type: 'error',
+                                                    message: 'Please provide label and lang first',
+                                                });
                                                 return;
                                             }
                                             handleSubtitleUpload(e, label, lang);
@@ -527,7 +572,11 @@ export function HomeManagement() {
                                             const label = (document.getElementById('audio-label') as HTMLInputElement).value;
                                             const lang = (document.getElementById('audio-lang') as HTMLInputElement).value;
                                             if (!label || !lang) {
-                                                alert('Please provide label and lang first');
+                                                setMessageModal({
+                                                    isOpen: true,
+                                                    type: 'error',
+                                                    message: 'Please provide label and lang first',
+                                                });
                                                 return;
                                             }
                                             handleAudioUpload(e, label, lang);
@@ -661,6 +710,23 @@ export function HomeManagement() {
                     }}
                 />
             )}
+
+            {/* Notification Modals */}
+            <MessageModal
+                isOpen={messageModal.isOpen}
+                type={messageModal.type}
+                message={messageModal.message}
+                onClose={() => setMessageModal(prev => ({ ...prev, isOpen: false }))}
+            />
+
+            <ConfirmModal
+                isOpen={confirmModal.isOpen}
+                onClose={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))}
+                onConfirm={confirmModal.onConfirm}
+                title={confirmModal.title}
+                message={confirmModal.message}
+                type="primary"
+            />
         </div>
     );
 }

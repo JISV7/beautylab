@@ -76,16 +76,15 @@ export function Home() {
                 <Hero />
                 
                 {homeConfig?.video?.enabled && homeConfig?.video?.url && (
-                    <PromotionalVideo 
+                    <PromotionalVideo
                         url={homeConfig.video.url}
                         subtitles={homeConfig.video.subtitles}
-                        audioTracks={homeConfig.video.audio_tracks}
+                        audio_tracks={homeConfig.video.audio_tracks}
                         title={homeConfig.video.title}
                         description={homeConfig.video.description}
                         autoplay={homeConfig.video.autoplay}
                     />
                 )}
-
                 {homeConfig?.carousel?.slides?.length > 0 && (
                     <AdvancedCarousel slides={homeConfig.carousel.slides} />
                 )}

@@ -9,7 +9,6 @@ import {
     TimeSlider,
     FullscreenButton,
     Controls,
-    CaptionsButton,
     SeekButton,
     Time,
     PlaybackRateButton,
@@ -52,6 +51,9 @@ const AudioTrackSync: React.FC<{
     audio_tracks: AudioTrack[];
 }> = ({ selectedAudio, audio_tracks }) => {
     const audioRef = useRef<HTMLAudioElement>(null);
+    const audioCtxRef = useRef<AudioContext | null>(null);
+    const sourceRef = useRef<MediaElementAudioSourceNode | null>(null);
+    const gainNodeRef = useRef<GainNode | null>(null);
     const media = Player.useMedia() as unknown as HTMLVideoElement | null;
     
     const isPlaying = Player.usePlayer(state => !state.paused);
@@ -62,6 +64,7 @@ const AudioTrackSync: React.FC<{
     const isUsingSeparateAudio = selectedAudio !== 'default';
     const currentAudioTrack = audio_tracks.find(a => a.lang === selectedAudio);
 
+    // Synchronize playback
     useEffect(() => {
         const audio = audioRef.current;
         if (!audio || !media || !isUsingSeparateAudio) return;
@@ -73,6 +76,7 @@ const AudioTrackSync: React.FC<{
         }
     }, [isPlaying, isUsingSeparateAudio, media]);
 
+    // Synchronize time
     useEffect(() => {
         const audio = audioRef.current;
         if (!audio || !media || !isUsingSeparateAudio) return;
@@ -82,15 +86,42 @@ const AudioTrackSync: React.FC<{
         }
     }, [currentTime, isUsingSeparateAudio, media]);
 
+    // Synchronize volume and mute to the AUDIO element
     useEffect(() => {
         if (audioRef.current) {
             audioRef.current.volume = volume;
             audioRef.current.muted = isMuted;
         }
-        if (media && isUsingSeparateAudio) {
-            media.muted = true;
+    }, [volume, isMuted]);
+
+    // Silence the VIDEO element using Web Audio when separate audio is active
+    // This avoids updating the store's muted/volume state via media.muted = true
+    useEffect(() => {
+        if (!media) return;
+
+        if (isUsingSeparateAudio) {
+            if (!audioCtxRef.current) {
+                const AudioContextClass = (window.AudioContext || (window as any).webkitAudioContext);
+                audioCtxRef.current = new AudioContextClass();
+                gainNodeRef.current = audioCtxRef.current.createGain();
+                gainNodeRef.current.connect(audioCtxRef.current.destination);
+            }
+
+            if (!sourceRef.current) {
+                sourceRef.current = audioCtxRef.current.createMediaElementSource(media);
+                sourceRef.current.connect(gainNodeRef.current!);
+            }
+
+            if (gainNodeRef.current) {
+                gainNodeRef.current.gain.value = 0; // Silent video
+            }
+        } else {
+            // Restore volume if we switch back to default audio
+            if (gainNodeRef.current) {
+                gainNodeRef.current.gain.value = 1;
+            }
         }
-    }, [volume, isMuted, isUsingSeparateAudio, media]);
+    }, [media, isUsingSeparateAudio]);
 
     if (!isUsingSeparateAudio || !currentAudioTrack) return null;
 
@@ -135,6 +166,44 @@ const AudioTrackSelector: React.FC<{
     );
 };
 
+const SubtitleSelector: React.FC<{
+    subtitles: Subtitle[];
+    selectedSubtitle: string;
+    onSubtitleChange: (lang: string) => void;
+}> = ({ subtitles, selectedSubtitle, onSubtitleChange }) => {
+    if (subtitles.length === 0) return null;
+
+    return (
+        <Popover.Root>
+            <Popover.Trigger render={(props) => (
+                <button {...props} className="text-white hover:scale-110 transition-transform" aria-label="Subtitles">
+                    <Subtitles size={24} />
+                </button>
+            )} />
+            <Popover.Popup className="bg-black/90 backdrop-blur-md border border-white/10 rounded-lg p-2 min-w-[140px] mb-2 z-50">
+                <div className="flex flex-col gap-1">
+                    <p className="text-[10px] uppercase font-bold text-white/40 px-3 py-1">Captions</p>
+                    <button 
+                        onClick={() => onSubtitleChange('none')}
+                        className={`w-full text-left px-3 py-1.5 text-sm rounded transition-colors ${selectedSubtitle === 'none' ? 'bg-palette-primary text-white' : 'text-gray-300 hover:bg-white/10'}`}
+                    >
+                        Off
+                    </button>
+                    {subtitles.map((sub, idx) => (
+                        <button 
+                            key={idx}
+                            onClick={() => onSubtitleChange(sub.srcLang)}
+                            className={`w-full text-left px-3 py-1.5 text-sm rounded transition-colors ${selectedSubtitle === sub.srcLang ? 'bg-palette-primary text-white' : 'text-gray-300 hover:bg-white/10'}`}
+                        >
+                            {sub.label}
+                        </button>
+                    ))}
+                </div>
+            </Popover.Popup>
+        </Popover.Root>
+    );
+};
+
 const PlayerUI: React.FC<{
     url: string;
     subtitles: Subtitle[];
@@ -145,8 +214,9 @@ const PlayerUI: React.FC<{
     selectedAudio: string;
     setSelectedAudio: (s: string) => void;
 }> = ({ url, subtitles, audio_tracks, autoplay, selectedSubtitle, setSelectedSubtitle, selectedAudio, setSelectedAudio }) => {
-    const store = Player.usePlayer();
+    const store = Player.usePlayer() as any;
     const volume = Player.usePlayer(state => state.volume as number);
+    const isMuted = Player.usePlayer(state => state.muted as boolean);
     const currentTime = Player.usePlayer(state => state.currentTime as number);
     const paused = Player.usePlayer(state => state.paused as boolean);
     const isFullscreen = Player.usePlayer(state => state.fullscreen as boolean);
@@ -192,6 +262,7 @@ const PlayerUI: React.FC<{
             case 'arrowup':
                 e.preventDefault();
                 store.setVolume(Math.min(1, volume + 0.1));
+                if (isMuted) store.setMuted(false);
                 break;
             case 'arrowdown':
                 e.preventDefault();
@@ -266,8 +337,8 @@ const PlayerUI: React.FC<{
                 <div className="px-4 py-2">
                     <TimeSlider.Root className="w-full h-1.5 bg-white/20 rounded-full appearance-none cursor-pointer group/slider relative flex items-center">
                         <TimeSlider.Track className="w-full h-full bg-white/20 rounded-full absolute" />
-                        <TimeSlider.Fill className="h-full bg-palette-primary rounded-full absolute" />
-                        <TimeSlider.Thumb className="w-3.5 h-3.5 bg-white rounded-full absolute shadow-lg scale-0 group-hover/slider:scale-100 transition-transform" />
+                        <TimeSlider.Fill className="h-full bg-palette-primary rounded-full absolute" style={{ width: 'var(--media-slider-fill)' }} />
+                        <TimeSlider.Thumb className="w-3.5 h-3.5 bg-white rounded-full absolute shadow-lg scale-0 group-hover/slider:scale-100 data-[interactive]:scale-100 transition-transform" style={{ left: 'var(--media-slider-fill)', transform: 'translateX(-50%)' }} />
                     </TimeSlider.Root>
                 </div>
 
@@ -310,18 +381,18 @@ const PlayerUI: React.FC<{
                                     </button>
                                 )}
                             />
-                            <VolumeSlider.Root className="w-0 group-hover/volume:w-20 overflow-hidden transition-all duration-300 h-1.5 bg-white/20 rounded-full relative flex items-center">
+                            <VolumeSlider.Root className="w-0 group-hover/volume:w-20 data-[interactive]:w-20 overflow-hidden transition-all duration-300 h-1.5 bg-white/20 rounded-full relative flex items-center">
                                 <VolumeSlider.Track className="w-full h-full bg-white/20 rounded-full absolute" />
-                                <VolumeSlider.Fill className="h-full bg-palette-primary rounded-full absolute" />
-                                <VolumeSlider.Thumb className="w-3 h-3 bg-white rounded-full absolute shadow-md" />
+                                <VolumeSlider.Fill className="h-full bg-palette-primary rounded-full absolute" style={{ width: 'var(--media-slider-fill)' }} />
+                                <VolumeSlider.Thumb className="w-3 h-3 bg-white rounded-full absolute shadow-md" style={{ left: 'var(--media-slider-fill)', transform: 'translateX(-50%)' }} />
                             </VolumeSlider.Root>
                         </div>
 
-                        <CaptionsButton render={(props) => (
-                            <button {...props} className="text-white hover:scale-110 transition-transform">
-                                <Subtitles size={24} />
-                            </button>
-                        )} />
+                        <SubtitleSelector 
+                            subtitles={subtitles}
+                            selectedSubtitle={selectedSubtitle}
+                            onSubtitleChange={handleSubtitleChange}
+                        />
 
                         <AudioTrackSelector 
                             audio_tracks={audio_tracks}

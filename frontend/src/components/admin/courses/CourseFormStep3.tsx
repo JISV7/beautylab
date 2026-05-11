@@ -46,15 +46,12 @@ export const CourseFormStep3: React.FC<CourseFormStep3Props> = ({
                     <span className="text-sm font-bold text-paragraph">
                         Published
                     </span>
-                    <label className="relative inline-flex items-center cursor-pointer">
-                        <input
-                            type="checkbox"
-                            className="sr-only peer"
-                            checked={formData.published}
-                            onChange={(e) => onFormDataChange('published', e.target.checked)}
-                        />
-                        <div className="w-11 h-6 bg-[var(--palette-border)] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--palette-primary)]"></div>
-                    </label>
+                    <button
+                        onClick={() => onFormDataChange('published', !formData.published)}
+                        className={`w-14 h-8 rounded-full transition-colors relative ${formData.published ? 'bg-palette-primary' : 'bg-slate-300 dark:bg-slate-700'}`}
+                    >
+                        <div className={`absolute top-1 left-1 w-6 h-6 bg-white rounded-full transition-transform ${formData.published ? 'translate-x-6' : 'translate-x-0'}`} />
+                    </button>
                 </div>
             </div>
 

@@ -49,19 +49,19 @@ export const AdvancedCarousel: React.FC<CarouselProps> = ({ slides }) => {
                             />
                             <div className="absolute inset-0 bg-black/40 flex flex-col justify-center items-center text-center p-6">
                                 {slide.title && (
-                                    <h2 className="text-h1 text-white mb-4 animate-fadeInUp">
+                                    <h2 className="text-h1 text-white mb-4">
                                         {slide.title}
                                     </h2>
                                 )}
                                 {slide.description && (
-                                    <p className="text-paragraph text-white/90 mb-8 max-w-2xl animate-fadeInUp delay-100">
+                                    <p className="text-paragraph text-white/90 mb-8 max-w-2xl">
                                         {slide.description}
                                     </p>
                                 )}
                                 {slide.link_url && (
                                     <a
                                         href={slide.link_url}
-                                        className="theme-button theme-button-primary transition-transform hover:scale-105 animate-fadeInUp delay-200"
+                                        className="theme-button theme-button-primary transition-transform hover:scale-105"
                                     >
                                         Learn More
                                     </a>
@@ -71,43 +71,6 @@ export const AdvancedCarousel: React.FC<CarouselProps> = ({ slides }) => {
                     </SwiperSlide>
                 ))}
             </Swiper>
-
-            <style>{`
-                @keyframes fadeInUp {
-                    from {
-                        opacity: 0;
-                        transform: translateY(20px);
-                    }
-                    to {
-                        opacity: 1;
-                        transform: translateY(0);
-                    }
-                }
-                .animate-fadeInUp {
-                    animation: fadeInUp 0.8s ease-out forwards;
-                }
-                .delay-100 { animation-delay: 0.1s; }
-                .delay-200 { animation-delay: 0.2s; }
-                
-                :root {
-                  --swiper-navigation-color: var(--palette-primary);
-                  --swiper-pagination-color: var(--palette-primary);
-                  --swiper-pagination-bullet-inactive-color: #fff;
-                  --swiper-pagination-bullet-inactive-opacity: 0.5;
-                }
-
-                .swiper-button-next, .swiper-button-prev {
-                    background: rgba(255,255,255,0.1);
-                    backdrop-filter: blur(4px);
-                    width: 50px;
-                    height: 50px;
-                    border-radius: 50%;
-                    color: white !important;
-                }
-                .swiper-button-next:after, .swiper-button-prev:after {
-                    font-size: 20px;
-                }
-            `}</style>
         </section>
     );
 };

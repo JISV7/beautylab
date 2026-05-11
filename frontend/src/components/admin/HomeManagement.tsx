@@ -352,23 +352,22 @@ export function HomeManagement() {
 
             {/* Video Tab */}
             {activeTab === 'video' && (
-                <div className="space-y-8 animate-fadeIn">
+                <div className="space-y-8">
                     <div className="theme-card">
                         <div className="flex items-center justify-between mb-6">
                             <h3 className="text-h3">Video Settings</h3>
-                            <label className="flex items-center gap-2 cursor-pointer">
-                                <span className="text-paragraph">{config.video.enabled ? 'Enabled' : 'Disabled'}</span>
-                                <input
-                                    type="checkbox"
-                                    checked={config.video.enabled}
-                                    onChange={(e) => setConfig({
+                            <div className="flex items-center gap-3">
+                                <span className="text-paragraph font-medium">{config.video.enabled ? 'Enabled' : 'Disabled'}</span>
+                                <button
+                                    onClick={() => setConfig({
                                         ...config,
-                                        video: { ...config.video, enabled: e.target.checked }
+                                        video: { ...config.video, enabled: !config.video.enabled }
                                     })}
-                                    className="sr-only peer"
-                                />
-                                <div className="relative w-11 h-6 bg-palette-surface border palette-border rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-palette-primary"></div>
-                            </label>
+                                    className={`w-14 h-8 rounded-full transition-colors relative ${config.video.enabled ? 'bg-palette-primary' : 'bg-slate-300 dark:bg-slate-700'}`}
+                                >
+                                    <div className={`absolute top-1 left-1 w-6 h-6 bg-white rounded-full transition-transform ${config.video.enabled ? 'translate-x-6' : 'translate-x-0'}`} />
+                                </button>
+                            </div>
                         </div>
 
                         <div className="grid md:grid-cols-2 gap-6">
@@ -544,7 +543,7 @@ export function HomeManagement() {
 
             {/* Carousel Tab */}
             {activeTab === 'carousel' && (
-                <div className="space-y-6 animate-fadeIn">
+                <div className="space-y-6">
                     <div className="flex justify-between items-center">
                         <h3 className="text-h3">Slides</h3>
                         <button
@@ -662,16 +661,6 @@ export function HomeManagement() {
                     }}
                 />
             )}
-
-            <style>{`
-                .animate-fadeIn {
-                    animation: fadeIn 0.4s ease-out;
-                }
-                @keyframes fadeIn {
-                    from { opacity: 0; transform: translateY(10px); }
-                    to { opacity: 1; transform: translateY(0); }
-                }
-            `}</style>
         </div>
     );
 }

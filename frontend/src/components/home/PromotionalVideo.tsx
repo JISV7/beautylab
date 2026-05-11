@@ -57,36 +57,57 @@ const AudioTrackSync: React.FC<{
     const media = Player.useMedia() as unknown as HTMLVideoElement | null;
     
     const isPlaying = Player.usePlayer(state => !state.paused);
+    const isWaiting = Player.usePlayer(state => state.waiting as boolean);
     const currentTime = Player.usePlayer(state => state.currentTime as number);
     const volume = Player.usePlayer(state => state.volume as number);
     const isMuted = Player.usePlayer(state => state.muted as boolean);
     
-    const isUsingSeparateAudio = selectedAudio !== 'default';
+    const isUsingSeparateAudio = selectedAudio !== 'none';
     const currentAudioTrack = audio_tracks.find(a => a.lang === selectedAudio);
 
-    // Synchronize playback
+    // Synchronize playback state (Play/Pause/Waiting)
     useEffect(() => {
         const audio = audioRef.current;
-        if (!audio || !media || !isUsingSeparateAudio) return;
+        if (!audio || !isUsingSeparateAudio) return;
 
-        if (isPlaying) {
-            audio.play().catch(e => console.error("Audio play failed:", e));
+        const shouldBePlaying = isPlaying && !isWaiting;
+
+        if (shouldBePlaying) {
+            // Try to play immediately, but also wait for canplay if src just changed
+            audio.play().catch(() => {
+                // Ignore initial play failures (e.g. before user interaction or if src not ready)
+            });
         } else {
             audio.pause();
         }
-    }, [isPlaying, isUsingSeparateAudio, media]);
 
-    // Synchronize time
+        const handleCanPlay = () => {
+            if (shouldBePlaying) {
+                audio.play().catch(e => console.error("Audio resume failed:", e));
+            }
+        };
+
+        audio.addEventListener('canplay', handleCanPlay);
+        return () => audio.removeEventListener('canplay', handleCanPlay);
+    }, [isPlaying, isWaiting, isUsingSeparateAudio, currentAudioTrack?.src]);
+
+    // Synchronize time and ensure playback after seek
     useEffect(() => {
         const audio = audioRef.current;
-        if (!audio || !media || !isUsingSeparateAudio) return;
+        if (!audio || !isUsingSeparateAudio) return;
 
-        if (Math.abs(audio.currentTime - currentTime) > 0.3) {
+        // Tighter sync threshold
+        if (Math.abs(audio.currentTime - currentTime) > 0.1) {
             audio.currentTime = currentTime;
+            
+            // Re-trigger play after seek if video is playing
+            if (isPlaying && !isWaiting) {
+                audio.play().catch(() => {});
+            }
         }
-    }, [currentTime, isUsingSeparateAudio, media]);
+    }, [currentTime, isPlaying, isWaiting, isUsingSeparateAudio]);
 
-    // Synchronize volume and mute to the AUDIO element
+    // Synchronize volume and mute
     useEffect(() => {
         if (audioRef.current) {
             audioRef.current.volume = volume;
@@ -94,8 +115,7 @@ const AudioTrackSync: React.FC<{
         }
     }, [volume, isMuted]);
 
-    // Silence the VIDEO element using Web Audio when separate audio is active
-    // This avoids updating the store's muted/volume state via media.muted = true
+    // Silence the VIDEO element using Web Audio
     useEffect(() => {
         if (!media) return;
 
@@ -113,10 +133,9 @@ const AudioTrackSync: React.FC<{
             }
 
             if (gainNodeRef.current) {
-                gainNodeRef.current.gain.value = 0; // Silent video
+                gainNodeRef.current.gain.value = 0;
             }
         } else {
-            // Restore volume if we switch back to default audio
             if (gainNodeRef.current) {
                 gainNodeRef.current.gain.value = 1;
             }
@@ -145,12 +164,6 @@ const AudioTrackSelector: React.FC<{
             <Popover.Popup className="bg-black/90 backdrop-blur-md border border-white/10 rounded-lg p-2 min-w-[140px] mb-2 z-50">
                 <div className="flex flex-col gap-1">
                     <p className="text-[10px] uppercase font-bold text-white/40 px-3 py-1">Audio Tracks</p>
-                    <button 
-                        onClick={() => onAudioChange('default')}
-                        className={`w-full text-left px-3 py-1.5 text-sm rounded transition-colors ${selectedAudio === 'default' ? 'bg-palette-primary text-white' : 'text-gray-300 hover:bg-white/10'}`}
-                    >
-                        Default
-                    </button>
                     {audio_tracks.map((track, idx) => (
                         <button 
                             key={idx}
@@ -287,7 +300,7 @@ const PlayerUI: React.FC<{
                 break;
             case 'b':
                 e.preventDefault();
-                if (audio_tracks.length > 0) {
+                if (audio_tracks.length > 1) {
                     const langs = audio_tracks.map(a => a.lang);
                     const currentIndex = langs.indexOf(selectedAudio);
                     const nextIndex = (currentIndex + 1) % langs.length;
@@ -436,7 +449,7 @@ export const PromotionalVideo: React.FC<VideoProps> = ({
         subtitles.find(s => s.default)?.srcLang || 'none'
     );
     const [selectedAudio, setSelectedAudio] = useState<string>(
-        audio_tracks.length > 0 ? audio_tracks[0].lang : 'default'
+        audio_tracks.length > 0 ? audio_tracks[0].lang : 'none'
     );
 
     return (

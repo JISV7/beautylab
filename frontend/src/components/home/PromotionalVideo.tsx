@@ -7,7 +7,8 @@ import {
     VolumeSlider,
     TimeSlider,
     FullscreenButton,
-    Controls
+    Controls,
+    useMediaAttach
 } from '@videojs/react';
 import { videoFeatures } from '@videojs/react/video';
 
@@ -145,14 +146,23 @@ const PlayerUI: React.FC<{
     setSelectedAudio: (s: string) => void;
 }> = ({ url, subtitles, audio_tracks, autoplay, selectedSubtitle, setSelectedSubtitle, selectedAudio, setSelectedAudio }) => {
     const volume = Player.usePlayer(state => state.volume as number);
+    const setMedia = useMediaAttach();
+    const containerRef = useRef<HTMLDivElement>(null);
 
     return (
-        <Player.Container>
+        <Player.Container 
+            ref={containerRef} 
+            className="relative w-full h-full outline-none"
+            tabIndex={0}
+        >
             <video
+                ref={setMedia}
                 className="w-full h-full"
                 src={url}
                 autoPlay={autoplay}
+                muted={autoplay}
                 playsInline
+                crossOrigin="anonymous"
             >
                 {subtitles.map((sub, idx) => (
                     <track
@@ -171,7 +181,22 @@ const PlayerUI: React.FC<{
                 audio_tracks={audio_tracks}
             />
 
-            <Controls.Root className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/70 to-transparent transition-opacity duration-300 opacity-0 group-hover:opacity-100 data-[active=true]:opacity-100">
+            {/* Big Play Button Overlay */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <PlayButton 
+                    render={(props, { paused }) => (
+                        <button 
+                            {...props} 
+                            className={`p-6 rounded-full bg-palette-primary/80 text-white transition-all duration-300 hover:scale-110 pointer-events-auto ${!paused ? 'opacity-0 scale-50 invisible' : 'opacity-100 scale-100 visible'}`}
+                            aria-label={paused ? "Play" : "Pause"}
+                        >
+                            <Play size={48} fill="currentColor" />
+                        </button>
+                    )}
+                />
+            </div>
+
+            <Controls.Root className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/80 via-transparent to-transparent transition-all duration-300 opacity-0 invisible pointer-events-none group-hover:opacity-100 group-hover:visible group-hover:pointer-events-auto data-[active=true]:opacity-100 data-[active=true]:visible data-[active=true]:pointer-events-auto">
                 <div className="px-4 py-2">
                     <TimeSlider.Root className="w-full h-1 bg-white/30 rounded-lg appearance-none cursor-pointer accent-palette-primary relative flex items-center">
                         <TimeSlider.Track className="w-full h-1 bg-white/30 rounded-lg absolute" />

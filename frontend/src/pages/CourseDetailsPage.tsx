@@ -10,6 +10,7 @@ import {
 import { ArrowLeft, X, ShoppingCart, Loader2, KeyRound, AlertTriangle } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 import type { CompanyInfo } from '../data/company.types';
+import { normalizeUrl } from '../utils/url';
 
 const API_URL = 'http://localhost:8000';
 
@@ -593,14 +594,14 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
             <CourseHero
                 title={course.title}
                 description={course.description}
-                image_url={course.image_url}
+                image_url={normalizeUrl(course.image_url)}
                 duration_hours={course.duration_hours}
                 level_name={course.level_name}
                 category_name={course.category_name}
                 product_name={course.product_name}
                 product_sku={course.product_sku}
                 price={course.product_price}
-                video_url={course.video_url}
+                video_url={normalizeUrl(course.video_url)}
                 onBuy={isAuthenticated ? handleBuy : undefined}
                 onAddToCart={isAuthenticated ? handleAddToCart : undefined}
                 isInCart={course.product_id ? isInCart(course.product_id) : false}

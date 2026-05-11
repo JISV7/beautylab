@@ -6,6 +6,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 // @ts-ignore
 import 'swiper/css/effect-fade';
+import { normalizeUrl } from '../../utils/url';
 
 interface Slide {
     id: string;
@@ -42,7 +43,7 @@ export const AdvancedCarousel: React.FC<CarouselProps> = ({ slides }) => {
                     <SwiperSlide key={slide.id}>
                         <div className="relative w-full h-full">
                             <img
-                                src={slide.image_url}
+                                src={normalizeUrl(slide.image_url)}
                                 alt={slide.title || 'Carousel Slide'}
                                 className="w-full h-full object-cover"
                                 loading="lazy"

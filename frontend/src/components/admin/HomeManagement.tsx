@@ -17,6 +17,7 @@ import {
 import { ImageCropper } from '../common/ImageCropper';
 import { MessageModal } from './MessageModal';
 import { ConfirmModal } from './ConfirmModal';
+import { normalizeUrl } from '../../utils/url';
 
 const API_URL = 'http://localhost:8000';
 
@@ -612,7 +613,7 @@ export function HomeManagement() {
                             >
                                 <div className="w-full lg:w-72 h-40 relative rounded-xl overflow-hidden group palette-background border palette-border">
                                     {slide.image_url ? (
-                                        <img src={slide.image_url} alt="" className="w-full h-full object-cover" />
+                                        <img src={normalizeUrl(slide.image_url)} alt="" className="w-full h-full object-cover" />
                                     ) : (
                                         <div className="w-full h-full flex items-center justify-center">
                                             <ImageIcon size={48} className="opacity-20" />

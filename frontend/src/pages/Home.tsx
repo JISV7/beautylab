@@ -11,6 +11,7 @@ import { AdvancedCarousel } from '../components/home/AdvancedCarousel';
 import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
 import { TangramLoader } from '../components/common/TangramLoader';
+import { normalizeUrl } from '../utils/url';
 
 const API_URL = 'http://localhost:8000';
 
@@ -77,16 +78,16 @@ export function Home() {
                 
                 {homeConfig?.video?.enabled && homeConfig?.video?.url && (
                     <PromotionalVideo
-                        url={homeConfig.video.url}
-                        subtitles={homeConfig.video.subtitles}
-                        audio_tracks={homeConfig.video.audio_tracks}
+                        url={normalizeUrl(homeConfig.video.url)}
+                        subtitles={homeConfig.video.subtitles?.map((s: any) => ({ ...s, src: normalizeUrl(s.src) }))}
+                        audio_tracks={homeConfig.video.audio_tracks?.map((a: any) => ({ ...a, src: normalizeUrl(a.src) }))}
                         title={homeConfig.video.title}
                         description={homeConfig.video.description}
                         autoplay={homeConfig.video.autoplay}
                     />
                 )}
                 {homeConfig?.carousel?.slides?.length > 0 && (
-                    <AdvancedCarousel slides={homeConfig.carousel.slides} />
+                    <AdvancedCarousel slides={homeConfig.carousel.slides.map((s: any) => ({ ...s, image_url: normalizeUrl(s.image_url) }))} />
                 )}
 
                 <Services />

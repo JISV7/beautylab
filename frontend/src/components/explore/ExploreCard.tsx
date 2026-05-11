@@ -1,6 +1,7 @@
 import React from 'react';
 import { Clock } from 'lucide-react';
 import { ShareModal } from './ShareModal';
+import { normalizeUrl } from '../../utils/url';
 
 export interface Course {
     id: string;
@@ -54,7 +55,7 @@ export const ExploreCard: React.FC<ExploreCardProps> = ({ course, onViewDetails 
             <div className="h-48 w-full overflow-hidden relative">
                 {course.image_url ? (
                     <img
-                        src={course.image_url}
+                        src={normalizeUrl(course.image_url)}
                         alt={course.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         onError={(e) => {

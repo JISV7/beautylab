@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Clock, PlayCircle, ExternalLink, Plus, Minus, ShoppingCart } from 'lucide-react';
+import { normalizeUrl } from '../../utils/url';
 
 export interface CourseHeroProps {
     title: string;
@@ -52,7 +53,7 @@ export const CourseHero: React.FC<CourseHeroProps> = ({
             <div className="w-full overflow-hidden bg-[var(--palette-background)]">
                 {image_url ? (
                     <img
-                        src={image_url}
+                        src={normalizeUrl(image_url)}
                         alt={title}
                         className="w-full h-auto object-contain max-h-64 md:max-h-80 lg:max-h-96 mx-auto"
                         onError={(e) => {
@@ -103,7 +104,7 @@ export const CourseHero: React.FC<CourseHeroProps> = ({
                 {/* Video Link (if available) */}
                 {video_url && (
                     <a
-                        href={video_url}
+                        href={normalizeUrl(video_url)}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-2 text-[var(--palette-primary)] hover:opacity-80 transition-opacity mb-6"

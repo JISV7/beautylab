@@ -45,7 +45,7 @@ export const ThemeTable: React.FC<ThemeTableProps> = ({
 
     // Sort and paginate
     const getSortedAndPaginatedData = () => {
-        let data = getTableData();
+        const data = getTableData();
 
         // Sort
         data.sort((a, b) => {

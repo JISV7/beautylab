@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
-import axios from 'axios';
+import axios, { isAxiosError } from 'axios';
 import { Book, Key, Share2, CheckCircle, Clock, ChevronDown, Gift, KeyRound, AlertTriangle, X } from 'lucide-react';
 import { MyCoursesFilters, type Category } from '../components/user/MyCoursesFilters';
 
-const API_URL = 'http://localhost:8000';
+import { BASE_URL } from '../config';
 
 interface License {
     id: string;
@@ -33,7 +33,7 @@ const getAuthToken = (): string | null => {
 };
 
 const api = axios.create({
-    baseURL: API_URL,
+    baseURL: BASE_URL,
     headers: {
         'Content-Type': 'application/json',
     },
@@ -110,16 +110,22 @@ export default function MyCoursesPage() {
             setRedeemError(null);
             const token = localStorage.getItem('access_token');
             await axios.post(
-                `${API_URL}/licenses/redeem`,
+                `${BASE_URL}/licenses/redeem`,
                 { license_code: redeemCode.trim() },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
             setRedeemModalOpen(false);
             setRedeemCode('');
             fetchCourses();
-        } catch (err: any) {
-            const detail = err.response?.data?.detail;
-            setRedeemError(typeof detail === 'string' ? detail : 'Failed to redeem license. Check the code and try again.');
+        } catch (err: unknown) {
+            let errorMessage = 'Failed to redeem license. Check the code and try again.';
+            if (isAxiosError(err)) {
+                const detail = err.response?.data?.detail;
+                if (typeof detail === 'string') {
+                    errorMessage = detail;
+                }
+            }
+            setRedeemError(errorMessage);
         } finally {
             setRedeemLoading(false);
         }

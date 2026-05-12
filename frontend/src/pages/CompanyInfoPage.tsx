@@ -4,14 +4,14 @@ import { CompanyTable, CompanyForm } from '../components/admin/company';
 import { ConfirmModal } from '../components/admin/ConfirmModal';
 import type { CompanyInfo, CompanyInfoCreate } from '../data/company.types';
 
-const API_URL = 'http://localhost:8000';
+import { BASE_URL } from '../config';
 
 const getAuthToken = (): string | null => {
   return localStorage.getItem('access_token');
 };
 
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL: BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -70,7 +70,7 @@ export default function CompanyInfoPage() {
       setLoading(true);
       const response = await api.get('/company-info/');
       setCompanies(response.data || []);
-    } catch (error: any) {
+    } catch (error) {
       console.error('Failed to fetch companies:', error);
     } finally {
       setLoading(false);
@@ -118,7 +118,7 @@ export default function CompanyInfoPage() {
       }
       setIsFormOpen(false);
       fetchCompanies();
-    } catch (error: any) {
+    } catch (error) {
       console.error('Failed to save company:', error);
     } finally {
       setSaving(false);
@@ -153,7 +153,7 @@ export default function CompanyInfoPage() {
       await api.delete(`/company-info/${companyToDelete.id}`);
       fetchCompanies();
       setCompanyToDelete(null);
-    } catch (error: any) {
+    } catch (error) {
       console.error('Failed to delete company:', error);
     }
   };
@@ -176,7 +176,7 @@ export default function CompanyInfoPage() {
       await api.post(`/company-info/${setActiveModal.company.id}/set-active`);
       setSetActiveModal({ isOpen: false, company: null });
       fetchCompanies();
-    } catch (error: any) {
+    } catch (error) {
       console.error('Failed to set active company:', error);
     } finally {
       setSaving(false);

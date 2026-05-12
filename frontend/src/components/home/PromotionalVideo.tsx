@@ -121,7 +121,7 @@ const AudioTrackSync: React.FC<{
 
         if (isUsingSeparateAudio) {
             if (!audioCtxRef.current) {
-                const AudioContextClass = (window.AudioContext || (window as any).webkitAudioContext);
+                const AudioContextClass = (window.AudioContext || (window as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext);
                 audioCtxRef.current = new AudioContextClass();
                 gainNodeRef.current = audioCtxRef.current.createGain();
                 gainNodeRef.current.connect(audioCtxRef.current.destination);
@@ -217,6 +217,17 @@ const SubtitleSelector: React.FC<{
     );
 };
 
+interface PlayerStore {
+    play: () => void;
+    pause: () => void;
+    exitFullscreen: () => void;
+    requestFullscreen: () => void;
+    toggleMuted: () => void;
+    setVolume: (v: number) => void;
+    setMuted: (m: boolean) => void;
+    seek: (t: number) => void;
+}
+
 const PlayerUI: React.FC<{
     url: string;
     subtitles: Subtitle[];
@@ -227,7 +238,7 @@ const PlayerUI: React.FC<{
     selectedAudio: string;
     setSelectedAudio: (s: string) => void;
 }> = ({ url, subtitles, audio_tracks, autoplay, selectedSubtitle, setSelectedSubtitle, selectedAudio, setSelectedAudio }) => {
-    const store = Player.usePlayer() as any;
+    const store = Player.usePlayer() as unknown as PlayerStore;
     const volume = Player.usePlayer(state => state.volume as number);
     const isMuted = Player.usePlayer(state => state.muted as boolean);
     const currentTime = Player.usePlayer(state => state.currentTime as number);
@@ -242,6 +253,7 @@ const PlayerUI: React.FC<{
         if (media) {
             const tracks = media.textTracks;
             for (let i = 0; i < tracks.length; i++) {
+                // eslint-disable-next-line react-hooks/immutability
                 tracks[i].mode = tracks[i].language === lang ? 'showing' : 'hidden';
             }
         }

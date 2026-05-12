@@ -48,9 +48,10 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
             if (event.target) {
                 event.target.value = '';
             }
-        } catch (error: any) {
+        } catch (error) {
             console.error('Failed to upload fonts:', error);
-            alert(error.response?.data?.detail || 'Failed to upload fonts');
+            // In a real app we'd use a proper notification system
+            alert('Failed to upload fonts');
         } finally {
             setUploading(false);
         }
@@ -62,9 +63,9 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
             // Refresh fonts from context to update the list
             const allFonts = await fetchFonts();
             setFonts(allFonts);
-        } catch (error: any) {
+        } catch (error) {
             console.error('Failed to delete font:', error);
-            alert(error.response?.data?.detail || 'Failed to delete font');
+            alert('Failed to delete font');
         }
     };
 
@@ -97,72 +98,17 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
     };
 
     const initialStyles: Record<string, TypographyStyle> = {
-        h1: {
-            fontFamily: theme.config[initialMode].typography.h1?.fontName || 'Roboto',
-            fontId: theme.config[initialMode].typography.h1?.fontId || '',
-            size: parseFloat(theme.config[initialMode].typography.h1?.fontSize || '2.492'),
-            color: theme.config[initialMode].typography.h1?.color || '#000000',
-            fontWeight: theme.config[initialMode].typography.h1?.fontWeight || 400,
-            lineHeight: theme.config[initialMode].typography.h1?.lineHeight || '1.2'
-        },
-        h2: {
-            fontFamily: theme.config[initialMode].typography.h2?.fontName || 'Roboto',
-            fontId: theme.config[initialMode].typography.h2?.fontId || '',
-            size: parseFloat(theme.config[initialMode].typography.h2?.fontSize || '2.074'),
-            color: theme.config[initialMode].typography.h2?.color || '#000000',
-            fontWeight: theme.config[initialMode].typography.h2?.fontWeight || 400,
-            lineHeight: theme.config[initialMode].typography.h2?.lineHeight || '1.2'
-        },
-        h3: {
-            fontFamily: theme.config[initialMode].typography.h3?.fontName || 'Roboto',
-            fontId: theme.config[initialMode].typography.h3?.fontId || '',
-            size: parseFloat(theme.config[initialMode].typography.h3?.fontSize || '1.73'),
-            color: theme.config[initialMode].typography.h3?.color || '#000000',
-            fontWeight: theme.config[initialMode].typography.h3?.fontWeight || 400,
-            lineHeight: theme.config[initialMode].typography.h3?.lineHeight || '1.3'
-        },
-        h4: {
-            fontFamily: theme.config[initialMode].typography.h4?.fontName || 'Roboto',
-            fontId: theme.config[initialMode].typography.h4?.fontId || '',
-            size: parseFloat(theme.config[initialMode].typography.h4?.fontSize || '1.44'),
-            color: theme.config[initialMode].typography.h4?.color || '#000000',
-            fontWeight: theme.config[initialMode].typography.h4?.fontWeight || 400,
-            lineHeight: theme.config[initialMode].typography.h4?.lineHeight || '1.4'
-        },
-        h5: {
-            fontFamily: theme.config[initialMode].typography.h5?.fontName || 'Roboto',
-            fontId: theme.config[initialMode].typography.h5?.fontId || '',
-            size: parseFloat(theme.config[initialMode].typography.h5?.fontSize || '1.2'),
-            color: theme.config[initialMode].typography.h5?.color || '#000000',
-            fontWeight: theme.config[initialMode].typography.h5?.fontWeight || 400,
-            lineHeight: theme.config[initialMode].typography.h5?.lineHeight || '1.4'
-        },
-        h6: {
-            fontFamily: theme.config[initialMode].typography.h6?.fontName || 'Roboto',
-            fontId: theme.config[initialMode].typography.h6?.fontId || '',
-            size: parseFloat(theme.config[initialMode].typography.h6?.fontSize || '1.0'),
-            color: theme.config[initialMode].typography.h6?.color || '#000000',
-            fontWeight: theme.config[initialMode].typography.h6?.fontWeight || 400,
-            lineHeight: theme.config[initialMode].typography.h6?.lineHeight || '1.5'
-        },
-        p: {
-            fontFamily: theme.config[initialMode].typography.paragraph?.fontName || 'Roboto',
-            fontId: theme.config[initialMode].typography.paragraph?.fontId || '',
-            size: parseFloat(theme.config[initialMode].typography.paragraph?.fontSize || '1.0'),
-            color: theme.config[initialMode].typography.paragraph?.color || '#000000',
-            fontWeight: theme.config[initialMode].typography.paragraph?.fontWeight || 400,
-            lineHeight: theme.config[initialMode].typography.paragraph?.lineHeight || '1.6'
-        }
+        h1: { fontFamily: theme.config[initialMode].typography.h1?.fontName || 'Roboto', fontId: theme.config[initialMode].typography.h1?.fontId || '', size: parseFloat(theme.config[initialMode].typography.h1?.fontSize || '2.492'), color: theme.config[initialMode].typography.h1?.color || '#000000', fontWeight: theme.config[initialMode].typography.h1?.fontWeight || 400, lineHeight: theme.config[initialMode].typography.h1?.lineHeight || '1.2' },
+        h2: { fontFamily: theme.config[initialMode].typography.h2?.fontName || 'Roboto', fontId: theme.config[initialMode].typography.h2?.fontId || '', size: parseFloat(theme.config[initialMode].typography.h2?.fontSize || '2.074'), color: theme.config[initialMode].typography.h2?.color || '#000000', fontWeight: theme.config[initialMode].typography.h2?.fontWeight || 400, lineHeight: theme.config[initialMode].typography.h2?.lineHeight || '1.2' },
+        h3: { fontFamily: theme.config[initialMode].typography.h3?.fontName || 'Roboto', fontId: theme.config[initialMode].typography.h3?.fontId || '', size: parseFloat(theme.config[initialMode].typography.h3?.fontSize || '1.73'), color: theme.config[initialMode].typography.h3?.color || '#000000', fontWeight: theme.config[initialMode].typography.h3?.fontWeight || 400, lineHeight: theme.config[initialMode].typography.h3?.lineHeight || '1.3' },
+        h4: { fontFamily: theme.config[initialMode].typography.h4?.fontName || 'Roboto', fontId: theme.config[initialMode].typography.h4?.fontId || '', size: parseFloat(theme.config[initialMode].typography.h4?.fontSize || '1.44'), color: theme.config[initialMode].typography.h4?.color || '#000000', fontWeight: theme.config[initialMode].typography.h4?.fontWeight || 400, lineHeight: theme.config[initialMode].typography.h4?.lineHeight || '1.4' },
+        h5: { fontFamily: theme.config[initialMode].typography.h5?.fontName || 'Roboto', fontId: theme.config[initialMode].typography.h5?.fontId || '', size: parseFloat(theme.config[initialMode].typography.h5?.fontSize || '1.2'), color: theme.config[initialMode].typography.h5?.color || '#000000', fontWeight: theme.config[initialMode].typography.h5?.fontWeight || 400, lineHeight: theme.config[initialMode].typography.h5?.lineHeight || '1.4' },
+        h6: { fontFamily: theme.config[initialMode].typography.h6?.fontName || 'Roboto', fontId: theme.config[initialMode].typography.h6?.fontId || '', size: parseFloat(theme.config[initialMode].typography.h6?.fontSize || '1.0'), color: theme.config[initialMode].typography.h6?.color || '#000000', fontWeight: theme.config[initialMode].typography.h6?.fontWeight || 400, lineHeight: theme.config[initialMode].typography.h6?.lineHeight || '1.5' },
+        p: { fontFamily: theme.config[initialMode].typography.paragraph?.fontName || 'Roboto', fontId: theme.config[initialMode].typography.paragraph?.fontId || '', size: parseFloat(theme.config[initialMode].typography.paragraph?.fontSize || '1.0'), color: theme.config[initialMode].typography.paragraph?.color || '#000000', fontWeight: theme.config[initialMode].typography.paragraph?.fontWeight || 400, lineHeight: theme.config[initialMode].typography.paragraph?.lineHeight || '1.6' },
     };
 
-    // Per-mode editing buffers: each mode has its own colors/styles that persist
-    // across mode switches. Only reset by Discard or on component unmount.
-    type EditBuffer = { 
-        colors: ColorPalette; 
-        styles: Record<string, TypographyStyle>;
-        loader: { enabled: boolean };
-    };
-    const editBufferRef = React.useRef<Record<string, EditBuffer>>({
+    // Buffer to hold edits for all modes during the session
+    const editBufferRef = React.useRef<Record<string, { colors: ColorPalette, styles: Record<string, TypographyStyle>, loader: { enabled: boolean } }>>({
         light: { 
             colors: initialColors, 
             styles: initialStyles,
@@ -193,14 +139,22 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
     const [colors, setColors] = React.useState<ColorPalette>(initialColors);
     const [styles, setStyles] = React.useState<Record<string, TypographyStyle>>(initialStyles);
 
+    // Use a ref to always have the latest state for mode-switching
+    const currentStateRef = React.useRef({ colors, styles, loader });
+    React.useEffect(() => {
+        currentStateRef.current = { colors, styles, loader };
+    }, [colors, styles, loader]);
+
     // When mode changes: save current edits to buffer, load the new mode's buffer
     React.useEffect(() => {
         const prevMode = lastModeRef.current;
+        if (prevMode === activeMode) return;
+
         // Save current editing state to the previous mode's buffer
         editBufferRef.current[prevMode] = {
-            colors: { ...colors },
-            styles: { ...styles },
-            loader: { ...loader }
+            colors: { ...currentStateRef.current.colors },
+            styles: { ...currentStateRef.current.styles },
+            loader: { ...currentStateRef.current.loader }
         };
         lastModeRef.current = activeMode;
         // Load the target mode's buffer
@@ -259,11 +213,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
         setLoader({
             enabled: md.colors.loader?.enabled ?? false
         });
-    }, [
-        theme.config.light.colors.primary, theme.config.light.colors.secondary, theme.config.light.colors.accent,
-        theme.config.dark.colors.primary, theme.config.dark.colors.secondary, theme.config.dark.colors.accent,
-        theme.config.accessibility.colors.primary, theme.config.accessibility.colors.secondary, theme.config.accessibility.colors.accent,
-    ]);
+    }, [theme.config, activeMode]);
 
     const handleColorChange = (key: keyof ColorPalette, value: string) => {
         setColors(prev => ({ ...prev, [key]: value }));
@@ -279,330 +229,236 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
     // Typography size validation
     const [validationErrors, setValidationErrors] = React.useState<string[]>([]);
 
-    const validateTypographySizes = React.useCallback(() => {
+    const validateStyles = (): boolean => {
         const errors: string[] = [];
-        const sizes: Record<string, number> = {
-            h1: styles.h1.size,
-            h2: styles.h2.size,
-            h3: styles.h3.size,
-            h4: styles.h4.size,
-            h5: styles.h5.size,
-            h6: styles.h6.size,
-            p: styles.p.size,
-        };
-
-        // Check H6 >= P
-        if (sizes.h6 < sizes.p) {
-            errors.push(
-                `H6 size (${sizes.h6}rem) must be at least equal to Paragraph size (${sizes.p}rem). Minimum required: ${sizes.p}rem`
-            );
-        }
-
-        // Define hierarchy checks: [higher, lower]
-        const hierarchyChecks: Array<[string, string]> = [
-            ['h5', 'h6'],
-            ['h4', 'h5'],
-            ['h3', 'h4'],
-            ['h2', 'h3'],
-            ['h1', 'h2'],
-        ];
-
-        for (const [higher, lower] of hierarchyChecks) {
-            const minRequired = sizes[lower] * 1.2;
-            if (sizes[higher] < minRequired) {
-                errors.push(
-                    `${higher.toUpperCase()} size (${sizes[higher]}rem) must be at least 1.2× ${lower.toUpperCase()} size (${sizes[lower]}rem). Minimum required: ${minRequired.toFixed(3)}rem`
-                );
+        const hTags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
+        
+        // H1 must be larger than H2, etc.
+        for (let i = 0; i < hTags.length - 1; i++) {
+            if (styles[hTags[i]].size <= styles[hTags[i+1]].size) {
+                errors.push(`${hTags[i].toUpperCase()} should be larger than ${hTags[i+1].toUpperCase()}`);
             }
+        }
+        
+        // Paragraph should be smaller than H6
+        if (styles.p.size >= styles.h6.size) {
+            errors.push('Paragraph should be smaller than H6');
         }
 
         setValidationErrors(errors);
         return errors.length === 0;
-    }, [styles]);
-
-    // Validate when styles change
-    React.useEffect(() => {
-        validateTypographySizes();
-    }, [validateTypographySizes]);
-
-    const handleSave = () => {
-        // Check validation before saving
-        if (validationErrors.length > 0) {
-            alert('Please fix the following typography errors before saving:\n\n' + validationErrors.join('\n'));
-            return;
-        }
-        // Save the current mode's edits to the buffer first
-        editBufferRef.current[activeMode] = {
-            colors: { ...colors },
-            styles: { ...styles },
-            loader: { ...loader }
-        };
-        // Pass ALL mode buffers to the parent for full save
-        onSave(editBufferRef.current, activeMode);
     };
 
-    const handleDiscard = () => {
-        // Build fresh state from the persisted theme config for the current mode
-        const modeData = theme.config[activeMode];
-        const resetColors: ColorPalette = {
-            primary: modeData.colors.primary,
-            secondary: modeData.colors.secondary,
-            accent: modeData.colors.accent,
-            background: modeData.colors.background,
-            surface: modeData.colors.surface,
-            border: modeData.colors.border,
-            decorator: modeData.colors.decorator || modeData.typography.decorator?.color || '#ffffff',
-        };
+    const handleSaveInternal = () => {
+        if (!validateStyles()) {
+            setActiveTab('typography');
+            return;
+        }
 
-        const resetStyles: Record<string, TypographyStyle> = {
-            h1: {
-                fontFamily: modeData.typography.h1?.fontName || 'Roboto',
-                fontId: modeData.typography.h1?.fontId || '',
-                size: parseFloat(modeData.typography.h1?.fontSize || '2.492'),
-                color: modeData.typography.h1?.color || '#000000',
-                fontWeight: modeData.typography.h1?.fontWeight || 400,
-                lineHeight: modeData.typography.h1?.lineHeight || '1.2'
-            },
-            h2: {
-                fontFamily: modeData.typography.h2?.fontName || 'Roboto',
-                fontId: modeData.typography.h2?.fontId || '',
-                size: parseFloat(modeData.typography.h2?.fontSize || '2.074'),
-                color: modeData.typography.h2?.color || '#000000',
-                fontWeight: modeData.typography.h2?.fontWeight || 400,
-                lineHeight: modeData.typography.h2?.lineHeight || '1.2'
-            },
-            h3: {
-                fontFamily: modeData.typography.h3?.fontName || 'Roboto',
-                fontId: modeData.typography.h3?.fontId || '',
-                size: parseFloat(modeData.typography.h3?.fontSize || '1.73'),
-                color: modeData.typography.h3?.color || '#000000',
-                fontWeight: modeData.typography.h3?.fontWeight || 400,
-                lineHeight: modeData.typography.h3?.lineHeight || '1.3'
-            },
-            h4: {
-                fontFamily: modeData.typography.h4?.fontName || 'Roboto',
-                fontId: modeData.typography.h4?.fontId || '',
-                size: parseFloat(modeData.typography.h4?.fontSize || '1.44'),
-                color: modeData.typography.h4?.color || '#000000',
-                fontWeight: modeData.typography.h4?.fontWeight || 400,
-                lineHeight: modeData.typography.h4?.lineHeight || '1.4'
-            },
-            h5: {
-                fontFamily: modeData.typography.h5?.fontName || 'Roboto',
-                fontId: modeData.typography.h5?.fontId || '',
-                size: parseFloat(modeData.typography.h5?.fontSize || '1.2'),
-                color: modeData.typography.h5?.color || '#000000',
-                fontWeight: modeData.typography.h5?.fontWeight || 400,
-                lineHeight: modeData.typography.h5?.lineHeight || '1.4'
-            },
-            h6: {
-                fontFamily: modeData.typography.h6?.fontName || 'Roboto',
-                fontId: modeData.typography.h6?.fontId || '',
-                size: parseFloat(modeData.typography.h6?.fontSize || '1.0'),
-                color: modeData.typography.h6?.color || '#000000',
-                fontWeight: modeData.typography.h6?.fontWeight || 400,
-                lineHeight: modeData.typography.h6?.lineHeight || '1.5'
-            },
-            p: {
-                fontFamily: modeData.typography.paragraph?.fontName || 'Roboto',
-                fontId: modeData.typography.paragraph?.fontId || '',
-                size: parseFloat(modeData.typography.paragraph?.fontSize || '1.0'),
-                color: modeData.typography.paragraph?.color || '#000000',
-                fontWeight: modeData.typography.paragraph?.fontWeight || 400,
-                lineHeight: modeData.typography.paragraph?.lineHeight || '1.6'
-            }
+        // Save current active mode buffer before submitting
+        const finalBuffer = {
+            ...editBufferRef.current,
+            [activeMode]: { colors, styles, loader }
         };
+        onSave(finalBuffer, activeMode);
+    };
 
-        const resetLoader = {
-            enabled: modeData.colors.loader?.enabled ?? false
-        };
+    const handlePublishInternal = () => {
+        if (!validateStyles()) {
+            setActiveTab('typography');
+            return;
+        }
 
-        // Update the buffer AND the view
-        editBufferRef.current[activeMode] = { colors: resetColors, styles: resetStyles, loader: resetLoader };
-        setColors(resetColors);
-        setStyles(resetStyles);
-        setLoader(resetLoader);
+        onPublish();
+    };
+
+    const handlePreviewInternal = () => {
+        // Just preview the current mode state
+        onPreview();
     };
 
     return (
-        <div className="flex-1 flex flex-col h-full overflow-hidden">
+        <div className="flex flex-col h-full bg-[var(--palette-surface)] border-l border-[var(--palette-border)] shadow-xl overflow-hidden">
             {/* Header */}
-            <header className="h-auto sm:h-16 palette-surface border-b palette-border px-4 sm:px-6 md:px-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 shrink-0 sticky top-0 z-10 py-3 sm:py-0">
-                <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+            <div className="p-4 border-b border-[var(--palette-border)] flex items-center justify-between shrink-0 bg-black/[0.02] dark:bg-white/[0.02]">
+                <div className="flex items-center gap-3">
                     <button
                         onClick={onBack}
-                        className="p-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors shrink-0"
+                        className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-full transition-colors text-paragraph"
                     >
-                        <X className="w-5 h-5" />
+                        <X size={20} />
                     </button>
-                    <h2 className="text-lg sm:text-xl font-bold truncate">
-                        Edit: {theme.name}
-                    </h2>
+                    <div>
+                        <h2 className="text-lg font-bold text-h2 flex items-center gap-2">
+                            Theme Customizer
+                            <span className="text-[10px] uppercase px-1.5 py-0.5 rounded bg-palette-primary text-white font-black tracking-wider">
+                                {theme.isActive ? 'Live' : 'Draft'}
+                            </span>
+                        </h2>
+                        <p className="text-xs text-paragraph opacity-60">Editing: {theme.name}</p>
+                    </div>
                 </div>
-                <div className="flex gap-2 flex-wrap items-center justify-end shrink-0">
+                <div className="flex items-center gap-2">
                     <button
-                        onClick={onPreview}
-                        className="px-3 py-2 text-xs sm:text-sm font-medium text-paragraph rounded-lg border palette-border hover:bg-black/5 dark:hover:bg-white/5 transition-colors flex items-center gap-2 shrink-0"
+                        onClick={handlePreviewInternal}
+                        className="p-2 text-paragraph hover:text-palette-primary transition-colors"
                         title="Preview theme"
                     >
-                        <Eye className="w-4 h-4" />
-                        <span className="hidden sm:inline">Preview</span>
+                        <Eye size={20} />
                     </button>
                     <button
-                        onClick={handleDiscard}
-                        className="px-3 py-2 text-xs sm:text-sm font-medium text-paragraph rounded-lg border palette-border hover:bg-black/5 dark:hover:bg-white/5 transition-colors flex items-center gap-2 shrink-0"
-                        title="Discard changes"
+                        onClick={handleSaveInternal}
+                        className="flex items-center gap-2 px-4 py-2 bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-paragraph rounded-lg font-semibold transition-all border border-palette-border"
                     >
-                        <span className="hidden sm:inline">Discard</span>
-                        <X className="w-4 h-4 sm:hidden" />
+                        <Save size={18} />
+                        <span className="hidden sm:inline">Save Draft</span>
                     </button>
                     <button
-                        onClick={onPublish}
-                        className="px-3 py-2 text-xs sm:text-sm font-medium decorator-color bg-palette-secondary hover:opacity-90 rounded-lg transition-opacity flex items-center gap-2 shrink-0"
-                        title="Set theme to site"
+                        onClick={handlePublishInternal}
+                        className="flex items-center gap-2 px-4 py-2 bg-palette-primary hover:opacity-90 text-white rounded-lg font-bold shadow-lg shadow-palette-primary/20 transition-all"
                     >
-                        <span className="sm:hidden">Set theme</span>
-                        <span className="hidden sm:inline">Set Theme to Site</span>
-                    </button>
-                    <button
-                        onClick={handleSave}
-                        className="px-3 py-2 text-xs sm:text-sm font-medium text-white theme-button-primary rounded-lg hover:opacity-90 transition-opacity flex items-center gap-2 shrink-0"
-                        title="Save changes"
-                    >
-                        <Save className="w-4 h-4 sm:hidden" />
-                        <span className="hidden sm:inline">Save Changes</span>
+                        Publish
                     </button>
                 </div>
-            </header>
+            </div>
 
-            <div className="flex-1 overflow-y-auto p-4 md:p-8">
-                <div className="max-w-7xl mx-auto space-y-8">
-                    {/* Validation Error Banner */}
-                    {validationErrors.length > 0 && (
-                        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
-                            <div className="flex items-start gap-3">
-                                <div className="shrink-0">
-                                    <svg className="w-5 h-5 text-red-600 dark:text-red-400" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                                    </svg>
-                                </div>
-                                <div className="flex-1">
-                                    <h3 className="text-sm font-semibold text-red-800 dark:text-red-200">
-                                        Typography Size Validation Errors
-                                    </h3>
-                                    <ul className="mt-2 text-sm text-red-700 dark:text-red-300 list-disc list-inside space-y-1">
-                                        {validationErrors.map((error, idx) => (
-                                            <li key={idx}>{error}</li>
-                                        ))}
-                                    </ul>
-                                </div>
+            {/* Mode Toggle & Tabs */}
+            <div className="p-4 border-b border-[var(--palette-border)] space-y-4 shrink-0">
+                {/* Mode Selector */}
+                <div className="flex bg-black/5 dark:bg-white/5 p-1 rounded-xl">
+                    {(['light', 'dark', 'accessibility'] as const).map((mode) => (
+                        <button
+                            key={mode}
+                            onClick={() => onModeChange(mode)}
+                            className={`flex-1 py-2 text-xs font-bold rounded-lg uppercase tracking-wider transition-all ${
+                                activeMode === mode
+                                    ? 'bg-[var(--palette-surface)] text-palette-primary shadow-sm ring-1 ring-black/5'
+                                    : 'text-paragraph opacity-50 hover:opacity-80'
+                            }`}
+                        >
+                            {mode}
+                        </button>
+                    ))}
+                </div>
+
+                {/* Tab Navigation */}
+                <div className="flex gap-1">
+                    <button
+                        onClick={() => setActiveTab('colors')}
+                        className={`flex-1 flex items-center justify-center gap-2 py-2 text-sm font-semibold rounded-lg transition-colors ${
+                            activeTab === 'colors'
+                                ? 'bg-palette-primary/10 text-palette-primary border border-palette-primary/20'
+                                : 'text-paragraph opacity-60 hover:bg-black/5 hover:opacity-100'
+                        }`}
+                    >
+                        <Palette size={16} />
+                        Colors
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('typography')}
+                        className={`flex-1 flex items-center justify-center gap-2 py-2 text-sm font-semibold rounded-lg transition-colors ${
+                            activeTab === 'typography'
+                                ? 'bg-palette-primary/10 text-palette-primary border border-palette-primary/20'
+                                : 'text-paragraph opacity-60 hover:bg-black/5 hover:opacity-100'
+                        }`}
+                    >
+                        <Type size={16} />
+                        Typography
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('loader')}
+                        className={`flex-1 flex items-center justify-center gap-2 py-2 text-sm font-semibold rounded-lg transition-colors ${
+                            activeTab === 'loader'
+                                ? 'bg-palette-primary/10 text-palette-primary border border-palette-primary/20'
+                                : 'text-paragraph opacity-60 hover:bg-black/5 hover:opacity-100'
+                        }`}
+                    >
+                        <Save size={16} />
+                        Loader
+                    </button>
+                </div>
+            </div>
+
+            {/* Editor Content */}
+            <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
+                {activeTab === 'colors' && (
+                    <ColorEditor 
+                        colors={colors} 
+                        activeMode={activeMode}
+                        styles={styles}
+                        onColorChange={handleColorChange} 
+                    />
+                )}
+                
+                {activeTab === 'typography' && (
+                    <div className="space-y-6">
+                        {validationErrors.length > 0 && (
+                            <div className="p-3 bg-red-100 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg">
+                                <p className="text-xs font-bold text-red-600 dark:text-red-400 mb-1">Typography Validation:</p>
+                                <ul className="list-disc list-inside space-y-0.5">
+                                    {validationErrors.map((err, i) => (
+                                        <li key={i} className="text-[10px] text-red-600 dark:text-red-400">{err}</li>
+                                    ))}
+                                </ul>
                             </div>
-                        </div>
-                    )}
-
-                    {/* Mode Tabs */}
-                    <div className="flex items-center gap-2 flex-wrap">
-                        {(['light', 'dark', 'accessibility'] as const).map(mode => (
-                            <button
-                                key={mode}
-                                onClick={() => onModeChange(mode)}
-                                className={`px-4 py-2 text-sm font-bold rounded-lg transition-colors capitalize ${activeMode === mode
-                                        ? 'theme-button theme-button-primary'
-                                        : 'text-paragraph hover:bg-black/5 dark:hover:bg-white/5'
-                                    }`}
-                            >
-                                {mode}
-                            </button>
-                        ))}
-                    </div>
-
-                    {/* Content Tabs */}
-                    <div className="flex gap-4 border-b palette-border">
-                        <button
-                            onClick={() => setActiveTab('colors')}
-                            className={`pb-2 flex items-center gap-2 font-medium transition-colors ${activeTab === 'colors'
-                                    ? 'text-palette-primary border-b-2 border-palette-primary'
-                                    : 'text-paragraph hover:text-slate-900 dark:hover:text-white'
-                                }`}
-                        >
-                            <Palette className="w-4 h-4" />
-                            Colors
-                        </button>
-                        <button
-                            onClick={() => setActiveTab('typography')}
-                            className={`pb-2 flex items-center gap-2 font-medium transition-colors ${activeTab === 'typography'
-                                    ? 'text-palette-primary border-b-2 border-palette-primary'
-                                    : 'text-paragraph hover:text-slate-900 dark:hover:text-white'
-                                }`}
-                        >
-                            <Type className="w-4 h-4" />
-                            Typography
-                        </button>
-                        <button
-                            onClick={() => setActiveTab('loader')}
-                            className={`pb-2 flex items-center gap-2 font-medium transition-colors ${activeTab === 'loader'
-                                    ? 'text-palette-primary border-b-2 border-palette-primary'
-                                    : 'text-paragraph hover:text-slate-900 dark:hover:text-white'
-                                }`}
-                        >
-                            <Palette className="w-4 h-4" />
-                            Loader
-                        </button>
-                    </div>
-
-                    {/* Tab Content */}
-                    {activeTab === 'colors' ? (
-                        <ColorEditor
+                        )}
+                        <TypographyEditor 
+                            styles={styles} 
                             colors={colors}
-                            activeMode={activeMode}
-                            styles={styles}
-                            onColorChange={handleColorChange}
+                            fonts={fonts}
+                            onStyleChange={handleStyleChange} 
                         />
-                    ) : activeTab === 'typography' ? (
-                        <div className="space-y-8">
-                            <FontManager
-                                installedFonts={fonts}
-                                uploading={uploading}
-                                fileInputRef={fileInputRef}
-                                onFileUpload={handleFileUpload}
+                        <div className="pt-6 border-t border-[var(--palette-border)]">
+                            <FontManager 
+                                installedFonts={fonts} 
+                                onFileUpload={handleFileUpload} 
                                 onFontDelete={handleDeleteFont}
                                 onApplyToAll={handleApplyFontToAll}
+                                uploading={uploading}
+                                fileInputRef={fileInputRef}
                             />
-                            <div>
-                                <TypographyEditor
-                                    styles={styles}
-                                    colors={colors}
-                                    fonts={fonts}
-                                    onStyleChange={handleStyleChange}
-                                    validationErrors={validationErrors}
-                                />
-                            </div>
                         </div>
-                    ) : (
-                        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                            <div className="theme-card">
-                                <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-                                    <Palette className="w-5 h-5 text-palette-primary" />
-                                    Tangram Loader Settings
-                                </h3>
-                                
-                                <div className="space-y-6">
-                                    <div className="flex items-center justify-between p-4 bg-black/5 dark:bg-white/5 rounded-xl border palette-border">
-                                        <div>
-                                            <p className="text-paragraph font-bold">Enable Animated Loader</p>
-                                            <p className="text-sm text-paragraph opacity-70">Shows a 3D Tangram animation before loading the site.</p>
-                                        </div>
-                                        <button 
-                                            onClick={() => setLoader(prev => ({ ...prev, enabled: !prev.enabled }))}
-                                            className={`w-14 h-8 rounded-full transition-colors relative ${loader.enabled ? 'bg-palette-primary' : 'bg-slate-300 dark:bg-slate-700'}`}
-                                        >
-                                            <div className={`absolute top-1 left-1 w-6 h-6 bg-white rounded-full transition-transform ${loader.enabled ? 'translate-x-6' : 'translate-x-0'}`} />
-                                        </button>
-                                    </div>
+                    </div>
+                )}
+
+                {activeTab === 'loader' && (
+                    <div className="space-y-6">
+                        <div className="theme-card">
+                            <h3 className="text-sm font-bold text-h3 mb-4 flex items-center gap-2">
+                                <Save size={16} className="text-palette-primary" />
+                                Tangram Loader
+                            </h3>
+                            <div className="flex items-center justify-between p-4 bg-black/5 dark:bg-white/5 rounded-xl border border-palette-border">
+                                <div>
+                                    <p className="text-sm font-bold text-paragraph">Enable Page Loader</p>
+                                    <p className="text-xs text-paragraph opacity-60">Shows the Tangram animation on page transitions</p>
                                 </div>
+                                <button
+                                    onClick={() => setLoader({ enabled: !loader.enabled })}
+                                    className={`w-12 h-6 rounded-full transition-colors relative ${
+                                        loader.enabled ? 'bg-palette-primary' : 'bg-slate-300 dark:bg-slate-700'
+                                    }`}
+                                >
+                                    <div className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${
+                                        loader.enabled ? 'translate-x-6' : 'translate-x-0'
+                                    }`} />
+                                </button>
                             </div>
                         </div>
-                    )}
+                    </div>
+                )}
+            </div>
+
+            {/* Footer / Status */}
+            <div className="p-3 bg-black/[0.05] dark:bg-white/[0.05] border-t border-palette-border shrink-0">
+                <div className="flex items-center justify-between px-2">
+                    <span className="text-[10px] font-bold text-paragraph opacity-40 uppercase tracking-widest">
+                        unsaved changes in buffer
+                    </span>
+                    <div className="flex gap-1">
+                        <div className={`w-1.5 h-1.5 rounded-full ${colors !== initialColors ? 'bg-palette-primary' : 'bg-paragraph/10'}`} />
+                        <div className={`w-1.5 h-1.5 rounded-full ${styles !== initialStyles ? 'bg-palette-primary' : 'bg-paragraph/10'}`} />
+                    </div>
                 </div>
             </div>
         </div>

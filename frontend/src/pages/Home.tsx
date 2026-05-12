@@ -9,16 +9,30 @@ import { ContactForm } from '../components/home/ContactForm';
 import { PromotionalVideo } from '../components/home/PromotionalVideo';
 import { AdvancedCarousel } from '../components/home/AdvancedCarousel';
 import { useTheme } from '../contexts/ThemeContext';
-import { useAuth } from '../contexts/AuthContext';
 import { TangramLoader } from '../components/common/TangramLoader';
 import { normalizeUrl } from '../utils/url';
 
-const API_URL = 'http://localhost:8000';
+import { BASE_URL } from '../config';
+
+interface HomeConfig {
+    video?: {
+        enabled: boolean;
+        url: string;
+        title: string;
+        description: string;
+        autoplay: boolean;
+        subtitles?: Array<{ label: string; src: string; srcLang: string }>;
+        audio_tracks?: Array<{ label: string; src: string; lang: string }>;
+    };
+    carousel?: {
+        enabled: boolean;
+        slides: Array<{ id: string; image_url: string; title: string; description: string; link_url: string; is_active?: boolean }>;
+    };
+}
 
 export function Home() {
     const { activeTheme, currentMode } = useTheme();
-    const { user } = useAuth();
-    const [homeConfig, setHomeConfig] = useState<any>(null);
+    const [homeConfig, setHomeConfig] = useState<HomeConfig | null>(null);
     
     // Check if this is a redirect after login
     const isRedirectAfterLogin = typeof window !== 'undefined' && sessionStorage.getItem('redirectAfterLogin') === 'true';
@@ -29,38 +43,47 @@ export function Home() {
         return !!activeTheme?.config[currentMode]?.colors?.loader?.enabled;
     });
 
-
     useEffect(() => {
         const fetchHomeConfig = async () => {
             try {
-                const response = await axios.get(`${API_URL}/home-config`);
+                const response = await axios.get(`${BASE_URL}/home-config`);
                 setHomeConfig(response.data.config);
             } catch (error) {
                 console.error('Error fetching home config:', error);
             }
         };
         fetchHomeConfig();
+    }, []);
 
-        // Loader enabled in theme config and not admin/root
-        if (!activeTheme) return;
-        const currentPalette = activeTheme.config[currentMode];
-        const loaderEnabled = !!currentPalette?.colors?.loader?.enabled;
+    // Sync loader state with theme config using render-phase state update
+    const [prevActiveTheme, setPrevActiveTheme] = useState(activeTheme);
+    const [prevMode, setPrevMode] = useState(currentMode);
+
+    if (activeTheme !== prevActiveTheme || currentMode !== prevMode) {
+        setPrevActiveTheme(activeTheme);
+        setPrevMode(currentMode);
         
-        // Check if this is a redirect after login (add delay)
+        const loaderEnabled = !!activeTheme?.config[currentMode]?.colors?.loader?.enabled;
         const wasRedirect = sessionStorage.getItem('redirectAfterLogin') === 'true';
         
-        if (wasRedirect) {
-            // Add 1-second delay for redirect transitions
+        if (!wasRedirect && showLoader !== loaderEnabled) {
+            setShowLoader(loaderEnabled);
+        }
+    }
+
+    useEffect(() => {
+        const wasRedirect = sessionStorage.getItem('redirectAfterLogin') === 'true';
+        if (wasRedirect && activeTheme) {
+            const currentPalette = activeTheme.config[currentMode];
+            const loaderEnabled = !!currentPalette?.colors?.loader?.enabled;
+            
             const timer = setTimeout(() => {
                 setShowLoader(loaderEnabled);
                 sessionStorage.removeItem('redirectAfterLogin');
             }, 1000);
             return () => clearTimeout(timer);
-        } else {
-            // Standard load: follow theme config
-            setShowLoader(loaderEnabled);
         }
-    }, [activeTheme, user, currentMode]);
+    }, [activeTheme, currentMode]);
 
     const handleLoaderFinish = () => {
         setShowLoader(false);
@@ -79,15 +102,15 @@ export function Home() {
                 {homeConfig?.video?.enabled && homeConfig?.video?.url && (
                     <PromotionalVideo
                         url={normalizeUrl(homeConfig.video.url)}
-                        subtitles={homeConfig.video.subtitles?.map((s: any) => ({ ...s, src: normalizeUrl(s.src) }))}
-                        audio_tracks={homeConfig.video.audio_tracks?.map((a: any) => ({ ...a, src: normalizeUrl(a.src) }))}
+                        subtitles={homeConfig.video.subtitles?.map((s) => ({ ...s, src: normalizeUrl(s.src) }))}
+                        audio_tracks={homeConfig.video.audio_tracks?.map((a) => ({ ...a, src: normalizeUrl(a.src) }))}
                         title={homeConfig.video.title}
                         description={homeConfig.video.description}
                         autoplay={homeConfig.video.autoplay}
                     />
                 )}
-                {homeConfig?.carousel?.enabled && homeConfig?.carousel?.slides?.length > 0 && (
-                    <AdvancedCarousel slides={homeConfig.carousel.slides.map((s: any) => ({ ...s, image_url: normalizeUrl(s.image_url) }))} />
+                {homeConfig?.carousel?.enabled && homeConfig?.carousel?.slides && homeConfig.carousel.slides.length > 0 && (
+                    <AdvancedCarousel slides={homeConfig.carousel.slides.map((s) => ({ ...s, image_url: normalizeUrl(s.image_url), is_active: s.is_active ?? true }))} />
                 )}
 
                 <Services />

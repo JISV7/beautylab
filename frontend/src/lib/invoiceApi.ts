@@ -1,14 +1,14 @@
 import axios from 'axios';
 import type { InvoiceSummary, Invoice, InvoicesResponse } from '../data/invoice.types';
 
-const API_URL = 'http://localhost:8000';
+import { BASE_URL } from '../config';
 
 export const getAuthToken = (): string | null => {
     return localStorage.getItem('access_token');
 };
 
 export const api = axios.create({
-    baseURL: API_URL,
+    baseURL: BASE_URL,
     headers: { 'Content-Type': 'application/json' },
 });
 
@@ -66,7 +66,7 @@ export async function downloadAllInvoices(
         link.click();
         document.body.removeChild(link);
         window.URL.revokeObjectURL(url);
-    } catch (err: any) {
-        onError(err.response?.data?.detail || 'Failed to download invoices. Please try again.');
+    } catch (err) {
+        onError(axios.isAxiosError(err) ? err.response?.data?.detail : 'Failed to download invoices. Please try again.');
     }
 }

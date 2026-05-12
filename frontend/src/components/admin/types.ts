@@ -205,7 +205,7 @@ export interface CourseFormStep3Props {
     onBack: () => void;
     onSave: () => void;
     saving: boolean;
-    onFormDataChange: (field: keyof CourseFormData, value: any) => void;
+    onFormDataChange: (field: keyof CourseFormData, value: string | boolean | number) => void;
 }
 
 export interface CoursePreviewCardProps {

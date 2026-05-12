@@ -59,8 +59,8 @@ export const SettingsPage: React.FC = () => {
                 rif: normalizedRif,
             });
             setMessage('Your profile was updated successfully.');
-        } catch (submitError: any) {
-            setError(submitError?.message || 'Unable to update profile.');
+        } catch (submitError: unknown) {
+            setError(submitError instanceof Error ? submitError.message : 'Unable to update profile.');
         } finally {
             setIsSaving(false);
         }

@@ -1,17 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { PrinterTable, PrinterForm } from '../components/admin/printer';
 import { ConfirmModal } from '../components/admin/ConfirmModal';
 import type { Printer, PrinterCreate } from '../data/company.types';
 
-const API_URL = 'http://localhost:8000';
+import { BASE_URL } from '../config';
 
 const getAuthToken = (): string | null => {
   return localStorage.getItem('access_token');
 };
 
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL: BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -62,21 +62,21 @@ export default function PrinterInfoPage() {
     printer: null,
   });
 
-  const fetchPrinters = async () => {
+  const fetchPrinters = useCallback(async () => {
     try {
       setLoading(true);
       const response = await api.get('/printers/');
       setPrinters(response.data || []);
-    } catch (error: any) {
+    } catch (error) {
       console.error('Failed to fetch printers:', error);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchPrinters();
-  }, []);
+  }, [fetchPrinters]);
 
   const handleOpenForm = (printer?: Printer) => {
     if (printer) {
@@ -111,7 +111,7 @@ export default function PrinterInfoPage() {
       }
       setIsFormOpen(false);
       fetchPrinters();
-    } catch (error: any) {
+    } catch (error) {
       console.error('Failed to save printer:', error);
     } finally {
       setSaving(false);
@@ -143,7 +143,7 @@ export default function PrinterInfoPage() {
     try {
       await api.delete(`/printers/${printer.id}`);
       setPrinters(printers.filter((p) => p.id !== printer.id));
-    } catch (error: any) {
+    } catch (error) {
       console.error('Failed to delete printer:', error);
     }
   };
@@ -166,7 +166,7 @@ export default function PrinterInfoPage() {
       await api.post(`/printers/${setActiveModal.printer.id}/set-active`);
       setSetActiveModal({ isOpen: false, printer: null });
       fetchPrinters();
-    } catch (error: any) {
+    } catch (error) {
       console.error('Failed to set active printer:', error);
     } finally {
       setSaving(false);

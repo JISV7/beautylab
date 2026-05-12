@@ -27,8 +27,8 @@ export const LoginForm: React.FC<LoginFormProps> = ({
     try {
       await login(email, password);
       onSuccess();
-    } catch (err: any) {
-      setError(err.message || 'Login failed');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Login failed');
     } finally {
       setIsLoading(false);
     }

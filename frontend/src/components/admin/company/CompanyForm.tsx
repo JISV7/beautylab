@@ -4,9 +4,9 @@ import type { CompanyInfo, CompanyInfoCreate } from '../../../data/company.types
 import { validateRif, getExpectedRif } from '../../../utils/rif';
 import { validatePhone } from '../../../utils/phone';
 import { Modal } from '../Modal';
-import axios from 'axios';
+import axios, { isAxiosError } from 'axios';
 
-const API_URL = 'http://localhost:8000';
+import { BASE_URL } from '../../../config';
 
 // Get auth token from localStorage
 const getAuthToken = (): string | null => {
@@ -15,7 +15,7 @@ const getAuthToken = (): string | null => {
 
 // Axios instance with auth
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL: BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -153,7 +153,7 @@ export const CompanyForm: React.FC<CompanyFormProps> = ({
       const data = response.data;
 
       // Update the logoUrl in the parent form with full backend URL
-      onChange('logoUrl', `${API_URL}${data.url}`);
+      onChange('logoUrl', `${BASE_URL}${data.url}`);
 
       setUploadSuccess(true);
       setTimeout(() => setUploadSuccess(false), 3000);
@@ -162,13 +162,19 @@ export const CompanyForm: React.FC<CompanyFormProps> = ({
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Upload error:', error);
-      const errorMessage = error.response?.data?.detail
-        ? (typeof error.response.data.detail === 'string'
-            ? error.response.data.detail
-            : JSON.stringify(error.response.data.detail))
-        : error.message || 'Failed to upload image';
+      let errorMessage = 'Failed to upload image';
+      
+      if (isAxiosError(error)) {
+        const detail = error.response?.data?.detail;
+        errorMessage = typeof detail === 'string' 
+          ? detail 
+          : (detail ? JSON.stringify(detail) : error.message);
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      
       setUploadError(errorMessage);
     } finally {
       setUploading(false);

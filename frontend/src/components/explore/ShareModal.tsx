@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Share2, MessageCircle, Phone, X, Copy, Check, Loader2, Clock, Tag, Package, BookOpen } from 'lucide-react';
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8000';
+import { BASE_URL } from '../../config';
 
 const getAuthToken = (): string | null => localStorage.getItem('access_token');
 
 const api = axios.create({
-    baseURL: API_URL,
+    baseURL: BASE_URL,
     headers: { 'Content-Type': 'application/json' },
 });
 
@@ -49,6 +49,20 @@ const formatPrice = (priceStr?: string | null) => {
     return `Bs. ${num.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 };
 
+interface TriggerButtonProps {
+    onClick: () => void;
+}
+
+const TriggerButton = ({ onClick }: TriggerButtonProps) => (
+    <button
+        onClick={onClick}
+        className="p-1.5 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full hover:bg-white dark:hover:bg-gray-700 transition-colors shadow-sm border border-[var(--palette-primary)]/40"
+        title="Share course"
+    >
+        <Share2 className="w-4 h-4 text-[var(--palette-primary)]" />
+    </button>
+);
+
 export const ShareModal: React.FC<ShareModalProps> = ({
     courseTitle,
     courseId,
@@ -66,7 +80,6 @@ export const ShareModal: React.FC<ShareModalProps> = ({
     // Fetch full course details when modal opens
     useEffect(() => {
         if (!isOpen || details) return;
-        setLoading(true);
         api.get<CourseDetails>(`/catalog/courses/${courseId}/details`)
             .then((res) => setDetails(res.data))
             .catch(() => null)
@@ -137,19 +150,15 @@ export const ShareModal: React.FC<ShareModalProps> = ({
         }
     };
 
-    // Trigger button (always visible)
-    const TriggerButton = () => (
-        <button
-            onClick={() => { setIsOpen(true); setDetails(null); setCopied(false); }}
-            className="p-1.5 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full hover:bg-white dark:hover:bg-gray-700 transition-colors shadow-sm border border-[var(--palette-primary)]/40"
-            title="Share course"
-        >
-            <Share2 className="w-4 h-4 text-[var(--palette-primary)]" />
-        </button>
-    );
+    const handleTriggerClick = () => {
+        setIsOpen(true);
+        setDetails(null);
+        setCopied(false);
+        setLoading(true);
+    };
 
     // When modal is NOT open, just render the trigger
-    if (!isOpen) return <TriggerButton />;
+    if (!isOpen) return <TriggerButton onClick={handleTriggerClick} />;
 
     return (
         <>

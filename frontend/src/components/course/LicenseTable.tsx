@@ -25,6 +25,17 @@ type SortField = 'license_code' | 'status' | 'amount_paid' | 'amount_remaining' 
 type SortDirection = 'asc' | 'desc';
 type PaymentFilter = 'all' | 'paid' | 'unpaid' | 'partial';
 
+const SortIcon = ({ column, sortField, sortDirection }: { column: SortField; sortField: SortField; sortDirection: SortDirection }) => {
+    if (sortField !== column) return <span className="w-3.5 h-3.5 ml-1 opacity-0"></span>;
+    return (
+        <ChevronDown
+            className={`w-3.5 h-3.5 ml-1 transition-transform ${
+                sortDirection === 'asc' ? 'rotate-180' : ''
+            }`}
+        />
+    );
+};
+
 export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, onRedeem }) => {
     const [copiedCode, setCopiedCode] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
@@ -41,17 +52,6 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
             month: 'short',
             day: 'numeric',
         });
-    };
-
-    const SortIcon = ({ column }: { column: SortField }) => {
-        if (sortField !== column) return <span className="w-3.5 h-3.5 ml-1 opacity-0"></span>;
-        return (
-            <ChevronDown
-                className={`w-3.5 h-3.5 ml-1 transition-transform ${
-                    sortDirection === 'asc' ? 'rotate-180' : ''
-                }`}
-            />
-        );
     };
 
     const formatAmount = (amount: string) => {
@@ -287,7 +287,7 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
                             >
                                 <div className="flex items-center gap-2">
                                     License Code
-                                    <SortIcon column="license_code" />
+                                    <SortIcon column="license_code" sortField={sortField} sortDirection={sortDirection} />
                                 </div>
                             </th>
                             <th
@@ -296,7 +296,7 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
                             >
                                 <div className="flex items-center gap-2">
                                     Status
-                                    <SortIcon column="status" />
+                                    <SortIcon column="status" sortField={sortField} sortDirection={sortDirection} />
                                 </div>
                             </th>
                             <th
@@ -305,7 +305,7 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
                             >
                                 <div className="flex items-center gap-2">
                                     Amount Paid
-                                    <SortIcon column="amount_paid" />
+                                    <SortIcon column="amount_paid" sortField={sortField} sortDirection={sortDirection} />
                                 </div>
                             </th>
                             <th
@@ -314,7 +314,7 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
                             >
                                 <div className="flex items-center gap-2">
                                     Remaining
-                                    <SortIcon column="amount_remaining" />
+                                    <SortIcon column="amount_remaining" sortField={sortField} sortDirection={sortDirection} />
                                 </div>
                             </th>
                             <th
@@ -323,7 +323,7 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
                             >
                                 <div className="flex items-center gap-2">
                                     Purchase Date
-                                    <SortIcon column="purchase_date" />
+                                    <SortIcon column="purchase_date" sortField={sortField} sortDirection={sortDirection} />
                                 </div>
                             </th>
                             <th
@@ -332,7 +332,7 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
                             >
                                 <div className="flex items-center gap-2">
                                     Redemption Date
-                                    <SortIcon column="redemption_date" />
+                                    <SortIcon column="redemption_date" sortField={sortField} sortDirection={sortDirection} />
                                 </div>
                             </th>
                             <th className="text-left text-xs font-bold text-paragraph uppercase tracking-wider px-4 py-3">

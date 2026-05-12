@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Search } from 'lucide-react';
+import { isAxiosError } from 'axios';
 import { useTheme } from '../../contexts/ThemeContext';
 import type { Theme, ThemeConfig, ThemePalette, TypographyElement, Font } from '../../data/theme.types';
 import type { ColorPalette, TypographyStyle } from './types';
@@ -508,12 +509,15 @@ export const UnifiedThemeConfig: React.FC = () => {
                 type: 'success',
                 message: `Theme "${name}" created successfully!`
             });
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error('Failed to create theme:', error);
+            const message = isAxiosError(error) && error.response?.data?.detail
+                ? error.response.data.detail
+                : 'Failed to create theme. Please check the backend logs.';
             setMessageModal({
                 isOpen: true,
                 type: 'error',
-                message: error.response?.data?.detail || 'Failed to create theme. Please check the backend logs.'
+                message
             });
         }
     };
@@ -549,12 +553,15 @@ export const UnifiedThemeConfig: React.FC = () => {
                 type: 'success',
                 message: `Random theme "${name}" created!`
             });
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error('Failed to create random theme:', error);
+            const message = isAxiosError(error) && error.response?.data?.detail
+                ? error.response.data.detail
+                : 'Failed to create random theme.';
             setMessageModal({
                 isOpen: true,
                 type: 'error',
-                message: error.response?.data?.detail || 'Failed to create random theme.'
+                message
             });
         }
     };
@@ -651,19 +658,21 @@ export const UnifiedThemeConfig: React.FC = () => {
                 type: 'success',
                 message: `Theme "${newName}" duplicated successfully!`
             });
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error('Failed to duplicate theme:', error);
+            const message = isAxiosError(error) && error.response?.data?.detail
+                ? error.response.data.detail
+                : 'Failed to duplicate theme.';
             setMessageModal({
                 isOpen: true,
                 type: 'error',
-                message: error.response?.data?.detail || 'Failed to duplicate theme.'
+                message
             });
         }
     };
 
     const handleSaveTheme = async (
-        buffers: Record<string, { colors: ColorPalette; styles: Record<string, TypographyStyle>; loader: { enabled: boolean } }>,
-        _activeMode: string
+        buffers: Record<string, { colors: ColorPalette; styles: Record<string, TypographyStyle>; loader: { enabled: boolean } }>
     ) => {
         if (!activeTheme) return;
 
@@ -690,12 +699,15 @@ export const UnifiedThemeConfig: React.FC = () => {
                 type: 'success',
                 message: `Theme "${activeTheme.name}" saved successfully!`
             });
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error('Failed to save theme:', error);
+            const message = isAxiosError(error) && error.response?.data?.detail
+                ? error.response.data.detail
+                : 'Failed to save theme.';
             setMessageModal({
                 isOpen: true,
                 type: 'error',
-                message: error.response?.data?.detail || 'Failed to save theme.'
+                message
             });
         }
     };
@@ -751,13 +763,16 @@ export const UnifiedThemeConfig: React.FC = () => {
                 type: 'success',
                 message: `Theme "${themeName}" deleted successfully!`
             });
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error('Failed to delete theme:', error);
             // Show error from backend (e.g., theme in use by users)
+            const message = isAxiosError(error) && error.response?.data?.detail
+                ? error.response.data.detail
+                : `Failed to delete theme "${themeName}". Please check if it's being used.`;
             setMessageModal({
                 isOpen: true,
                 type: 'error',
-                message: error.response?.data?.detail || `Failed to delete theme "${themeName}". Please check if it's being used.`
+                message
             });
         }
     };

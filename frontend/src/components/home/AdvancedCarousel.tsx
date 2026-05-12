@@ -4,7 +4,6 @@ import { Autoplay, Navigation, Pagination, EffectFade } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-// @ts-ignore
 import 'swiper/css/effect-fade';
 import { normalizeUrl } from '../../utils/url';
 

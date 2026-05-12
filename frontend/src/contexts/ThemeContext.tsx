@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useEffect, useCallback, useReducer } from 'react';
-import axios from 'axios';
+import axios, { isAxiosError } from 'axios';
 import type { Theme, ThemePalette, Font } from '../data/theme.types';
 
-const API_URL = 'http://localhost:8000';
+import { BASE_URL } from '../config';
 
 // Helper functions for theme caching
 const getCachedTheme = (): Theme | null => {
@@ -152,7 +152,7 @@ const getAuthToken = (): string | null => {
 
 // Axios instance with auth
 const api = axios.create({
-    baseURL: API_URL,
+    baseURL: BASE_URL,
     headers: {
         'Content-Type': 'application/json',
     },
@@ -296,9 +296,15 @@ const useThemeActions = (dispatch: React.Dispatch<ThemeAction>) => {
                 dispatch({ type: 'SET_PALETTE_MODE', payload: mode });
                 applyPalette(theme.config[mode], mode);
             }
-        } catch (err: any) {
+        } catch (err) {
             console.error('Failed to load theme:', err);
-            dispatch({ type: 'SET_ERROR', payload: err.response?.data?.detail || err.message || 'Failed to load theme' });
+            let message = 'Failed to load theme';
+            if (isAxiosError(err)) {
+                message = err.response?.data?.detail || err.message || message;
+            } else if (err instanceof Error) {
+                message = err.message;
+            }
+            dispatch({ type: 'SET_ERROR', payload: message });
         } finally {
             dispatch({ type: 'SET_LOADING', payload: false });
         }
@@ -315,7 +321,7 @@ const useThemeActions = (dispatch: React.Dispatch<ThemeAction>) => {
             const themes: Theme[] = response.data.themes || response.data;
             dispatch({ type: 'SET_AVAILABLE_THEMES', payload: themes });
             return themes;
-        } catch (err: any) {
+        } catch (err) {
             console.error('Failed to fetch themes:', err);
             throw err;
         }
@@ -330,7 +336,7 @@ const useThemeActions = (dispatch: React.Dispatch<ThemeAction>) => {
             cacheTheme(created);
             
             return created;
-        } catch (err: any) {
+        } catch (err) {
             console.error('Failed to create theme:', err);
             throw err;
         }
@@ -346,7 +352,7 @@ const useThemeActions = (dispatch: React.Dispatch<ThemeAction>) => {
             cacheTheme(updated);
             
             return updated;
-        } catch (err: any) {
+        } catch (err) {
             console.error('Failed to update theme:', err);
             throw err;
         }
@@ -362,7 +368,7 @@ const useThemeActions = (dispatch: React.Dispatch<ThemeAction>) => {
             if (cached?.id === themeId) {
                 localStorage.removeItem('cachedActiveTheme');
             }
-        } catch (err: any) {
+        } catch (err) {
             console.error('Failed to delete theme:', err);
             throw err;
         }
@@ -381,7 +387,7 @@ const useThemeActions = (dispatch: React.Dispatch<ThemeAction>) => {
             dispatch({ type: 'SET_ACTIVE_THEME', payload: activated });
 
             return activated;
-        } catch (err: any) {
+        } catch (err) {
             console.error('Failed to activate theme:', err);
             throw err;
         }
@@ -396,7 +402,7 @@ const useThemeActions = (dispatch: React.Dispatch<ThemeAction>) => {
             injectFontFaces(fonts);
             
             return fonts;
-        } catch (err: any) {
+        } catch (err) {
             console.error('Failed to fetch fonts:', err);
             return [];
         }
@@ -412,7 +418,7 @@ const useThemeActions = (dispatch: React.Dispatch<ThemeAction>) => {
         style.textContent = fonts.map(font => `
             @font-face {
                 font-family: '${font.name}';
-                src: url('${API_URL}${font.url}') format('truetype');
+                src: url('${BASE_URL}${font.url}') format('truetype');
                 font-weight: normal;
                 font-style: normal;
             }
@@ -432,7 +438,7 @@ const useThemeActions = (dispatch: React.Dispatch<ThemeAction>) => {
                 },
             });
             return response.data;
-        } catch (err: any) {
+        } catch (err) {
             console.error('Failed to upload font:', err);
             throw err;
         }
@@ -441,13 +447,13 @@ const useThemeActions = (dispatch: React.Dispatch<ThemeAction>) => {
     const deleteFont = useCallback(async (fontId: string): Promise<void> => {
         try {
             await api.delete(`/fonts/${fontId}`);
-        } catch (err: any) {
+        } catch (err) {
             console.error('Failed to delete font:', err);
             throw err;
         }
     }, []);
 
-    return {
+    return React.useMemo(() => ({
         loadActiveTheme,
         setPaletteMode,
         fetchAllThemes,
@@ -458,7 +464,18 @@ const useThemeActions = (dispatch: React.Dispatch<ThemeAction>) => {
         fetchFonts,
         uploadFont,
         deleteFont,
-    };
+    }), [
+        loadActiveTheme,
+        setPaletteMode,
+        fetchAllThemes,
+        createTheme,
+        updateTheme,
+        deleteTheme,
+        activateTheme,
+        fetchFonts,
+        uploadFont,
+        deleteFont,
+    ]);
 };
 
 // Hook: System preference detection
@@ -492,7 +509,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     useEffect(() => {
         actions.loadActiveTheme();
         actions.fetchFonts();
-    }, [actions.loadActiveTheme, actions.fetchFonts]);
+    }, [actions]);
 
     // Listen for system preference changes
     useEffect(() => {
@@ -533,6 +550,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useTheme = () => {
     const context = useContext(ThemeContext);
     if (!context) {
@@ -541,6 +559,7 @@ export const useTheme = () => {
     return context;
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const usePalette = () => {
     const context = useContext(ThemeContext);
     if (!context) {

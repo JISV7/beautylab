@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import * as THREE from 'three';
 import { gsap } from 'gsap';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -31,11 +31,11 @@ export const TangramLoader: React.FC<TangramLoaderProps> = ({ onFinish }) => {
     const timelineRef = useRef<gsap.core.Timeline | null>(null);
     const frameRef = useRef<number | null>(null);
 
-    const handleFinish = () => {
+    const handleFinish = useCallback(() => {
         setIsExiting(true);
         timelineRef.current?.kill();
         setTimeout(onFinish, 500);
-    };
+    }, [onFinish]);
 
     useEffect(() => {
         const container = containerRef.current;
@@ -93,7 +93,7 @@ export const TangramLoader: React.FC<TangramLoaderProps> = ({ onFinish }) => {
                 rendererRef.current = null;
             }
         };
-    }, []);
+    }, [handleFinish]);
 
     return (
         <div className={`fixed inset-0 z-[9999] flex items-center justify-center palette-background transition-opacity duration-500 ${isExiting ? 'opacity-0' : 'opacity-100'} ${currentMode}`}>

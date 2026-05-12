@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { X, Building, FileText, Calendar, CheckCircle, AlertCircle } from 'lucide-react';
 import type { Printer, PrinterCreate } from '../../../data/company.types';
 import { validateRif, getExpectedRif } from '../../../utils/rif';
@@ -21,70 +21,61 @@ export const PrinterForm: React.FC<PrinterFormProps> = ({
   onCancel,
   saving = false,
 }) => {
-  const [rifError, setRifError] = useState('');
-  const [rifValid, setRifValid] = useState(false);
-  const [expectedRif, setExpectedRif] = useState('');
   const [documentType, setDocumentType] = useState('J');
   const [documentNumber, setDocumentNumber] = useState('');
-  const [authorizationDateError, setAuthorizationDateError] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [modalTitle, setModalTitle] = useState('');
 
-  // Extract document number from RIF when editing
-  useEffect(() => {
-    if (printer?.rif) {
+  // Track the printer ID we've initialized for
+  const [prevPrinterId, setPrevPrinterId] = useState<number | null>(null);
+
+  // Sync state with printer prop when it changes (alternative to useEffect for extraction)
+  if (printer && printer.id !== prevPrinterId) {
+    setPrevPrinterId(printer.id);
+    if (printer.rif) {
       const rifMatch = printer.rif.match(/^([A-Z])(\d+)-?(\d)$/);
       if (rifMatch) {
         setDocumentType(rifMatch[1]);
         setDocumentNumber(rifMatch[2]);
       }
     }
-  }, [printer]);
+  } else if (!printer && prevPrinterId !== null) {
+    setPrevPrinterId(null);
+    setDocumentType('J');
+    setDocumentNumber('');
+  }
 
-  // Validate RIF when document type, number, or RIF changes
-  useEffect(() => {
+  // Derive RIF validation and expected RIF
+  const { rifError, rifValid, expectedRif } = useMemo(() => {
     if (!documentNumber || !documentType) {
-      setRifError('');
-      setRifValid(false);
-      setExpectedRif('');
-      return;
+      return { rifError: '', rifValid: false, expectedRif: '' };
     }
 
-    // Calculate expected RIF based on document type and number
     const expected = getExpectedRif(documentType, documentNumber);
-    setExpectedRif(expected);
-
-    // Validate the entered RIF
+    
     if (formData.rif) {
       const validation = validateRif(formData.rif);
-      if (!validation.isValid) {
-        setRifError(validation.errorMessage);
-        setRifValid(false);
-      } else {
-        setRifError('');
-        setRifValid(true);
-      }
-    } else {
-      setRifError('');
-      setRifValid(false);
+      return {
+        rifError: validation.isValid ? '' : validation.errorMessage,
+        rifValid: validation.isValid,
+        expectedRif: expected
+      };
     }
+    
+    return { rifError: '', rifValid: false, expectedRif: expected };
   }, [documentType, documentNumber, formData.rif]);
 
   const authorizationDate = formData.authorizationDate ?? '';
 
-  // Validate authorization date format (DDMMAAAA)
-  useEffect(() => {
-    if (!authorizationDate) {
-      setAuthorizationDateError('');
-      return;
-    }
+  // Derive authorization date error
+  const authorizationDateError = useMemo(() => {
+    if (!authorizationDate) return '';
 
     // Check if it's 8 digits
     const dateRegex = /^\d{8}$/;
     if (!dateRegex.test(authorizationDate)) {
-      setAuthorizationDateError('Must be 8 digits (DDMMAAAA)');
-      return;
+      return 'Must be 8 digits (DDMMAAAA)';
     }
 
     // Validate date components
@@ -93,21 +84,18 @@ export const PrinterForm: React.FC<PrinterFormProps> = ({
     const year = parseInt(authorizationDate.substring(4, 8), 10);
 
     if (day < 1 || day > 31) {
-      setAuthorizationDateError('Invalid day (01-31)');
-      return;
+      return 'Invalid day (01-31)';
     }
 
     if (month < 1 || month > 12) {
-      setAuthorizationDateError('Invalid month (01-12)');
-      return;
+      return 'Invalid month (01-12)';
     }
 
     if (year < 2000 || year > new Date().getFullYear()) {
-      setAuthorizationDateError('Invalid year');
-      return;
+      return 'Invalid year';
     }
 
-    setAuthorizationDateError('');
+    return '';
   }, [authorizationDate]);
 
   const handleRifChange = (value: string) => {

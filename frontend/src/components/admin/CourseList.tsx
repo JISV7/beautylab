@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios, { isAxiosError } from 'axios';
 import type { Course, Category, Level, CourseListProps } from './types';
 import { MessageModal } from './MessageModal';
 import { ConfirmModal } from './ConfirmModal';
 import { CourseFilters } from './courses/CourseFilters';
 import { CourseTable } from './courses/CourseTable';
 import { CoursePagination } from './courses/CoursePagination';
-
-const API_URL = 'http://localhost:8000';
+import { BASE_URL } from '../../config';
 
 // Get auth token from localStorage
 const getAuthToken = (): string | null => {
@@ -16,7 +15,7 @@ const getAuthToken = (): string | null => {
 
 // Axios instance with auth
 const api = axios.create({
-    baseURL: API_URL,
+    baseURL: BASE_URL,
     headers: {
         'Content-Type': 'application/json',
     },
@@ -70,7 +69,7 @@ export const CourseList: React.FC<CourseListProps> = ({ onNavigateToCreate, onNa
     });
 
     // Fetch courses, categories, and levels
-    const fetchData = async () => {
+    const fetchData = React.useCallback(async () => {
         try {
             setLoading(true);
             const [coursesRes, categoriesRes, levelsRes] = await Promise.all([
@@ -93,21 +92,25 @@ export const CourseList: React.FC<CourseListProps> = ({ onNavigateToCreate, onNa
             setTotalCourses(coursesRes.data.total || 0);
             setCategories(categoriesRes.data.categories || []);
             setLevels(levelsRes.data.levels || []);
-        } catch (error: any) {
+        } catch (error) {
             console.error('Failed to fetch data:', error);
+            let message = 'Failed to load courses.';
+            if (isAxiosError(error)) {
+                message = error.response?.data?.detail || message;
+            }
             setMessageModal({
                 isOpen: true,
                 type: 'error',
-                message: error.response?.data?.detail || 'Failed to load courses.',
+                message: message,
             });
         } finally {
             setLoading(false);
         }
-    };
+    }, [currentPage, pageSize, publishedFilter, searchQuery, categoryFilter, levelFilter, includeChildren]);
 
     useEffect(() => {
         fetchData();
-    }, [currentPage, publishedFilter, includeChildren, categoryFilter, levelFilter, searchQuery]);
+    }, [fetchData]);
 
     // Handle filter changes (reset to page 1)
     const handleSearchChange = (value: string) => {
@@ -149,12 +152,16 @@ export const CourseList: React.FC<CourseListProps> = ({ onNavigateToCreate, onNa
                 message: `Course ${published ? 'published' : 'unpublished'} successfully!`,
             });
             fetchData();
-        } catch (error: any) {
+        } catch (error) {
             console.error('Failed to update course:', error);
+            let message = 'Failed to update course.';
+            if (isAxiosError(error)) {
+                message = error.response?.data?.detail || message;
+            }
             setMessageModal({
                 isOpen: true,
                 type: 'error',
-                message: error.response?.data?.detail || 'Failed to update course.',
+                message: message,
             });
         }
     };
@@ -190,12 +197,16 @@ export const CourseList: React.FC<CourseListProps> = ({ onNavigateToCreate, onNa
                 message: `Course "${courseTitle}" deleted successfully!`,
             });
             fetchData();
-        } catch (error: any) {
+        } catch (error) {
             console.error('Failed to delete course:', error);
+            let message = 'Failed to delete course.';
+            if (isAxiosError(error)) {
+                message = error.response?.data?.detail || message;
+            }
             setMessageModal({
                 isOpen: true,
                 type: 'error',
-                message: error.response?.data?.detail || 'Failed to delete course.',
+                message: message,
             });
         }
     };

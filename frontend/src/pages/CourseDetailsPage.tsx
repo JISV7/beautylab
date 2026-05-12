@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect, useCallback } from 'react';
+import axios, { isAxiosError } from 'axios';
 import { CourseHero, LicenseTable, GiftLicenseModal, type License } from '../components/course';
 import {
     SplitPaymentManager,
@@ -12,7 +12,7 @@ import { useCart } from '../contexts/CartContext';
 import type { CompanyInfo } from '../data/company.types';
 import { normalizeUrl } from '../utils/url';
 
-const API_URL = 'http://localhost:8000';
+import { BASE_URL } from '../config';
 
 interface CourseDetailsPageProps {
     courseId: string;
@@ -92,41 +92,45 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
     // Company info for Pago Movil
     const [companyInfo, setCompanyInfo] = useState<CompanyInfo | null>(null);
 
-    const fetchCourseDetails = async () => {
+    const fetchCourseDetails = useCallback(async () => {
         try {
             setIsLoading(true);
             setError(null);
 
             const token = localStorage.getItem('access_token');
-            const response = await axios.get(`${API_URL}/catalog/courses/${courseId}/details`, {
+            const response = await axios.get(`${BASE_URL}/catalog/courses/${courseId}/details`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
 
             setCourse(response.data);
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error('Failed to fetch course details:', err);
-            setError(err.response?.data?.detail || 'Failed to load course details');
+            let message = 'Failed to load course details';
+            if (isAxiosError(err)) {
+                message = err.response?.data?.detail || message;
+            }
+            setError(message);
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [courseId]);
 
-    const fetchCompanyInfo = async () => {
+    const fetchCompanyInfo = useCallback(async () => {
         try {
-            const response = await axios.get(`${API_URL}/company-info/active/public`);
+            const response = await axios.get(`${BASE_URL}/company-info/active/public`);
             setCompanyInfo(response.data);
-        } catch (error) {
+        } catch (error: unknown) {
             // Company info is optional for Pago Movil simulation
             console.warn('Failed to fetch company info:', error);
         }
-    };
+    }, []);
 
     useEffect(() => {
         fetchCourseDetails();
         fetchCompanyInfo();
-    }, [courseId]);
+    }, [fetchCourseDetails, fetchCompanyInfo]);
 
     const handleBuy = () => {
         setPaymentStep('payment_details');
@@ -142,13 +146,16 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
             await addToCart(course.product_id, quantity);
             setAddToCartMessage(`Added ${quantity} x "${course.title}" to cart!`);
             setTimeout(() => setAddToCartMessage(null), 3000);
-        } catch (error: any) {
-            const detail = error?.response?.data?.detail;
-            const message = typeof detail === 'string'
-                ? detail
-                : Array.isArray(detail)
-                    ? detail.map((e: any) => e.msg).join(', ')
-                    : 'Failed to add to cart';
+        } catch (error: unknown) {
+            let message = 'Failed to add to cart';
+            if (isAxiosError(error)) {
+                const detail = error.response?.data?.detail;
+                message = typeof detail === 'string'
+                    ? detail
+                    : Array.isArray(detail)
+                        ? detail.map((e: { loc: string[]; msg: string }) => e.msg).join(', ')
+                        : message;
+            }
             setAddToCartMessage(message);
         }
     };
@@ -293,7 +300,7 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
             }));
 
             const response = await axios.post<PurchaseResponse>(
-                `${API_URL}/payments/purchase-course`,
+                `${BASE_URL}/payments/purchase-course`,
                 {
                     course_id: courseId,
                     payments,
@@ -327,17 +334,21 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
             });
 
             setPaymentStep('confirmation');
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error('Payment failed:', err);
-            const errorDetail = err.response?.data?.detail;
-            if (Array.isArray(errorDetail)) {
-                // Format validation errors into readable string
-                setPurchaseError(errorDetail.map((e: any) => `${e.loc.join('.')}: ${e.msg}`).join(', '));
-            } else if (typeof errorDetail === 'object' && errorDetail !== null) {
-                setPurchaseError(JSON.stringify(errorDetail));
-            } else {
-                setPurchaseError(errorDetail || 'Payment failed. Please try again.');
+            let errorMessage = 'Payment failed. Please try again.';
+            if (isAxiosError(err)) {
+                const errorDetail = err.response?.data?.detail;
+                if (Array.isArray(errorDetail)) {
+                    // Format validation errors into readable string
+                    errorMessage = errorDetail.map((e: { loc: string[]; msg: string }) => `${e.loc.join('.')}: ${e.msg}`).join(', ');
+                } else if (typeof errorDetail === 'object' && errorDetail !== null) {
+                    errorMessage = JSON.stringify(errorDetail);
+                } else {
+                    errorMessage = errorDetail || errorMessage;
+                }
             }
+            setPurchaseError(errorMessage);
             setPaymentStep('payment_details');
         }
     };
@@ -363,7 +374,7 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
         try {
             const token = localStorage.getItem('access_token');
             await axios.post(
-                `${API_URL}/licenses/${selectedLicenseId}/gift`,
+                `${BASE_URL}/licenses/${selectedLicenseId}/gift`,
                 { email, message },
                 {
                     headers: {
@@ -374,9 +385,10 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
             setGiftModalOpen(false);
             setSelectedLicenseId(null);
             fetchCourseDetails();
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error('Failed to gift license:', err);
-            alert(err.response?.data?.detail || 'Failed to gift license');
+            const message = isAxiosError(err) ? err.response?.data?.detail || err.message : 'Failed to gift license';
+            alert(message);
         }
     };
 
@@ -392,7 +404,7 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
             setRedeemError(null);
             const token = localStorage.getItem('access_token');
             await axios.post(
-                `${API_URL}/licenses/redeem`,
+                `${BASE_URL}/licenses/redeem`,
                 { license_code: redeemLicenseId },
                 {
                     headers: {
@@ -403,9 +415,13 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
             setRedeemModalOpen(false);
             setRedeemLicenseId(null);
             fetchCourseDetails();
-        } catch (err: any) {
-            const detail = err.response?.data?.detail;
-            setRedeemError(typeof detail === 'string' ? detail : 'Failed to redeem license');
+        } catch (err: unknown) {
+            let message = 'Failed to redeem license';
+            if (isAxiosError(err)) {
+                const detail = err.response?.data?.detail;
+                message = typeof detail === 'string' ? detail : message;
+            }
+            setRedeemError(message);
         }
     };
 

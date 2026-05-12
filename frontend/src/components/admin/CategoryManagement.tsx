@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios, { isAxiosError } from 'axios';
 import { Plus, Edit, Trash2, Search, ChevronDown } from 'lucide-react';
 import type { Category } from './types';
 import { MessageModal } from './MessageModal';
 import { ConfirmModal } from './ConfirmModal';
 import { Modal } from './Modal';
-
-const API_URL = 'http://localhost:8000';
+import { BASE_URL } from '../../config';
 
 // Get auth token from localStorage
 const getAuthToken = (): string | null => {
@@ -15,7 +14,7 @@ const getAuthToken = (): string | null => {
 
 // Axios instance with auth
 const api = axios.create({
-    baseURL: API_URL,
+    baseURL: BASE_URL,
     headers: {
         'Content-Type': 'application/json',
     },
@@ -44,6 +43,17 @@ const emptyFormData: CategoryFormData = {
     description: '',
     parent_id: '',
     order: '0',
+};
+
+const SortIcon = ({ column, sortColumn, sortDirection }: { column: string; sortColumn: string; sortDirection: 'asc' | 'desc' }) => {
+    if (sortColumn !== column) return <span className="w-3.5 h-3.5 ml-1 opacity-0"></span>;
+    return (
+        <ChevronDown
+            className={`w-3.5 h-3.5 ml-1 transition-transform ${
+                sortDirection === 'asc' ? 'rotate-180' : ''
+            }`}
+        />
+    );
 };
 
 export const CategoryManagement: React.FC = () => {
@@ -92,12 +102,16 @@ export const CategoryManagement: React.FC = () => {
             setLoading(true);
             const response = await api.get('/catalog/categories');
             setCategories(response.data.categories || []);
-        } catch (error: any) {
+        } catch (error) {
             console.error('Failed to fetch categories:', error);
+            let message = 'Failed to load categories.';
+            if (isAxiosError(error)) {
+                message = error.response?.data?.detail || message;
+            }
             setMessageModal({
                 isOpen: true,
                 type: 'error',
-                message: error.response?.data?.detail || 'Failed to load categories.',
+                message: message,
             });
         } finally {
             setLoading(false);
@@ -138,17 +152,6 @@ export const CategoryManagement: React.FC = () => {
             setSortColumn(column);
             setSortDirection('asc');
         }
-    };
-
-    const SortIcon = ({ column }: { column: string }) => {
-        if (sortColumn !== column) return <span className="w-3.5 h-3.5 ml-1 opacity-0"></span>;
-        return (
-            <ChevronDown
-                className={`w-3.5 h-3.5 ml-1 transition-transform ${
-                    sortDirection === 'asc' ? 'rotate-180' : ''
-                }`}
-            />
-        );
     };
 
     // Auto-generate slug from name
@@ -253,22 +256,24 @@ export const CategoryManagement: React.FC = () => {
 
             setIsModalOpen(false);
             fetchCategories();
-        } catch (error: any) {
+        } catch (error) {
             console.error('Failed to save category:', error);
 
             // Extract error message from validation errors
             let errorMessage = 'Failed to save category.';
-            const detail = error.response?.data?.detail;
-            if (detail) {
-                if (Array.isArray(detail)) {
-                    // Pydantic validation errors array
-                    errorMessage = detail
-                        .map((err: any) => `${err.loc?.join('.')}: ${err.msg}`)
-                        .join('; ');
-                } else if (typeof detail === 'string') {
-                    errorMessage = detail;
-                } else if (typeof detail === 'object') {
-                    errorMessage = JSON.stringify(detail);
+            if (isAxiosError(error)) {
+                const detail = error.response?.data?.detail;
+                if (detail) {
+                    if (Array.isArray(detail)) {
+                        // Pydantic validation errors array
+                        errorMessage = detail
+                            .map((err) => `${err.loc?.join('.')}: ${err.msg}`)
+                            .join('; ');
+                    } else if (typeof detail === 'string') {
+                        errorMessage = detail;
+                    } else if (typeof detail === 'object') {
+                        errorMessage = JSON.stringify(detail);
+                    }
                 }
             }
 
@@ -311,12 +316,16 @@ export const CategoryManagement: React.FC = () => {
                 message: 'Category deleted successfully!',
             });
             fetchCategories();
-        } catch (error: any) {
+        } catch (error) {
             console.error('Failed to delete category:', error);
+            let message = 'Failed to delete category.';
+            if (isAxiosError(error)) {
+                message = error.response?.data?.detail || message;
+            }
             setMessageModal({
                 isOpen: true,
                 type: 'error',
-                message: error.response?.data?.detail || 'Failed to delete category.',
+                message: message,
             });
         }
     };
@@ -389,15 +398,15 @@ export const CategoryManagement: React.FC = () => {
                                 <thead className="bg-black/5 dark:bg-white/5 border-b palette-border">
                                     <tr>
                                         <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap" onClick={() => handleSort('name')}>
-                                            <div className="flex items-center">Name<SortIcon column="name" /></div>
+                                            <div className="flex items-center">Name<SortIcon column="name" sortColumn={sortColumn} sortDirection={sortDirection} /></div>
                                         </th>
                                         <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap" onClick={() => handleSort('slug')}>
-                                            <div className="flex items-center">Slug<SortIcon column="slug" /></div>
+                                            <div className="flex items-center">Slug<SortIcon column="slug" sortColumn={sortColumn} sortDirection={sortDirection} /></div>
                                         </th>
                                         <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph">Description</th>
                                         <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph">Parent</th>
                                         <th className="text-right py-3 px-4 text-sm font-semibold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap" onClick={() => handleSort('order')}>
-                                            <div className="flex items-center justify-end">Order<SortIcon column="order" /></div>
+                                            <div className="flex items-center justify-end">Order<SortIcon column="order" sortColumn={sortColumn} sortDirection={sortDirection} /></div>
                                         </th>
                                         <th className="text-right py-3 px-4 text-sm font-semibold text-paragraph">Actions</th>
                                     </tr>

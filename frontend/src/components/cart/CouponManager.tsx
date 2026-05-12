@@ -2,16 +2,16 @@ import React, { useState } from 'react';
 import { Tag, X as XIcon } from 'lucide-react';
 import { formatCurrency } from '../../utils/formatCurrency';
 import type { AppliedCoupon } from './CartPage.types';
-import axios from 'axios';
+import axios, { isAxiosError } from 'axios';
 
-const API_URL = 'http://localhost:8000';
+import { BASE_URL } from '../../config';
 
 const getAuthToken = (): string | null => {
     return localStorage.getItem('access_token');
 };
 
 const api = axios.create({
-    baseURL: API_URL,
+    baseURL: BASE_URL,
     headers: {
         'Content-Type': 'application/json',
     },
@@ -76,8 +76,8 @@ export const CouponManager: React.FC<CouponManagerProps> = ({
             } else {
                 setCouponError(data.message || 'Invalid coupon.');
             }
-        } catch (err: any) {
-            setCouponError(err.response?.data?.detail || 'Failed to validate coupon.');
+        } catch (err: unknown) {
+            setCouponError(isAxiosError(err) ? err.response?.data?.detail : 'Failed to validate coupon.');
         } finally {
             setCouponLoading(false);
         }

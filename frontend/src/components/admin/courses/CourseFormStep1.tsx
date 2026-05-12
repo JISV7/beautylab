@@ -1,9 +1,9 @@
 import React, { useRef, useState } from 'react';
-import axios from 'axios';
+import axios, { isAxiosError } from 'axios';
 import { Upload, X, CheckCircle } from 'lucide-react';
 import type { Category, Level, CourseFormData } from '../types';
 
-const API_URL = 'http://localhost:8000';
+import { BASE_URL } from '../../../config';
 
 // Get auth token from localStorage
 const getAuthToken = (): string | null => {
@@ -12,7 +12,7 @@ const getAuthToken = (): string | null => {
 
 // Axios instance with auth
 const api = axios.create({
-    baseURL: API_URL,
+    baseURL: BASE_URL,
     headers: {
         'Content-Type': 'application/json',
     },
@@ -88,7 +88,7 @@ export const CourseFormStep1: React.FC<CourseFormStep1Props> = ({
 
             // Update the image_url in the parent form with full backend URL
             const syntheticEvent = {
-                target: { name: 'image_url', value: `${API_URL}${data.url}` }
+                target: { name: 'image_url', value: `${BASE_URL}${data.url}` }
             } as React.ChangeEvent<HTMLInputElement>;
             onChange(syntheticEvent);
 
@@ -99,14 +99,20 @@ export const CourseFormStep1: React.FC<CourseFormStep1Props> = ({
             if (fileInputRef.current) {
                 fileInputRef.current.value = '';
             }
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error('Upload error:', error);
             // Extract error message from axios response
-            const errorMessage = error.response?.data?.detail
-                ? (typeof error.response.data.detail === 'string'
-                    ? error.response.data.detail
-                    : JSON.stringify(error.response.data.detail))
-                : error.message || 'Failed to upload image';
+            let errorMessage = 'Failed to upload image';
+            
+            if (isAxiosError(error)) {
+                const detail = error.response?.data?.detail;
+                errorMessage = typeof detail === 'string' 
+                    ? detail 
+                    : (detail ? JSON.stringify(detail) : error.message);
+            } else if (error instanceof Error) {
+                errorMessage = error.message;
+            }
+            
             setUploadError(errorMessage);
         } finally {
             setUploading(false);

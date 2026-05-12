@@ -9,6 +9,13 @@ interface ImageCropperProps {
     onCancel: () => void;
 }
 
+interface Area {
+    width: number;
+    height: number;
+    x: number;
+    y: number;
+}
+
 export const ImageCropper: React.FC<ImageCropperProps> = ({
     image,
     aspectRatio,
@@ -18,10 +25,9 @@ export const ImageCropper: React.FC<ImageCropperProps> = ({
     const { activeTheme, currentMode } = useTheme();
     const [crop, setCrop] = useState({ x: 0, y: 0 });
     const [zoom, setZoom] = useState(1);
-    const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
+    const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
 
-    const colors = activeTheme?.config[currentMode]?.colors as any || {};
-    const primaryColor = colors.primary || '#000';
+    const primaryColor = activeTheme?.config[currentMode]?.colors.primary || '#000';
 
     const onCropChange = (crop: { x: number; y: number }) => {
         setCrop(crop);
@@ -31,7 +37,7 @@ export const ImageCropper: React.FC<ImageCropperProps> = ({
         setZoom(zoom);
     };
 
-    const onCropCompleteInternal = useCallback((_croppedArea: any, croppedAreaPixels: any) => {
+    const onCropCompleteInternal = useCallback((_croppedArea: Area, croppedAreaPixels: Area) => {
         setCroppedAreaPixels(croppedAreaPixels);
     }, []);
 
@@ -50,7 +56,7 @@ export const ImageCropper: React.FC<ImageCropperProps> = ({
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
 
-            if (!ctx) return;
+            if (!ctx || !croppedAreaPixels) return;
 
             canvas.width = croppedAreaPixels.width;
             canvas.height = croppedAreaPixels.height;

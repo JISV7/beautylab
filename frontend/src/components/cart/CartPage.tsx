@@ -8,16 +8,16 @@ import { CouponManager } from './CouponManager';
 import { formatPaymentDetails, type AppliedCoupon, type CheckoutStep, type CartPageProps } from './CartPage.types';
 import { validatePaymentForm } from './CartPage.utils';
 import { formatCurrency } from '../../utils/formatCurrency';
-import axios from 'axios';
+import axios, { isAxiosError } from 'axios';
 
-const API_URL = 'http://localhost:8000';
+import { BASE_URL } from '../../config';
 
 const getAuthToken = (): string | null => {
     return localStorage.getItem('access_token');
 };
 
 const api = axios.create({
-    baseURL: API_URL,
+    baseURL: BASE_URL,
     headers: {
         'Content-Type': 'application/json',
     },
@@ -31,6 +31,23 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
+interface ReceiptData {
+    invoice_number: string;
+    total: string;
+    issue_date: string;
+    items: Array<{
+        description: string;
+        quantity: string;
+        unit_price: string;
+        line_total: string;
+    }>;
+    payment_breakdown: Array<{
+        method: string;
+        amount: string;
+        reference: string;
+    }>;
+}
+
 export const CartPage: React.FC<CartPageProps> = ({ onBack }) => {
     const { cart, removeFromCart, updateQuantity, clearCart } = useCart();
     const [checkoutStep, setCheckoutStep] = useState<CheckoutStep>('review');
@@ -38,7 +55,7 @@ export const CartPage: React.FC<CartPageProps> = ({ onBack }) => {
     const [isPaymentValid, setIsPaymentValid] = useState(false);
     const [totalAllocated, setTotalAllocated] = useState<number>(0);
     const [purchaseError, setPurchaseError] = useState<string | null>(null);
-    const [receiptData, setReceiptData] = useState<any>(null);
+    const [receiptData, setReceiptData] = useState<ReceiptData | null>(null);
 
     // Coupon state
     const [appliedCoupons, setAppliedCoupons] = useState<AppliedCoupon[]>([]);
@@ -123,14 +140,14 @@ export const CartPage: React.FC<CartPageProps> = ({ onBack }) => {
                     amount: p.amount.toFixed(2),
                     reference: p.values.confirmation_code || p.values.reference_code || p.values.transaction_id || '',
                 })),
-                applied_coupons: appliedCoupons,
+                
             });
 
             setCheckoutStep('confirmation');
             await clearCart();
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error('Payment failed:', err);
-            setPurchaseError(err.response?.data?.detail || 'Payment failed. Please try again.');
+            setPurchaseError(isAxiosError(err) ? err.response?.data?.detail : 'Payment failed. Please try again.');
             setCheckoutStep('payment');
         }
     };

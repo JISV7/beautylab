@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router';
 import axios from 'axios';
 import { ExploreFilters, ExploreGrid, type Course, type Category, type Level } from '../components/explore';
 import { useAuth } from '../contexts/AuthContext';
 
-const API_URL = 'http://localhost:8000';
+import { BASE_URL } from '../config';
 
 export const ExplorePage: React.FC = () => {
     const navigate = useNavigate();
@@ -22,7 +22,7 @@ export const ExplorePage: React.FC = () => {
     const [includeChildren, setIncludeChildren] = useState(false);
 
     // Fetch courses from API
-    const fetchCourses = async () => {
+    const fetchCourses = useCallback(async () => {
         try {
             setIsLoading(true);
             setError(null);
@@ -33,28 +33,27 @@ export const ExplorePage: React.FC = () => {
             if (searchQuery) params.search = searchQuery;
             if (selectedCategory && includeChildren) params.include_children = true;
 
-            const response = await axios.get(`${API_URL}/catalog/courses/public`, { params });
+            const response = await axios.get(`${BASE_URL}/catalog/courses/public`, { params });
 
             setCourses(response.data.courses);
             setCategories(response.data.categories);
             setLevels(response.data.levels);
-        } catch (err: any) {
+        } catch (err) {
             console.error('Failed to fetch courses:', err);
-            setError(err.response?.data?.detail || 'Failed to load courses');
+            let message = 'Failed to load courses';
+            if (axios.isAxiosError(err)) {
+                message = err.response?.data?.detail || message;
+            }
+            setError(message);
         } finally {
             setIsLoading(false);
         }
-    };
-
-    // Initial load
-    useEffect(() => {
-        fetchCourses();
-    }, []);
-
-    // Refetch when filters change
-    useEffect(() => {
-        fetchCourses();
     }, [selectedCategory, selectedLevel, searchQuery, includeChildren]);
+
+    // Initial load and refetch when filters change
+    useEffect(() => {
+        fetchCourses();
+    }, [fetchCourses]);
 
     const handleClearFilters = () => {
         setSelectedCategory(null);

@@ -1,7 +1,6 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import axios from 'axios';
-
-const API_URL = 'http://localhost:8000';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import axios, { isAxiosError } from 'axios';
+import { BASE_URL } from '../config';
 
 export interface User {
     id?: string;
@@ -63,7 +62,7 @@ const refreshAccessToken = async (): Promise<string | null> => {
         const formData = new URLSearchParams();
         formData.append('refresh_token', refreshToken);
         
-        const response = await axios.post(`${API_URL}/auth/refresh`, formData, {
+        const response = await axios.post(`${BASE_URL}/auth/refresh`, formData, {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
@@ -118,9 +117,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
-    const fetchUser = async (token: string) => {
+    const fetchUser = useCallback(async (token: string) => {
         try {
-            const response = await axios.get(`${API_URL}/users/me`, {
+            const response = await axios.get(`${BASE_URL}/users/me`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -149,7 +148,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         } finally {
             setIsLoading(false);
         }
-    };
+    }, []);
 
     useEffect(() => {
         const token = localStorage.getItem('access_token');
@@ -176,7 +175,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         } else {
             setIsLoading(false);
         }
-    }, []);
+    }, [fetchUser]);
 
     const login = async (email: string, password: string) => {
         const formData = new URLSearchParams();
@@ -184,7 +183,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         formData.append('password', password);
 
         try {
-            const response = await axios.post(`${API_URL}/auth/login`, formData, {
+            const response = await axios.post(`${BASE_URL}/auth/login`, formData, {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
@@ -203,8 +202,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
             // Notify cart to refresh after login
             window.dispatchEvent(new CustomEvent('cart:refresh'));
-        } catch (error: any) {
-            if (axios.isAxiosError(error) && error.response) {
+        } catch (error) {
+            if (isAxiosError(error) && error.response) {
                 throw new Error(error.response.data.detail || 'Login failed');
             }
             throw new Error('Login failed');
@@ -224,7 +223,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         is_contributor?: boolean,
     ) => {
         try {
-            await axios.post(`${API_URL}/auth/register`, {
+            await axios.post(`${BASE_URL}/auth/register`, {
                 full_name: name,
                 email,
                 password,
@@ -238,8 +237,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             });
             // Auto login after successful registration
             await login(email, password);
-        } catch (error: any) {
-            if (axios.isAxiosError(error) && error.response) {
+        } catch (error) {
+            if (isAxiosError(error) && error.response) {
                 const detail = error.response.data.detail;
                 if (typeof detail === 'string') {
                     throw new Error(detail);
@@ -278,7 +277,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         if (profileData.full_name !== undefined) {
             const response = await axios.patch(
-                `${API_URL}/users/me`,
+                `${BASE_URL}/users/me`,
                 { full_name: profileData.full_name },
                 authHeaders,
             );
@@ -288,7 +287,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         if (profileData.fiscal_address !== undefined || profileData.rif !== undefined) {
             const response = await axios.patch(
-                `${API_URL}/users/me/fiscal`,
+                `${BASE_URL}/users/me/fiscal`,
                 {
                     fiscal_address: profileData.fiscal_address,
                     rif: profileData.rif,
@@ -318,6 +317,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => {
     const context = useContext(AuthContext);
     if (!context) {

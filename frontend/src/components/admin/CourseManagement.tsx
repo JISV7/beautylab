@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios, { isAxiosError } from 'axios';
 import { Save } from 'lucide-react';
 import type { Course, Category, Level, CourseFormData } from './types';
 import { MessageModal } from './MessageModal';
@@ -9,8 +9,7 @@ import { CourseFormStep1 } from './courses/CourseFormStep1';
 import { CourseFormStep2 } from './courses/CourseFormStep2';
 import { CourseFormStep3 } from './courses/CourseFormStep3';
 import { CoursePreviewCard } from './courses/CoursePreviewCard';
-
-const API_URL = 'http://localhost:8000';
+import { BASE_URL } from '../../config';
 
 // Get auth token from localStorage
 const getAuthToken = (): string | null => {
@@ -19,7 +18,7 @@ const getAuthToken = (): string | null => {
 
 // Axios instance with auth
 const api = axios.create({
-    baseURL: API_URL,
+    baseURL: BASE_URL,
     headers: {
         'Content-Type': 'application/json',
     },
@@ -122,12 +121,16 @@ export const CourseManagement: React.FC<CourseManagementProps> = ({ courseId, on
                     // Store existing product ID for updates
                     setExistingProductId(course.product_id || null);
                 }
-            } catch (error: any) {
+            } catch (error) {
                 console.error('Failed to fetch data:', error);
+                let message = 'Failed to load course data.';
+                if (isAxiosError(error)) {
+                    message = error.response?.data?.detail || message;
+                }
                 setMessageModal({
                     isOpen: true,
                     type: 'error',
-                    message: error.response?.data?.detail || 'Failed to load course data.',
+                    message: message,
                 });
             } finally {
                 setLoading(false);
@@ -158,7 +161,7 @@ export const CourseManagement: React.FC<CourseManagementProps> = ({ courseId, on
         }));
     };
 
-    const handleFormDataChange = (field: keyof CourseFormData, value: any) => {
+    const handleFormDataChange = (field: keyof CourseFormData, value: string | boolean | number) => {
         setFormData((prev: CourseFormData) => ({ ...prev, [field]: value }));
     };
 
@@ -291,12 +294,16 @@ export const CourseManagement: React.FC<CourseManagementProps> = ({ courseId, on
             setTimeout(() => {
                 onBack?.();
             }, 1500);
-        } catch (error: any) {
+        } catch (error) {
             console.error('Failed to save course:', error);
+            let message = 'Failed to save course. Please check all fields.';
+            if (isAxiosError(error)) {
+                message = error.response?.data?.detail || message;
+            }
             setMessageModal({
                 isOpen: true,
                 type: 'error',
-                message: error.response?.data?.detail || 'Failed to save course. Please check all fields.',
+                message: message,
             });
         } finally {
             setSaving(false);

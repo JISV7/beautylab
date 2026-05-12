@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import type { Invoice, InvoiceSummary, SortableColumn } from '../data/invoice.types';
 import { fetchSummary, fetchInvoices, fetchInvoiceDetails, downloadAllInvoices } from '../lib/invoiceApi';
 import {
@@ -23,21 +23,41 @@ export default function InvoicesPage() {
     const [sortColumn, setSortColumn] = useState<SortableColumn>('issue_date');
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
 
-    // Reset to page 1 when filters change
-    useEffect(() => {
-        setCurrentPage(1);
-    }, [searchTerm, statusFilter]);
+    const fetchAllData = useCallback(async () => {
+        try {
+            setLoading(true);
+            const [summaryData, invoicesData] = await Promise.all([
+                fetchSummary(),
+                fetchInvoices(currentPage, pageSize)
+            ]);
+            setSummary(summaryData);
+            if (invoicesData) {
+                setInvoices(invoicesData.invoices);
+                // Only set current page if it differs from the response to avoid infinite loop
+                if (invoicesData.page !== currentPage) {
+                    setCurrentPage(invoicesData.page);
+                }
+            }
+        } catch (error) {
+            console.error('Failed to fetch invoice data:', error);
+        } finally {
+            setLoading(false);
+        }
+    }, [currentPage, pageSize]);
 
     useEffect(() => {
-        fetchSummary().then(setSummary);
-        fetchInvoices(currentPage, pageSize).then((res) => {
-            if (res) {
-                setInvoices(res.invoices);
-                setCurrentPage(res.page);
-            }
-            setLoading(false);
-        });
-    }, []);
+        fetchAllData();
+    }, [fetchAllData]);
+
+    const handleSearchChange = (val: string) => {
+        setSearchTerm(val);
+        setCurrentPage(1);
+    };
+
+    const handleStatusFilterChange = (val: string) => {
+        setStatusFilter(val);
+        setCurrentPage(1);
+    };
 
     const handlePageChange = async (page: number) => {
         setLoading(true);
@@ -130,9 +150,9 @@ export default function InvoicesPage() {
 
                         <InvoiceControls
                             searchTerm={searchTerm}
-                            setSearchTerm={setSearchTerm}
+                            setSearchTerm={handleSearchChange}
                             statusFilter={statusFilter}
-                            setStatusFilter={setStatusFilter}
+                            setStatusFilter={handleStatusFilterChange}
                             pageSize={pageSize}
                             onPageSizeChange={handlePageSizeChange}
                             downloadingAll={downloadingAll}

@@ -1,19 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios, { isAxiosError } from 'axios';
 import { Plus, Edit, Trash2, Search, Tag, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
 import type { Coupon, CouponFormData } from './types';
 import { MessageModal } from './MessageModal';
 import { ConfirmModal } from './ConfirmModal';
 import { Modal } from './Modal';
-
-const API_URL = 'http://localhost:8000';
+import { BASE_URL } from '../../config';
 
 const getAuthToken = (): string | null => {
     return localStorage.getItem('access_token');
 };
 
 const api = axios.create({
-    baseURL: API_URL,
+    baseURL: BASE_URL,
     headers: { 'Content-Type': 'application/json' },
 });
 
@@ -33,6 +32,17 @@ const emptyFormData: CouponFormData = {
     max_uses: '',
     expires_at: '',
     is_active: true,
+};
+
+const SortIcon = ({ column, sortColumn, sortDirection }: { column: string; sortColumn: string; sortDirection: 'asc' | 'desc' }) => {
+    if (sortColumn !== column) return <span className="w-3.5 h-3.5 ml-1 opacity-0"></span>;
+    return (
+        <ChevronDown
+            className={`w-3.5 h-3.5 ml-1 transition-transform ${
+                sortDirection === 'asc' ? 'rotate-180' : ''
+            }`}
+        />
+    );
 };
 
 export const CouponManagement: React.FC = () => {
@@ -69,7 +79,7 @@ export const CouponManagement: React.FC = () => {
     const [editingCoupon, setEditingCoupon] = useState<Coupon | null>(null);
     const [formData, setFormData] = useState<CouponFormData>(emptyFormData);
 
-    const fetchCoupons = async () => {
+    const fetchCoupons = React.useCallback(async () => {
         try {
             setLoading(true);
             const params: Record<string, string | number> = { page: currentPage, page_size: pageSize };
@@ -85,11 +95,11 @@ export const CouponManagement: React.FC = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [currentPage, filterActive, pageSize]);
 
     useEffect(() => {
         fetchCoupons();
-    }, [currentPage, filterActive]);
+    }, [fetchCoupons]);
 
     const filteredCoupons = coupons.filter((c) => {
         if (!searchQuery) return true;
@@ -126,17 +136,6 @@ export const CouponManagement: React.FC = () => {
             setSortColumn(column);
             setSortDirection('asc');
         }
-    };
-
-    const SortIcon = ({ column }: { column: string }) => {
-        if (sortColumn !== column) return <span className="w-3.5 h-3.5 ml-1 opacity-0"></span>;
-        return (
-            <ChevronDown
-                className={`w-3.5 h-3.5 ml-1 transition-transform ${
-                    sortDirection === 'asc' ? 'rotate-180' : ''
-                }`}
-            />
-        );
     };
 
     const handleOpenCreate = () => {
@@ -198,9 +197,12 @@ export const CouponManagement: React.FC = () => {
             }
             setIsModalOpen(false);
             fetchCoupons();
-        } catch (error: any) {
-            const detail = error?.response?.data?.detail;
-            const msg = typeof detail === 'string' ? detail : 'Failed to save coupon.';
+        } catch (error) {
+            let msg = 'Failed to save coupon.';
+            if (isAxiosError(error)) {
+                const detail = error.response?.data?.detail;
+                msg = typeof detail === 'string' ? detail : msg;
+            }
             setMessageModal({ isOpen: true, type: 'error', message: msg });
         } finally {
             setSaving(false);
@@ -232,7 +234,12 @@ export const CouponManagement: React.FC = () => {
             setMessageModal({ isOpen: true, type: 'success', message: 'Coupon deactivated successfully!' });
             fetchCoupons();
         } catch (error) {
-            setMessageModal({ isOpen: true, type: 'error', message: 'Failed to deactivate coupon.' });
+            console.error('Failed to deactivate coupon:', error);
+            let msg = 'Failed to deactivate coupon.';
+            if (isAxiosError(error)) {
+                msg = error.response?.data?.detail || msg;
+            }
+            setMessageModal({ isOpen: true, type: 'error', message: msg });
         }
     };
 
@@ -317,32 +324,32 @@ export const CouponManagement: React.FC = () => {
                                         className="text-left py-3 px-4 text-sm font-semibold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap"
                                         onClick={() => handleSort('code')}
                                     >
-                                        <div className="flex items-center">Code<SortIcon column="code" /></div>
+                                        <div className="flex items-center">Code<SortIcon column="code" sortColumn={sortColumn} sortDirection={sortDirection} /></div>
                                     </th>
                                     <th
                                         className="text-left py-3 px-4 text-sm font-semibold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap"
                                         onClick={() => handleSort('discount')}
                                     >
-                                        <div className="flex items-center">Discount<SortIcon column="discount" /></div>
+                                        <div className="flex items-center">Discount<SortIcon column="discount" sortColumn={sortColumn} sortDirection={sortDirection} /></div>
                                     </th>
                                     <th
                                         className="text-left py-3 px-4 text-sm font-semibold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap"
                                         onClick={() => handleSort('min_purchase')}
                                     >
-                                        <div className="flex items-center">Min Purchase<SortIcon column="min_purchase" /></div>
+                                        <div className="flex items-center">Min Purchase<SortIcon column="min_purchase" sortColumn={sortColumn} sortDirection={sortDirection} /></div>
                                     </th>
                                     <th
                                         className="text-left py-3 px-4 text-sm font-semibold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap"
                                         onClick={() => handleSort('uses')}
                                     >
-                                        <div className="flex items-center">Uses<SortIcon column="uses" /></div>
+                                        <div className="flex items-center">Uses<SortIcon column="uses" sortColumn={sortColumn} sortDirection={sortDirection} /></div>
                                     </th>
                                     <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph whitespace-nowrap">Expires</th>
                                     <th
                                         className="text-left py-3 px-4 text-sm font-semibold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap"
                                         onClick={() => handleSort('created_at')}
                                     >
-                                        <div className="flex items-center">Created<SortIcon column="created_at" /></div>
+                                        <div className="flex items-center">Created<SortIcon column="created_at" sortColumn={sortColumn} sortDirection={sortDirection} /></div>
                                     </th>
                                     <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph whitespace-nowrap">Status</th>
                                     <th className="text-right py-3 px-4 text-sm font-semibold text-paragraph">Actions</th>

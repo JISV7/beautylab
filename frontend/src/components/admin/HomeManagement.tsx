@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios, { isAxiosError } from 'axios';
 import { 
     Video, 
     Layout, 
@@ -19,7 +19,7 @@ import { MessageModal } from './MessageModal';
 import { ConfirmModal } from './ConfirmModal';
 import { normalizeUrl } from '../../utils/url';
 
-const API_URL = 'http://localhost:8000';
+import { BASE_URL } from '../../config';
 
 // Get auth token from localStorage
 const getAuthToken = (): string | null => {
@@ -28,7 +28,7 @@ const getAuthToken = (): string | null => {
 
 // Axios instance with auth
 const api = axios.create({
-    baseURL: API_URL,
+    baseURL: BASE_URL,
     headers: {
         'Content-Type': 'application/json',
     },
@@ -135,9 +135,9 @@ export function HomeManagement() {
             } else {
                 throw new Error('Invalid response structure from server');
             }
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error('Error fetching home config:', error);
-            setError(error.message || 'Failed to fetch configuration');
+            setError(isAxiosError(error) ? error.response?.data?.detail || error.message : 'Failed to fetch configuration');
         } finally {
             setLoading(false);
         }
@@ -283,7 +283,7 @@ export function HomeManagement() {
             const response = await api.post('/home-config/upload/carousel', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
-            const updatedSlides = config.carousel.slides.map(s => 
+            const updatedSlides = config.carousel.slides.map((s: Slide) => 
                 s.id === slideId ? { ...s, image_url: response.data.url } : s
             );
             setConfig({
@@ -322,7 +322,7 @@ export function HomeManagement() {
             ...config,
             carousel: {
                 ...config.carousel,
-                slides: config.carousel.slides.filter(s => s.id !== id)
+                slides: config.carousel.slides.filter((s: Slide) => s.id !== id)
             }
         });
     };
@@ -339,7 +339,7 @@ export function HomeManagement() {
             ...config,
             carousel: {
                 ...config.carousel,
-                slides: newSlides.map((s, i) => ({ ...s, order: i }))
+                slides: newSlides.map((s: Slide, i: number) => ({ ...s, order: i }))
             }
         });
     };
@@ -475,7 +475,7 @@ export function HomeManagement() {
                     <div className="theme-card">
                         <h3 className="text-h3 mb-6">Subtitles</h3>
                         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {config.video.subtitles.map((sub, idx) => (
+                            {config.video.subtitles.map((sub: Subtitle, idx: number) => (
                                 <div key={idx} className="p-4 rounded-xl border palette-border flex justify-between items-center palette-surface">
                                     <div>
                                         <p className="text-paragraph font-semibold">{sub.label}</p>
@@ -483,7 +483,7 @@ export function HomeManagement() {
                                     </div>
                                     <button
                                         onClick={() => {
-                                            const newSubs = config.video.subtitles.filter((_, i) => i !== idx);
+                                            const newSubs = config.video.subtitles.filter((_: Subtitle, i: number) => i !== idx);
                                             setConfig({ ...config, video: { ...config.video, subtitles: newSubs } });
                                         }}
                                         className="delete-action p-2 rounded-lg"
@@ -536,7 +536,7 @@ export function HomeManagement() {
                     <div className="theme-card">
                         <h3 className="text-h3 mb-6">Audio Tracks</h3>
                         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {config.video.audio_tracks?.map((track, idx) => (
+                            {config.video.audio_tracks?.map((track: AudioTrack, idx: number) => (
                                 <div key={idx} className="p-4 rounded-xl border palette-border flex justify-between items-center palette-surface">
                                     <div>
                                         <p className="text-paragraph font-semibold">{track.label}</p>
@@ -544,7 +544,7 @@ export function HomeManagement() {
                                     </div>
                                     <button
                                         onClick={() => {
-                                            const newTracks = config.video.audio_tracks.filter((_, i) => i !== idx);
+                                            const newTracks = config.video.audio_tracks.filter((_: AudioTrack, i: number) => i !== idx);
                                             setConfig({ ...config, video: { ...config.video, audio_tracks: newTracks } });
                                         }}
                                         className="delete-action p-2 rounded-lg"
@@ -632,7 +632,7 @@ export function HomeManagement() {
                     </div>
 
                     <div className="grid gap-6">
-                        {config.carousel.slides.map((slide, index) => (
+                        {config.carousel.slides.map((slide: Slide, index: number) => (
                             <div 
                                 key={slide.id} 
                                 className="theme-card flex flex-col lg:flex-row gap-6 items-start"
@@ -664,7 +664,7 @@ export function HomeManagement() {
                                                 type="text"
                                                 value={slide.title}
                                                 onChange={(e) => {
-                                                    const updated = config.carousel.slides.map(s => s.id === slide.id ? { ...s, title: e.target.value } : s);
+                                                    const updated = config.carousel.slides.map((s: Slide) => s.id === slide.id ? { ...s, title: e.target.value } : s);
                                                     setConfig({ ...config, carousel: { ...config.carousel, slides: updated } });
                                                 }}
                                                 className="w-full theme-input py-1.5"
@@ -676,7 +676,7 @@ export function HomeManagement() {
                                                 type="text"
                                                 value={slide.description}
                                                 onChange={(e) => {
-                                                    const updated = config.carousel.slides.map(s => s.id === slide.id ? { ...s, description: e.target.value } : s);
+                                                    const updated = config.carousel.slides.map((s: Slide) => s.id === slide.id ? { ...s, description: e.target.value } : s);
                                                     setConfig({ ...config, carousel: { ...config.carousel, slides: updated } });
                                                 }}
                                                 className="w-full theme-input py-1.5"
@@ -690,7 +690,7 @@ export function HomeManagement() {
                                                 type="text"
                                                 value={slide.link_url}
                                                 onChange={(e) => {
-                                                    const updated = config.carousel.slides.map(s => s.id === slide.id ? { ...s, link_url: e.target.value } : s);
+                                                    const updated = config.carousel.slides.map((s: Slide) => s.id === slide.id ? { ...s, link_url: e.target.value } : s);
                                                     setConfig({ ...config, carousel: { ...config.carousel, slides: updated } });
                                                 }}
                                                 className="w-full theme-input py-1.5"
@@ -699,7 +699,7 @@ export function HomeManagement() {
                                         <div className="flex items-center justify-between pt-2">
                                             <button
                                                 onClick={() => {
-                                                    const updated = config.carousel.slides.map(s => s.id === slide.id ? { ...s, is_active: !s.is_active } : s);
+                                                    const updated = config.carousel.slides.map((s: Slide) => s.id === slide.id ? { ...s, is_active: !s.is_active } : s);
                                                     setConfig({ ...config, carousel: { ...config.carousel, slides: updated } });
                                                 }}
                                                 className={`flex items-center gap-2 text-sm font-semibold transition-colors ${slide.is_active ? 'text-green-500' : 'text-paragraph opacity-50'}`}
@@ -743,12 +743,12 @@ export function HomeManagement() {
                 isOpen={messageModal.isOpen}
                 type={messageModal.type}
                 message={messageModal.message}
-                onClose={() => setMessageModal(prev => ({ ...prev, isOpen: false }))}
+                onClose={() => setMessageModal((prev) => ({ ...prev, isOpen: false }))}
             />
 
             <ConfirmModal
                 isOpen={confirmModal.isOpen}
-                onClose={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))}
+                onClose={() => setConfirmModal((prev) => ({ ...prev, isOpen: false }))}
                 onConfirm={confirmModal.onConfirm}
                 title={confirmModal.title}
                 message={confirmModal.message}

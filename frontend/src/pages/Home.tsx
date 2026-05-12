@@ -86,7 +86,7 @@ export function Home() {
                         autoplay={homeConfig.video.autoplay}
                     />
                 )}
-                {homeConfig?.carousel?.slides?.length > 0 && (
+                {homeConfig?.carousel?.enabled && homeConfig?.carousel?.slides?.length > 0 && (
                     <AdvancedCarousel slides={homeConfig.carousel.slides.map((s: any) => ({ ...s, image_url: normalizeUrl(s.image_url) }))} />
                 )}
 

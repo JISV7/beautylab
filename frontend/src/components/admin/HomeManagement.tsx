@@ -80,6 +80,7 @@ interface Slide {
 interface HomeConfig {
     video: VideoConfig;
     carousel: {
+        enabled: boolean;
         max_width: number;
         max_height: number;
         aspect_ratio: string;
@@ -596,7 +597,29 @@ export function HomeManagement() {
 
             {/* Carousel Tab */}
             {activeTab === 'carousel' && (
-                <div className="space-y-6">
+                <div className="space-y-8">
+                    {/* Carousel Global Settings */}
+                    <div className="theme-card">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <h3 className="text-h3">Carousel Settings</h3>
+                                <p className="text-paragraph text-sm opacity-60">Global visibility toggle for the carousel slides.</p>
+                            </div>
+                            <div className="flex items-center gap-3">
+                                <span className="text-paragraph font-medium min-w-[80px]">{config.carousel.enabled ? 'Enabled' : 'Disabled'}</span>
+                                <button
+                                    onClick={() => setConfig({
+                                        ...config,
+                                        carousel: { ...config.carousel, enabled: !config.carousel.enabled }
+                                    })}
+                                    className={`w-14 h-8 rounded-full transition-colors relative ${config.carousel.enabled ? 'bg-palette-primary' : 'bg-slate-300 dark:bg-slate-700'}`}
+                                >
+                                    <div className={`absolute top-1 left-1 w-6 h-6 bg-white rounded-full transition-transform ${config.carousel.enabled ? 'translate-x-6' : 'translate-x-0'}`} />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
                     <div className="flex justify-between items-center">
                         <h3 className="text-h3">Slides</h3>
                         <button

@@ -48,12 +48,13 @@ class CarouselSlide(BaseModel):
 
 
 class CarouselConfig(BaseModel):
+    enabled: bool = True
     max_width: int = 1920
     max_height: int = 1080
     aspect_ratio: str = "16:9"
     slides: list[CarouselSlide] = []
 
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(populate_by_name=True, from_attributes=True)
 
 
 class HomeConfigData(BaseModel):

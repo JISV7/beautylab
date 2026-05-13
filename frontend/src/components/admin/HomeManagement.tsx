@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { 
-    Video, 
-    Layout, 
-    Plus, 
-    Trash2, 
-    Save, 
-    Upload, 
-    Eye, 
-    EyeOff, 
-    ChevronUp, 
+import {
+    Video,
+    Layout,
+    Plus,
+    Trash2,
+    Save,
+    Upload,
+    Eye,
+    EyeOff,
+    ChevronUp,
     ChevronDown,
     Image as ImageIcon,
     FileVideo
@@ -18,6 +18,7 @@ import { ImageCropper } from '../common/ImageCropper';
 import { MessageModal } from './MessageModal';
 import { ConfirmModal } from './ConfirmModal';
 import { normalizeUrl } from '../../utils/url';
+import { PromotionalVideo } from '../home/PromotionalVideo';
 
 const API_URL = 'http://localhost:8000';
 
@@ -94,7 +95,7 @@ export function HomeManagement() {
     const [error, setError] = useState<string | null>(null);
     const [saving, setSaving] = useState(false);
     const [activeTab, setActiveTab] = useState<'video' | 'carousel'>('video');
-    
+
     // Notification and Confirmation Modals
     const [messageModal, setMessageModal] = useState<{
         isOpen: boolean;
@@ -115,7 +116,7 @@ export function HomeManagement() {
         isOpen: false,
         title: '',
         message: '',
-        onConfirm: () => {},
+        onConfirm: () => { },
     });
 
     // Cropper state
@@ -169,6 +170,17 @@ export function HomeManagement() {
         const file = e.target.files?.[0];
         if (!file || !config) return;
 
+        const allowedExts = ['mp4', 'webm', 'ogg'];
+        const ext = file.name.split('.').pop()?.toLowerCase();
+        if (!ext || !allowedExts.includes(ext)) {
+            setMessageModal({
+                isOpen: true,
+                type: 'error',
+                message: `Invalid video format. Allowed: ${allowedExts.join(', ')}`,
+            });
+            return;
+        }
+
         const formData = new FormData();
         formData.append('file', file);
 
@@ -188,6 +200,16 @@ export function HomeManagement() {
     const handleSubtitleUpload = async (e: React.ChangeEvent<HTMLInputElement>, label: string, lang: string) => {
         const file = e.target.files?.[0];
         if (!file || !config) return;
+
+        const ext = file.name.split('.').pop()?.toLowerCase();
+        if (ext !== 'vtt' && ext !== 'srt') {
+            setMessageModal({
+                isOpen: true,
+                type: 'error',
+                message: 'Only .vtt and .srt files are allowed for subtitles',
+            });
+            return;
+        }
 
         const formData = new FormData();
         formData.append('file', file);
@@ -218,6 +240,17 @@ export function HomeManagement() {
         const file = e.target.files?.[0];
         if (!file || !config) return;
 
+        const allowedExts = ['mp3', 'wav', 'aac', 'm4a', 'ogg'];
+        const ext = file.name.split('.').pop()?.toLowerCase();
+        if (!ext || !allowedExts.includes(ext)) {
+            setMessageModal({
+                isOpen: true,
+                type: 'error',
+                message: `Invalid audio format. Allowed: ${allowedExts.join(', ')}`,
+            });
+            return;
+        }
+
         const formData = new FormData();
         formData.append('file', file);
 
@@ -247,6 +280,17 @@ export function HomeManagement() {
         const file = e.target.files?.[0];
         if (!file || !config) return;
 
+        const allowedExts = ['jpg', 'jpeg', 'png', 'webp', 'svg'];
+        const ext = file.name.split('.').pop()?.toLowerCase();
+        if (!ext || !allowedExts.includes(ext)) {
+            setMessageModal({
+                isOpen: true,
+                type: 'error',
+                message: `Invalid image format. Allowed: ${allowedExts.join(', ')}`,
+            });
+            return;
+        }
+
         const reader = new FileReader();
         reader.onload = (event) => {
             const img = new Image();
@@ -274,7 +318,7 @@ export function HomeManagement() {
     const uploadImage = async (blob: Blob | File, slideId: string) => {
         if (!config) return;
         const formData = new FormData();
-        
+
         // Ensure a filename with extension is provided, especially for Blobs from cropper
         const filename = (blob as File).name || `carousel_${Date.now()}.jpg`;
         formData.append('file', blob, filename);
@@ -283,7 +327,7 @@ export function HomeManagement() {
             const response = await api.post('/home-config/upload/carousel', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
-            const updatedSlides = config.carousel.slides.map(s => 
+            const updatedSlides = config.carousel.slides.map(s =>
                 s.id === slideId ? { ...s, image_url: response.data.url } : s
             );
             setConfig({
@@ -332,9 +376,9 @@ export function HomeManagement() {
         const newSlides = [...config.carousel.slides];
         const targetIndex = direction === 'up' ? index - 1 : index + 1;
         if (targetIndex < 0 || targetIndex >= newSlides.length) return;
-        
+
         [newSlides[index], newSlides[targetIndex]] = [newSlides[targetIndex], newSlides[index]];
-        
+
         setConfig({
             ...config,
             carousel: {
@@ -349,7 +393,7 @@ export function HomeManagement() {
         <div className="p-8 text-center theme-card">
             <h2 className="text-h2 text-red-500 mb-4">Error loading configuration</h2>
             <p className="text-paragraph mb-4">{error || 'Configuration data is missing'}</p>
-            <button 
+            <button
                 onClick={() => { setError(null); setLoading(true); fetchConfig(); }}
                 className="theme-button theme-button-primary"
             >
@@ -469,6 +513,27 @@ export function HomeManagement() {
                                 </div>
                             </div>
                         </div>
+
+                        {/* Video Preview Section */}
+                        {config.video.url && (
+                            <div className="mt-8 pt-8 border-t palette-border">
+                                <h4 className="text-h4 mb-4">Video Preview</h4>
+                                <div className="rounded-xl overflow-hidden border palette-border">
+                                    <PromotionalVideo
+                                        key={`${config.video.url}-${config.video.subtitles.length}-${(config.video.audio_tracks || []).length}`}
+                                        url={normalizeUrl(config.video.url)}
+                                        subtitles={config.video.subtitles?.map((s: any) => ({ ...s, src: normalizeUrl(s.src) }))}
+                                        audio_tracks={config.video.audio_tracks?.map((a: any) => ({ ...a, src: normalizeUrl(a.src) }))}
+                                        title={config.video.title}
+                                        description={config.video.description}
+                                        autoplay={false}
+                                    />
+                                </div>
+                                <p className="text-xs opacity-60 mt-2 text-center italic">
+                                    Test your audio tracks and captions here before saving.
+                                </p>
+                            </div>
+                        )}
                     </div>
 
                     {/* Subtitles Section */}
@@ -493,15 +558,15 @@ export function HomeManagement() {
                                 </div>
                             ))}
                             <div className="p-4 rounded-xl border-2 border-dashed palette-border flex flex-col gap-2">
-                                <input 
-                                    type="text" 
-                                    placeholder="Label (e.g. Spanish)" 
+                                <input
+                                    type="text"
+                                    placeholder="Label (e.g. Spanish)"
                                     className="theme-input text-sm py-1.5"
                                     id="sub-label"
                                 />
-                                <input 
-                                    type="text" 
-                                    placeholder="Lang (e.g. es)" 
+                                <input
+                                    type="text"
+                                    placeholder="Lang (e.g. es)"
                                     className="theme-input text-sm py-1.5"
                                     id="sub-lang"
                                 />
@@ -554,15 +619,15 @@ export function HomeManagement() {
                                 </div>
                             ))}
                             <div className="p-4 rounded-xl border-2 border-dashed palette-border flex flex-col gap-2">
-                                <input 
-                                    type="text" 
-                                    placeholder="Label (e.g. French)" 
+                                <input
+                                    type="text"
+                                    placeholder="Label (e.g. French)"
                                     className="theme-input text-sm py-1.5"
                                     id="audio-label"
                                 />
-                                <input 
-                                    type="text" 
-                                    placeholder="Lang (e.g. fr)" 
+                                <input
+                                    type="text"
+                                    placeholder="Lang (e.g. fr)"
                                     className="theme-input text-sm py-1.5"
                                     id="audio-lang"
                                 />
@@ -633,8 +698,8 @@ export function HomeManagement() {
 
                     <div className="grid gap-6">
                         {config.carousel.slides.map((slide, index) => (
-                            <div 
-                                key={slide.id} 
+                            <div
+                                key={slide.id}
                                 className="theme-card flex flex-col lg:flex-row gap-6 items-start"
                             >
                                 <div className="w-full lg:w-72 h-40 relative rounded-xl overflow-hidden group palette-background border palette-border">
@@ -707,7 +772,7 @@ export function HomeManagement() {
                                                 {slide.is_active ? <Eye size={18} /> : <EyeOff size={18} />}
                                                 {slide.is_active ? 'Visible' : 'Hidden'}
                                             </button>
-                                            
+
                                             <div className="flex items-center gap-2">
                                                 <button onClick={() => moveSlide(index, 'up')} className="p-2 hover:bg-palette-surface rounded-lg border palette-border transition-colors"><ChevronUp size={20} className="text-paragraph" /></button>
                                                 <button onClick={() => moveSlide(index, 'down')} className="p-2 hover:bg-palette-surface rounded-lg border palette-border transition-colors"><ChevronDown size={20} className="text-paragraph" /></button>
@@ -726,7 +791,7 @@ export function HomeManagement() {
             {cropperOpen && currentImageToCrop && (
                 <ImageCropper
                     image={currentImageToCrop}
-                    aspectRatio={16/9}
+                    aspectRatio={16 / 9}
                     onCropComplete={(blob) => {
                         if (pendingSlideId) uploadImage(blob, pendingSlideId);
                     }}

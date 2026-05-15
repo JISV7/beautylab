@@ -87,7 +87,10 @@ export function Home() {
                     />
                 )}
                 {homeConfig?.carousel?.enabled && homeConfig?.carousel?.slides?.length > 0 && (
-                    <AdvancedCarousel slides={homeConfig.carousel.slides.map((s: any) => ({ ...s, image_url: normalizeUrl(s.image_url) }))} />
+                    <AdvancedCarousel 
+                        slides={homeConfig.carousel.slides.map((s: any) => ({ ...s, image_url: normalizeUrl(s.image_url) }))} 
+                        slidesPerView={homeConfig.carousel.slides_per_view || 1}
+                    />
                 )}
 
                 <Services />

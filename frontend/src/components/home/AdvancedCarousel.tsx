@@ -19,24 +19,31 @@ interface Slide {
 
 interface CarouselProps {
     slides: Slide[];
+    slidesPerView?: number;
 }
 
-export const AdvancedCarousel: React.FC<CarouselProps> = ({ slides }) => {
+export const AdvancedCarousel: React.FC<CarouselProps> = ({ slides, slidesPerView = 1 }) => {
     const activeSlides = slides.filter(s => s.is_active);
 
     if (activeSlides.length === 0) return null;
 
     return (
-        <section className="relative w-full h-[500px] md:h-[600px]">
+        <section className="relative w-full h-[400px] md:h-[500px]">
             <Swiper
                 modules={[Autoplay, Navigation, Pagination, EffectFade]}
-                effect="fade"
-                spaceBetween={0}
+                effect={slidesPerView === 1 ? "fade" : "slide"}
+                spaceBetween={slidesPerView === 1 ? 0 : 20}
                 slidesPerView={1}
+                breakpoints={{
+                    768: {
+                        slidesPerView: slidesPerView,
+                        spaceBetween: slidesPerView === 1 ? 0 : 30
+                    }
+                }}
                 navigation
                 pagination={{ clickable: true }}
                 autoplay={{ delay: 5000, disableOnInteraction: false }}
-                loop={activeSlides.length > 1}
+                loop={activeSlides.length > slidesPerView}
                 className="w-full h-full"
             >
                 {activeSlides.map((slide) => (

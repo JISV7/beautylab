@@ -53,6 +53,7 @@ class CarouselConfig(BaseModel):
     max_height: int = 1080
     aspect_ratio: str = "16:9"
     slides: list[CarouselSlide] = []
+    slides_per_view: int = 1
 
     model_config = ConfigDict(populate_by_name=True, from_attributes=True)
 

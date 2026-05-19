@@ -233,11 +233,11 @@ export function InvoiceDetail({ invoice, onBack, onPrint }: InvoiceDetailProps) 
                             {/* Left: Imprenta Digital Autorizada */}
                             {invoice.control_number_range?.printer && (
                                 <div>
-                                    <p className="text-paragraph text-sm">
+                                    <p className="text-paragraph text-[var(--text-p-size)]">
                                         {invoice.control_number_range.printer.business_name || 'Imprenta'} |
                                         RIF: {invoice.control_number_range.printer.rif || 'N/A'}
                                     </p>
-                                    <p className="mt-1 text-paragraph text-sm">
+                                    <p className="mt-1 text-paragraph text-[var(--text-p-size)]">
                                         Providencia Administrativa: {invoice.control_number_range.printer.authorization_providence || 'N/A'}
                                     </p>
                                 </div>
@@ -245,7 +245,7 @@ export function InvoiceDetail({ invoice, onBack, onPrint }: InvoiceDetailProps) 
 
                             {/* Right: Rango de Números de Control */}
                             {invoice.control_number_range && (
-                                <div className="text-right text-sm">
+                                <div className="text-right text-[var(--text-p-size)]">
                                     <p className="font-medium">
                                         Rango de Números de Control: desde el N° {invoice.control_number_range.start_number.padStart(12, '0')}
                                         {' '}hasta el N° {invoice.control_number_range.end_number.padStart(12, '0')}

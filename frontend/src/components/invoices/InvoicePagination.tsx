@@ -46,7 +46,7 @@ export function InvoicePagination({ currentPage, totalPages, onPageChange, total
                         <button
                             key={page}
                             onClick={() => onPageChange(page)}
-                            className={`w-9 h-9 rounded-lg text-sm font-medium transition-colors ${
+                            className={`w-9 h-9 rounded-lg text-[var(--text-p-size)] font-medium transition-colors ${
                                 currentPage === page
                                     ? 'bg-palette-primary text-white'
                                     : 'btn-hover-surface text-paragraph'

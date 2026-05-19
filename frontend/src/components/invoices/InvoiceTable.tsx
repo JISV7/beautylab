@@ -57,7 +57,7 @@ export function InvoiceTable({ invoices, onViewDetails, sortColumn, sortDirectio
         <div className="palette-surface rounded-lg shadow-sm palette-border overflow-hidden">
             <table className="w-full text-left border-collapse">
                 <thead>
-                    <tr className="palette-surface border-b palette-border text-paragraph text-sm uppercase tracking-wider opacity-75">
+                    <tr className="palette-surface border-b palette-border text-paragraph uppercase tracking-wider opacity-75">
                         {columns.map((col) => (
                             <th
                                 key={col.key}
@@ -81,7 +81,7 @@ export function InvoiceTable({ invoices, onViewDetails, sortColumn, sortDirectio
                             onClick={() => onViewDetails(invoice)}
                         >
                             <td className="p-4 font-medium">{invoice.invoice_number}</td>
-                            <td className="p-4 font-mono text-sm">{invoice.control_number}</td>
+                            <td className="p-4 font-mono text-[var(--text-p-size)]">{invoice.control_number}</td>
                             <td className="p-4">{(() => { const [y, m, d] = invoice.issue_date.split('-').map(Number); return `${y}/${m}/${d}`; })()}</td>
                             <td className="p-4">
                                 <div className="flex flex-col gap-1">
@@ -103,7 +103,7 @@ export function InvoiceTable({ invoices, onViewDetails, sortColumn, sortDirectio
                                                         style={{ width: `${Math.min(invoice.payment_progress, 100)}%` }}
                                                     />
                                                 </div>
-                                                <span className="text-xs text-paragraph opacity-75 w-10">
+                                                <span className="text-[0.75em] text-paragraph opacity-75 w-10">
                                                     {invoice.payment_progress.toFixed(0)}%
                                                 </span>
                                             </div>
@@ -112,7 +112,7 @@ export function InvoiceTable({ invoices, onViewDetails, sortColumn, sortDirectio
                                 </div>
                             </td>
                             <td className="p-4">
-                                <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusClasses[invoice.status] || statusClasses.issued}`}>
+                                <span className={`px-2 py-1 rounded-full text-[0.75em] font-medium ${statusClasses[invoice.status] || statusClasses.issued}`}>
                                     {statusLabels[invoice.status] || invoice.status}
                                 </span>
                             </td>
@@ -122,7 +122,7 @@ export function InvoiceTable({ invoices, onViewDetails, sortColumn, sortDirectio
                                         e.stopPropagation();
                                         onViewDetails(invoice);
                                     }}
-                                    className="text-primary hover:underline text-sm"
+                                    className="text-primary hover:underline"
                                 >
                                     View
                                 </button>

@@ -296,11 +296,27 @@ export function HomeManagement() {
         reader.onload = (event) => {
             const img = new Image();
             img.onload = () => {
-                if (img.width > config.carousel.max_width || img.height > config.carousel.max_height) {
+                const targetRatio = 16 / 9;
+                const imageRatio = img.width / img.height;
+                const ratioTolerance = 0.01;
+                
+                const needsCropping = 
+                    Math.abs(imageRatio - targetRatio) > ratioTolerance || 
+                    img.width > config.carousel.max_width || 
+                    img.height > config.carousel.max_height;
+
+                if (needsCropping) {
+                    let message = '';
+                    if (Math.abs(imageRatio - targetRatio) > ratioTolerance) {
+                        message = 'The image does not have a 16:9 aspect ratio. It must be cropped to fit properly.';
+                    } else {
+                        message = `The image exceeds the maximum dimensions (${config.carousel.max_width}x${config.carousel.max_height}). It must be cropped or resized.`;
+                    }
+
                     setConfirmModal({
                         isOpen: true,
-                        title: 'Image Size Warning',
-                        message: `Image exceeds max size (${config.carousel.max_width}x${config.carousel.max_height}). Do you want to crop it?`,
+                        title: 'Image Adjustment Required',
+                        message: message,
                         onConfirm: () => {
                             setCurrentImageToCrop(event.target?.result as string);
                             setPendingSlideId(slideId);

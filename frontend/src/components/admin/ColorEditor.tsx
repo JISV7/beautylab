@@ -10,7 +10,7 @@ interface ColorInputProps {
 
 const ColorInput: React.FC<ColorInputProps> = ({ label, value, onChange }) => (
     <div className="space-y-1.5">
-        <div className="text-xs font-semibold text-paragraph">{label}</div>
+        <div className="text-paragraph font-semibold">{label}</div>
         <div className="flex items-center gap-2">
             <div className="relative group cursor-pointer shrink-0">
                 <input
@@ -26,7 +26,7 @@ const ColorInput: React.FC<ColorInputProps> = ({ label, value, onChange }) => (
             </div>
             <div className="flex-1 relative">
                 <input
-                    className="theme-input uppercase text-xs font-mono py-1.5"
+                    className="theme-input uppercase text-paragraph font-mono py-1.5"
                     type="text"
                     value={value}
                     onChange={(e) => onChange(e.target.value)}
@@ -49,7 +49,7 @@ export const ColorEditor: React.FC<ColorEditorProps> = ({
         <div className="theme-card">
             <div className="p-6 border-b palette-border flex items-center gap-3">
                 <Palette className="w-6 h-6 text-palette-primary" />
-                <h3 className="text-xl font-bold">
+                <h3 className="text-paragraph font-bold">
                     Color Palette - {activeMode.charAt(0).toUpperCase() + activeMode.slice(1)}
                 </h3>
             </div>
@@ -156,7 +156,11 @@ export const ColorEditor: React.FC<ColorEditorProps> = ({
                             style={{
                                 backgroundColor: colors.primary,
                                 color: colors.decorator,
-                                borderColor: colors.primary
+                                borderColor: colors.primary,
+                                fontFamily: styles.p.fontFamily,
+                                fontSize: `${styles.p.size}rem`,
+                                fontWeight: styles.p.fontWeight,
+                                lineHeight: styles.p.lineHeight
                             }}
                             onMouseEnter={(e) => {
                                 e.currentTarget.style.backgroundColor = colors.accent;
@@ -176,7 +180,11 @@ export const ColorEditor: React.FC<ColorEditorProps> = ({
                                 color: colors.secondary,
                                 borderColor: colors.secondary,
                                 borderWidth: '2px',
-                                borderStyle: 'solid'
+                                borderStyle: 'solid',
+                                fontFamily: styles.p.fontFamily,
+                                fontSize: `${styles.p.size}rem`,
+                                fontWeight: styles.p.fontWeight,
+                                lineHeight: styles.p.lineHeight
                             }}
                             onMouseEnter={(e) => {
                                 e.currentTarget.style.backgroundColor = colors.accent;
@@ -196,7 +204,11 @@ export const ColorEditor: React.FC<ColorEditorProps> = ({
                             style={{
                                 backgroundColor: colors.accent,
                                 color: '#FFFFFF',
-                                borderColor: colors.accent
+                                borderColor: colors.accent,
+                                fontFamily: styles.p.fontFamily,
+                                fontSize: `${styles.p.size}rem`,
+                                fontWeight: styles.p.fontWeight,
+                                lineHeight: styles.p.lineHeight
                             }}
                             onMouseEnter={(e) => {
                                 e.currentTarget.style.backgroundColor = colors.primary;
@@ -214,7 +226,11 @@ export const ColorEditor: React.FC<ColorEditorProps> = ({
                             style={{
                                 backgroundColor: colors.primary,
                                 color: colors.decorator,
-                                borderColor: colors.primary
+                                borderColor: colors.primary,
+                                fontFamily: styles.p.fontFamily,
+                                fontSize: `${styles.p.size}rem`,
+                                fontWeight: styles.p.fontWeight,
+                                lineHeight: styles.p.lineHeight
                             }}
                             onMouseEnter={(e) => {
                                 e.currentTarget.style.backgroundColor = colors.accent;

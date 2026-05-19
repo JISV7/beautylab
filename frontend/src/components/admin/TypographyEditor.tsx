@@ -223,7 +223,7 @@ export const TypographyEditor: React.FC<TypographyEditorProps & {
             <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
             {/* Left Column: Typography Controls */}
             <div className="lg:col-span-8 flex flex-col gap-3">
-                <h3 className="text-xl font-bold flex items-center gap-2">
+                <h3 className="text-paragraph font-bold flex items-center gap-2">
                     <Type className="w-5 h-5" /> Font Sizes & Colors
                 </h3>
                 <StyleBlock
@@ -308,7 +308,7 @@ export const TypographyEditor: React.FC<TypographyEditorProps & {
             {/* Right Column: Live Preview */}
             <div className="lg:col-span-4">
                 <div className="lg:sticky lg:top-24 flex flex-col gap-4">
-                    <h3 className="text-xl font-bold flex items-center gap-2">
+                    <h3 className="text-paragraph font-bold flex items-center gap-2">
                         <Type className="w-5 h-5" /> Preview
                     </h3>
 

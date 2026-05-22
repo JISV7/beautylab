@@ -33,7 +33,7 @@ export function Home() {
     useEffect(() => {
         const fetchHomeConfig = async () => {
             try {
-                const response = await axios.get(`${API_URL}/home-config`);
+                const response = await axios.get(`${API_URL}/home-config/active`);
                 setHomeConfig(response.data.config);
             } catch (error) {
                 console.error('Error fetching home config:', error);

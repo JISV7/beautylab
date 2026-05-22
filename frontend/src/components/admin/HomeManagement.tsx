@@ -12,7 +12,9 @@ import {
     ChevronUp,
     ChevronDown,
     Image as ImageIcon,
-    FileVideo
+    FileVideo,
+    CheckCircle2,
+    Settings2
 } from 'lucide-react';
 import { ImageCropper } from '../common/ImageCropper';
 import { MessageModal } from './MessageModal';
@@ -78,7 +80,7 @@ interface Slide {
     is_active: boolean;
 }
 
-interface HomeConfig {
+interface HomeConfigData {
     video: VideoConfig;
     carousel: {
         enabled: boolean;
@@ -90,8 +92,17 @@ interface HomeConfig {
     };
 }
 
+interface HomeConfigRead {
+    id: number;
+    name: string;
+    config: HomeConfigData;
+    is_active: boolean;
+    updated_at: string;
+}
+
 export function HomeManagement() {
-    const [config, setConfig] = useState<HomeConfig | null>(null);
+    const [allConfigs, setAllConfigs] = useState<HomeConfigRead[]>([]);
+    const [selectedConfig, setSelectedConfig] = useState<HomeConfigRead | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [saving, setSaving] = useState(false);
@@ -126,30 +137,81 @@ export function HomeManagement() {
     const [pendingSlideId, setPendingSlideId] = useState<string | null>(null);
 
     useEffect(() => {
-        fetchConfig();
+        fetchConfigs();
     }, []);
 
-    const fetchConfig = async () => {
+    const fetchConfigs = async () => {
         try {
             const response = await api.get('/home-config');
-            if (response.data && response.data.config) {
-                setConfig(response.data.config);
-            } else {
-                throw new Error('Invalid response structure from server');
+            if (Array.isArray(response.data)) {
+                setAllConfigs(response.data);
+                // Select active config by default, or the first one
+                const active = response.data.find(c => c.is_active) || response.data[0];
+                if (active) {
+                    setSelectedConfig(JSON.parse(JSON.stringify(active))); // Deep clone to avoid direct mutation
+                }
             }
         } catch (error: any) {
-            console.error('Error fetching home config:', error);
-            setError(error.message || 'Failed to fetch configuration');
+            console.error('Error fetching home configs:', error);
+            setError(error.message || 'Failed to fetch configurations');
         } finally {
             setLoading(false);
         }
     };
 
+    const handleCreate = async () => {
+        const name = prompt('Enter a name for the new configuration:');
+        if (!name) return;
+
+        const defaultConfig: HomeConfigData = {
+            video: {
+                enabled: false,
+                url: '',
+                title: 'New Video',
+                description: '',
+                autoplay: false,
+                subtitles: [],
+                audio_tracks: []
+            },
+            carousel: {
+                enabled: true,
+                max_width: 1920,
+                max_height: 1080,
+                aspect_ratio: '16:9',
+                slides_per_view: 1,
+                slides: []
+            }
+        };
+
+        try {
+            const response = await api.post('/home-config', {
+                name,
+                config: defaultConfig
+            });
+            setAllConfigs([...allConfigs, response.data]);
+            setSelectedConfig(JSON.parse(JSON.stringify(response.data)));
+            setMessageModal({
+                isOpen: true,
+                type: 'success',
+                message: 'Configuration created successfully!',
+            });
+        } catch (error) {
+            console.error('Error creating config:', error);
+            setMessageModal({ isOpen: true, type: 'error', message: 'Error creating configuration' });
+        }
+    };
+
     const handleSave = async () => {
-        if (!config) return;
+        if (!selectedConfig) return;
         setSaving(true);
         try {
-            await api.put('/home-config', { config });
+            const response = await api.put(`/home-config/${selectedConfig.id}`, {
+                name: selectedConfig.name,
+                config: selectedConfig.config
+            });
+            // Update the list with the saved version
+            setAllConfigs(allConfigs.map(c => c.id === response.data.id ? response.data : c));
+            setSelectedConfig(JSON.parse(JSON.stringify(response.data)));
             setMessageModal({
                 isOpen: true,
                 type: 'success',
@@ -157,15 +219,68 @@ export function HomeManagement() {
             });
         } catch (error) {
             console.error('Error saving home config:', error);
-            setMessageModal({
-                isOpen: true,
-                type: 'error',
-                message: 'Error saving settings',
-            });
+            setMessageModal({ isOpen: true, type: 'error', message: 'Error saving settings' });
         } finally {
             setSaving(false);
         }
     };
+
+    const handleActivate = async () => {
+        if (!selectedConfig) return;
+        try {
+            const response = await api.post(`/home-config/${selectedConfig.id}/activate`);
+            // Update all configs to reflect the new active one
+            setAllConfigs(allConfigs.map(c => ({
+                ...c,
+                is_active: c.id === selectedConfig.id
+            })));
+            setSelectedConfig({ ...selectedConfig, is_active: true });
+            setMessageModal({
+                isOpen: true,
+                type: 'success',
+                message: 'Configuration activated!',
+            });
+        } catch (error) {
+            console.error('Error activating config:', error);
+            setMessageModal({ isOpen: true, type: 'error', message: 'Error activating configuration' });
+        }
+    };
+
+    const handleDelete = async () => {
+        if (!selectedConfig) return;
+        if (selectedConfig.is_active) {
+            setMessageModal({ isOpen: true, type: 'error', message: 'Cannot delete the active configuration' });
+            return;
+        }
+
+        setConfirmModal({
+            isOpen: true,
+            title: 'Delete Configuration',
+            message: `Are you sure you want to delete "${selectedConfig.name}"?`,
+            onConfirm: async () => {
+                try {
+                    await api.delete(`/home-config/${selectedConfig.id}`);
+                    const newList = allConfigs.filter(c => c.id !== selectedConfig.id);
+                    setAllConfigs(newList);
+                    setSelectedConfig(newList[0] ? JSON.parse(JSON.stringify(newList[0])) : null);
+                    setMessageModal({ isOpen: true, type: 'success', message: 'Configuration deleted' });
+                } catch (error) {
+                    console.error('Error deleting config:', error);
+                    setMessageModal({ isOpen: true, type: 'error', message: 'Error deleting configuration' });
+                }
+            }
+        });
+    };
+
+    const setConfig = (newConfigData: HomeConfigData) => {
+        if (!selectedConfig) return;
+        setSelectedConfig({
+            ...selectedConfig,
+            config: newConfigData
+        });
+    };
+
+    const config = selectedConfig?.config;
 
     const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -411,7 +526,7 @@ export function HomeManagement() {
             <h2 className="text-h2 text-red-500 mb-4">Error loading configuration</h2>
             <p className="text-paragraph mb-4">{error || 'Configuration data is missing'}</p>
             <button
-                onClick={() => { setError(null); setLoading(true); fetchConfig(); }}
+                onClick={() => { setError(null); setLoading(true); fetchConfigs(); }}
                 className="theme-button theme-button-primary"
             >
                 Retry
@@ -426,14 +541,86 @@ export function HomeManagement() {
                     <h1 className="text-h1 mb-2">Home Management</h1>
                     <p className="text-paragraph opacity-70">Manage your promotional video and carousel slides.</p>
                 </div>
-                <button
-                    onClick={handleSave}
-                    disabled={saving}
-                    className="theme-button theme-button-primary"
-                >
-                    <Save size={20} />
-                    {saving ? 'Saving...' : 'Save Changes'}
-                </button>
+                <div className="flex gap-3">
+                    {selectedConfig && !selectedConfig.is_active && (
+                        <button
+                            onClick={handleActivate}
+                            className="theme-button theme-button-secondary border-green-500 text-green-500 hover:bg-green-500/10"
+                        >
+                            <CheckCircle2 size={20} />
+                            Activate
+                        </button>
+                    )}
+                    <button
+                        onClick={handleSave}
+                        disabled={saving || !selectedConfig}
+                        className="theme-button theme-button-primary"
+                    >
+                        <Save size={20} />
+                        {saving ? 'Saving...' : 'Save Changes'}
+                    </button>
+                </div>
+            </div>
+
+            {/* Configuration Selector */}
+            <div className="theme-card mb-8 palette-surface border-palette-primary/20">
+                <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div className="flex items-center gap-4 w-full md:w-auto">
+                        <div className="p-3 rounded-xl bg-palette-primary/10 text-palette-primary">
+                            <Settings2 size={24} />
+                        </div>
+                        <div>
+                            <h3 className="text-h3 leading-tight">Current Version</h3>
+                            <p className="text-xs opacity-60">Select or create a layout configuration</p>
+                        </div>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+                        <select
+                            value={selectedConfig?.id || ''}
+                            onChange={(e) => {
+                                const found = allConfigs.find(c => c.id === parseInt(e.target.value));
+                                if (found) setSelectedConfig(JSON.parse(JSON.stringify(found)));
+                            }}
+                            className="theme-input py-2 px-4 flex-1 md:min-w-[250px]"
+                        >
+                            {allConfigs.map(c => (
+                                <option key={c.id} value={c.id}>
+                                    {c.name} {c.is_active ? '(Active)' : ''}
+                                </option>
+                            ))}
+                        </select>
+
+                        <button
+                            onClick={handleCreate}
+                            className="theme-button theme-button-secondary"
+                            title="Create New Config"
+                        >
+                            <Plus size={20} />
+                        </button>
+
+                        <button
+                            onClick={handleDelete}
+                            disabled={!selectedConfig || selectedConfig.is_active}
+                            className={`p-2 rounded-lg transition-colors ${!selectedConfig || selectedConfig.is_active ? 'opacity-30 cursor-not-allowed' : 'hover:bg-red-500/10 text-red-500'}`}
+                            title="Delete Config"
+                        >
+                            <Trash2 size={20} />
+                        </button>
+                    </div>
+                </div>
+                
+                {selectedConfig && (
+                    <div className="mt-4 pt-4 border-t palette-border flex items-center gap-2">
+                        <label className="text-xs opacity-60 uppercase font-bold tracking-wider">Config Name:</label>
+                        <input 
+                            type="text" 
+                            value={selectedConfig.name}
+                            onChange={(e) => setSelectedConfig({...selectedConfig, name: e.target.value})}
+                            className="bg-transparent border-none focus:ring-0 text-paragraph font-medium p-0"
+                        />
+                    </div>
+                )}
             </div>
 
             {/* Tabs */}

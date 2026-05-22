@@ -67,11 +67,19 @@ class HomeConfigData(BaseModel):
 
 class HomeConfigRead(BaseModel):
     id: int
+    name: str
     config: HomeConfigData
+    is_active: bool
     updated_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
 
 
 class HomeConfigUpdate(BaseModel):
+    name: str | None = None
+    config: HomeConfigData | None = None
+
+
+class HomeConfigCreate(BaseModel):
+    name: str
     config: HomeConfigData

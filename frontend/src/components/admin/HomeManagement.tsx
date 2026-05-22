@@ -19,6 +19,7 @@ import {
 import { ImageCropper } from '../common/ImageCropper';
 import { MessageModal } from './MessageModal';
 import { ConfirmModal } from './ConfirmModal';
+import { CreateHomeConfigModal } from './CreateHomeConfigModal';
 import { normalizeUrl } from '../../utils/url';
 import { PromotionalVideo } from '../home/PromotionalVideo';
 
@@ -107,6 +108,7 @@ export function HomeManagement() {
     const [error, setError] = useState<string | null>(null);
     const [saving, setSaving] = useState(false);
     const [activeTab, setActiveTab] = useState<'video' | 'carousel'>('video');
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
     // Notification and Confirmation Modals
     const [messageModal, setMessageModal] = useState<{
@@ -159,10 +161,11 @@ export function HomeManagement() {
         }
     };
 
-    const handleCreate = async () => {
-        const name = prompt('Enter a name for the new configuration:');
-        if (!name) return;
+    const handleCreate = () => {
+        setIsCreateModalOpen(true);
+    };
 
+    const handleCreateSubmit = async (name: string) => {
         const defaultConfig: HomeConfigData = {
             video: {
                 enabled: false,
@@ -1042,6 +1045,12 @@ export function HomeManagement() {
                 title={confirmModal.title}
                 message={confirmModal.message}
                 type="primary"
+            />
+
+            <CreateHomeConfigModal
+                isOpen={isCreateModalOpen}
+                onClose={() => setIsCreateModalOpen(false)}
+                onSubmit={handleCreateSubmit}
             />
         </div>
     );

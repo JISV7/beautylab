@@ -289,6 +289,9 @@ export function HomeManagement() {
         const file = e.target.files?.[0];
         if (!file || !config) return;
 
+        // Clear input value so same file can be selected again
+        e.target.value = '';
+
         const allowedExts = ['mp4', 'webm', 'ogg'];
         const ext = file.name.split('.').pop()?.toLowerCase();
         if (!ext || !allowedExts.includes(ext)) {
@@ -319,6 +322,9 @@ export function HomeManagement() {
     const handleSubtitleUpload = async (e: React.ChangeEvent<HTMLInputElement>, label: string, lang: string) => {
         const file = e.target.files?.[0];
         if (!file || !config) return;
+
+        // Clear input value so same file can be selected again
+        e.target.value = '';
 
         const ext = file.name.split('.').pop()?.toLowerCase();
         if (ext !== 'vtt' && ext !== 'srt') {
@@ -359,6 +365,9 @@ export function HomeManagement() {
         const file = e.target.files?.[0];
         if (!file || !config) return;
 
+        // Clear input value so same file can be selected again
+        e.target.value = '';
+
         const allowedExts = ['mp3', 'wav', 'aac', 'm4a', 'ogg'];
         const ext = file.name.split('.').pop()?.toLowerCase();
         if (!ext || !allowedExts.includes(ext)) {
@@ -398,6 +407,9 @@ export function HomeManagement() {
     const handleSlideImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, slideId: string) => {
         const file = e.target.files?.[0];
         if (!file || !config) return;
+
+        // Clear input value so same file can be selected again
+        e.target.value = '';
 
         const allowedExts = ['jpg', 'jpeg', 'png', 'webp', 'svg'];
         const ext = file.name.split('.').pop()?.toLowerCase();

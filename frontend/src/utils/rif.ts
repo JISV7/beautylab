@@ -91,8 +91,8 @@ export function validateRif(rif: string): { isValid: boolean; errorMessage: stri
   // Remove common separators and convert to uppercase
   const cleanRif = normalizeRif(rif);
 
-  // Check basic format: 1 letter + 8-9 digits
-  if (cleanRif.length < 9 || cleanRif.length > 10) {
+  // Check basic format: 1 letter + at least 1 digit, up to 9 digits (max length 10)
+  if (cleanRif.length < 2 || cleanRif.length > 10) {
     return { isValid: false, errorMessage: 'RIF must have format: [VEJPG]-XXXXXXXX-X', normalizedRif: '' };
   }
 
@@ -108,18 +108,45 @@ export function validateRif(rif: string): { isValid: boolean; errorMessage: stri
     };
   }
 
-  // Extract document number (positions 1-8, padded if needed)
-  const docNumber = cleanRif.slice(1, 9);
-
-  let finalRif = cleanRif;
-  // If RIF has 9 characters, append the calculated check digit
-  if (cleanRif.length === 9) {
-    const expectedCheck = calculateRifCheckDigit(documentType, docNumber);
-    finalRif = cleanRif + expectedCheck;
+  // Check that all characters after the first are digits
+  const digits = cleanRif.slice(1);
+  if (!/^\d+$/.test(digits)) {
+    return {
+      isValid: false,
+      errorMessage: 'RIF must contain only digits after the type letter',
+      normalizedRif: ''
+    };
   }
-  // If RIF has 10 characters, validate the check digit
-  else if (cleanRif.length === 10) {
-    const providedCheck = cleanRif[9];
+
+  let finalRif = '';
+
+  if (digits.length < 8) {
+    // Shorter than 8 digits: must be document number without check digit.
+    // Pad document number to 8 digits
+    const docNumber = digits.padStart(8, '0');
+    const expectedCheck = calculateRifCheckDigit(documentType, docNumber);
+    finalRif = documentType + docNumber + expectedCheck;
+  } else if (digits.length === 8) {
+    // Could be:
+    // 1) 7-digit document number + check digit
+    // 2) 8-digit document number without check digit
+    const docNumber7 = digits.slice(0, 7).padStart(8, '0');
+    const providedCheck = digits[7];
+    const expectedCheck7 = calculateRifCheckDigit(documentType, docNumber7);
+
+    if (providedCheck === expectedCheck7) {
+      // It's a 7-digit document number with check digit
+      finalRif = documentType + docNumber7 + providedCheck;
+    } else {
+      // Assume 8-digit document number without check digit
+      const docNumber8 = digits;
+      const expectedCheck8 = calculateRifCheckDigit(documentType, docNumber8);
+      finalRif = documentType + docNumber8 + expectedCheck8;
+    }
+  } else {
+    // digits.length === 9: 8-digit document number + check digit
+    const docNumber = digits.slice(0, 8);
+    const providedCheck = digits[8];
     const expectedCheck = calculateRifCheckDigit(documentType, docNumber);
 
     if (providedCheck !== expectedCheck) {
@@ -129,6 +156,7 @@ export function validateRif(rif: string): { isValid: boolean; errorMessage: stri
         normalizedRif: ''
       };
     }
+    finalRif = documentType + docNumber + providedCheck;
   }
 
   return { isValid: true, errorMessage: '', normalizedRif: finalRif };
@@ -182,10 +210,24 @@ export function parseRif(rif: string): {
   const cleanRif = rif.replace(/[-\s]/g, '').toUpperCase();
 
   const documentType = cleanRif[0];
-  const documentNumber = cleanRif.slice(1, 9);
-  const checkDigit = cleanRif.length > 9 
-    ? cleanRif[9] 
-    : calculateRifCheckDigit(documentType, documentNumber);
+  let documentNumber = '';
+  let checkDigit = '';
+
+  if (cleanRif.length === 10) {
+    documentNumber = cleanRif.slice(1, 9);
+    checkDigit = cleanRif[9];
+  } else {
+    const validation = validateRif(cleanRif);
+    if (validation.isValid) {
+      documentNumber = validation.normalizedRif.slice(1, 9);
+      checkDigit = validation.normalizedRif[9];
+    } else {
+      documentNumber = cleanRif.slice(1, 9).padStart(8, '0');
+      checkDigit = cleanRif.length > 9 
+        ? cleanRif[9] 
+        : calculateRifCheckDigit(documentType, documentNumber);
+    }
+  }
 
   return {
     documentType,

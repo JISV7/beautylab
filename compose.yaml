@@ -45,6 +45,8 @@ services:
       - ./backend/entrypoint.sh:/app/entrypoint.sh
       - ./backend/pyproject.toml:/app/pyproject.toml
       - ./backend/uv.lock:/app/uv.lock
+      - backend_uploads:/app/uploads
 
 volumes:
   postgres_data:
+  backend_uploads:

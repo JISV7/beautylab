@@ -246,6 +246,18 @@ async def seed_fonts(db: AsyncSession, root_user: User) -> Font | None:
 
     if existing_font:
         print(f"  Font exists: Roboto (ID: {existing_font.id})")
+        # Ensure the physical file exists on disk, restore if missing
+        upload_dir = Path("uploads/fonts")
+        dest_path = upload_dir / existing_font.filename
+        if not dest_path.exists():
+            backend_root = Path(__file__).parent
+            source_path = backend_root / "fonts" / "Roboto-VariableFont_wdth,wght.ttf"
+            if source_path.exists():
+                upload_dir.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(source_path, dest_path)
+                print(f"  Restored missing font file to {dest_path}")
+            else:
+                print(f"  Warning: Source font file not found at {source_path}")
         return existing_font
 
     # Source font file from within backend directory

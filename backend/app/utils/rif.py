@@ -98,8 +98,8 @@ def validate_rif(rif: str) -> tuple[bool, str, str]:
     # Remove common separators and convert to uppercase
     clean_rif = normalize_rif(rif)
 
-    # Check basic format: 1 letter + 8-9 digits
-    if len(clean_rif) < 9 or len(clean_rif) > 10:
+    # Check basic format: 1 letter + at least 1 digit, up to 9 digits (max length 10)
+    if len(clean_rif) < 2 or len(clean_rif) > 10:
         return False, "RIF must have format: [VEJPG]-XXXXXXXX-X", ""
 
     document_type = clean_rif[0]
@@ -109,18 +109,45 @@ def validate_rif(rif: str) -> tuple[bool, str, str]:
     if document_type not in valid_types:
         return False, f"Invalid document type: {', '.join(valid_types)}", ""
 
-    # Extract document number (positions 1-8, padded if needed)
-    doc_number = clean_rif[1:9]
+    # Check that all characters after the first are digits
+    digits = clean_rif[1:]
+    if not digits.isdigit():
+        return False, "RIF must contain only digits after the type letter", ""
 
-    # If RIF has 10 characters, validate the check digit
-    if len(clean_rif) == 10:
-        provided_check = clean_rif[9]
+    # Process and normalize RIF
+    if len(digits) < 8:
+        # Shorter than 8 digits: must be document number without check digit.
+        # Pad document number to 8 digits
+        doc_number = digits.zfill(8)
+        expected_check = calculate_rif_check_digit(document_type, doc_number)
+        final_rif = f"{document_type}{doc_number}{expected_check}"
+    elif len(digits) == 8:
+        # Could be:
+        # 1) 7-digit document number + check digit
+        # 2) 8-digit document number without check digit
+        doc_number7 = digits[0:7].zfill(8)
+        provided_check = digits[7]
+        expected_check7 = calculate_rif_check_digit(document_type, doc_number7)
+
+        if provided_check == expected_check7:
+            # It's a 7-digit document number with check digit
+            final_rif = f"{document_type}{doc_number7}{provided_check}"
+        else:
+            # Assume 8-digit document number without check digit
+            doc_number8 = digits
+            expected_check8 = calculate_rif_check_digit(document_type, doc_number8)
+            final_rif = f"{document_type}{doc_number8}{expected_check8}"
+    else:
+        # len(digits) == 9: 8-digit document number + check digit
+        doc_number = digits[0:8]
+        provided_check = digits[8]
         expected_check = calculate_rif_check_digit(document_type, doc_number)
 
         if provided_check != expected_check:
-            return False, f"Invalid check digit. Expected: {expected_check}", ""
+            return False, f"Invalid RIF check digit. Expected: {document_type}{doc_number}{expected_check}", ""
+        final_rif = f"{document_type}{doc_number}{provided_check}"
 
-    return True, "", clean_rif
+    return True, "", final_rif
 
 
 def format_rif(document_type: str, document_number: str, check_digit: str | None = None) -> str:
@@ -170,16 +197,24 @@ def parse_rif(rif: str) -> dict[str, str]:
     clean_rif = rif.replace("-", "").replace(" ", "").upper()
 
     document_type = clean_rif[0]
+    document_number = ""
+    check_digit = ""
 
-    # Extract document number (positions 1-8)
-    document_number = clean_rif[1:9]
-
-    # Extract check digit if present (position 9)
-    check_digit = (
-        clean_rif[9]
-        if len(clean_rif) > 9
-        else calculate_rif_check_digit(document_type, document_number)
-    )
+    if len(clean_rif) == 10:
+        document_number = clean_rif[1:9]
+        check_digit = clean_rif[9]
+    else:
+        is_valid, _, normalized = validate_rif(clean_rif)
+        if is_valid:
+            document_number = normalized[1:9]
+            check_digit = normalized[9]
+        else:
+            document_number = clean_rif[1:9].zfill(8)
+            check_digit = (
+                clean_rif[9]
+                if len(clean_rif) > 9
+                else calculate_rif_check_digit(document_type, document_number)
+            )
 
     return {
         "document_type": document_type,

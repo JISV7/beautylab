@@ -1,6 +1,6 @@
-# BeautyLab
+# Codyn
 
-BeautyLab is a comprehensive platform for beauty salons, featuring a dynamic theming engine, user management, an integrated point-of-sale system, course enrollments, and an online catalog.
+Codyn is a comprehensive platform for learning programming. Its a online academy featuring a dynamic theming engine, user management, an integrated point-of-sale system, course enrollments, and an online catalog.
 
 ## Project Structure
 
@@ -59,9 +59,5 @@ The frontend will start on your local development server (typically `http://loca
 ## Default Credentials
 
 If you seeded the database locally (`python -m app.seed`), you can log in with:
-- **Email:** admin@beautylab.com
+- **Email:** root@beautylab.com
 - **Password:** admin123
-
-## License
-
-MIT

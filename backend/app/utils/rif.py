@@ -144,7 +144,11 @@ def validate_rif(rif: str) -> tuple[bool, str, str]:
         expected_check = calculate_rif_check_digit(document_type, doc_number)
 
         if provided_check != expected_check:
-            return False, f"Invalid RIF check digit. Expected: {document_type}{doc_number}{expected_check}", ""
+            return (
+                False,
+                f"Invalid RIF check digit. Expected: {document_type}{doc_number}{expected_check}",
+                "",
+            )
         final_rif = f"{document_type}{doc_number}{provided_check}"
 
     return True, "", final_rif

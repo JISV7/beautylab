@@ -169,10 +169,11 @@ class UserService:
         # Update fiscal fields
         if fiscal_data.rif is not None:
             user.rif = fiscal_data.rif
-            
+
             # Automatically update document_type and document_number to match RIF
             # if they are not explicitly provided.
             from app.utils.rif import parse_rif
+
             parsed = parse_rif(fiscal_data.rif)
             if fiscal_data.document_type is None:
                 user.document_type = parsed["document_type"]

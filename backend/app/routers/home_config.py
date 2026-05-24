@@ -34,7 +34,7 @@ async def list_home_configs(db: AsyncSession = Depends(get_db), admin=Depends(Re
 @router.get("/active", response_model=HomeConfigRead)
 async def get_active_home_config(db: AsyncSession = Depends(get_db)):
     """Get the currently active home page configuration."""
-    result = await db.execute(select(HomeConfig).where(HomeConfig.is_active == True))
+    result = await db.execute(select(HomeConfig).where(HomeConfig.is_active))
     config = result.scalar_one_or_none()
     if not config:
         # Fallback to the first one if none is active
@@ -112,7 +112,7 @@ async def delete_home_config(
     if db_config.is_active:
         raise HTTPException(status_code=400, detail="Cannot delete the active configuration")
 
-    # Ensure there's at least one config left? 
+    # Ensure there's at least one config left?
     # Actually, we just need to make sure we don't delete the only one if it's active.
 
     await db.delete(db_config)
@@ -133,11 +133,12 @@ async def activate_home_config(
 
     # Deactivate all others
     from sqlalchemy import update
+
     await db.execute(update(HomeConfig).values(is_active=False))
 
     # Activate target
     target_config.is_active = True
-    
+
     await db.commit()
     await db.refresh(target_config)
     return target_config

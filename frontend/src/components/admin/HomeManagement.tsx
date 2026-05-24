@@ -231,7 +231,7 @@ export function HomeManagement() {
     const handleActivate = async () => {
         if (!selectedConfig) return;
         try {
-            const response = await api.post(`/home-config/${selectedConfig.id}/activate`);
+            await api.post(`/home-config/${selectedConfig.id}/activate`);
             // Update all configs to reflect the new active one
             setAllConfigs(allConfigs.map(c => ({
                 ...c,

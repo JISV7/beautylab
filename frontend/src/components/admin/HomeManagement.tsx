@@ -426,7 +426,8 @@ export function HomeManagement() {
         reader.onload = (event) => {
             const img = new Image();
             img.onload = () => {
-                const targetRatio = 16 / 9;
+                const [w, h] = (config.carousel.aspect_ratio || '16:9').split(':').map(Number);
+                const targetRatio = w && h ? w / h : 16 / 9;
                 const imageRatio = img.width / img.height;
                 const ratioTolerance = 0.01;
                 
@@ -438,7 +439,7 @@ export function HomeManagement() {
                 if (needsCropping) {
                     let message = '';
                     if (Math.abs(imageRatio - targetRatio) > ratioTolerance) {
-                        message = 'The image does not have a 16:9 aspect ratio. It must be cropped to fit properly.';
+                        message = `The image does not have a ${config.carousel.aspect_ratio || '16:9'} aspect ratio. It must be cropped to fit properly.`;
                     } else {
                         message = `The image exceeds the maximum dimensions (${config.carousel.max_width}x${config.carousel.max_height}). It must be cropped or resized.`;
                     }
@@ -883,42 +884,94 @@ export function HomeManagement() {
             {activeTab === 'carousel' && (
                 <div className="space-y-8">
                     {/* Carousel Global Settings */}
-                    <div className="theme-card">
-                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                            <div className="flex-1">
-                                <h3 className="text-h3">Carousel Settings</h3>
-                                <p className="text-paragraph text-sm opacity-60">Global visibility and display options for the carousel slides.</p>
-                            </div>
-                            
-                            <div className="flex flex-wrap items-center gap-8">
-                                <div className="flex items-center gap-3">
-                                    <span className="text-paragraph font-medium">Slides Per View (Desktop)</span>
-                                    <select
-                                        value={config.carousel.slides_per_view || 1}
-                                        onChange={(e) => setConfig({
-                                            ...config,
-                                            carousel: { ...config.carousel, slides_per_view: parseInt(e.target.value) }
-                                        })}
-                                        className="theme-input py-1.5 px-3 min-w-[100px]"
-                                    >
-                                        <option value={1}>1 Slide</option>
-                                        <option value={3}>3 Slides</option>
-                                        <option value={4}>4 Slides</option>
-                                        <option value={5}>5 Slides</option>
-                                    </select>
-                                </div>
-
-                                <div className="flex items-center gap-3 border-l palette-border pl-8">
-                                    <span className="text-paragraph font-medium min-w-[80px]">{config.carousel.enabled ? 'Enabled' : 'Disabled'}</span>
+                    <div className="theme-card space-y-6">
+                        <div className="border-b border-palette-border pb-4">
+                            <h3 className="text-h3">Carousel Settings</h3>
+                            <p className="text-paragraph text-sm opacity-60">Global visibility and display options for the carousel slides.</p>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                            {/* Control 1: Visibility */}
+                            <div className="flex flex-col gap-2 p-4 rounded-xl bg-palette-background/30 border border-palette-border">
+                                <span className="text-paragraph text-xs font-semibold opacity-60">Visibility</span>
+                                <div className="flex items-center justify-between mt-auto pt-2">
+                                    <span className="text-paragraph font-medium">{config.carousel.enabled ? 'Enabled' : 'Disabled'}</span>
                                     <button
                                         onClick={() => setConfig({
                                             ...config,
                                             carousel: { ...config.carousel, enabled: !config.carousel.enabled }
                                         })}
-                                        className={`w-14 h-8 rounded-full transition-colors relative ${config.carousel.enabled ? 'bg-palette-primary' : 'bg-slate-300 dark:bg-slate-700'}`}
+                                        className={`w-12 h-6 rounded-full transition-colors relative ${config.carousel.enabled ? 'bg-palette-primary' : 'bg-slate-300 dark:bg-slate-700'}`}
                                     >
-                                        <div className={`absolute top-1 left-1 w-6 h-6 bg-white rounded-full transition-transform ${config.carousel.enabled ? 'translate-x-6' : 'translate-x-0'}`} />
+                                        <div className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform ${config.carousel.enabled ? 'translate-x-6' : 'translate-x-0'}`} />
                                     </button>
+                                </div>
+                            </div>
+
+                            {/* Control 2: Slides Per View */}
+                            <div className="flex flex-col gap-2 p-4 rounded-xl bg-palette-background/30 border border-palette-border">
+                                <span className="text-paragraph text-xs font-semibold opacity-60">Slides Per View (Desktop)</span>
+                                <select
+                                    value={config.carousel.slides_per_view || 1}
+                                    onChange={(e) => setConfig({
+                                        ...config,
+                                        carousel: { ...config.carousel, slides_per_view: parseInt(e.target.value) }
+                                    })}
+                                    className="theme-input py-1 px-2 text-sm w-full mt-auto"
+                                >
+                                    <option value={1}>1 Slide</option>
+                                    <option value={3}>3 Slides</option>
+                                    <option value={4}>4 Slides</option>
+                                    <option value={5}>5 Slides</option>
+                                </select>
+                            </div>
+
+                            {/* Control 3: Aspect Ratio */}
+                            <div className="flex flex-col gap-2 p-4 rounded-xl bg-palette-background/30 border border-palette-border">
+                                <span className="text-paragraph text-xs font-semibold opacity-60">Aspect Ratio</span>
+                                <select
+                                    value={config.carousel.aspect_ratio || '16:9'}
+                                    onChange={(e) => setConfig({
+                                        ...config,
+                                        carousel: { ...config.carousel, aspect_ratio: e.target.value }
+                                    })}
+                                    className="theme-input py-1 px-2 text-sm w-full mt-auto"
+                                >
+                                    <option value="16:9">16:9 (Widescreen)</option>
+                                    <option value="9:16">9:16 (Vertical)</option>
+                                    <option value="1:1">1:1 (Square)</option>
+                                    <option value="4:3">4:3 (Standard)</option>
+                                    <option value="21:9">21:9 (Ultra-wide)</option>
+                                </select>
+                            </div>
+
+                            {/* Control 4: Max Dimensions */}
+                            <div className="flex flex-col gap-2 p-4 rounded-xl bg-palette-background/30 border border-palette-border">
+                                <span className="text-paragraph text-xs font-semibold opacity-60">Max Dimensions (Width × Height)</span>
+                                <div className="flex items-center gap-1.5 mt-auto">
+                                    <input
+                                        type="number"
+                                        value={config.carousel.max_width || 1920}
+                                        onChange={(e) => setConfig({
+                                            ...config,
+                                            carousel: { ...config.carousel, max_width: parseInt(e.target.value) || 0 }
+                                        })}
+                                        className="theme-input py-1 px-2 w-full text-center text-sm"
+                                        placeholder="Width"
+                                        min={100}
+                                    />
+                                    <span className="opacity-50">×</span>
+                                    <input
+                                        type="number"
+                                        value={config.carousel.max_height || 1080}
+                                        onChange={(e) => setConfig({
+                                            ...config,
+                                            carousel: { ...config.carousel, max_height: parseInt(e.target.value) || 0 }
+                                        })}
+                                        className="theme-input py-1 px-2 w-full text-center text-sm"
+                                        placeholder="Height"
+                                        min={100}
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -941,24 +994,33 @@ export function HomeManagement() {
                                 key={slide.id}
                                 className="theme-card flex flex-col lg:flex-row gap-6 items-start"
                             >
-                                <div className="w-full lg:w-72 h-40 relative rounded-xl overflow-hidden group palette-background border palette-border">
-                                    {slide.image_url ? (
-                                        <img src={normalizeUrl(slide.image_url)} alt="" className="w-full h-full object-cover" />
-                                    ) : (
-                                        <div className="w-full h-full flex items-center justify-center">
-                                            <ImageIcon size={48} className="opacity-20" />
+                                {(() => {
+                                    const [w, h] = (config.carousel.aspect_ratio || '16:9').split(':').map(Number);
+                                    const isPortrait = w < h;
+                                    return (
+                                        <div 
+                                            className={`relative rounded-xl overflow-hidden group palette-background border palette-border ${isPortrait ? 'w-full lg:w-44' : 'w-full lg:w-72'}`}
+                                            style={{ aspectRatio: config.carousel.aspect_ratio ? config.carousel.aspect_ratio.replace(':', '/') : '16/9' }}
+                                        >
+                                            {slide.image_url ? (
+                                                <img src={normalizeUrl(slide.image_url)} alt="" className="w-full h-full object-cover" />
+                                            ) : (
+                                                <div className="absolute inset-0 flex items-center justify-center">
+                                                    <ImageIcon size={48} className="opacity-20" />
+                                                </div>
+                                            )}
+                                            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                                <Upload className="text-white" />
+                                                <input
+                                                    type="file"
+                                                    accept="image/*"
+                                                    onChange={(e) => handleSlideImageUpload(e, slide.id)}
+                                                    className="absolute inset-0 opacity-0 cursor-pointer"
+                                                />
+                                            </div>
                                         </div>
-                                    )}
-                                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                        <Upload className="text-white" />
-                                        <input
-                                            type="file"
-                                            accept="image/*"
-                                            onChange={(e) => handleSlideImageUpload(e, slide.id)}
-                                            className="absolute inset-0 opacity-0 cursor-pointer"
-                                        />
-                                    </div>
-                                </div>
+                                    );
+                                })()}
 
                                 <div className="flex-1 grid md:grid-cols-2 gap-4 w-full">
                                     <div className="space-y-4">
@@ -1027,20 +1089,24 @@ export function HomeManagement() {
             )}
 
             {/* Cropper Modal */}
-            {cropperOpen && currentImageToCrop && (
-                <ImageCropper
-                    image={currentImageToCrop}
-                    aspectRatio={16 / 9}
-                    onCropComplete={(blob) => {
-                        if (pendingSlideId) uploadImage(blob, pendingSlideId);
-                    }}
-                    onCancel={() => {
-                        setCropperOpen(false);
-                        setCurrentImageToCrop(null);
-                        setPendingSlideId(null);
-                    }}
-                />
-            )}
+            {cropperOpen && currentImageToCrop && (() => {
+                const [w, h] = (config.carousel.aspect_ratio || '16:9').split(':').map(Number);
+                const aspect = w && h ? w / h : 16 / 9;
+                return (
+                    <ImageCropper
+                        image={currentImageToCrop}
+                        aspectRatio={aspect}
+                        onCropComplete={(blob) => {
+                            if (pendingSlideId) uploadImage(blob, pendingSlideId);
+                        }}
+                        onCancel={() => {
+                            setCropperOpen(false);
+                            setCurrentImageToCrop(null);
+                            setPendingSlideId(null);
+                        }}
+                    />
+                );
+            })()}
 
             {/* Notification Modals */}
             <MessageModal

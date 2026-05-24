@@ -90,6 +90,7 @@ export function Home() {
                     <AdvancedCarousel 
                         slides={homeConfig.carousel.slides.map((s: any) => ({ ...s, image_url: normalizeUrl(s.image_url) }))} 
                         slidesPerView={homeConfig.carousel.slides_per_view || 1}
+                        aspectRatio={homeConfig.carousel.aspect_ratio || '16:9'}
                     />
                 )}
 

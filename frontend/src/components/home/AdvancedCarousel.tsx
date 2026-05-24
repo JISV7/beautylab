@@ -20,15 +20,23 @@ interface Slide {
 interface CarouselProps {
     slides: Slide[];
     slidesPerView?: number;
+    aspectRatio?: string;
 }
 
-export const AdvancedCarousel: React.FC<CarouselProps> = ({ slides, slidesPerView = 1 }) => {
+export const AdvancedCarousel: React.FC<CarouselProps> = ({ slides, slidesPerView = 1, aspectRatio = '16:9' }) => {
     const activeSlides = slides.filter(s => s.is_active);
 
     if (activeSlides.length === 0) return null;
 
     return (
-        <section className="relative w-full h-[400px] md:h-[500px]">
+        <section 
+            className="relative w-full mx-auto overflow-hidden bg-black/5 flex items-center justify-center"
+            style={{ 
+                aspectRatio: aspectRatio ? aspectRatio.replace(':', '/') : '16/9',
+                maxHeight: '650px',
+                width: '100%'
+            }}
+        >
             <Swiper
                 modules={[Autoplay, Navigation, Pagination, EffectFade]}
                 effect={slidesPerView === 1 ? "fade" : "slide"}

@@ -52,7 +52,7 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
 
     const addPaymentMethod = () => {
         if (payments.length >= 5) {
-            alert('Maximum 5 payment methods allowed');
+            alert('Se permiten hasta 5 métodos de pago.');
             return;
         }
 
@@ -70,7 +70,7 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
 
     const removePaymentMethod = (id: string) => {
         if (payments.length === 1) {
-            alert('At least one payment method is required');
+            alert('Debes mantener al menos un método de pago.');
             return;
         }
 
@@ -135,7 +135,7 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
             <div className="palette-surface palette-border border rounded-xl p-4">
                 <div className="flex items-center justify-between mb-2">
                     <span className="text-paragraph font-medium">
-                        Total Amount
+                        Monto total
                     </span>
                     <span className="text-h4 font-bold">
                         {formatAmount(totalAmount)}
@@ -144,7 +144,7 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
 
                 <div className="flex items-center justify-between mb-2">
                     <span className="text-paragraph">
-                        Allocated
+                        Asignado
                     </span>
                     <span className={`font-semibold ${isOverAllocated ? 'text-red-500' : 'text-paragraph'}`}>
                         {formatAmount(totalAllocated)}
@@ -153,7 +153,7 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
 
                 <div className="flex items-center justify-between pt-2 border-t border-[var(--palette-border)]">
                     <span className="text-paragraph font-medium">
-                        Remaining
+                        Pendiente
                     </span>
                     <span className={`font-bold ${
                         isOverAllocated
@@ -169,14 +169,14 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
                 {isOverAllocated && (
                     <div className="mt-3 flex items-center gap-2 text-red-500 text-sm">
                         <AlertCircle size={16} />
-                        <span>Total allocated exceeds the course price</span>
+                        <span>El monto asignado supera el precio del curso</span>
                     </div>
                 )}
 
                 {isFullyAllocated && !isOverAllocated && (
                     <div className="mt-3 flex items-center gap-2 text-green-500 text-sm">
                         <AlertCircle size={16} />
-                        <span>✓ Full amount allocated - Ready to proceed</span>
+                        <span>✓ Monto completo asignado · Listo para continuar</span>
                     </div>
                 )}
 
@@ -184,7 +184,7 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
                     <div className="mt-3 flex items-center gap-2 text-amber-500 text-sm">
                         <AlertCircle size={16} />
                         <span>
-                            {formatAmount(remaining)} remaining — full payment required
+                            Quedan {formatAmount(remaining)} por asignar · se requiere el pago completo
                         </span>
                     </div>
                 )}
@@ -192,7 +192,7 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
                 {totalAllocated <= 0 && !isOverAllocated && (
                     <div className="mt-3 flex items-center gap-2 text-amber-500 text-sm">
                         <AlertCircle size={16} />
-                        <span>Enter an amount to allocate</span>
+                        <span>Ingresa un monto para asignar</span>
                     </div>
                 )}
             </div>
@@ -211,14 +211,14 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
                                     {index + 1}
                                 </div>
                                 <h3 className="text-h4 font-semibold">
-                                    Payment Method {index + 1}
+                                    Método de pago {index + 1}
                                 </h3>
                             </div>
 
                             <button
                                 onClick={() => removePaymentMethod(payment.id)}
                                 className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
-                                title="Remove payment method"
+                                title="Eliminar método de pago"
                             >
                                 <Trash2 size={18} />
                             </button>
@@ -227,7 +227,7 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
                         {/* Method Selector */}
                         <div>
                             <label className="text-paragraph font-medium block mb-2">
-                                Payment Type
+                                Tipo de pago
                             </label>
                             <select
                                 value={payment.method}
@@ -236,8 +236,8 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
                                 }
                                 className="theme-input w-full"
                             >
-                                <option value="credit_card">Credit Card</option>
-                                <option value="debit_card">Debit Card</option>
+                                <option value="credit_card">Tarjeta de crédito</option>
+                                <option value="debit_card">Tarjeta de débito</option>
                                 {/* <option value="zelle">Zelle</option> */}
                                 <option value="pago_movil">Pago Móvil</option>
                                 {/* <option value="paypal">PayPal</option> */}
@@ -249,11 +249,11 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
                         {payment.method === 'pago_movil' && (
                             <div className="palette-surface palette-border border rounded-xl p-4 space-y-4">
                                 <h4 className="text-paragraph font-semibold mb-3">
-                                    Pago Móvil Details (Simulation)
+                                    Datos de Pago Móvil (simulación)
                                 </h4>
                                 <div>
                                     <label className="text-paragraph font-medium block mb-2">
-                                        Company Phone Number
+                                        Teléfono de la empresa
                                     </label>
                                     <input
                                         type="text"
@@ -265,7 +265,7 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
 
                                 <div>
                                     <label className="text-paragraph font-medium block mb-2">
-                                        Company RIF
+                                        RIF de la empresa
                                     </label>
                                     <input
                                         type="text"
@@ -277,7 +277,7 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
 
                                 <div>
                                     <label className="text-paragraph font-medium block mb-2">
-                                        Select Your Bank
+                                        Selecciona tu banco
                                     </label>
                                     <select
                                         value={payment.values.bank_selector || 'venezuela'}
@@ -289,7 +289,7 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
                                         <option value="venezuela">Venezuela</option>
                                         <option value="mercantil">Mercantil</option>
                                         <option value="bancamiga">Bancamiga</option>
-                                        <option value="bancamiga">Banesco</option>
+                                        <option value="banesco">Banesco</option>
                                     </select>
                                 </div>
                             </div>
@@ -300,7 +300,7 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
                             <label className="text-paragraph font-medium block mb-2">
                                 <div className="flex items-center gap-2">
                                     <DollarSign size={16} />
-                                    Amount
+                                    Monto
                                 </div>
                             </label>
                             <div className="relative">
@@ -318,7 +318,7 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
                                 />
                             </div>
                             <p className="text-sm text-paragraph opacity-60 mt-1">
-                                Available: {formatAmount(totalAmount - (totalAllocated - payment.amount))}
+                                Disponible: {formatAmount(totalAmount - (totalAllocated - payment.amount))}
                             </p>
                         </div>
 
@@ -340,15 +340,15 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
                 className="w-full py-3 px-4 border-2 border-dashed border-[var(--palette-border)] rounded-xl text-paragraph hover:border-[var(--palette-primary)] hover:text-[var(--palette-primary)] transition-colors flex items-center justify-center gap-2"
             >
                 <Plus size={20} />
-                <span className="font-medium">Add Another Payment Method</span>
+                <span className="font-medium">Agregar otro método de pago</span>
             </button>
 
             {/* Info */}
             <div className="palette-surface palette-border border rounded-xl p-4 bg-[var(--palette-primary)]/5">
                 <p className="text-paragraph text-sm">
-                    💡 <strong>Tip:</strong> You can split your payment across multiple methods.
-                    Just add another payment method and allocate the desired amount to each.
-                    The total must equal the course price exactly.
+                    💡 <strong>Consejo:</strong> puedes dividir tu pago entre varios métodos.
+                    Agrega otro método y asigna el monto correspondiente a cada uno.
+                    La suma debe coincidir exactamente con el precio del curso.
                 </p>
             </div>
         </div>

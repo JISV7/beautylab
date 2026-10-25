@@ -26,7 +26,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
 
     return (
         <div className={`palette-surface palette-border border rounded-xl ${compact ? 'p-4' : 'p-6'} ${compact ? '' : 'h-fit'} space-y-4`}>
-            <h3 className="text-h3">Order Summary</h3>
+            <h3 className="text-h3">Resumen del pedido</h3>
             <div className={`space-y-2 ${compact ? '' : 'pt-4 border-t palette-border'}`}>
                 <div className="flex justify-between text-paragraph">
                     <span className="text-paragraph opacity-75">Subtotal</span>

@@ -1,5 +1,25 @@
 @import "tailwindcss";
 
+:root {
+  font-family: 'Montserrat', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body {
+  font-family: 'Montserrat', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
 @theme {
   /* Palette colors - mapped from theme API */
   --color-palette-primary: var(--palette-primary);
@@ -78,13 +98,13 @@
   .bg-palette-border { background-color: var(--palette-border); }
 
   /* ==================== Composite Typography Utilities ==================== */
-  .text-h1 { font-family: var(--text-h1-font); font-size: var(--text-h1-size); color: var(--text-h1-color); font-weight: var(--text-h1-weight); line-height: var(--text-h1-line-height); }
-  .text-h2 { font-family: var(--text-h2-font); font-size: var(--text-h2-size); color: var(--text-h2-color); font-weight: var(--text-h2-weight); line-height: var(--text-h2-line-height); }
-  .text-h3 { font-family: var(--text-h3-font); font-size: var(--text-h3-size); color: var(--text-h3-color); font-weight: var(--text-h3-weight); line-height: var(--text-h3-line-height); }
-  .text-h4 { font-family: var(--text-h4-font); font-size: var(--text-h4-size); color: var(--text-h4-color); font-weight: var(--text-h4-weight); line-height: var(--text-h4-line-height); }
-  .text-h5 { font-family: var(--text-h5-font); font-size: var(--text-h5-size); color: var(--text-h5-color); font-weight: var(--text-h5-weight); line-height: var(--text-h5-line-height); }
-  .text-h6 { font-family: var(--text-h6-font); font-size: var(--text-h6-size); color: var(--text-h6-color); font-weight: var(--text-h6-weight); line-height: var(--text-h6-line-height); }
-  .text-paragraph { font-family: var(--text-p-font); font-size: var(--text-p-size); color: var(--text-p-color); font-weight: var(--text-p-weight); line-height: var(--text-p-line-height); }
+  .text-h1 { font-family: var(--text-h1-font, 'Montserrat', 'Segoe UI', system-ui, sans-serif); font-size: var(--text-h1-size); color: var(--text-h1-color); font-weight: var(--text-h1-weight); line-height: var(--text-h1-line-height); }
+  .text-h2 { font-family: var(--text-h2-font, 'Montserrat', 'Segoe UI', system-ui, sans-serif); font-size: var(--text-h2-size); color: var(--text-h2-color); font-weight: var(--text-h2-weight); line-height: var(--text-h2-line-height); }
+  .text-h3 { font-family: var(--text-h3-font, 'Montserrat', 'Segoe UI', system-ui, sans-serif); font-size: var(--text-h3-size); color: var(--text-h3-color); font-weight: var(--text-h3-weight); line-height: var(--text-h3-line-height); }
+  .text-h4 { font-family: var(--text-h4-font, 'Montserrat', 'Segoe UI', system-ui, sans-serif); font-size: var(--text-h4-size); color: var(--text-h4-color); font-weight: var(--text-h4-weight); line-height: var(--text-h4-line-height); }
+  .text-h5 { font-family: var(--text-h5-font, 'Montserrat', 'Segoe UI', system-ui, sans-serif); font-size: var(--text-h5-size); color: var(--text-h5-color); font-weight: var(--text-h5-weight); line-height: var(--text-h5-line-height); }
+  .text-h6 { font-family: var(--text-h6-font, 'Montserrat', 'Segoe UI', system-ui, sans-serif); font-size: var(--text-h6-size); color: var(--text-h6-color); font-weight: var(--text-h6-weight); line-height: var(--text-h6-line-height); }
+  .text-paragraph { font-family: var(--text-p-font, 'Montserrat', 'Segoe UI', system-ui, sans-serif); font-size: var(--text-p-size); color: var(--text-p-color); font-weight: var(--text-p-weight); line-height: var(--text-p-line-height); }
 
   /* ==================== Decorator Utilities ==================== */
   .decorator-color { color: var(--decorator-color); }
@@ -99,7 +119,7 @@
 
   /* ==================== HTML Element Defaults ==================== */
   h1 {
-    font-family: var(--text-h1-font);
+    font-family: var(--text-h1-font, 'Montserrat', 'Segoe UI', system-ui, sans-serif);
     font-size: var(--text-h1-size);
     color: var(--text-h1-color);
     font-weight: var(--text-h1-weight);
@@ -107,7 +127,7 @@
   }
 
   h2 {
-    font-family: var(--text-h2-font);
+    font-family: var(--text-h2-font, 'Montserrat', 'Segoe UI', system-ui, sans-serif);
     font-size: var(--text-h2-size);
     color: var(--text-h2-color);
     font-weight: var(--text-h2-weight);
@@ -115,7 +135,7 @@
   }
 
   h3 {
-    font-family: var(--text-h3-font);
+    font-family: var(--text-h3-font, 'Montserrat', 'Segoe UI', system-ui, sans-serif);
     font-size: var(--text-h3-size);
     color: var(--text-h3-color);
     font-weight: var(--text-h3-weight);
@@ -123,7 +143,7 @@
   }
 
   h4 {
-    font-family: var(--text-h4-font);
+    font-family: var(--text-h4-font, 'Montserrat', 'Segoe UI', system-ui, sans-serif);
     font-size: var(--text-h4-size);
     color: var(--text-h4-color);
     font-weight: var(--text-h4-weight);
@@ -131,7 +151,7 @@
   }
 
   h5 {
-    font-family: var(--text-h5-font);
+    font-family: var(--text-h5-font, 'Montserrat', 'Segoe UI', system-ui, sans-serif);
     font-size: var(--text-h5-size);
     color: var(--text-h5-color);
     font-weight: var(--text-h5-weight);
@@ -139,7 +159,7 @@
   }
 
   h6 {
-    font-family: var(--text-h6-font);
+    font-family: var(--text-h6-font, 'Montserrat', 'Segoe UI', system-ui, sans-serif);
     font-size: var(--text-h6-size);
     color: var(--text-h6-color);
     font-weight: var(--text-h6-weight);
@@ -147,7 +167,7 @@
   }
 
   p {
-    font-family: var(--text-p-font);
+    font-family: var(--text-p-font, 'Montserrat', 'Segoe UI', system-ui, sans-serif);
     font-size: var(--text-p-size);
     color: var(--text-p-color);
     font-weight: var(--text-p-weight);
@@ -166,7 +186,7 @@
 
   /* ==================== Form Elements ==================== */
   .theme-input {
-    font-family: var(--text-p-font);
+    font-family: var(--text-p-font, 'Montserrat', 'Segoe UI', system-ui, sans-serif);
     font-size: var(--text-p-size);
     color: var(--text-p-color);
     background-color: var(--palette-surface);
@@ -179,7 +199,7 @@
 
   .theme-input:focus {
     border-color: var(--palette-primary);
-    box-shadow: 0 0 0 3px rgba(248, 58, 58, 0.1);
+    box-shadow: 0 0 0 3px rgba(30, 90, 168, 0.16);
   }
 
   .theme-input::placeholder {
@@ -198,7 +218,7 @@
   }
 
   .theme-button {
-    font-family: var(--text-p-font);
+    font-family: var(--text-p-font, 'Montserrat', 'Segoe UI', system-ui, sans-serif);
     font-size: var(--text-p-size);
     font-weight: 600;
     padding: 0.75rem 1.5rem;
@@ -226,7 +246,7 @@
   }
 
   .theme-button-primary:hover {
-    background-color: var(--palette-accent);
+    background-color: var(--palette-secondary);
   }
 
   .theme-button-primary:active {
@@ -240,8 +260,8 @@
   }
 
   .theme-button-secondary:hover {
-    background-color: var(--palette-accent);
-    border-color: var(--palette-accent);
+    background-color: var(--palette-secondary);
+    border-color: var(--palette-secondary);
     color: #FFFFFF;
   }
 
@@ -254,7 +274,7 @@
 
   /* ==================== Auth Forms ==================== */
   .auth-input {
-    font-family: var(--text-p-font);
+    font-family: var(--text-p-font, 'Montserrat', 'Segoe UI', system-ui, sans-serif);
     font-size: var(--text-p-size);
     color: var(--text-p-color);
     background-color: var(--palette-surface);
@@ -264,7 +284,7 @@
 
   .auth-input:focus {
     border-color: var(--palette-primary);
-    box-shadow: 0 0 0 3px rgba(248, 58, 58, 0.1);
+    box-shadow: 0 0 0 3px rgba(30, 90, 168, 0.16);
   }
 
   .auth-input::placeholder {

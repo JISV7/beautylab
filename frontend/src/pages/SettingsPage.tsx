@@ -43,7 +43,7 @@ export const SettingsPage: React.FC = () => {
             const validation = validateRif(rif);
             if (!validation.isValid) {
                 setRifError(validation.errorMessage);
-                setError('Please fix the RIF field before saving.');
+                setError('Corrige el campo RIF antes de guardar.');
                 setIsSaving(false);
                 return;
             }
@@ -58,9 +58,9 @@ export const SettingsPage: React.FC = () => {
                 fiscal_address: fiscalAddress || undefined,
                 rif: normalizedRif,
             });
-            setMessage('Your profile was updated successfully.');
+            setMessage('Tu perfil se actualizó correctamente.');
         } catch (submitError: any) {
-            setError(submitError?.message || 'Unable to update profile.');
+            setError(submitError?.message || 'No pudimos actualizar tu perfil.');
         } finally {
             setIsSaving(false);
         }
@@ -70,32 +70,32 @@ export const SettingsPage: React.FC = () => {
         <div className="space-y-6">
             <div className="palette-surface palette-border border rounded-3xl p-8">
                 <div className="flex flex-col gap-3 mb-6">
-                    <h1 className="text-h3 font-semibold text-paragraph">Settings</h1>
+                    <h1 className="text-h3 font-semibold text-paragraph">Configuración</h1>
                     <p className="text-paragraph opacity-75 max-w-2xl">
-                        Edit your account details here. Right now you can update your name and your fiscal address.
+                        Edita los datos de tu cuenta. Por ahora puedes actualizar tu nombre y domicilio fiscal.
                     </p>
                 </div>
 
                 <form className="space-y-6" onSubmit={handleSubmit}>
                     <div className="grid gap-4 sm:grid-cols-3">
                         <div className="space-y-2">
-                            <label className="text-paragraph block font-medium">Full Name</label>
+                            <label className="text-paragraph block font-medium">Nombre completo</label>
                             <input
                                 type="text"
                                 value={fullName}
                                 onChange={(event) => setFullName(event.target.value)}
                                 className="auth-input w-full py-3 px-4 rounded-xl"
-                                placeholder="Your full name"
+                                placeholder="Tu nombre completo"
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-paragraph block font-medium">Fiscal Address</label>
+                            <label className="text-paragraph block font-medium">Domicilio fiscal</label>
                             <input
                                 type="text"
                                 value={fiscalAddress}
                                 onChange={(event) => setFiscalAddress(event.target.value)}
                                 className="auth-input w-full py-3 px-4 rounded-xl"
-                                placeholder="Complete address for invoices"
+                                placeholder="Dirección completa para facturas"
                             />
                         </div>
                         <div className="space-y-2">
@@ -115,7 +115,7 @@ export const SettingsPage: React.FC = () => {
                                 </p>
                             ) : (
                                 <p className="text-paragraph opacity-60 mt-1">
-                                    Use format <code className="font-mono">V123456784</code> with valid check digit.
+                                    Usa el formato <code className="font-mono">V123456784</code> con dígito verificador válido.
                                 </p>
                             )}
                         </div>
@@ -134,23 +134,23 @@ export const SettingsPage: React.FC = () => {
 
                     <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                         <p className="text-paragraph opacity-75">
-                            Logged in as {user?.email ?? 'your account'}.
+                            Sesión iniciada como {user?.email ?? 'tu cuenta'}.
                         </p>
                         <button
                             type="submit"
                             disabled={isSaving}
                             className="inline-flex items-center justify-center rounded-xl bg-palette-primary px-5 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
                         >
-                            {isSaving ? 'Saving...' : 'Save changes'}
+                            {isSaving ? 'Guardando...' : 'Guardar cambios'}
                         </button>
                     </div>
                 </form>
             </div>
 
             <div className="palette-surface palette-border border rounded-3xl p-6">
-                <h2 className="text-h5 font-semibold text-paragraph mb-2">More options coming soon</h2>
+                <h2 className="text-h5 font-semibold text-paragraph mb-2">Más opciones próximamente</h2>
                 <p className="text-paragraph opacity-70">
-                    This section will be expanded with additional account settings over time.
+                    Ampliaremos esta sección con opciones adicionales de cuenta.
                 </p>
             </div>
         </div>

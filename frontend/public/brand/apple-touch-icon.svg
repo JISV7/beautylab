@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" role="img" aria-labelledby="cursorgTouchTitle">
+  <title id="cursorgTouchTitle">Cursorg</title>
+  <rect width="180" height="180" fill="#0D2B4D"/>
+  <g transform="translate(38 38) scale(1.625)">
+    <path d="M56.25 18 32 4 7.75 18" fill="none" stroke="#55C7E8" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M7.75 18v28" fill="none" stroke="#7FD9F2" stroke-width="11" stroke-linecap="round"/>
+    <path d="M7.75 46 32 60l24.25-14" fill="none" stroke="#FBFBFE" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

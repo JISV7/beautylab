@@ -16,14 +16,14 @@ export const ZelleForm: React.FC<PaymentFormProps> = ({
             <div>
                 <label className="text-paragraph font-medium block mb-2">
                     <User size={16} />
-                    Sender Name
+                    Nombre del remitente
                 </label>
                 <input
                     type="text"
                     value={value.sender_name || ''}
                     onChange={(e) => handleChange('sender_name', e.target.value)}
                     className="theme-input w-full"
-                    placeholder="John Doe"
+                    placeholder="María Pérez"
                 />
                 {errors.sender_name && (
                     <p className="text-red-500 text-sm mt-1">{errors.sender_name}</p>
@@ -33,14 +33,14 @@ export const ZelleForm: React.FC<PaymentFormProps> = ({
             <div>
                 <label className="text-paragraph font-medium block mb-2">
                     <Mail size={16} />
-                    Sender Email
+                    Correo del remitente
                 </label>
                 <input
                     type="email"
                     value={value.sender_email || ''}
                     onChange={(e) => handleChange('sender_email', e.target.value)}
                     className="theme-input w-full"
-                    placeholder="john@example.com"
+                    placeholder="maria@empresa.com"
                 />
                 {errors.sender_email && (
                     <p className="text-red-500 text-sm mt-1">{errors.sender_email}</p>
@@ -50,7 +50,7 @@ export const ZelleForm: React.FC<PaymentFormProps> = ({
             <div>
                 <label className="text-paragraph font-medium block mb-2">
                     <Phone size={16} />
-                    Sender Phone (Optional)
+                    Teléfono del remitente (opcional)
                 </label>
                 <input
                     type="tel"
@@ -64,14 +64,14 @@ export const ZelleForm: React.FC<PaymentFormProps> = ({
             <div>
                 <label className="text-paragraph font-medium block mb-2">
                     <Mail size={16} />
-                    Recipient Email
+                    Correo del destinatario
                 </label>
                 <input
                     type="email"
                     value={value.recipient_email || ''}
                     onChange={(e) => handleChange('recipient_email', e.target.value)}
                     className="theme-input w-full"
-                    placeholder="payments@beautylab.com"
+                    placeholder="pagos@cursorg.ve"
                 />
                 {errors.recipient_email && (
                     <p className="text-red-500 text-sm mt-1">{errors.recipient_email}</p>
@@ -81,7 +81,7 @@ export const ZelleForm: React.FC<PaymentFormProps> = ({
             <div>
                 <label className="text-paragraph font-medium block mb-2">
                     <FileText size={16} />
-                    Confirmation Code
+                    Código de confirmación
                 </label>
                 <input
                     type="text"

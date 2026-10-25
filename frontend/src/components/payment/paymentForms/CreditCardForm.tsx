@@ -18,7 +18,7 @@ export const CreditCardForm: React.FC<PaymentFormProps> = ({
                 <label className="text-paragraph font-medium block mb-2">
                     <div className="flex items-center gap-2">
                         <User size={16} />
-                        Cardholder Name
+                        Nombre del titular
                     </div>
                 </label>
                 <input
@@ -26,7 +26,7 @@ export const CreditCardForm: React.FC<PaymentFormProps> = ({
                     value={value.card_holder_name || ''}
                     onChange={(e) => handleChange('card_holder_name', e.target.value)}
                     className="theme-input w-full"
-                    placeholder="John Doe"
+                    placeholder="María Pérez"
                 />
                 {errors.card_holder_name && (
                     <p className="text-red-500 text-sm mt-1">{errors.card_holder_name}</p>
@@ -37,7 +37,7 @@ export const CreditCardForm: React.FC<PaymentFormProps> = ({
                 <label className="text-paragraph font-medium block mb-2">
                     <div className="flex items-center gap-2">
                         <CreditCard size={16} />
-                        Card Number
+                        Número de tarjeta
                     </div>
                 </label>
                 <input
@@ -58,7 +58,7 @@ export const CreditCardForm: React.FC<PaymentFormProps> = ({
                     <label className="text-paragraph font-medium block mb-2">
                         <div className="flex items-center gap-2">
                             <Calendar size={16} />
-                            Expiry Year
+                            Año de vencimiento
                         </div>
                     </label>
                     <select
@@ -71,7 +71,7 @@ export const CreditCardForm: React.FC<PaymentFormProps> = ({
                         }}
                         className="theme-input w-full"
                     >
-                        <option value="">Select</option>
+                        <option value="">Selecciona</option>
                         {YEARS.map((year) => (
                             <option key={year.value} value={year.value}>
                                 {year.label}
@@ -87,7 +87,7 @@ export const CreditCardForm: React.FC<PaymentFormProps> = ({
                     <label className="text-paragraph font-medium block mb-2">
                         <div className="flex items-center gap-2">
                             <Calendar size={16} />
-                            Expiry Month
+                            Mes de vencimiento
                         </div>
                     </label>
                     <select
@@ -95,7 +95,7 @@ export const CreditCardForm: React.FC<PaymentFormProps> = ({
                         onChange={(e) => handleChange('expiry_month', e.target.value)}
                         className="theme-input w-full"
                     >
-                        <option value="">Select</option>
+                        <option value="">Selecciona</option>
                         {getAvailableMonths(value.expiry_year).map((month) => (
                             <option key={month.value} value={month.value}>
                                 {month.label}
@@ -110,7 +110,7 @@ export const CreditCardForm: React.FC<PaymentFormProps> = ({
 
             {isCardExpired(value.expiry_month, value.expiry_year) && (
                 <p className="text-red-500 text-sm font-medium">
-                    This card has expired. Please use a valid card.
+                    Esta tarjeta está vencida. Usa una tarjeta vigente.
                 </p>
             )}
 
@@ -139,7 +139,7 @@ export const CreditCardForm: React.FC<PaymentFormProps> = ({
                     <label className="text-paragraph font-medium block mb-2">
                         <div className="flex items-center gap-2">
                             <CreditCard size={16} />
-                            Card Brand
+                            Franquicia
                         </div>
                     </label>
                     <select
@@ -147,7 +147,7 @@ export const CreditCardForm: React.FC<PaymentFormProps> = ({
                         onChange={(e) => handleChange('card_brand', e.target.value)}
                         className="theme-input w-full"
                     >
-                        <option value="">Select</option>
+                        <option value="">Selecciona</option>
                         {CARD_BRANDS.map((brand) => (
                             <option key={brand.value} value={brand.value}>
                                 {brand.label}

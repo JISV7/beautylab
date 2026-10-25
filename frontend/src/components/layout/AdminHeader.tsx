@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Menu, Search, Bell, ArrowLeft, Sun, Moon, Eye, Code2 } from 'lucide-react';
+import { Menu, Search, Bell, ArrowLeft, Sun, Moon, Eye } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { UserMenu } from './UserMenu';
+import { BrandLogo } from '../brand/BrandLogo';
 
 interface AdminHeaderProps {
     onBack?: () => void;
@@ -16,6 +17,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({ onBack, onMenuToggle, 
     const { user, logout: authLogout } = useAuth();
     const { currentMode, setPaletteMode } = useTheme();
     const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+    const logoTheme = currentMode === 'dark' ? 'dark' : 'light';
 
     const handleLogout = () => {
         authLogout();
@@ -35,14 +37,8 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({ onBack, onMenuToggle, 
                 </button>
 
                 {/* Logo */}
-                <a href="/" className="flex items-center gap-2 flex-shrink-0">
-                    <div
-                        className="rounded-lg p-2"
-                        style={{ backgroundColor: '#F83A3A' }}
-                    >
-                        <Code2 className="w-5 h-5 text-white" />
-                    </div>
-                    <span className="text-h4 font-bold hidden sm:inline">Codyn</span>
+                <a href="/" className="flex items-center flex-shrink-0" aria-label="Cursorg — Inicio">
+                    <BrandLogo variant="compact" theme={logoTheme} size="sm" />
                 </a>
 
                 {/* Search Bar */}
@@ -51,7 +47,8 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({ onBack, onMenuToggle, 
                         <Search className="w-4 h-4 text-paragraph flex-shrink-0 ml-3" />
                         <input
                             type="text"
-                            placeholder="Search..."
+                            placeholder="Buscar..."
+                            aria-label="Buscar en el panel de administración"
                             className="flex-1 min-w-0 py-2 pl-2 pr-4 bg-transparent text-paragraph placeholder:text-paragraph placeholder:opacity-60 focus:outline-none"
                         />
                     </div>
@@ -66,7 +63,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({ onBack, onMenuToggle, 
                     className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-lg text-paragraph hover:bg-palette-border transition-colors"
                 >
                     <ArrowLeft className="w-4 h-4" />
-                    <span>Back to Dashboard</span>
+                    <span>Volver al panel</span>
                 </button>
 
                 {/* Theme Toggle */}
@@ -77,7 +74,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({ onBack, onMenuToggle, 
                             ? 'palette-primary'
                             : 'bg-transparent'
                             }`}
-                        title="Light Mode"
+                        title="Modo claro"
                     >
                         <Sun className="w-5 h-5 text-paragraph" />
                     </button>
@@ -87,7 +84,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({ onBack, onMenuToggle, 
                             ? 'palette-primary'
                             : 'bg-transparent'
                             }`}
-                        title="Dark Mode"
+                        title="Modo oscuro"
                     >
                         <Moon className="w-5 h-5 text-paragraph" />
                     </button>
@@ -97,7 +94,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({ onBack, onMenuToggle, 
                             ? 'palette-primary'
                             : 'bg-transparent'
                             }`}
-                        title="Accessibility Mode"
+                        title="Modo accesible"
                     >
                         <Eye className="w-5 h-5 text-paragraph" />
                     </button>
@@ -108,6 +105,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({ onBack, onMenuToggle, 
                     <button
                         onClick={() => setIsNotificationOpen(!isNotificationOpen)}
                         className="relative p-2 rounded-lg bg-transparent transition-colors"
+                        aria-label="Notificaciones"
                     >
                         <Bell className="w-5 h-5 text-paragraph" />
                         <span className="absolute top-1 right-1 w-2 h-2 palette-primary rounded-full" />
@@ -116,16 +114,16 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({ onBack, onMenuToggle, 
                     {isNotificationOpen && (
                         <div className="absolute right-0 mt-2 w-80 palette-surface palette-border border rounded-xl shadow-lg py-2 z-50">
                             <div className="px-4 py-2 border-b palette-border">
-                                <h3 className="text-h3">Notifications</h3>
+                                <h3 className="text-h3">Notificaciones</h3>
                             </div>
                             <div className="max-h-64 overflow-y-auto">
                                 <div className="group px-4 py-3 text-paragraph hover:bg-palette-secondary hover:text-white cursor-pointer transition-colors">
-                                    <p className="text-paragraph">Theme updated successfully</p>
-                                    <p className="text-paragraph opacity-60 mt-1 group-hover:text-palette-primary">2 hours ago</p>
+                                    <p className="text-paragraph">Tema actualizado correctamente</p>
+                                    <p className="text-paragraph opacity-60 mt-1 group-hover:text-palette-primary">Hace 2 horas</p>
                                 </div>
                                 <div className="group px-4 py-3 text-paragraph hover:bg-palette-secondary hover:text-white cursor-pointer transition-colors">
-                                    <p className="text-paragraph">New user registered</p>
-                                    <p className="text-paragraph opacity-60 mt-1 group-hover:text-palette-primary">5 hours ago</p>
+                                    <p className="text-paragraph">Nuevo usuario registrado</p>
+                                    <p className="text-paragraph opacity-60 mt-1 group-hover:text-palette-primary">Hace 5 horas</p>
                                 </div>
                             </div>
                         </div>

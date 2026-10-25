@@ -18,7 +18,7 @@ export const AgenticAIWidget: React.FC<AgenticAIWidgetProps> = ({ onPromptSubmit
         {
             id: 1,
             role: 'assistant',
-            content: 'Hello! I\'m your AI Study Assistant. Ask me anything about your courses, get explanations, or request study tips!',
+            content: '¡Hola! Soy tu asistente de aprendizaje. Pregúntame sobre tus cursos, solicita explicaciones o pide consejos de estudio.',
         },
     ]);
 
@@ -41,7 +41,7 @@ export const AgenticAIWidget: React.FC<AgenticAIWidgetProps> = ({ onPromptSubmit
             const aiMessage: Message = {
                 id: Date.now() + 1,
                 role: 'assistant',
-                content: 'Great question! Based on your current progress in Web Development, I recommend focusing on React Hooks next. Would you like me to explain useEffect or useState in more detail?',
+                content: 'Buena pregunta. Según tu avance en Liderazgo Operativo, te recomiendo revisar el módulo de retroalimentación. ¿Quieres que profundice en cómo dar feedback efectivo?',
             };
             setMessages((prev) => [...prev, aiMessage]);
             setIsTyping(false);
@@ -50,9 +50,9 @@ export const AgenticAIWidget: React.FC<AgenticAIWidgetProps> = ({ onPromptSubmit
     };
 
     const quickPrompts = [
-        { id: 'explain', icon: Zap, text: 'Explain React Hooks', prompt: 'Can you explain React Hooks in simple terms?' },
-        { id: 'study-tips', icon: Bot, text: 'Study Tips', prompt: 'What are some effective study techniques for programming?' },
-        { id: 'project-ideas', icon: Lightbulb, text: 'Project Ideas', prompt: 'Suggest a beginner project to practice JavaScript' },
+        { id: 'explain', icon: Zap, text: 'Explicar un tema', prompt: '¿Puedes explicar la diferencia entre un objetivo y un indicador?' },
+        { id: 'study-tips', icon: Bot, text: 'Consejos de estudio', prompt: '¿Qué técnicas de estudio recomiendas para un equipo con poco tiempo?' },
+        { id: 'project-ideas', icon: Lightbulb, text: 'Ideas de práctica', prompt: 'Sugiere una actividad práctica para aplicar lo aprendido en liderazgo.' },
     ];
 
     return (
@@ -64,10 +64,10 @@ export const AgenticAIWidget: React.FC<AgenticAIWidgetProps> = ({ onPromptSubmit
                 </div>
                 <div>
                     <h2 className="dashboard-ai-widget-title text-xl font-bold">
-                        AI Study Assistant
+                        Asistente de aprendizaje
                     </h2>
                     <p className="dashboard-ai-widget-text text-sm theme-text-secondary">
-                        Your personal agentic AI helper
+                        Tu apoyo para estudiar y avanzar
                     </p>
                 </div>
             </div>
@@ -128,7 +128,7 @@ export const AgenticAIWidget: React.FC<AgenticAIWidgetProps> = ({ onPromptSubmit
                     type="text"
                     value={prompt}
                     onChange={(e) => setPrompt(e.target.value)}
-                    placeholder="Ask anything about your studies..."
+                    placeholder="Pregunta lo que necesites sobre tus cursos..."
                     className="flex-1 px-4 py-3 rounded-xl theme-surface theme-border border theme-text-base placeholder-[var(--theme-text-secondary-value)] focus:outline-none focus:ring-2 focus:ring-[var(--theme-primary-value)]"
                 />
                 <button
@@ -137,7 +137,7 @@ export const AgenticAIWidget: React.FC<AgenticAIWidgetProps> = ({ onPromptSubmit
                     className="theme-primary text-white px-6 py-3 rounded-xl font-medium hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                 >
                     <Send className="w-4 h-4" style={{ color: 'var(--decorator-color)' }} />
-                    Send
+                    Enviar
                 </button>
             </form>
         </div>

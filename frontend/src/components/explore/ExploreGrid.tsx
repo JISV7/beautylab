@@ -47,10 +47,10 @@ export const ExploreGrid: React.FC<ExploreGridProps> = ({ courses, isLoading, on
             <div className="palette-surface palette-border border rounded-xl p-12 text-center">
                 <Search size={48} className="mx-auto mb-4 opacity-50 text-paragraph" />
                 <h3 className="text-xl font-bold text-paragraph mb-2">
-                    No courses found
+                    No encontramos cursos
                 </h3>
                 <p className="text-paragraph opacity-75 max-w-md mx-auto">
-                    We couldn't find any courses matching your current filters. Try adjusting your search or filter criteria.
+                    No hay cursos que coincidan con los filtros actuales. Ajusta la búsqueda o prueba con otros criterios.
                 </p>
             </div>
         );

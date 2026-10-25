@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="cursorgOgTitle cursorgOgDesc">
+  <title id="cursorgOgTitle">Cursorg — Capacitación corporativa sin barreras.</title>
+  <desc id="cursorgOgDesc">Plataforma B2B de capacitación corporativa. Formación que habla tu idioma y opera en tu moneda.</desc>
+  <defs>
+    <linearGradient id="ogBg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#071A2E"/>
+      <stop offset="0.55" stop-color="#0D2B4D"/>
+      <stop offset="1" stop-color="#123B66"/>
+    </linearGradient>
+    <radialGradient id="ogGlow" cx="0" cy="0" r="1" gradientTransform="translate(1010 170) rotate(125) scale(470)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#55C7E8" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#55C7E8" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="ogHex" width="72" height="62" patternUnits="userSpaceOnUse" patternTransform="scale(1)">
+      <path d="M18 0 54 0 72 31 54 62 18 62 0 31Z" fill="none" stroke="#55C7E8" stroke-opacity="0.055" stroke-width="1.2"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="url(#ogBg)"/>
+  <rect width="1200" height="630" fill="url(#ogHex)"/>
+  <rect width="1200" height="630" fill="url(#ogGlow)"/>
+
+  <g transform="translate(90 66)">
+    <g>
+      <path d="M56.25 18 32 4 7.75 18" fill="none" stroke="#55C7E8" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M7.75 18v28" fill="none" stroke="#7FD9F2" stroke-width="11" stroke-linecap="round"/>
+      <path d="M7.75 46 32 60l24.25-14" fill="none" stroke="#FBFBFE" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+    <text x="92" y="44" font-family="Montserrat, 'Segoe UI', Arial, Helvetica, sans-serif" font-size="42" font-weight="800" letter-spacing="2.6" fill="#FBFBFE">CURSORG</text>
+    <text x="94" y="68" font-family="Montserrat, 'Segoe UI', Arial, Helvetica, sans-serif" font-size="12" font-weight="500" letter-spacing="1.5" fill="#9FC3D8">PLATAFORMA DE CAPACITACIÓN CORPORATIVA</text>
+  </g>
+
+  <text x="90" y="296" font-family="Montserrat, 'Segoe UI', Arial, Helvetica, sans-serif" font-size="54" font-weight="800" letter-spacing="-1.2" fill="#FBFBFE">Capacitación corporativa</text>
+  <text x="90" y="362" font-family="Montserrat, 'Segoe UI', Arial, Helvetica, sans-serif" font-size="54" font-weight="800" letter-spacing="-1.2" fill="#55C7E8">sin barreras.</text>
+
+  <text x="90" y="438" font-family="Montserrat, 'Segoe UI', Arial, Helvetica, sans-serif" font-size="23" font-weight="500" fill="#C9D8E6">Formación que habla tu idioma y opera en tu moneda.</text>
+
+  <rect x="90" y="500" width="620" height="1" fill="#FFFFFF" fill-opacity="0.16"/>
+  <text x="90" y="548" font-family="Montserrat, 'Segoe UI', Arial, Helvetica, sans-serif" font-size="18" font-weight="600" letter-spacing="0.4" fill="#9FC3D8">Plataforma B2B de capacitación corporativa</text>
+  <text x="1110" y="548" text-anchor="end" font-family="Montserrat, 'Segoe UI', Arial, Helvetica, sans-serif" font-size="18" font-weight="700" letter-spacing="0.6" fill="#55C7E8">cursorg.ve</text>
+
+  <g transform="translate(890 188) scale(4.05)">
+    <path d="M56.25 18 32 4 7.75 18" fill="none" stroke="#55C7E8" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M7.75 18v28" fill="none" stroke="#7FD9F2" stroke-width="11" stroke-linecap="round"/>
+    <path d="M7.75 46 32 60l24.25-14" fill="none" stroke="#FBFBFE" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

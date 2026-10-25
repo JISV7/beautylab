@@ -18,13 +18,13 @@ export const WelcomeHero: React.FC<WelcomeHeroProps> = ({
     onContinue 
 }) => {
     const { user } = useAuth();
-    const userName = user?.name || user?.email?.split('@')[0] || 'Learner';
+    const userName = user?.name || user?.email?.split('@')[0] || 'equipo';
 
     const getGreeting = () => {
         const hour = new Date().getHours();
-        if (hour < 12) return 'Good morning';
-        if (hour < 18) return 'Good afternoon';
-        return 'Good evening';
+        if (hour < 12) return 'Buenos días';
+        if (hour < 18) return 'Buenas tardes';
+        return 'Buenas noches';
     };
 
     return (
@@ -42,10 +42,10 @@ export const WelcomeHero: React.FC<WelcomeHeroProps> = ({
                         {getGreeting()}
                     </p>
                     <h1 className="dashboard-welcome-title text-3xl md:text-4xl font-bold mb-2">
-                        Welcome back, {userName}! 👋
+                        Hola de nuevo, {userName} 👋
                     </h1>
                     <p className="dashboard-welcome-description text-lg opacity-90">
-                        Ready to continue your learning journey?
+                        Continúa donde lo dejaste y sigue construyendo evidencia de avance.
                     </p>
                 </div>
 
@@ -57,7 +57,7 @@ export const WelcomeHero: React.FC<WelcomeHeroProps> = ({
                                 <div className="flex items-center gap-2 mb-2">
                                     <Play className="w-4 h-4 theme-primary" style={{ color: 'var(--decorator-color)' }} />
                                     <span className="text-xs font-medium theme-text-secondary">
-                                        CONTINUE WHERE YOU LEFT OFF
+                                        CONTINÚA DONDE LO DEJASTE
                                     </span>
                                 </div>
                                 <h3 className="text-lg font-semibold theme-text-base mb-1">
@@ -73,14 +73,14 @@ export const WelcomeHero: React.FC<WelcomeHeroProps> = ({
                                     />
                                 </div>
                                 <p className="text-xs theme-text-secondary">
-                                    {lastActivity.progress}% complete
+                                    {lastActivity.progress}% completado
                                 </p>
                             </div>
                             <button
                                 onClick={onContinue}
                                 className="dashboard-welcome-button px-6 py-3 rounded-lg font-semibold flex items-center gap-2 whitespace-nowrap hover:opacity-90 transition-opacity"
                             >
-                                Continue
+                                Continuar
                                 <ArrowRight className="w-4 h-4" style={{ color: 'var(--decorator-color)' }} />
                             </button>
                         </div>
@@ -88,10 +88,10 @@ export const WelcomeHero: React.FC<WelcomeHeroProps> = ({
                 ) : (
                     <div className="theme-surface rounded-xl p-6 max-w-2xl">
                         <p className="theme-text-base mb-4">
-                            You haven't started any courses yet. Let's change that!
+                            Aún no has comenzado ningún curso. Explora la oferta formativa para tu equipo.
                         </p>
                         <button className="dashboard-welcome-button px-6 py-3 rounded-lg font-semibold flex items-center gap-2 hover:opacity-90 transition-opacity">
-                            Explore Courses
+                            Explorar cursos
                             <ArrowRight className="w-4 h-4" style={{ color: 'var(--decorator-color)' }} />
                         </button>
                     </div>

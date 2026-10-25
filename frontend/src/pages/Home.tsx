@@ -69,7 +69,7 @@ export function Home() {
     if (!activeTheme) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-red-500"></div>
+                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#1E5AA8]"></div>
             </div>
         );
     }

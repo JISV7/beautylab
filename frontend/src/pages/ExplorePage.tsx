@@ -40,7 +40,7 @@ export const ExplorePage: React.FC = () => {
             setLevels(response.data.levels);
         } catch (err: any) {
             console.error('Failed to fetch courses:', err);
-            setError(err.response?.data?.detail || 'Failed to load courses');
+            setError(err.response?.data?.detail || 'No se pudieron cargar los cursos.');
         } finally {
             setIsLoading(false);
         }
@@ -68,10 +68,10 @@ export const ExplorePage: React.FC = () => {
                 {/* Page Title */}
                 <div className="mb-6">
                     <h1 className="text-h1 font-bold mb-1">
-                        Explore Courses
+                        Explora los cursos
                     </h1>
                     <p className="text-paragraph">
-                        Discover amazing courses to boost your skills
+                        Encuentra programas para desarrollar a tu equipo y avanzar con evidencia.
                     </p>
                 </div>
 
@@ -80,19 +80,19 @@ export const ExplorePage: React.FC = () => {
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <div className="text-center">
                             <p className="text-3xl font-black text-paragraph">{courses.length}</p>
-                            <p className="text-sm text-paragraph opacity-60">Courses</p>
+                            <p className="text-sm text-paragraph opacity-60">Cursos</p>
                         </div>
                         <div className="text-center">
                             <p className="text-3xl font-black text-paragraph">{categories.length}</p>
-                            <p className="text-sm text-paragraph opacity-60">Categories</p>
+                            <p className="text-sm text-paragraph opacity-60">Categorías</p>
                         </div>
                         <div className="text-center">
                             <p className="text-3xl font-black text-paragraph">{levels.length}</p>
-                            <p className="text-sm text-paragraph opacity-60">Levels</p>
+                            <p className="text-sm text-paragraph opacity-60">Niveles</p>
                         </div>
                         <div className="text-center">
-                            <p className="text-3xl font-black text-paragraph">∞</p>
-                            <p className="text-sm text-paragraph opacity-60">Knowledge</p>
+                            <p className="text-3xl font-black text-paragraph">LATAM</p>
+                            <p className="text-sm text-paragraph opacity-60">Enfoque regional</p>
                         </div>
                     </div>
                 </div>
@@ -116,11 +116,12 @@ export const ExplorePage: React.FC = () => {
                 {!isLoading && !error && (
                     <div className="mb-6 flex items-center justify-between">
                         <p className="text-paragraph opacity-60">
-                            Showing <span className="font-bold text-paragraph">{courses.length}</span> courses
+                            Mostrando <span className="font-bold text-paragraph">{courses.length}</span>{' '}
+                            {courses.length === 1 ? 'curso' : 'cursos'}
                             {selectedCategory || selectedLevel || searchQuery ? (
-                                <span> matching your filters</span>
+                                <span> según tus filtros</span>
                             ) : (
-                                <span> available</span>
+                                <span> disponibles</span>
                             )}
                         </p>
                     </div>
@@ -130,14 +131,14 @@ export const ExplorePage: React.FC = () => {
                 {error && (
                     <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-6 text-center">
                         <p className="text-red-600 dark:text-red-400 font-bold mb-2">
-                            Oops! Something went wrong
+                            Algo salió mal
                         </p>
                         <p className="text-red-600/80 dark:text-red-400/80 text-sm">{error}</p>
                         <button
                             onClick={fetchCourses}
                             className="mt-4 px-6 py-2 bg-red-600 text-white rounded-lg font-bold text-sm hover:bg-red-700 transition-colors"
                         >
-                            Try Again
+                            Reintentar
                         </button>
                     </div>
                 )}

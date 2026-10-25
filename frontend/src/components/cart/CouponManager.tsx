@@ -49,7 +49,7 @@ export const CouponManager: React.FC<CouponManagerProps> = ({
         if (!code) return;
 
         if (appliedCoupons.some((c) => c.code === code)) {
-            setCouponError('This coupon is already applied.');
+            setCouponError('Este cupón ya está aplicado.');
             return;
         }
 
@@ -74,10 +74,10 @@ export const CouponManager: React.FC<CouponManagerProps> = ({
                 onApply({ code, discountAmount: discount });
                 setCouponInput('');
             } else {
-                setCouponError(data.message || 'Invalid coupon.');
+                setCouponError(data.message || 'Cupón no válido.');
             }
         } catch (err: any) {
-            setCouponError(err.response?.data?.detail || 'Failed to validate coupon.');
+            setCouponError(err.response?.data?.detail || 'No pudimos validar el cupón.');
         } finally {
             setCouponLoading(false);
         }
@@ -93,7 +93,7 @@ export const CouponManager: React.FC<CouponManagerProps> = ({
             {/* Coupon Input */}
             <div className="pt-3 border-t palette-border">
                 <p className="text-paragraph font-medium mb-2">
-                    Have a coupon?
+                    ¿Tienes un cupón?
                 </p>
                 <div className="flex gap-2 items-center">
                     <input
@@ -106,7 +106,7 @@ export const CouponManager: React.FC<CouponManagerProps> = ({
                         onKeyDown={(e) => {
                             if (e.key === 'Enter') handleApplyCoupon();
                         }}
-                        placeholder="Enter code"
+                        placeholder="Ingresa el código"
                         className="theme-input flex-1 min-w-0 !py-2 !px-3 text-sm"
                         disabled={couponLoading}
                     />
@@ -115,7 +115,7 @@ export const CouponManager: React.FC<CouponManagerProps> = ({
                         disabled={couponLoading || !couponInput.trim()}
                         className="theme-button theme-button-secondary !py-2 !px-3 text-sm disabled:opacity-50 flex-shrink-0"
                     >
-                        {couponLoading ? '...' : 'Apply'}
+                        {couponLoading ? '...' : 'Aplicar'}
                     </button>
                 </div>
                 {couponError && (

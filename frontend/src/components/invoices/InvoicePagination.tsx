@@ -26,7 +26,7 @@ export function InvoicePagination({ currentPage, totalPages, onPageChange, total
     return (
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6 pt-4 border-t palette-border print:hidden">
             <p className="text-paragraph opacity-60">
-                Showing <strong>{totalItems}</strong> result{totalItems !== 1 ? 's' : ''}
+                Mostrando <strong>{totalItems}</strong> resultado{totalItems !== 1 ? 's' : ''}
             </p>
 
             <div className="flex items-center gap-1">
@@ -34,7 +34,7 @@ export function InvoicePagination({ currentPage, totalPages, onPageChange, total
                     onClick={() => onPageChange(currentPage - 1)}
                     disabled={currentPage === 1}
                     className="p-2 rounded-lg btn-hover-surface disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                    title="Previous page"
+                    title="Página anterior"
                 >
                     <ChevronLeft className="w-4 h-4 text-paragraph" />
                 </button>
@@ -61,7 +61,7 @@ export function InvoicePagination({ currentPage, totalPages, onPageChange, total
                     onClick={() => onPageChange(currentPage + 1)}
                     disabled={currentPage === totalPages}
                     className="p-2 rounded-lg btn-hover-surface disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                    title="Next page"
+                    title="Página siguiente"
                 >
                     <ChevronRight className="w-4 h-4 text-paragraph" />
                 </button>

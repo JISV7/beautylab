@@ -76,12 +76,12 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
 
     // Validate passwords
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      setError('Las contraseñas no coinciden.');
       return;
     }
 
     if (password.length < 8) {
-      setError('Password must be at least 8 characters');
+      setError('La contraseña debe tener al menos 8 caracteres.');
       return;
     }
 
@@ -115,7 +115,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
       );
       onSuccess();
     } catch (err: any) {
-      setError(err.message || 'Registration failed');
+      setError(err.message || 'No se pudo crear la cuenta. Revisa los datos e inténtalo de nuevo.');
     } finally {
       setIsLoading(false);
     }
@@ -126,9 +126,9 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
   return (
     <div className="space-y-4">
       <div className="text-center">
-        <h2 className="text-h2 mb-1.5">Create Account</h2>
+        <h2 className="text-h2 mb-1.5">Crea tu cuenta</h2>
         <p className="text-paragraph text-sm">
-          Join us and start your learning journey
+          Registra a tu empresa y comienza a capacitar a tu equipo.
         </p>
       </div>
 
@@ -141,12 +141,12 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
               borderColor: 'var(--palette-border)',
             }}
           >
-            Personal Information
+            Datos personales
           </h3>
           
           <div>
             <label className="text-paragraph block mb-1.5">
-              Full Name {isLegalEntity ? '(Representative)' : '*'}
+              Nombre completo {isLegalEntity ? '(representante)' : '*'}
             </label>
             <div className="relative">
               <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5" />
@@ -156,7 +156,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className="auth-input w-full py-2.5 px-4 pl-11 rounded-lg"
-                placeholder={isLegalEntity ? "Representative Name" : "John Doe"}
+                placeholder={isLegalEntity ? 'Nombre del representante' : 'Ej. María Pérez'}
                 disabled={isLoading}
               />
             </div>
@@ -164,7 +164,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
 
           <div>
             <label className="text-paragraph block mb-1.5">
-              Email Address *
+              Correo electrónico *
             </label>
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5" />
@@ -174,7 +174,8 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="auth-input w-full py-2.5 px-4 pl-11 rounded-lg"
-                placeholder="you@example.com"
+                placeholder="tu@empresa.com"
+                autoComplete="email"
                 disabled={isLoading}
               />
             </div>
@@ -183,7 +184,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
           {isLegalEntity && (
             <div>
               <label className="text-paragraph block mb-1.5">
-                Business Name *
+                Razón social *
               </label>
               <div className="relative">
                 <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5" />
@@ -193,7 +194,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                   value={businessName}
                   onChange={(e) => setBusinessName(e.target.value)}
                   className="auth-input w-full py-2.5 px-4 pl-11 rounded-lg"
-                  placeholder="Company Name C.A."
+                  placeholder="Nombre de la empresa C.A."
                   disabled={isLoading}
                 />
               </div>
@@ -203,7 +204,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="text-paragraph block mb-1.5">
-                Document Type *
+                Tipo de documento *
               </label>
               <div className="relative">
                 <FileText className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5" />
@@ -213,17 +214,17 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                   className="auth-input w-full py-2.5 px-4 pl-11 rounded-lg appearance-none bg-white dark:bg-gray-800"
                   disabled={isLoading}
                 >
-                  <option value="V">V - Venezuelan</option>
-                  <option value="E">E - Resident</option>
-                  <option value="J">J - Legal Entity</option>
-                  <option value="P">P - Passport</option>
+                  <option value="V">V - Venezolano</option>
+                  <option value="E">E - Residente</option>
+                  <option value="J">J - Persona jurídica</option>
+                  <option value="P">P - Pasaporte</option>
                 </select>
               </div>
             </div>
 
             <div>
               <label className="text-paragraph block mb-1.5">
-                Document Number *
+                Número de documento *
               </label>
               <input
                 type="text"
@@ -231,7 +232,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                 value={documentNumber}
                 onChange={(e) => setDocumentNumber(e.target.value)}
                 className="auth-input w-full py-2.5 px-4 rounded-lg"
-                placeholder={documentType === 'P' ? 'Passport Number' : 'ID Number'}
+                placeholder={documentType === 'P' ? 'Número de pasaporte' : 'Número de cédula'}
                 disabled={isLoading}
               />
             </div>
@@ -239,7 +240,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
 
           <div>
             <label className="text-paragraph block mb-1.5">
-              RIF (Tax ID) *
+              RIF (identificación fiscal) *
             </label>
             <div className="relative">
               <input
@@ -278,7 +279,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                 }}
               >
                 <p className="text-paragraph opacity-80 mb-2">
-                  Your expected RIF is:
+                  Tu RIF esperado es:
                 </p>
                 <div className="flex items-center justify-between gap-2">
                   <code
@@ -300,7 +301,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                     }}
                     disabled={isLoading}
                   >
-                    Auto-fill
+                    Autocompletar
                   </button>
                 </div>
               </div>
@@ -308,14 +309,14 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
 
             {!rifError && rifValid && (
               <p className="text-paragraph text-green-600 dark:text-green-400 mt-1">
-                RIF is valid
+                El RIF es válido
               </p>
             )}
           </div>
 
           <div>
             <label className="text-paragraph block mb-1.5">
-              Fiscal Address *
+              Dirección fiscal *
             </label>
             <div className="relative">
               <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5" />
@@ -325,7 +326,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                 value={fiscalAddress}
                 onChange={(e) => setFiscalAddress(e.target.value)}
                 className="auth-input w-full py-2.5 px-4 pl-11 rounded-lg"
-                placeholder="Complete address for invoices"
+                placeholder="Dirección completa para facturación"
                 disabled={isLoading}
               />
             </div>
@@ -333,7 +334,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
 
           <div>
             <label className="text-paragraph block mb-1.5">
-              Phone *
+              Teléfono *
             </label>
             <div className="relative">
               <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5" />
@@ -359,14 +360,14 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
               disabled={isLoading}
             />
             <label htmlFor="isContributor" className="text-sm text-gray-700 dark:text-gray-300">
-              I am a VAT contributor (require invoice with RIF)
+Soy contribuyente de IVA (requiero factura con RIF)
             </label>
           </div>
 
           {isContributor && (
             <div>
               <label className="text-paragraph block mb-1.5">
-                Business Name / Razón Social *
+                Razón social / Nombre completo *
               </label>
               <div className="relative">
                 <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5" />
@@ -376,7 +377,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                   value={businessName}
                   onChange={(e) => setBusinessName(e.target.value)}
                   className="auth-input w-full py-2.5 px-4 pl-11 rounded-lg"
-                  placeholder="Empresa C.A. / Your full name if individual"
+                  placeholder="Empresa C.A. / Tu nombre si eres persona natural"
                   disabled={isLoading}
                 />
               </div>
@@ -392,12 +393,12 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
               borderColor: 'var(--palette-border)',
             }}
           >
-            Security
+            Seguridad
           </h3>
 
           <div>
             <label className="text-paragraph block mb-1.5">
-              Password *
+              Contraseña *
             </label>
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5" />
@@ -408,6 +409,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                 onChange={(e) => setPassword(e.target.value)}
                 className="auth-input w-full py-2.5 px-4 pl-11 pr-12 rounded-lg"
                 placeholder="••••••••"
+                autoComplete="new-password"
                 disabled={isLoading}
               />
               <button
@@ -427,7 +429,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
 
           <div>
             <label className="text-paragraph block mb-1.5">
-              Confirm Password *
+              Confirmar contraseña *
             </label>
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5" />
@@ -438,6 +440,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 className="auth-input w-full py-2.5 px-4 pl-11 pr-12 rounded-lg"
                 placeholder="••••••••"
+                autoComplete="new-password"
                 disabled={isLoading}
               />
               <button
@@ -464,22 +467,22 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
 
         <button
           type="submit"
-          className="w-full py-2.5 px-4 rounded-lg bg-[var(--palette-primary)] text-[var(--decorator-color)] font-semibold hover:bg-[var(--palette-accent)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-paragraph"
+          className="w-full py-2.5 px-4 rounded-lg bg-[var(--palette-primary)] text-[var(--decorator-color)] font-semibold hover:bg-[var(--palette-secondary)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-paragraph"
           disabled={isLoading}
         >
-          {isLoading ? 'Creating Account...' : 'Create Account'}
+          {isLoading ? 'Creando cuenta...' : 'Crear cuenta'}
           {!isLoading && <ArrowRight className="w-4 h-4" />}
         </button>
       </form>
 
       <div className="text-center">
         <p className="text-paragraph text-sm">
-          Already have an account?{' '}
+          ¿Ya tienes una cuenta?{' '}
           <button
             onClick={onSwitchToLogin}
             className="text-paragraph text-palette-primary hover:opacity-80 transition-opacity"
           >
-            Sign in
+            Inicia sesión
           </button>
         </p>
       </div>

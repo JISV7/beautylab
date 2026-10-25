@@ -15,13 +15,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
     onClose
 }) => {
     const navItems = [
-        { id: 'home', label: 'Home', icon: Home },
-        { id: 'my-courses', label: 'My Courses', icon: BookOpen },
-        { id: 'explore', label: 'Explore', icon: Compass },
-        { id: 'learning-paths', label: 'Learning Paths', icon: Compass },
-        { id: 'community', label: 'Community', icon: Users },
-        { id: 'ai-lab', label: 'AI Lab', icon: Sparkles },
-        { id: 'invoices', label: 'Invoices', icon: FileText },
+        { id: 'home', label: 'Inicio', icon: Home },
+        { id: 'my-courses', label: 'Mis cursos', icon: BookOpen },
+        { id: 'explore', label: 'Explorar cursos', icon: Compass },
+        { id: 'learning-paths', label: 'Rutas de aprendizaje', icon: Compass },
+        { id: 'community', label: 'Comunidad', icon: Users },
+        { id: 'ai-lab', label: 'Laboratorio IA', icon: Sparkles },
+        { id: 'invoices', label: 'Facturas', icon: FileText },
     ];
 
     const handleClick = (itemId: string) => {
@@ -41,8 +41,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
             `}>
                 {/* Mobile Close Button */}
                 <div className="lg:hidden flex items-center justify-between p-4 border-b palette-border">
-                    <span className="text-h4">Menu</span>
-                    <button onClick={onClose} className="p-2 text-paragraph">
+                    <span className="text-h4">Menú</span>
+                    <button onClick={onClose} aria-label="Cerrar menú" className="p-2 text-paragraph">
                         <X className="w-5 h-5" />
                     </button>
                 </div>

@@ -150,7 +150,7 @@ export const CourseFormStep1: React.FC<CourseFormStep1Props> = ({
                     </label>
                     <div className="flex">
                         <span className="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-[var(--palette-border)] bg-[var(--palette-surface)] text-paragraph opacity-60 text-xs">
-                            beautylab.com/c/
+                            cursorg.ve/c/
                         </span>
                         <input
                             type="text"
@@ -240,7 +240,7 @@ export const CourseFormStep1: React.FC<CourseFormStep1Props> = ({
                                 type="url"
                                 name="image_url"
                                 className="theme-input flex-1"
-                                placeholder="https://cdn.beautylab.com/images/... or upload below"
+                                placeholder="https://cdn.cursorg.ve/images/... o sube un archivo abajo"
                                 value={formData.image_url}
                                 onChange={onChange}
                             />

@@ -4,23 +4,33 @@
   <meta charset="utf-8">
   <style>
   {% raw %}
+  /* ---- Brand font bundled with the backend ---- */
+  @font-face {
+      font-family: "Montserrat";
+      src: url("../fonts/Montserrat-VariableFont_wght.ttf") format("truetype");
+      font-weight: 100 900;
+      font-style: normal;
+  }
   @page {
       size: legal;
       margin: 1.5cm 2cm;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
-      font-family: "Roboto", "Helvetica Neue", Arial, sans-serif;
+      font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
       font-size: 10pt;
-      color: #1A1A1A;
+      color: #0D2B4D;
       line-height: 1.4;
   }
 
   /* ---- Colors ---- */
   :root {
-      --primary: #F83A3A;
-      --muted: rgba(26, 26, 26, 0.6);
-      --green-text: #15803d;
+      --primary: #0D2B4D;
+      --secondary: #1E5AA8;
+      --accent: #55C7E8;
+      --neutral: #6E7882;
+      --muted: #6E7882;
+      --green-text: #1E5AA8;
   }
 
   /* ---- Typography ---- */
@@ -33,7 +43,7 @@
   h3 {
       font-size: 12pt;
       font-weight: 600;
-      color: #1A1A1A;
+      color: #0D2B4D;
       text-transform: uppercase;
       opacity: 0.75;
       margin-bottom: 8px;
@@ -48,7 +58,7 @@
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      border-bottom: 1px solid #DDD;
+      border-bottom: 1px solid #D9E2EC;
       padding-bottom: 12px;
       margin-bottom: 12px;
   }
@@ -56,7 +66,7 @@
   .header-left .inv-num { color: var(--muted); font-size: 9pt; }
 
   .co-info { text-align: right; min-width: 200px; }
-  .co-name { font-weight: 600; font-size: 10pt; color: #1A1A1A; }
+  .co-name { font-weight: 600; font-size: 10pt; color: #0D2B4D; }
 
   /* ---- Info bar (transparent, no border) ---- */
   .info-bar {
@@ -98,13 +108,13 @@
       font-weight: 600;
       text-transform: uppercase;
       color: var(--muted);
-      border-bottom: 1px solid #DDD;
+      border-bottom: 1px solid #D9E2EC;
       padding: 6px 4px;
   }
   .th-center { text-align: center; }
   .th-right { text-align: right; }
   .line-table tbody tr {
-      border-bottom: 1px solid #EEE;
+      border-bottom: 1px solid #E8EEF5;
   }
   .line-table td {
       padding: 6px 4px;
@@ -152,7 +162,7 @@
   .tot-grand {
       padding: 6px 0;
       margin-top: 4px;
-      border-top: 1px solid #DDD;
+      border-top: 1px solid #D9E2EC;
   }
   .tot-grand-label { font-weight: 700; color: var(--primary); font-size: 10pt; }
   .tot-grand-val {
@@ -163,7 +173,7 @@
 
   /* ---- Payments (transparent, no border, no badges) ---- */
   .payments-section {
-      border-top: 1px solid #DDD;
+      border-top: 1px solid #D9E2EC;
       padding-top: 12px;
       margin-top: 8px;
   }
@@ -173,7 +183,7 @@
       justify-content: space-between;
       align-items: center;
       padding: 6px 0;
-      border-bottom: 1px solid #EEE;
+      border-bottom: 1px solid #E8EEF5;
   }
   .pay-method { font-weight: 600; font-size: 9pt; white-space: nowrap; }
   .pay-detail { font-weight: 400; color: var(--muted); font-size: 8pt; }
@@ -190,7 +200,7 @@
   .printer-section {
       display: flex;
       gap: 24px;
-      border-top: 1px solid #DDD;
+      border-top: 1px solid #D9E2EC;
       padding-top: 10px;
       margin-top: 14px;
   }
@@ -201,8 +211,8 @@
   .footer {
       text-align: center;
       font-size: 7pt;
-      color: #999;
-      border-top: 1px solid #DDD;
+      color: #6E7882;
+      border-top: 1px solid #D9E2EC;
       padding-top: 8px;
       margin-top: 14px;
   }
@@ -378,11 +388,13 @@
     {% endif %}
 
     {# ==================== Footer ==================== #}
-    {% if company %}
     <div class="footer">
+      {% if company %}
       <p>{{ company.business_name }} | RIF: {{ company.rif }}</p>
+      {% else %}
+      <p>Cursorg - Plataforma de Capacitación Corporativa</p>
+      {% endif %}
     </div>
-    {% endif %}
 
   </div>
 </body>

@@ -28,7 +28,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
       await login(email, password);
       onSuccess();
     } catch (err: any) {
-      setError(err.message || 'Login failed');
+      setError(err.message || 'No se pudo iniciar sesión. Verifica tus datos e inténtalo de nuevo.');
     } finally {
       setIsLoading(false);
     }
@@ -37,16 +37,16 @@ export const LoginForm: React.FC<LoginFormProps> = ({
   return (
     <div className="space-y-5">
       <div className="text-center">
-        <h2 className="text-h2 mb-2">Welcome Back</h2>
+        <h2 className="text-h2 mb-2">Bienvenido de nuevo</h2>
         <p className="text-paragraph">
-          Sign in to your account to continue
+          Inicia sesión para continuar con la capacitación de tu equipo.
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="text-paragraph block mb-1.5">
-            Email Address
+            Correo electrónico
           </label>
           <div className="relative">
             <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5" />
@@ -56,7 +56,8 @@ export const LoginForm: React.FC<LoginFormProps> = ({
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="auth-input w-full py-2.5 px-4 pl-11 rounded-lg"
-              placeholder="you@example.com"
+              placeholder="tu@empresa.com"
+              autoComplete="email"
               disabled={isLoading}
             />
           </div>
@@ -64,7 +65,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
 
         <div>
           <label className="text-paragraph block mb-1.5">
-            Password
+            Contraseña
           </label>
           <div className="relative">
             <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5" />
@@ -75,6 +76,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
               onChange={(e) => setPassword(e.target.value)}
               className="auth-input w-full py-2.5 px-4 pl-11 pr-12 rounded-lg"
               placeholder="••••••••"
+              autoComplete="current-password"
               disabled={isLoading}
             />
             <button
@@ -96,7 +98,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
             className="text-paragraph text-palette-primary text-sm mt-2 hover:opacity-80 transition-opacity"
             disabled={isLoading}
           >
-            Forgot password?
+¿Olvidaste tu contraseña?
           </button>
         </div>
 
@@ -108,22 +110,22 @@ export const LoginForm: React.FC<LoginFormProps> = ({
 
         <button
           type="submit"
-          className="w-full py-2.5 px-4 rounded-lg bg-[var(--palette-primary)] text-[var(--decorator-color)] font-semibold hover:bg-[var(--palette-accent)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-paragraph"
+          className="w-full py-2.5 px-4 rounded-lg bg-[var(--palette-primary)] text-[var(--decorator-color)] font-semibold hover:bg-[var(--palette-secondary)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-paragraph"
           disabled={isLoading}
         >
-          {isLoading ? 'Signing in...' : 'Sign In'}
+          {isLoading ? 'Iniciando sesión...' : 'Iniciar sesión'}
           {!isLoading && <ArrowRight className="w-4 h-4" />}
         </button>
       </form>
 
       <div className="text-center">
         <p className="text-paragraph text-sm">
-          Don&apos;t have an account?{' '}
+          ¿Aún no tienes cuenta?{' '}
           <button
             onClick={onSwitchToRegister}
             className="text-paragraph text-palette-primary hover:opacity-80 transition-opacity"
           >
-            Sign up
+            Crear una cuenta
           </button>
         </p>
       </div>

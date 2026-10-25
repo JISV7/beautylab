@@ -85,7 +85,7 @@ export function calculateRifCheckDigit(documentType: string, documentNumber: str
  */
 export function validateRif(rif: string): { isValid: boolean; errorMessage: string; normalizedRif: string } {
   if (!rif || rif.trim() === '') {
-    return { isValid: false, errorMessage: 'RIF is required', normalizedRif: '' };
+    return { isValid: false, errorMessage: 'El RIF es obligatorio', normalizedRif: '' };
   }
 
   // Remove common separators and convert to uppercase
@@ -93,7 +93,7 @@ export function validateRif(rif: string): { isValid: boolean; errorMessage: stri
 
   // Check basic format: 1 letter + at least 1 digit, up to 9 digits (max length 10)
   if (cleanRif.length < 2 || cleanRif.length > 10) {
-    return { isValid: false, errorMessage: 'RIF must have format: [VEJPG]-XXXXXXXX-X', normalizedRif: '' };
+    return { isValid: false, errorMessage: 'El RIF debe tener el formato: [VEJPG]-XXXXXXXX-X', normalizedRif: '' };
   }
 
   const documentType = cleanRif[0];
@@ -103,7 +103,7 @@ export function validateRif(rif: string): { isValid: boolean; errorMessage: stri
   if (!validTypes.includes(documentType)) {
     return {
       isValid: false,
-      errorMessage: `Invalid document type. Must be one of: ${validTypes.join(', ')}`,
+      errorMessage: `Tipo de documento no válido. Debe ser uno de: ${validTypes.join(', ')}`,
       normalizedRif: ''
     };
   }
@@ -113,7 +113,7 @@ export function validateRif(rif: string): { isValid: boolean; errorMessage: stri
   if (!/^\d+$/.test(digits)) {
     return {
       isValid: false,
-      errorMessage: 'RIF must contain only digits after the type letter',
+      errorMessage: 'El RIF debe contener solo dígitos después de la letra de tipo',
       normalizedRif: ''
     };
   }
@@ -152,7 +152,7 @@ export function validateRif(rif: string): { isValid: boolean; errorMessage: stri
     if (providedCheck !== expectedCheck) {
       return {
         isValid: false,
-        errorMessage: `Invalid RIF check digit. Expected: ${documentType}${docNumber}${expectedCheck}`,
+        errorMessage: `Dígito verificador del RIF no válido. Esperado: ${documentType}${docNumber}${expectedCheck}`,
         normalizedRif: ''
       };
     }

@@ -404,7 +404,7 @@ class PaymentService:
         from app.services.email_service import get_email_service
         from app.services.invoice_service import InvoiceService
 
-        logger = logging.getLogger("beautylab.email")
+        logger = logging.getLogger("cursorg.email")
 
         # Process the split payment
         payments = await self.process_split_payment(request)

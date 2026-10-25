@@ -75,6 +75,7 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
     const [giftModalOpen, setGiftModalOpen] = useState(false);
     const [selectedLicenseId, setSelectedLicenseId] = useState<string | null>(null);
     const [addToCartMessage, setAddToCartMessage] = useState<string | null>(null);
+    const [addToCartError, setAddToCartError] = useState(false);
 
     // Redeem state
     const [redeemModalOpen, setRedeemModalOpen] = useState(false);
@@ -107,7 +108,7 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
             setCourse(response.data);
         } catch (err: any) {
             console.error('Failed to fetch course details:', err);
-            setError(err.response?.data?.detail || 'Failed to load course details');
+            setError(err.response?.data?.detail || 'No se pudieron cargar los detalles del curso.');
         } finally {
             setIsLoading(false);
         }
@@ -137,10 +138,11 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
         if (!course || !course.product_id) return;
 
         setAddToCartMessage(null);
+        setAddToCartError(false);
 
         try {
             await addToCart(course.product_id, quantity);
-            setAddToCartMessage(`Added ${quantity} x "${course.title}" to cart!`);
+            setAddToCartMessage(`Se agregaron ${quantity} × "${course.title}" al carrito.`);
             setTimeout(() => setAddToCartMessage(null), 3000);
         } catch (error: any) {
             const detail = error?.response?.data?.detail;
@@ -148,7 +150,8 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
                 ? detail
                 : Array.isArray(detail)
                     ? detail.map((e: any) => e.msg).join(', ')
-                    : 'Failed to add to cart';
+                    : 'No se pudo agregar el curso al carrito.';
+            setAddToCartError(true);
             setAddToCartMessage(message);
         }
     };
@@ -220,49 +223,49 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
 
             // Check amount
             if (!amount || amount <= 0) {
-                return `Payment method ${method}: Amount must be greater than 0`;
+                return `Método de pago ${method}: el monto debe ser mayor que 0.`;
             }
 
             // Check required fields based on method
             switch (method) {
                 case 'credit_card':
-                    if (!values.card_holder_name) return 'Credit Card: Cardholder name is required';
-                    if (!values.card_number || values.card_number.length < 13) return 'Credit Card: Valid card number is required';
-                    if (!values.expiry_month) return 'Credit Card: Expiry month is required';
-                    if (!values.expiry_year) return 'Credit Card: Expiry year is required';
-                    if (!values.cvv || values.cvv.length < 3) return 'Credit Card: CVV is required';
-                    if (!values.card_brand) return 'Credit Card: Card brand is required';
+                    if (!values.card_holder_name) return 'Tarjeta de crédito: el nombre del titular es obligatorio.';
+                    if (!values.card_number || values.card_number.length < 13) return 'Tarjeta de crédito: ingresa un número de tarjeta válido.';
+                    if (!values.expiry_month) return 'Tarjeta de crédito: el mes de vencimiento es obligatorio.';
+                    if (!values.expiry_year) return 'Tarjeta de crédito: el año de vencimiento es obligatorio.';
+                    if (!values.cvv || values.cvv.length < 3) return 'Tarjeta de crédito: el CVV es obligatorio.';
+                    if (!values.card_brand) return 'Tarjeta de crédito: la marca de la tarjeta es obligatoria.';
                     break;
                 case 'debit_card':
-                    if (!values.card_holder_name) return 'Debit Card: Cardholder name is required';
-                    if (!values.card_number || values.card_number.length < 13) return 'Debit Card: Valid card number is required';
-                    if (!values.expiry_month) return 'Debit Card: Expiry month is required';
-                    if (!values.expiry_year) return 'Debit Card: Expiry year is required';
-                    if (!values.cvv || values.cvv.length < 3) return 'Debit Card: CVV is required';
-                    if (!values.bank_name) return 'Debit Card: Bank name is required';
+                    if (!values.card_holder_name) return 'Tarjeta de débito: el nombre del titular es obligatorio.';
+                    if (!values.card_number || values.card_number.length < 13) return 'Tarjeta de débito: ingresa un número de tarjeta válido.';
+                    if (!values.expiry_month) return 'Tarjeta de débito: el mes de vencimiento es obligatorio.';
+                    if (!values.expiry_year) return 'Tarjeta de débito: el año de vencimiento es obligatorio.';
+                    if (!values.cvv || values.cvv.length < 3) return 'Tarjeta de débito: el CVV es obligatorio.';
+                    if (!values.bank_name) return 'Tarjeta de débito: el nombre del banco es obligatorio.';
                     break;
                 case 'zelle':
-                    if (!values.sender_name) return 'Zelle: Sender name is required';
-                    if (!values.sender_email) return 'Zelle: Sender email is required';
-                    if (!values.recipient_email) return 'Zelle: Recipient email is required';
-                    if (!values.confirmation_code) return 'Zelle: Confirmation code is required';
+                    if (!values.sender_name) return 'Zelle: el nombre del remitente es obligatorio.';
+                    if (!values.sender_email) return 'Zelle: el correo del remitente es obligatorio.';
+                    if (!values.recipient_email) return 'Zelle: el correo del destinatario es obligatorio.';
+                    if (!values.confirmation_code) return 'Zelle: el código de confirmación es obligatorio.';
                     break;
                 case 'pago_movil':
-                    if (!values.bank_name) return 'Pago Móvil: Bank name is required';
-                    if (!values.phone_number) return 'Pago Móvil: Phone number is required';
-                    if (!values.rif_cedula) return 'Pago Móvil: RIF/Cédula is required';
-                    if (!values.reference_code) return 'Pago Móvil: Reference code is required';
+                    if (!values.bank_name) return 'Pago Móvil: el nombre del banco es obligatorio.';
+                    if (!values.phone_number) return 'Pago Móvil: el número de teléfono es obligatorio.';
+                    if (!values.rif_cedula) return 'Pago Móvil: el RIF o cédula es obligatorio.';
+                    if (!values.reference_code) return 'Pago Móvil: el código de referencia es obligatorio.';
                     break;
                 case 'paypal':
-                    if (!values.paypal_email) return 'PayPal: PayPal email is required';
-                    if (!values.transaction_id) return 'PayPal: Transaction ID is required';
-                    if (!values.payer_name) return 'PayPal: Payer name is required';
+                    if (!values.paypal_email) return 'PayPal: el correo de PayPal es obligatorio.';
+                    if (!values.transaction_id) return 'PayPal: el ID de transacción es obligatorio.';
+                    if (!values.payer_name) return 'PayPal: el nombre del pagador es obligatorio.';
                     break;
                 case 'bank_transfer':
-                    if (!values.transfer_reference) return 'Bank Transfer: Reference is required';
-                    if (!values.bank_name) return 'Bank Transfer: Bank name is required';
-                    if (!values.transfer_date) return 'Bank Transfer: Transfer date is required';
-                    if (!values.account_holder) return 'Bank Transfer: Account holder is required';
+                    if (!values.transfer_reference) return 'Transferencia bancaria: la referencia es obligatoria.';
+                    if (!values.bank_name) return 'Transferencia bancaria: el nombre del banco es obligatorio.';
+                    if (!values.transfer_date) return 'Transferencia bancaria: la fecha de transferencia es obligatoria.';
+                    if (!values.account_holder) return 'Transferencia bancaria: el titular de la cuenta es obligatorio.';
                     break;
             }
         }
@@ -312,7 +315,7 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
                 issue_date: new Date().toISOString(),
                 items: [
                     {
-                        description: `Course Enrollment - ${course.title}`,
+                        description: `Inscripción al curso - ${course.title}`,
                         quantity: '1',
                         unit_price: response.data.total_paid,
                         line_total: response.data.total_paid,
@@ -336,7 +339,7 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
             } else if (typeof errorDetail === 'object' && errorDetail !== null) {
                 setPurchaseError(JSON.stringify(errorDetail));
             } else {
-                setPurchaseError(errorDetail || 'Payment failed. Please try again.');
+                setPurchaseError(errorDetail || 'El pago no se pudo procesar. Inténtalo de nuevo.');
             }
             setPaymentStep('payment_details');
         }
@@ -376,7 +379,7 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
             fetchCourseDetails();
         } catch (err: any) {
             console.error('Failed to gift license:', err);
-            alert(err.response?.data?.detail || 'Failed to gift license');
+            alert(err.response?.data?.detail || 'No se pudo regalar la licencia.');
         }
     };
 
@@ -405,7 +408,7 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
             fetchCourseDetails();
         } catch (err: any) {
             const detail = err.response?.data?.detail;
-            setRedeemError(typeof detail === 'string' ? detail : 'Failed to redeem license');
+            setRedeemError(typeof detail === 'string' ? detail : 'No se pudo canjear la licencia.');
         }
     };
 
@@ -424,7 +427,7 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
         return (
             <div className="p-6">
                 <div className="palette-surface palette-border border rounded-xl p-8 text-center">
-                    <p className="text-paragraph">Loading course details...</p>
+                    <p className="text-paragraph">Cargando detalles del curso...</p>
                 </div>
             </div>
         );
@@ -434,12 +437,12 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
         return (
             <div className="p-6">
                 <div className="palette-surface palette-border border rounded-xl p-8 text-center">
-                    <p className="text-red-600 dark:text-red-400 mb-4">{error || 'Course not found'}</p>
+                    <p className="text-red-600 dark:text-red-400 mb-4">{error || 'Curso no encontrado'}</p>
                     <button
                         onClick={onBack}
                         className="theme-button theme-button-secondary"
                     >
-                        Go Back
+                        Volver
                     </button>
                 </div>
             </div>
@@ -456,7 +459,7 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
                         className="inline-flex items-center gap-2 text-paragraph text-paragraph hover:opacity-60 transition-opacity mb-6"
                     >
                         <ArrowLeft size={18} />
-                        Back to Explore
+                        Volver a explorar
                     </button>
                 )}
                 <PurchaseConfirmation
@@ -483,7 +486,7 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
                     className="inline-flex items-center gap-2 text-paragraph text-paragraph hover:opacity-60 transition-opacity mb-6"
                 >
                     <ArrowLeft size={18} />
-                    Back to Explore
+                    Volver a explorar
                 </button>
             )}
 
@@ -495,7 +498,7 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
                         <div className="sticky top-0 palette-surface border-b border-[var(--palette-border)] p-6 flex items-center justify-between z-10">
                             <div>
                                 <h2 className="text-h3">
-                                    Complete Your Purchase
+                                    Completa tu compra
                                 </h2>
                                 <p className="text-paragraph opacity-60">
                                     {course.title}
@@ -503,6 +506,7 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
                             </div>
                             <button
                                 onClick={() => setPaymentStep('idle')}
+                                aria-label="Cerrar"
                                 className="p-2 hover:bg-[var(--palette-background)] rounded-lg transition-colors"
                             >
                                 <X size={24} className="text-paragraph" />
@@ -514,7 +518,7 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
                             {/* Price Display with IVA breakdown */}
                             <div className="palette-surface palette-border border rounded-xl p-4 space-y-3">
                                 <div className="flex items-center justify-between text-paragraph opacity-75">
-                                    <span className="text-sm font-medium">Base Price</span>
+                                    <span className="text-sm font-medium">Precio base</span>
                                     <span className="text-sm font-medium">Bs. {courseBasePrice.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                                 </div>
                                 <div className="flex items-center justify-between text-paragraph opacity-75">
@@ -525,7 +529,7 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
                                     <div className="flex items-center gap-2">
                                         <ShoppingCart size={20} className="text-[var(--palette-primary)]" />
                                         <span className="text-paragraph font-bold">
-                                            Total (with IVA)
+                                            Total (con IVA)
                                         </span>
                                     </div>
                                     <span className="text-h3 font-black text-[var(--palette-primary)]">
@@ -547,7 +551,7 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
                             <div className="space-y-4">
                                 <div className="flex items-center gap-2 text-paragraph opacity-80">
                                     <span>💡</span>
-                                    <span>You can split your payment across multiple methods. Just add another payment method and allocate the desired amount to each.</span>
+                                    <span>Puedes dividir el pago entre varios métodos. Agrega otro método y asigna el monto correspondiente a cada uno.</span>
                                 </div>
 
                                 <SplitPaymentManager
@@ -562,10 +566,10 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
                                     disabled={!isPaymentValid}
                                     className="theme-button theme-button-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                    Complete Purchase - Bs. {totalAllocated.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                    Completar compra - Bs. {totalAllocated.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                     {totalAllocated < coursePrice && (
                                         <span className="block text-xs opacity-75 mt-1">
-                                            (Remaining: Bs. {(coursePrice - totalAllocated).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })})
+                                            (Restante: Bs. {(coursePrice - totalAllocated).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })})
                                         </span>
                                     )}
                                 </button>
@@ -581,10 +585,10 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
                     <div className="palette-surface palette-border border rounded-xl p-8 text-center max-w-md">
                         <Loader2 size={48} className="animate-spin mx-auto mb-4 text-[var(--palette-primary)]" />
                         <h3 className="text-h4 mb-2">
-                            Processing Payment
+                            Procesando pago
                         </h3>
                         <p className="text-paragraph opacity-60">
-                            Please wait while we process your payment...
+                            Espera mientras procesamos tu pago...
                         </p>
                     </div>
                 </div>
@@ -612,27 +616,27 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
             {!isAuthenticated && (
                 <div className="mb-8 p-6 palette-surface palette-border border rounded-xl text-center">
                     <h3 className="text-h4 mb-2">
-                        Interested in this course?
+                        ¿Te interesa este curso?
                     </h3>
                     <p className="text-paragraph opacity-75 mb-4">
-                        Sign in to purchase and start learning.
+                        Inicia sesión para comprar y comenzar a aprender.
                     </p>
                     <a
                         href="/"
                         className="theme-button theme-button-primary inline-flex"
                     >
-                        Sign In
+                        Iniciar sesión
                     </a>
                 </div>
             )}
 
             {/* Add to Cart Message */}
             {addToCartMessage && (
-                <div className={`mb-6 p-4 rounded-xl border ${addToCartMessage.includes('Failed')
+                <div className={`mb-6 p-4 rounded-xl border ${addToCartError
                         ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800'
                         : 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800'
                     }`}>
-                    <p className={addToCartMessage.includes('Failed') ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'}>
+                    <p className={addToCartError ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'}>
                         {addToCartMessage}
                     </p>
                 </div>
@@ -642,7 +646,7 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
             {isAuthenticated && (
                 <div className="mb-8">
                     <h2 className="text-h3 mb-4">
-                        Your Licenses
+                        Tus licencias
                     </h2>
                     <LicenseTable
                         licenses={course.user_licenses}
@@ -674,7 +678,7 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
                                 <KeyRound size={20} className="text-green-600 dark:text-green-400" />
                             </div>
                             <h2 className="text-h4">
-                                Redeem License
+                                Canjear licencia
                             </h2>
                         </div>
 
@@ -683,7 +687,7 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
                             <div className="flex items-start gap-3 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
                                 <AlertTriangle size={18} className="text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
                                 <p className="text-paragraph text-sm">
-                                    This will bind the license to your account. Once redeemed, the license cannot be transferred or gifted to another user.
+                                    Esta acción vinculará la licencia a tu cuenta. Una vez canjeada, no podrá transferirse ni regalarse a otro usuario.
                                 </p>
                             </div>
 
@@ -700,13 +704,13 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
                                 onClick={() => { setRedeemModalOpen(false); setRedeemLicenseId(null); setRedeemError(null); }}
                                 className="flex-1 theme-button theme-button-secondary"
                             >
-                                Cancel
+                                Cancelar
                             </button>
                             <button
                                 onClick={handleRedeemConfirm}
                                 className="flex-1 theme-button theme-button-primary"
                             >
-                                Redeem License
+                                Canjear licencia
                             </button>
                         </div>
                     </div>

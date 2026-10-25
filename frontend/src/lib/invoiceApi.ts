@@ -61,7 +61,7 @@ export async function downloadAllInvoices(
         link.href = url;
         const disposition = response.headers['content-disposition'];
         const match = disposition?.match(/filename="?(.+?)"?$/i);
-        link.download = match ? match[1] : 'facturas_beautylab.zip';
+        link.download = match ? match[1] : 'facturas_cursorg.zip';
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);

@@ -199,7 +199,7 @@ function generateCvdSafePalette(
 // Helper to create a complete default theme config with all required fields
 function createDefaultThemeConfig(
     defaultFontId: string,
-    defaultFontName: string = 'Roboto',
+    defaultFontName: string = 'Montserrat',
     customColors?: {
         light: { primary: string; secondary: string; accent: string };
         dark: { primary: string; secondary: string; accent: string };
@@ -210,64 +210,89 @@ function createDefaultThemeConfig(
         fontName: defaultFontName,
         fontSize: '1.0',
         fontWeight: 400,
-        color: '#1a1a2e',
-        lineHeight: '1.6'
+        color: '#0D2B4D',
+        lineHeight: '1.65'
     };
 
     const lightPalette: ThemePalette = {
         colors: {
-            primary: customColors?.light.primary || '#F83A3A',
-            secondary: customColors?.light.secondary || '#FAA2B6',
-            accent: customColors?.light.accent || '#D73359',
+            primary: customColors?.light.primary || '#0D2B4D',
+            secondary: customColors?.light.secondary || '#1E5AA8',
+            accent: customColors?.light.accent || '#55C7E8',
             background: '#FBFBFE',
-            surface: '#EEEEF0',
-            border: '#DDDDDD',
+            surface: '#F1F5F9',
+            border: '#6E7882',
             decorator: '#FFFFFF',
             loader: { enabled: false, selectedTangram: 1 }
         },
         typography: {
-            h1: { ...defaultTypography, fontSize: '2.492', fontWeight: 400, color: customColors?.light.primary || '#F83A3A' },
-            h2: { ...defaultTypography, fontSize: '2.076', fontWeight: 400, color: customColors?.light.primary || '#F83A3A' },
-            h3: { ...defaultTypography, fontSize: '1.73', fontWeight: 400, color: customColors?.light.accent || '#D73359' },
-            h4: { ...defaultTypography, fontSize: '1.44', fontWeight: 400, color: '#1a1675' },
-            h5: { ...defaultTypography, fontSize: '1.2', fontWeight: 400, color: '#1a1675' },
-            h6: { ...defaultTypography, fontSize: '1.0', fontWeight: 400, color: '#1a1675' },
-            title: { ...defaultTypography, fontSize: '1.5', fontWeight: 700, color: '#1a1675' },
-            subtitle: { ...defaultTypography, fontSize: '1.0', fontWeight: 600, color: '#1a1675' },
-            paragraph: { ...defaultTypography, fontSize: '1.0', fontWeight: 400, color: '#1a1a2e' },
-            decorator: { ...defaultTypography, fontSize: '1.0', fontWeight: 500, color: '#ffffff' }
+            h1: { ...defaultTypography, fontSize: '2.492', fontWeight: 800, color: customColors?.light.primary || '#0D2B4D', lineHeight: '1.12' },
+            h2: { ...defaultTypography, fontSize: '2.076', fontWeight: 700, color: customColors?.light.primary || '#0D2B4D', lineHeight: '1.18' },
+            h3: { ...defaultTypography, fontSize: '1.73', fontWeight: 700, color: customColors?.light.secondary || '#1E5AA8', lineHeight: '1.25' },
+            h4: { ...defaultTypography, fontSize: '1.44', fontWeight: 600, color: '#0D2B4D', lineHeight: '1.3' },
+            h5: { ...defaultTypography, fontSize: '1.2', fontWeight: 600, color: '#0D2B4D', lineHeight: '1.35' },
+            h6: { ...defaultTypography, fontSize: '1.0', fontWeight: 600, color: '#0D2B4D', lineHeight: '1.4' },
+            title: { ...defaultTypography, fontSize: '1.5', fontWeight: 700, color: '#0D2B4D', lineHeight: '1.25' },
+            subtitle: { ...defaultTypography, fontSize: '1.0', fontWeight: 600, color: '#6E7882', lineHeight: '1.4' },
+            paragraph: { ...defaultTypography, fontSize: '1.0', fontWeight: 400, color: '#0D2B4D' },
+            decorator: { ...defaultTypography, fontSize: '1.0', fontWeight: 600, color: '#ffffff', lineHeight: '1' }
         }
     };
 
     const darkPalette: ThemePalette = {
         colors: {
-            primary: customColors?.dark.primary || '#C50707',
-            secondary: customColors?.dark.secondary || '#5C0519',
-            accent: customColors?.dark.accent || '#CC284F',
-            background: '#010104',
-            surface: '#0e0e10',
-            border: '#212121',
+            primary: customColors?.dark.primary || '#55C7E8',
+            secondary: customColors?.dark.secondary || '#7FD9F2',
+            accent: customColors?.dark.accent || '#2F7BC4',
+            background: '#071A2E',
+            surface: '#0D2B4D',
+            border: '#35516E',
+            decorator: '#071A2E',
+            loader: { enabled: false, selectedTangram: 1 }
+        },
+        typography: {
+            h1: { ...defaultTypography, fontSize: '2.492', fontWeight: 800, color: '#FFFFFF', lineHeight: '1.12' },
+            h2: { ...defaultTypography, fontSize: '2.076', fontWeight: 700, color: '#FFFFFF', lineHeight: '1.18' },
+            h3: { ...defaultTypography, fontSize: '1.73', fontWeight: 700, color: '#7FD9F2', lineHeight: '1.25' },
+            h4: { ...defaultTypography, fontSize: '1.44', fontWeight: 600, color: '#FBFBFE', lineHeight: '1.3' },
+            h5: { ...defaultTypography, fontSize: '1.2', fontWeight: 600, color: '#FBFBFE', lineHeight: '1.35' },
+            h6: { ...defaultTypography, fontSize: '1.0', fontWeight: 600, color: '#FBFBFE', lineHeight: '1.4' },
+            title: { ...defaultTypography, fontSize: '1.5', fontWeight: 700, color: '#FBFBFE', lineHeight: '1.25' },
+            subtitle: { ...defaultTypography, fontSize: '1.0', fontWeight: 600, color: '#B8CBDD', lineHeight: '1.4' },
+            paragraph: { ...defaultTypography, fontSize: '1.0', fontWeight: 400, color: '#E6EEF5' },
+            decorator: { ...defaultTypography, fontSize: '1.0', fontWeight: 700, color: '#071A2E', lineHeight: '1' }
+        }
+    };
+
+    const accessibilityPalette: ThemePalette = {
+        colors: {
+            primary: '#0D2B4D',
+            secondary: '#1E5AA8',
+            accent: '#0B6E8A',
+            background: '#FFFFFF',
+            surface: '#F1F5F9',
+            border: '#0D2B4D',
             decorator: '#FFFFFF',
             loader: { enabled: false, selectedTangram: 1 }
         },
         typography: {
-            h1: { ...defaultTypography, fontSize: '2.492', fontWeight: 400, color: customColors?.dark.primary || '#C50707' },
-            h2: { ...defaultTypography, fontSize: '2.076', fontWeight: 400, color: customColors?.dark.primary || '#C50707' },
-            h3: { ...defaultTypography, fontSize: '1.73', fontWeight: 400, color: customColors?.dark.accent || '#CC284F' },
-            h4: { ...defaultTypography, fontSize: '1.44', fontWeight: 400, color: '#e0e0e0' },
-            h5: { ...defaultTypography, fontSize: '1.2', fontWeight: 400, color: '#e0e0e0' },
-            h6: { ...defaultTypography, fontSize: '1.0', fontWeight: 400, color: '#e0e0e0' },
-            title: { ...defaultTypography, fontSize: '1.5', fontWeight: 700, color: '#ffffff' },
-            subtitle: { ...defaultTypography, fontSize: '1.0', fontWeight: 600, color: '#ffffff' },
-            paragraph: { ...defaultTypography, fontSize: '1.0', fontWeight: 400, color: '#d1d1d1' },
-            decorator: { ...defaultTypography, fontSize: '1.0', fontWeight: 500, color: '#ffffff' }
+            h1: { ...defaultTypography, fontSize: '2.75', fontWeight: 800, color: '#0D2B4D', lineHeight: '1.12' },
+            h2: { ...defaultTypography, fontSize: '2.3', fontWeight: 700, color: '#0D2B4D', lineHeight: '1.18' },
+            h3: { ...defaultTypography, fontSize: '1.9', fontWeight: 700, color: '#1E5AA8', lineHeight: '1.25' },
+            h4: { ...defaultTypography, fontSize: '1.55', fontWeight: 700, color: '#0D2B4D', lineHeight: '1.3' },
+            h5: { ...defaultTypography, fontSize: '1.3', fontWeight: 700, color: '#0D2B4D', lineHeight: '1.35' },
+            h6: { ...defaultTypography, fontSize: '1.125', fontWeight: 700, color: '#0D2B4D', lineHeight: '1.4' },
+            title: { ...defaultTypography, fontSize: '1.6', fontWeight: 700, color: '#0D2B4D', lineHeight: '1.25' },
+            subtitle: { ...defaultTypography, fontSize: '1.125', fontWeight: 700, color: '#3F4B57', lineHeight: '1.4' },
+            paragraph: { ...defaultTypography, fontSize: '1.125', fontWeight: 400, color: '#0D2B4D', lineHeight: '1.7' },
+            decorator: { ...defaultTypography, fontSize: '1.0', fontWeight: 700, color: '#FFFFFF', lineHeight: '1' }
         }
     };
 
     return {
         light: lightPalette,
         dark: darkPalette,
-        accessibility: JSON.parse(JSON.stringify(lightPalette))
+        accessibility: accessibilityPalette
     };
 }
 
@@ -471,8 +496,8 @@ export const UnifiedThemeConfig: React.FC = () => {
                 setActiveThemeId(loadedThemes[0].id);
             }
 
-            // Find default font (Roboto or first available)
-            const robotoFont = loadedFonts.find(f => f.name === 'Roboto');
+            // Find default font (Montserrat or first available)
+            const robotoFont = loadedFonts.find(f => f.name === 'Montserrat');
             const firstFont = robotoFont || loadedFonts[0];
             if (firstFont) {
                 setDefaultFontId(firstFont.id);
@@ -493,7 +518,7 @@ export const UnifiedThemeConfig: React.FC = () => {
                 name,
                 description,
                 type: 'custom' as const,
-                config: createDefaultThemeConfig(defaultFontId, fonts.find(f => f.id === defaultFontId)?.name || 'Roboto'),
+                config: createDefaultThemeConfig(defaultFontId, fonts.find(f => f.id === defaultFontId)?.name || 'Montserrat'),
                 isActive: false,
                 isDefault: false,
             };
@@ -532,7 +557,7 @@ export const UnifiedThemeConfig: React.FC = () => {
                 type: 'custom' as const,
                 config: createDefaultThemeConfig(
                     defaultFontId,
-                    fonts.find(f => f.id === defaultFontId)?.name || 'Roboto',
+                    fonts.find(f => f.id === defaultFontId)?.name || 'Montserrat',
                     dualModeColors
                 ),
                 isActive: false,

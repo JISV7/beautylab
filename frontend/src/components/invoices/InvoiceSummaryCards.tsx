@@ -11,14 +11,14 @@ export function InvoiceSummaryCards({ summary }: Props) {
             <div className="palette-surface palette-border border rounded-xl p-4 flex items-center gap-4">
                 <Receipt className="w-6 h-6 text-red-600 dark:text-red-400" />
                 <div>
-                    <p className="text-[var(--text-p-size)] opacity-75">Total Invoices</p>
+                    <p className="text-[var(--text-p-size)] opacity-75">Total de facturas</p>
                     <p className="text-[var(--text-h2-size)] font-bold text-red-600 dark:text-red-400">{summary.total_invoices}</p>
                 </div>
             </div>
             <div className="palette-surface palette-border border rounded-xl p-4 flex items-center gap-4">
                 <DollarSign className="w-6 h-6 text-green-600 dark:text-green-400" />
                 <div>
-                    <p className="text-[var(--text-p-size)] opacity-75">Base Total</p>
+                    <p className="text-[var(--text-p-size)] opacity-75">Base imponible</p>
                     <p className="text-[var(--text-h2-size)] font-bold text-green-600 dark:text-green-400">
                         {parseFloat(summary.total_subtotal).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </p>
@@ -36,7 +36,7 @@ export function InvoiceSummaryCards({ summary }: Props) {
             <div className="palette-surface palette-border border rounded-xl p-4 flex items-center gap-4">
                 <FileText className="w-6 h-6 text-purple-600 dark:text-purple-400" />
                 <div>
-                    <p className="text-[var(--text-p-size)] opacity-75">Total Paid</p>
+                    <p className="text-[var(--text-p-size)] opacity-75">Total pagado</p>
                     <p className="text-[var(--text-h2-size)] font-bold text-purple-600 dark:text-purple-400">
                         {parseFloat(summary.total_paid).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </p>

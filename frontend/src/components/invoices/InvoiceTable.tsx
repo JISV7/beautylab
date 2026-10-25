@@ -19,10 +19,10 @@ function SortIcon({ column, sortColumn, sortDirection }: { column: SortableColum
 }
 
 const statusLabels: Record<string, string> = {
-    paid: 'Paid',
-    partial: 'Partial',
-    cancelled: 'Cancelled',
-    issued: 'Issued',
+    paid: 'Pagada',
+    partial: 'Parcial',
+    cancelled: 'Anulada',
+    issued: 'Emitida',
 };
 
 const statusClasses: Record<string, string> = {
@@ -33,11 +33,11 @@ const statusClasses: Record<string, string> = {
 };
 
 const columns: { key: SortableColumn; label: string }[] = [
-    { key: 'invoice_number', label: 'Invoice #' },
-    { key: 'control_number', label: 'Control #' },
-    { key: 'issue_date', label: 'Date' },
+    { key: 'invoice_number', label: 'N° factura' },
+    { key: 'control_number', label: 'N° control' },
+    { key: 'issue_date', label: 'Fecha' },
     { key: 'total', label: 'Total' },
-    { key: 'status', label: 'Status' },
+    { key: 'status', label: 'Estado' },
 ];
 
 export function InvoiceTable({ invoices, onViewDetails, sortColumn, sortDirection, onSort }: InvoiceTableProps) {
@@ -45,9 +45,9 @@ export function InvoiceTable({ invoices, onViewDetails, sortColumn, sortDirectio
         return (
             <div className="palette-surface palette-border border rounded-xl p-8 text-center">
                 <FileText className="w-16 h-16 mx-auto mb-4 opacity-50" />
-                <p className="text-paragraph">No invoices found.</p>
+                <p className="text-paragraph">No se encontraron facturas.</p>
                 <p className="text-paragraph opacity-75 text-sm mt-2">
-                    When you purchase a course, your invoices will appear here.
+                    Cuando compres un curso, tus facturas aparecerán aquí.
                 </p>
             </div>
         );
@@ -70,7 +70,7 @@ export function InvoiceTable({ invoices, onViewDetails, sortColumn, sortDirectio
                                 </div>
                             </th>
                         ))}
-                        <th className="p-4 font-semibold text-right">Actions</th>
+                        <th className="p-4 font-semibold text-right">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -124,7 +124,7 @@ export function InvoiceTable({ invoices, onViewDetails, sortColumn, sortDirectio
                                     }}
                                     className="text-primary hover:underline"
                                 >
-                                    View
+                                    Ver
                                 </button>
                             </td>
                         </tr>

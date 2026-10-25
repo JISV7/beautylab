@@ -16,14 +16,14 @@ export const BankTransferForm: React.FC<PaymentFormProps> = ({
             <div>
                 <label className="text-paragraph font-medium block mb-2">
                     <Building size={16} />
-                    Bank Name
+                    Banco
                 </label>
                 <input
                     type="text"
                     value={value.bank_name || ''}
                     onChange={(e) => handleChange('bank_name', e.target.value)}
                     className="theme-input w-full"
-                    placeholder="Bank name"
+                    placeholder="Nombre del banco"
                 />
                 {errors.bank_name && (
                     <p className="text-red-500 text-sm mt-1">{errors.bank_name}</p>
@@ -33,14 +33,14 @@ export const BankTransferForm: React.FC<PaymentFormProps> = ({
             <div>
                 <label className="text-paragraph font-medium block mb-2">
                     <User size={16} />
-                    Account Holder Name
+                    Nombre del titular
                 </label>
                 <input
                     type="text"
                     value={value.account_holder || ''}
                     onChange={(e) => handleChange('account_holder', e.target.value)}
                     className="theme-input w-full"
-                    placeholder="Account holder name"
+                    placeholder="Nombre del titular de la cuenta"
                 />
                 {errors.account_holder && (
                     <p className="text-red-500 text-sm mt-1">{errors.account_holder}</p>
@@ -50,14 +50,14 @@ export const BankTransferForm: React.FC<PaymentFormProps> = ({
             <div>
                 <label className="text-paragraph font-medium block mb-2">
                     <FileText size={16} />
-                    Transfer Reference
+                    Referencia de la transferencia
                 </label>
                 <input
                     type="text"
                     value={value.transfer_reference || ''}
                     onChange={(e) => handleChange('transfer_reference', e.target.value)}
                     className="theme-input w-full"
-                    placeholder="Transfer reference number"
+                    placeholder="Número de referencia"
                 />
                 {errors.transfer_reference && (
                     <p className="text-red-500 text-sm mt-1">{errors.transfer_reference}</p>
@@ -67,7 +67,7 @@ export const BankTransferForm: React.FC<PaymentFormProps> = ({
             <div>
                 <label className="text-paragraph font-medium block mb-2">
                     <Calendar size={16} />
-                    Transfer Date
+                    Fecha de la transferencia
                 </label>
                 <input
                     type="date"

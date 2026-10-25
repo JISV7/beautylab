@@ -1,4 +1,4 @@
-"""BeautyLab API - Main FastAPI application."""
+"""Cursorg API - Main FastAPI application."""
 
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
@@ -43,7 +43,10 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
 
 app = FastAPI(
     title=settings.app_name,
-    description="BeautyLab Backend API - Authentication, User Management, and Dynamic Theming",
+    description=(
+        "Cursorg API - Plataforma de Capacitación Corporativa. "
+        "Autenticación, catálogo de cursos, facturación y theming dinámico."
+    ),
     version="1.0.0",
     docs_url="/docs",
     redoc_url="/redoc",
@@ -91,7 +94,7 @@ app.mount("/static/carousel", StaticFiles(directory="uploads/carousel"), name="c
 @app.get("/", tags=["Health"])
 async def root() -> dict[str, str]:
     """Root endpoint - API health check."""
-    return {"status": "ok", "message": "BeautyLab API is running"}
+    return {"status": "ok", "message": "Cursorg API is running"}
 
 
 @app.get("/health", tags=["Health"])

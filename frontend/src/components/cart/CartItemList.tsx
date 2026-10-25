@@ -23,10 +23,10 @@ export const CartItemList: React.FC<CartItemListProps> = ({
                 >
                     <div className="flex-1">
                         <h3 className="text-h3 mb-1">
-                            {item.product_name || 'Course'}
+                            {item.product_name || 'Curso'}
                         </h3>
                         <p className="text-paragraph opacity-60">
-                            SKU: {item.product_sku || 'N/A'}
+                            SKU: {item.product_sku || 'No disponible'}
                         </p>
                         <h4 className="text-h4 text-[var(--palette-primary)] mt-2">
                             {formatCurrency(item.product_price || '0')}
@@ -61,7 +61,7 @@ export const CartItemList: React.FC<CartItemListProps> = ({
                             className="flex items-center gap-1 text-red-500 hover:text-red-600 text-paragraph transition-colors"
                         >
                             <Trash2 className="w-4 h-4" />
-                            Remove
+                            Quitar
                         </button>
                     </div>
                 </div>

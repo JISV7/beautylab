@@ -1,7 +1,7 @@
 [project]
-name = "beautyback"
+name = "cursorg-backend"
 version = "0.1.0"
-description = "BeautyLab Backend API - FastAPI with PostgreSQL, JWT Auth, and Dynamic Theming"
+description = "Cursorg Backend API - Plataforma de Capacitación Corporativa (FastAPI, PostgreSQL, JWT y theming dinámico)"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [

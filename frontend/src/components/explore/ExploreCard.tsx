@@ -66,19 +66,19 @@ export const ExploreCard: React.FC<ExploreCardProps> = ({ course, onViewDetails 
 
                 {/* Placeholder when no image */}
                 <div className={`w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-800 ${course.image_url ? 'hidden' : ''}`}>
-                    <span className="text-paragraph opacity-40 text-sm">No image</span>
+                    <span className="text-paragraph opacity-40 text-sm">Sin imagen</span>
                 </div>
 
                 {/* Top-left Badges */}
                 <div className="absolute top-3 left-3 flex gap-1.5">
                     {isNew() && (
                         <span className="bg-emerald-500/90 text-white text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm">
-                            New
+                            Nuevo
                         </span>
                     )}
                     {isFeatured && (
                         <span className="bg-[var(--palette-primary)]/90 text-white text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm">
-                            Featured
+                            Publicado
                         </span>
                     )}
                 </div>
@@ -115,7 +115,7 @@ export const ExploreCard: React.FC<ExploreCardProps> = ({ course, onViewDetails 
 
                 {/* Description - 2 lines max */}
                 <p className="text-paragraph mb-4 flex-grow line-clamp-2 opacity-75 text-sm leading-relaxed">
-                    {course.description || 'Discover this amazing course and expand your knowledge with our expert-led content.'}
+                    {course.description || 'Desarrolla nuevas capacidades con un programa diseñado para tu equipo.'}
                 </p>
 
                 {/* Meta Row: Level + Duration */}
@@ -137,7 +137,7 @@ export const ExploreCard: React.FC<ExploreCardProps> = ({ course, onViewDetails 
                 <div className="flex items-center justify-between mb-3">
                     <div>
                         <p className="text-[10px] font-bold text-paragraph opacity-40 uppercase tracking-wider">
-                            Price
+                            Precio
                         </p>
                         <p className="text-lg font-black text-paragraph">
                             {formatPrice(course.price)}
@@ -150,7 +150,7 @@ export const ExploreCard: React.FC<ExploreCardProps> = ({ course, onViewDetails 
                     onClick={() => onViewDetails?.(course.id)}
                     className="theme-button theme-button-primary w-full"
                 >
-                    View Details
+                    Ver detalles
                 </button>
             </div>
         </div>

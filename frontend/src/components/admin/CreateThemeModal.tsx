@@ -128,7 +128,7 @@ export const CreateThemeModal: React.FC<CreateThemeModalProps> = ({
                                             setBaseColor(v);
                                         }
                                     }}
-                                    placeholder="Leave empty for random, or enter #F83A3A"
+                                    placeholder="Leave empty for random, or enter #0D2B4D"
                                     className="theme-input w-full py-2 px-3 font-mono text-sm"
                                 />
                             </div>

@@ -47,7 +47,7 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({ open, onOpenChange, on
               view === 'login' ? 'border-[var(--palette-primary)] text-[var(--palette-primary)]' : 'border-transparent text-[var(--text-paragraph)]'
             }`}
           >
-            Sign In
+            Iniciar sesión
           </button>
           <button
             onClick={() => setView('register')}
@@ -55,7 +55,7 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({ open, onOpenChange, on
               view === 'register' ? 'border-[var(--palette-primary)] text-[var(--palette-primary)]' : 'border-transparent text-[var(--text-paragraph)]'
             }`}
           >
-            Sign Up
+            Crear cuenta
           </button>
         </div>
 

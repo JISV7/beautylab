@@ -1,4 +1,5 @@
--- BeautyLab Database Schema
+-- Cursorg Database Schema
+-- Legacy filename retained for compatibility; the schema is maintained by Alembic.
 -- Initialization & Extensions
 -- Enable UUID generation
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";

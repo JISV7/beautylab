@@ -62,7 +62,7 @@ export const CourseHero: React.FC<CourseHeroProps> = ({
                     />
                 ) : (
                     <div className="w-full h-48 flex items-center justify-center text-paragraph opacity-40">
-                        <span className="text-paragraph">No image available</span>
+                        <span className="text-paragraph">Imagen no disponible</span>
                     </div>
                 )}
             </div>
@@ -110,7 +110,7 @@ export const CourseHero: React.FC<CourseHeroProps> = ({
                         className="inline-flex items-center gap-2 text-[var(--palette-primary)] hover:opacity-80 transition-opacity mb-6"
                     >
                         <PlayCircle size={18} />
-                        <span className="text-paragraph">Watch Course Video</span>
+                        <span className="text-paragraph">Ver video del curso</span>
                         <ExternalLink size={14} />
                     </a>
                 )}
@@ -122,7 +122,7 @@ export const CourseHero: React.FC<CourseHeroProps> = ({
                         {product_name && (
                             <div>
                                 <p className="text-[10px] font-bold text-paragraph opacity-40 uppercase tracking-wider mb-1">
-                                    Product Name
+                                    Nombre del producto
                                 </p>
                                 <p className="text-sm font-semibold text-paragraph">
                                     {product_name}
@@ -143,7 +143,7 @@ export const CourseHero: React.FC<CourseHeroProps> = ({
                         {/* Price */}
                         <div>
                             <p className="text-[10px] font-bold text-paragraph opacity-40 uppercase tracking-wider mb-1">
-                                Enrollment Price
+                                Precio de inscripción
                             </p>
                             <p className="text-2xl font-black text-paragraph">
                                 {formatPrice(price)}
@@ -154,7 +154,7 @@ export const CourseHero: React.FC<CourseHeroProps> = ({
                         {/* Quantity Selector */}
                         {onAddToCart && (
                             <div className="flex items-center gap-2">
-                                <span className="text-sm font-semibold text-paragraph opacity-75">Qty:</span>
+                                <span className="text-sm font-semibold text-paragraph opacity-75">Cant.:</span>
                                 <button
                                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
                                     className="p-1.5 hover:bg-[var(--palette-border)] rounded transition-colors"
@@ -195,7 +195,7 @@ export const CourseHero: React.FC<CourseHeroProps> = ({
                                     }`}
                                 >
                                     <ShoppingCart className="w-4 h-4" />
-                                    {isInCart ? `In Cart (${cartQuantity})` : 'Add to Cart'}
+                                    {isInCart ? `En el carrito (${cartQuantity})` : 'Agregar al carrito'}
                                 </button>
                             )}
                             {onBuy && (
@@ -203,7 +203,7 @@ export const CourseHero: React.FC<CourseHeroProps> = ({
                                     onClick={onBuy}
                                     className="flex-1 sm:flex-none theme-button theme-button-primary"
                                 >
-                                    Buy Now
+                                    Comprar ahora
                                 </button>
                             )}
                         </div>

@@ -1,4 +1,4 @@
-# BeautyLab Backend Dockerfile
+# Cursorg Backend Dockerfile
 # Python 3.13 with uv for dependency management
 
 FROM python:3.13-slim
@@ -24,7 +24,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     tzdata \
     && ln -fs /usr/share/zoneinfo/America/Caracas /etc/localtime \
     && dpkg-reconfigure -f noninteractive tzdata \
-    && rm -rf /var/lib/apt/lists/*s
+    && rm -rf /var/lib/apt/lists/*
 
 # Set work directory
 WORKDIR /app

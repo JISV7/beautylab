@@ -20,33 +20,33 @@ interface CoursesInProgressProps {
 const defaultCourses: Course[] = [
     {
         id: 1,
-        title: 'Complete Web Development Bootcamp',
-        nextLesson: 'React Hooks Deep Dive',
+        title: 'Seguridad y Salud en el Trabajo',
+        nextLesson: 'Prevención de riesgos en planta',
         progress: 45,
-        totalLessons: 48,
-        completedLessons: 22,
-        lastAccessed: '2 hours ago',
-        thumbnail: 'https://images.unsplash.com/photo-1540397106260-e24a507a08ea?w=400',
+        totalLessons: 12,
+        completedLessons: 5,
+        lastAccessed: 'hace 2 horas',
+        thumbnail: 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=400&q=80',
     },
     {
         id: 2,
-        title: 'Python Programming Masterclass',
-        nextLesson: 'Data Structures & Algorithms',
+        title: 'Finanzas Prácticas para No Financieros',
+        nextLesson: 'Lectura de estados financieros',
         progress: 72,
-        totalLessons: 36,
-        completedLessons: 26,
-        lastAccessed: '1 day ago',
-        thumbnail: 'https://images.unsplash.com/photo-1660616246653-e2c57d1077b9?w=400',
+        totalLessons: 10,
+        completedLessons: 7,
+        lastAccessed: 'hace 1 día',
+        thumbnail: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=400&q=80',
     },
     {
         id: 3,
-        title: 'Agentic AI & LLM Applications',
-        nextLesson: 'Building AI Agents with LangChain',
+        title: 'Liderazgo Operativo y Supervisión Efectiva',
+        nextLesson: 'Retroalimentación que genera resultados',
         progress: 28,
-        totalLessons: 24,
-        completedLessons: 7,
-        lastAccessed: '3 days ago',
-        thumbnail: 'https://images.unsplash.com/photo-1760629863094-5b1e8d1aae74?w=400',
+        totalLessons: 8,
+        completedLessons: 2,
+        lastAccessed: 'hace 3 días',
+        thumbnail: 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=400&q=80',
     },
 ];
 
@@ -61,9 +61,9 @@ export const CoursesInProgress: React.FC<CoursesInProgressProps> = ({
     return (
         <div className="mb-8">
             <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold theme-text-base">In Progress</h2>
+                <h2 className="text-2xl font-bold theme-text-base">En progreso</h2>
                 <button className="text-sm theme-primary font-medium hover:opacity-80 flex items-center gap-1">
-                    View All
+                    Ver todos
                     <ChevronRight className="w-4 h-4" style={{ color: 'var(--decorator-color)' }} />
                 </button>
             </div>
@@ -100,7 +100,7 @@ export const CoursesInProgress: React.FC<CoursesInProgressProps> = ({
 
                             <div className="flex items-center gap-2 mb-3 theme-text-secondary">
                                 <Clock className="w-4 h-4" style={{ color: 'var(--decorator-color)' }} />
-                                <span className="text-sm">Next: {course.nextLesson}</span>
+                                <span className="text-sm">Siguiente: {course.nextLesson}</span>
                             </div>
 
                             {/* Progress Bar */}
@@ -112,8 +112,8 @@ export const CoursesInProgress: React.FC<CoursesInProgressProps> = ({
                             </div>
 
                             <div className="flex items-center justify-between text-xs theme-text-secondary mb-4">
-                                <span>{course.completedLessons}/{course.totalLessons} lessons</span>
-                                <span>Last: {course.lastAccessed}</span>
+                                <span>{course.completedLessons}/{course.totalLessons} lecciones</span>
+                                <span>Última sesión: {course.lastAccessed}</span>
                             </div>
 
                             {/* Continue Button */}
@@ -122,7 +122,7 @@ export const CoursesInProgress: React.FC<CoursesInProgressProps> = ({
                                 className="w-full theme-primary text-white py-2 rounded-lg font-medium hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
                             >
                                 <Play className="w-4 h-4" style={{ color: 'var(--decorator-color)' }} />
-                                Continue
+                                Continuar
                             </button>
                         </div>
                     </div>

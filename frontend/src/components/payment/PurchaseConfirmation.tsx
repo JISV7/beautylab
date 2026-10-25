@@ -44,10 +44,10 @@ export const PurchaseConfirmation: React.FC<PurchaseConfirmationProps> = ({
                     <CheckCircle size={40} className="text-white" />
                 </div>
                 <h1 className="text-h1 mb-2">
-                    Purchase Successful!
+                    ¡Compra realizada con éxito!
                 </h1>
                 <p className="text-paragraph opacity-80">
-                    Your enrollment has been confirmed. A receipt has been sent to your email.
+                    Tu inscripción ha sido confirmada. Enviamos el comprobante a tu correo electrónico.
                 </p>
                 {userEmail && (
                     <div className="flex items-center justify-center gap-2 mt-3 text-sm text-paragraph opacity-60">
@@ -68,7 +68,7 @@ export const PurchaseConfirmation: React.FC<PurchaseConfirmationProps> = ({
                             {courseName}
                         </h2>
                         <p className="text-paragraph opacity-60">
-                            You now have unlimited access to this course and all its materials.
+                            Ya tienes acceso a este curso y a todos sus materiales.
                         </p>
                     </div>
                 </div>
@@ -79,13 +79,13 @@ export const PurchaseConfirmation: React.FC<PurchaseConfirmationProps> = ({
                         className="theme-button theme-button-primary flex-1"
                     >
                         <BookOpen size={18} />
-                        <span>Start Learning</span>
+                        <span>Comenzar a aprender</span>
                     </button>
                     <button
                         onClick={onGoToDashboard}
                         className="theme-button theme-button-secondary flex-1"
                     >
-                        <span>Go to Dashboard</span>
+                        <span>Ir al panel</span>
                         <ArrowRight size={18} />
                     </button>
                 </div>
@@ -96,14 +96,14 @@ export const PurchaseConfirmation: React.FC<PurchaseConfirmationProps> = ({
                 <div className="flex items-center gap-3 mb-4">
                     <Receipt size={24} className="text-[var(--palette-primary)]" />
                     <h2 className="text-h4 font-semibold">
-                        Invoice Details
+                        Detalles de la factura
                     </h2>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-6">
                     <div>
                         <p className="text-paragraph opacity-60 text-sm mb-1">
-                            Invoice Number
+                            Número de factura
                         </p>
                         <p className="text-h5 font-semibold">
                             {invoiceNumber}
@@ -111,12 +111,12 @@ export const PurchaseConfirmation: React.FC<PurchaseConfirmationProps> = ({
                     </div>
                     <div>
                         <p className="text-paragraph opacity-60 text-sm mb-1">
-                            Purchase Date
+                            Fecha de compra
                         </p>
                         <div className="flex items-center gap-2">
                             <Calendar size={16} className="text-paragraph opacity-60" />
                             <p className="text-h5 font-semibold">
-                                {new Date(issueDate).toLocaleDateString('en-US', {
+                                {new Date(issueDate).toLocaleDateString('es-VE', {
                                     year: 'numeric',
                                     month: 'long',
                                     day: 'numeric',
@@ -133,13 +133,13 @@ export const PurchaseConfirmation: React.FC<PurchaseConfirmationProps> = ({
                             <thead>
                                 <tr>
                                     <th className="text-left text-paragraph font-medium pb-3">
-                                        Description
+                                        Descripción
                                     </th>
                                     <th className="text-center text-paragraph font-medium pb-3">
-                                        Qty
+                                        Cant.
                                     </th>
                                     <th className="text-right text-paragraph font-medium pb-3">
-                                        Price
+                                        Precio
                                     </th>
                                     <th className="text-right text-paragraph font-medium pb-3">
                                         Total
@@ -172,7 +172,7 @@ export const PurchaseConfirmation: React.FC<PurchaseConfirmationProps> = ({
                 <div className="border-t border-[var(--palette-border)] pt-4 mt-4">
                     <div className="flex items-center justify-between">
                         <span className="text-h4 font-bold">
-                            Total Paid
+                            Total pagado
                         </span>
                         <span className="text-h2 font-black text-[var(--palette-primary)]">
                             {formatCurrency(totalPaid)}
@@ -185,7 +185,7 @@ export const PurchaseConfirmation: React.FC<PurchaseConfirmationProps> = ({
             {paymentBreakdown.length > 0 && (
                 <div className="palette-surface palette-border border rounded-xl p-6 mb-6">
                     <h2 className="text-h4 font-semibold mb-4">
-                        Payment Breakdown
+                        Desglose de pago
                     </h2>
                     <div className="space-y-3">
                         {paymentBreakdown.map((payment, index) => (
@@ -215,7 +215,7 @@ export const PurchaseConfirmation: React.FC<PurchaseConfirmationProps> = ({
             {/* Access Instructions */}
             <div className="palette-surface palette-border border rounded-xl p-6 mb-6 bg-[var(--palette-primary)]/5">
                 <h2 className="text-h4 font-semibold mb-3 flex items-center gap-2">
-                    📚 Access Your Course
+                    📚 Accede a tu curso
                 </h2>
                 <ol className="space-y-3 text-paragraph">
                     <li className="flex items-start gap-3">
@@ -223,7 +223,7 @@ export const PurchaseConfirmation: React.FC<PurchaseConfirmationProps> = ({
                             1
                         </span>
                         <span>
-                            Navigate to <strong>My Courses</strong> from your dashboard
+                            Ve a <strong>Mis cursos</strong> desde tu panel
                         </span>
                     </li>
                     <li className="flex items-start gap-3">
@@ -231,7 +231,7 @@ export const PurchaseConfirmation: React.FC<PurchaseConfirmationProps> = ({
                             2
                         </span>
                         <span>
-                            Find <strong>{courseName}</strong> in your enrolled courses
+                            Encuentra <strong>{courseName}</strong> en tus cursos inscritos
                         </span>
                     </li>
                     <li className="flex items-start gap-3">
@@ -239,7 +239,7 @@ export const PurchaseConfirmation: React.FC<PurchaseConfirmationProps> = ({
                             3
                         </span>
                         <span>
-                            Click on the course to access all materials and start learning
+                            Abre el curso para acceder a todos los materiales y comenzar
                         </span>
                     </li>
                 </ol>
@@ -247,9 +247,9 @@ export const PurchaseConfirmation: React.FC<PurchaseConfirmationProps> = ({
 
             {/* Support Info */}
             <div className="text-center text-paragraph opacity-60">
-                <p>Need help? Contact our support team at</p>
+                <p>¿Necesitas ayuda? Escríbenos a nuestro equipo de soporte:</p>
                 <p className="font-medium text-[var(--palette-primary)]">
-                    support@beautylab.com
+                    soporte@cursorg.ve
                 </p>
             </div>
         </div>

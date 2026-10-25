@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { Code2, Moon, Sun, LogIn, Eye } from 'lucide-react';
+import { Moon, Sun, LogIn, Eye, CalendarCheck } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { LoginDialog } from './LoginDialog';
 import { UserMenu } from './UserMenu';
+import { BrandLogo } from '../brand/BrandLogo';
 
 export const Header: React.FC = () => {
   const navigate = useNavigate();
@@ -21,53 +22,50 @@ export const Header: React.FC = () => {
     navigate('/');
   };
 
+  const logoTheme = currentMode === 'dark' ? 'dark' : 'light';
+
   return (
     <header className="sticky top-0 z-50 palette-surface palette-border border-b transition-colors duration-200 print:hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <a href="/" className="flex items-center gap-2">
-            <div
-              className="rounded-lg p-2"
-              style={{ backgroundColor: '#F83A3A' }}
-            >
-              <Code2 className="w-6 h-6 text-white" />
-            </div>
-            <span className="text-h4 font-bold">Codyn</span>
+          <a href="/" className="flex items-center" aria-label="Cursorg — Inicio">
+            <BrandLogo variant="compact" theme={logoTheme} size="sm" />
           </a>
 
           {/* Navigation */}
-          <nav className="hidden md:flex items-center gap-6">
-            <a href={isAuthenticated ? '/dashboard?tab=explore' : '/explore'} className="text-paragraph hover:palette-primary transition-colors">
-              Explore
+          <nav className="hidden md:flex items-center gap-6" aria-label="Navegación principal">
+            <a href="/" className="text-paragraph hover:palette-primary transition-colors">
+              Inicio
             </a>
             <a href="/#courses" className="text-paragraph hover:palette-primary transition-colors">
-              Courses
-            </a>
-            <a href="/#services" className="text-paragraph hover:palette-primary transition-colors">
-              Services
+              Cursos
             </a>
             <a href="/#about" className="text-paragraph hover:palette-primary transition-colors">
-              About
+              Sobre Cursorg
             </a>
             <a href="/#contact" className="text-paragraph hover:palette-primary transition-colors">
-              Contact
+              Contacto
             </a>
           </nav>
 
           {/* Right Side: Theme Toggles + Auth */}
           <div className="flex items-center gap-2">
             {/* Theme Toggles */}
-            <div className="flex items-center gap-1 sm:gap-2 mr-2">
+            <div className="flex items-center gap-1 sm:gap-2 mr-1 sm:mr-2">
               <button
                 onClick={() => setPaletteMode('light')}
                 className={`p-2 rounded-lg transition-colors ${currentMode === 'light'
                   ? 'palette-primary'
                   : 'bg-transparent'
                   }`}
-                title="Light Mode"
+                title="Modo claro"
+                aria-label="Activar modo claro"
+                aria-pressed={currentMode === 'light'}
               >
-                <Sun className="w-4 h-4 text-paragraph" />
+                <Sun
+                  className={`w-4 h-4 ${currentMode === 'light' ? 'text-[var(--palette-background)]' : 'text-paragraph'}`}
+                />
               </button>
               <button
                 onClick={() => setPaletteMode('dark')}
@@ -75,9 +73,13 @@ export const Header: React.FC = () => {
                   ? 'palette-primary'
                   : 'bg-transparent'
                   }`}
-                title="Dark Mode"
+                title="Modo oscuro"
+                aria-label="Activar modo oscuro"
+                aria-pressed={currentMode === 'dark'}
               >
-                <Moon className="w-4 h-4 text-paragraph" />
+                <Moon
+                  className={`w-4 h-4 ${currentMode === 'dark' ? 'text-[var(--palette-background)]' : 'text-paragraph'}`}
+                />
               </button>
               <button
                 onClick={() => setPaletteMode('accessibility')}
@@ -85,10 +87,26 @@ export const Header: React.FC = () => {
                   ? 'palette-primary'
                   : 'bg-transparent'
                   }`}
-                title="Accessibility Mode"
+                title="Modo accesible"
+                aria-label="Activar modo accesible"
+                aria-pressed={currentMode === 'accessibility'}
               >
-                <Eye className="w-4 h-4 text-paragraph" />
+                <Eye
+                  className={`w-4 h-4 ${currentMode === 'accessibility' ? 'text-[var(--palette-background)]' : 'text-paragraph'}`}
+                />
               </button>
+            </div>
+
+            {/* Demo CTA */}
+            <div className="hidden sm:block">
+              <a
+                href="/#contact"
+                className="theme-button theme-button-secondary !px-3 sm:!px-4"
+              >
+                <CalendarCheck className="w-4 h-4" />
+                <span className="hidden lg:inline">Solicita una demo</span>
+                <span className="lg:hidden">Demo</span>
+              </a>
             </div>
 
             {/* Authentication */}
@@ -105,10 +123,11 @@ export const Header: React.FC = () => {
             ) : (
               <button
                 onClick={() => setLoginDialogOpen(true)}
-                className="theme-button theme-button-primary"
+                className="theme-button theme-button-primary !px-3 sm:!px-4"
               >
                 <LogIn className="w-4 h-4" />
-                <span className="hidden sm:inline">Sign In</span>
+                <span className="hidden sm:inline">Iniciar sesión</span>
+                <span className="sm:hidden">Entrar</span>
               </button>
             )}
           </div>

@@ -35,13 +35,13 @@ export const MyCoursesFilters: React.FC<MyCoursesFiltersProps> = ({
         <div className="theme-card flex flex-wrap gap-4 items-end">
             <div className="flex-1 min-w-[200px]">
                 <label className="block text-sm font-semibold mb-2 text-paragraph">
-                    Search
+                    Buscar
                 </label>
                 <div className="flex items-center palette-surface palette-border border rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-palette-primary">
                     <Search className="w-4 h-4 text-paragraph flex-shrink-0 ml-3" />
                     <input
                         type="text"
-                        placeholder="Search courses..."
+                        placeholder="Buscar cursos..."
                         value={searchQuery}
                         onChange={(e) => onSearchChange(e.target.value)}
                         className="flex-1 min-w-0 py-2 pl-2 pr-4 bg-transparent text-paragraph placeholder:text-paragraph placeholder:opacity-60 focus:outline-none"
@@ -50,29 +50,29 @@ export const MyCoursesFilters: React.FC<MyCoursesFiltersProps> = ({
             </div>
             <div className="w-[180px]">
                 <label className="block text-sm font-semibold mb-2 text-paragraph">
-                    Status
+                    Estado
                 </label>
                 <select
                     className="theme-input w-full"
                     value={statusFilter}
                     onChange={(e) => onStatusFilterChange(e.target.value)}
                 >
-                    <option value="all">All</option>
-                    <option value="partial">Partial Payment</option>
-                    <option value="ready">Ready to Redeem</option>
-                    <option value="active">Active</option>
+                    <option value="all">Todos</option>
+                    <option value="partial">Pago parcial</option>
+                    <option value="ready">Listo para canjear</option>
+                    <option value="active">Activo</option>
                 </select>
             </div>
             <div className="w-[180px]">
                 <label className="block text-sm font-semibold mb-2 text-paragraph">
-                    Category
+                    Categoría
                 </label>
                 <select
                     className="theme-input w-full"
                     value={categoryFilter}
                     onChange={(e) => onCategoryFilterChange(e.target.value)}
                 >
-                    <option value="">All Categories</option>
+                    <option value="">Todas las categorías</option>
                     {categories.map(cat => (
                         <option key={cat.id} value={cat.id}>{cat.name}</option>
                     ))}
@@ -81,7 +81,7 @@ export const MyCoursesFilters: React.FC<MyCoursesFiltersProps> = ({
             {categoryFilter && (
                 <div className="w-[180px]">
                     <label className="block text-sm font-semibold mb-2 text-paragraph">
-                        Subcategories
+                        Subcategorías
                     </label>
                     <button
                         onClick={() => onIncludeChildrenChange(!includeChildren)}
@@ -90,7 +90,7 @@ export const MyCoursesFilters: React.FC<MyCoursesFiltersProps> = ({
                                 ? 'bg-[var(--palette-primary)] text-[var(--decorator-color)] border-[var(--palette-primary)]'
                                 : 'bg-[var(--palette-background)] text-paragraph opacity-60 border-[var(--palette-border)]'
                         }`}
-                        aria-label="Toggle include subcategories"
+                        aria-label="Incluir subcategorías"
                         aria-pressed={includeChildren}
                     >
                         <span className={`w-4 h-4 rounded border-2 flex items-center justify-center ${
@@ -102,7 +102,7 @@ export const MyCoursesFilters: React.FC<MyCoursesFiltersProps> = ({
                                 </svg>
                             )}
                         </span>
-                        {includeChildren ? 'ON' : 'OFF'}
+                        {includeChildren ? 'SÍ' : 'NO'}
                     </button>
                 </div>
             )}

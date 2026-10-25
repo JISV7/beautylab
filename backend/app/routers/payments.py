@@ -8,6 +8,7 @@ from fastapi import APIRouter, Body, Depends, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.config import get_settings
 from app.core.dependencies import CurrentUser
 from app.database import get_db
 from app.models.coupon import CouponUsage
@@ -31,6 +32,8 @@ from app.services.payment_service import (
 )
 
 router = APIRouter(prefix="/payments", tags=["Payments"])
+
+settings = get_settings()
 
 
 @router.get("/methods", response_model=list[PaymentMethodResponse])
@@ -248,7 +251,7 @@ async def process_split_payment(
 
         from app.services.email_service import get_email_service
 
-        logger = logging.getLogger("beautylab.email")
+        logger = logging.getLogger("cursorg.email")
         email_service = get_email_service()
         receipt_data = await invoice_service.get_invoice_receipt_data(request.invoice_id)
 
@@ -358,7 +361,9 @@ async def process_split_payment(
                 total=str(invoice.total),
                 issue_date=invoice.issue_date.isoformat(),
                 items=invoice_items,
-                download_url=f"https://beautylab.com/invoices/{invoice.id}/download",
+                download_url=(
+                    f"{settings.invoice_download_base}/invoices/{invoice.id}/download"
+                ),
                 control_number=invoice.control_number,
                 issue_time=invoice.issue_time.isoformat() if invoice.issue_time else None,
                 status=invoice.status,
@@ -393,7 +398,7 @@ async def process_split_payment(
         import logging
         import traceback
 
-        logger = logging.getLogger("beautylab.email")
+        logger = logging.getLogger("cursorg.email")
         email_sent = False
         email_error = f"Exception while sending invoice email: {e}"
         logger.error(

@@ -17,7 +17,7 @@ export const PagoMovilForm: React.FC<PaymentFormProps> = ({
             <div>
                 <label className="text-paragraph font-medium block mb-2">
                     <Building size={16} />
-                    Bank Name
+                    Banco
                 </label>
                 <input
                     type="text"
@@ -34,7 +34,7 @@ export const PagoMovilForm: React.FC<PaymentFormProps> = ({
             <div>
                 <label className="text-paragraph font-medium block mb-2">
                     <Phone size={16} />
-                    Phone Number
+                    Teléfono
                 </label>
                 <input
                     type="tel"
@@ -58,7 +58,7 @@ export const PagoMovilForm: React.FC<PaymentFormProps> = ({
                     value={value.rif_cedula || ''}
                     onChange={(e) => handleChange('rif_cedula', e.target.value.toUpperCase())}
                     className="theme-input w-full"
-                    placeholder="J-123456789 or 12345678"
+                    placeholder="J-123456789 o 12345678"
                 />
                 {errors.rif_cedula && (
                     <p className="text-red-500 text-sm mt-1">{errors.rif_cedula}</p>
@@ -68,14 +68,14 @@ export const PagoMovilForm: React.FC<PaymentFormProps> = ({
             <div>
                 <label className="text-paragraph font-medium block mb-2">
                     <FileText size={16} />
-                    Reference Code
+                    Código de referencia
                 </label>
                 <input
                     type="text"
                     value={value.reference_code || ''}
                     onChange={(e) => handleChange('reference_code', e.target.value)}
                     className="theme-input w-full"
-                    placeholder="Last 6 digits of transaction"
+                    placeholder="Últimos 6 dígitos de la transacción"
                 />
                 {errors.reference_code && (
                     <p className="text-red-500 text-sm mt-1">{errors.reference_code}</p>
@@ -85,7 +85,7 @@ export const PagoMovilForm: React.FC<PaymentFormProps> = ({
             {amount && (
                 <div>
                     <label className="text-paragraph font-medium block mb-2">
-                        Amount Paid
+                        Monto pagado
                     </label>
                     <input
                         type="text"

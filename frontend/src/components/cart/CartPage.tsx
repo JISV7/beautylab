@@ -130,7 +130,7 @@ export const CartPage: React.FC<CartPageProps> = ({ onBack }) => {
             await clearCart();
         } catch (err: any) {
             console.error('Payment failed:', err);
-            setPurchaseError(err.response?.data?.detail || 'Payment failed. Please try again.');
+            setPurchaseError(err.response?.data?.detail || 'El pago no se pudo procesar. Inténtalo de nuevo.');
             setCheckoutStep('payment');
         }
     };
@@ -148,7 +148,7 @@ export const CartPage: React.FC<CartPageProps> = ({ onBack }) => {
             <div className="p-6">
                 <PurchaseConfirmation
                     invoiceNumber={receiptData.invoice_number}
-                    courseName="Multiple Courses"
+                    courseName="Varios cursos"
                     totalPaid={receiptData.total}
                     issueDate={receiptData.issue_date}
                     items={receiptData.items}
@@ -173,10 +173,10 @@ export const CartPage: React.FC<CartPageProps> = ({ onBack }) => {
                     </button>
                     <div>
                         <h1 className="text-h1 font-bold mb-1">
-                            Shopping Cart
+                            Carrito de compras
                         </h1>
                         <p className="text-paragraph">
-                            Review your items and complete your purchase
+                            Revisa los cursos seleccionados y completa tu compra.
                         </p>
                     </div>
                 </div>
@@ -189,13 +189,13 @@ export const CartPage: React.FC<CartPageProps> = ({ onBack }) => {
                             <div className="palette-surface palette-border border rounded-xl p-12 text-center w-full">
                                 <ShoppingCart className="w-16 h-16 mx-auto mb-4 text-paragraph opacity-20" />
                                 <p className="text-paragraph font-semibold mb-4">
-                                    Your cart is empty
+                                    Tu carrito está vacío
                                 </p>
                                 <button
                                     onClick={() => onBack?.()}
                                     className="theme-button theme-button-primary"
                                 >
-                                    Browse Courses
+                                    Explorar cursos
                                 </button>
                             </div>
                         </div>
@@ -222,7 +222,7 @@ export const CartPage: React.FC<CartPageProps> = ({ onBack }) => {
                                         className="theme-button theme-button-primary w-full"
                                     >
                                         <CreditCard className="w-5 h-5 decorator-color" />
-                                        Proceed to Checkout
+                                        Ir al pago
                                     </button>
                                 }
                             >
@@ -268,7 +268,7 @@ export const CartPage: React.FC<CartPageProps> = ({ onBack }) => {
                         disabled={!isPaymentValid}
                         className="theme-button theme-button-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        Complete Purchase - {formatCurrency(totalAllocated)}
+                        Completar compra - {formatCurrency(totalAllocated)}
                     </button>
                 </div>
             )}
@@ -277,9 +277,9 @@ export const CartPage: React.FC<CartPageProps> = ({ onBack }) => {
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
                     <div className="palette-surface palette-border border rounded-xl p-8 text-center max-w-md">
                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--palette-primary)] mx-auto mb-4"></div>
-                        <h3 className="text-h3 mb-2">Processing Payment</h3>
+                        <h3 className="text-h3 mb-2">Procesando pago</h3>
                         <p className="text-paragraph opacity-60">
-                            Please wait while we process your payment...
+                            Espera mientras procesamos tu pago...
                         </p>
                     </div>
                 </div>

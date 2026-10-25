@@ -98,7 +98,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
 
     const initialStyles: Record<string, TypographyStyle> = {
         h1: {
-            fontFamily: theme.config[initialMode].typography.h1?.fontName || 'Roboto',
+            fontFamily: theme.config[initialMode].typography.h1?.fontName || 'Montserrat',
             fontId: theme.config[initialMode].typography.h1?.fontId || '',
             size: parseFloat(theme.config[initialMode].typography.h1?.fontSize || '2.492'),
             color: theme.config[initialMode].typography.h1?.color || '#000000',
@@ -106,7 +106,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
             lineHeight: theme.config[initialMode].typography.h1?.lineHeight || '1.2'
         },
         h2: {
-            fontFamily: theme.config[initialMode].typography.h2?.fontName || 'Roboto',
+            fontFamily: theme.config[initialMode].typography.h2?.fontName || 'Montserrat',
             fontId: theme.config[initialMode].typography.h2?.fontId || '',
             size: parseFloat(theme.config[initialMode].typography.h2?.fontSize || '2.074'),
             color: theme.config[initialMode].typography.h2?.color || '#000000',
@@ -114,7 +114,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
             lineHeight: theme.config[initialMode].typography.h2?.lineHeight || '1.2'
         },
         h3: {
-            fontFamily: theme.config[initialMode].typography.h3?.fontName || 'Roboto',
+            fontFamily: theme.config[initialMode].typography.h3?.fontName || 'Montserrat',
             fontId: theme.config[initialMode].typography.h3?.fontId || '',
             size: parseFloat(theme.config[initialMode].typography.h3?.fontSize || '1.73'),
             color: theme.config[initialMode].typography.h3?.color || '#000000',
@@ -122,7 +122,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
             lineHeight: theme.config[initialMode].typography.h3?.lineHeight || '1.3'
         },
         h4: {
-            fontFamily: theme.config[initialMode].typography.h4?.fontName || 'Roboto',
+            fontFamily: theme.config[initialMode].typography.h4?.fontName || 'Montserrat',
             fontId: theme.config[initialMode].typography.h4?.fontId || '',
             size: parseFloat(theme.config[initialMode].typography.h4?.fontSize || '1.44'),
             color: theme.config[initialMode].typography.h4?.color || '#000000',
@@ -130,7 +130,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
             lineHeight: theme.config[initialMode].typography.h4?.lineHeight || '1.4'
         },
         h5: {
-            fontFamily: theme.config[initialMode].typography.h5?.fontName || 'Roboto',
+            fontFamily: theme.config[initialMode].typography.h5?.fontName || 'Montserrat',
             fontId: theme.config[initialMode].typography.h5?.fontId || '',
             size: parseFloat(theme.config[initialMode].typography.h5?.fontSize || '1.2'),
             color: theme.config[initialMode].typography.h5?.color || '#000000',
@@ -138,7 +138,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
             lineHeight: theme.config[initialMode].typography.h5?.lineHeight || '1.4'
         },
         h6: {
-            fontFamily: theme.config[initialMode].typography.h6?.fontName || 'Roboto',
+            fontFamily: theme.config[initialMode].typography.h6?.fontName || 'Montserrat',
             fontId: theme.config[initialMode].typography.h6?.fontId || '',
             size: parseFloat(theme.config[initialMode].typography.h6?.fontSize || '1.0'),
             color: theme.config[initialMode].typography.h6?.color || '#000000',
@@ -146,7 +146,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
             lineHeight: theme.config[initialMode].typography.h6?.lineHeight || '1.5'
         },
         p: {
-            fontFamily: theme.config[initialMode].typography.paragraph?.fontName || 'Roboto',
+            fontFamily: theme.config[initialMode].typography.paragraph?.fontName || 'Montserrat',
             fontId: theme.config[initialMode].typography.paragraph?.fontId || '',
             size: parseFloat(theme.config[initialMode].typography.paragraph?.fontSize || '1.0'),
             color: theme.config[initialMode].typography.paragraph?.color || '#000000',
@@ -227,13 +227,13 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                     decorator: md.colors.decorator || md.typography.decorator?.color || '#ffffff',
                 },
                 styles: {
-                    h1: { fontFamily: md.typography.h1?.fontName || 'Roboto', fontId: md.typography.h1?.fontId || '', size: parseFloat(md.typography.h1?.fontSize || '2.492'), color: md.typography.h1?.color || '#000000', fontWeight: md.typography.h1?.fontWeight || 400, lineHeight: md.typography.h1?.lineHeight || '1.2' },
-                    h2: { fontFamily: md.typography.h2?.fontName || 'Roboto', fontId: md.typography.h2?.fontId || '', size: parseFloat(md.typography.h2?.fontSize || '2.074'), color: md.typography.h2?.color || '#000000', fontWeight: md.typography.h2?.fontWeight || 400, lineHeight: md.typography.h2?.lineHeight || '1.2' },
-                    h3: { fontFamily: md.typography.h3?.fontName || 'Roboto', fontId: md.typography.h3?.fontId || '', size: parseFloat(md.typography.h3?.fontSize || '1.73'), color: md.typography.h3?.color || '#000000', fontWeight: md.typography.h3?.fontWeight || 400, lineHeight: md.typography.h3?.lineHeight || '1.3' },
-                    h4: { fontFamily: md.typography.h4?.fontName || 'Roboto', fontId: md.typography.h4?.fontId || '', size: parseFloat(md.typography.h4?.fontSize || '1.44'), color: md.typography.h4?.color || '#000000', fontWeight: md.typography.h4?.fontWeight || 400, lineHeight: md.typography.h4?.lineHeight || '1.4' },
-                    h5: { fontFamily: md.typography.h5?.fontName || 'Roboto', fontId: md.typography.h5?.fontId || '', size: parseFloat(md.typography.h5?.fontSize || '1.2'), color: md.typography.h5?.color || '#000000', fontWeight: md.typography.h5?.fontWeight || 400, lineHeight: md.typography.h5?.lineHeight || '1.4' },
-                    h6: { fontFamily: md.typography.h6?.fontName || 'Roboto', fontId: md.typography.h6?.fontId || '', size: parseFloat(md.typography.h6?.fontSize || '1.0'), color: md.typography.h6?.color || '#000000', fontWeight: md.typography.h6?.fontWeight || 400, lineHeight: md.typography.h6?.lineHeight || '1.5' },
-                    p: { fontFamily: md.typography.paragraph?.fontName || 'Roboto', fontId: md.typography.paragraph?.fontId || '', size: parseFloat(md.typography.paragraph?.fontSize || '1.0'), color: md.typography.paragraph?.color || '#000000', fontWeight: md.typography.paragraph?.fontWeight || 400, lineHeight: md.typography.paragraph?.lineHeight || '1.6' },
+                    h1: { fontFamily: md.typography.h1?.fontName || 'Montserrat', fontId: md.typography.h1?.fontId || '', size: parseFloat(md.typography.h1?.fontSize || '2.492'), color: md.typography.h1?.color || '#000000', fontWeight: md.typography.h1?.fontWeight || 400, lineHeight: md.typography.h1?.lineHeight || '1.2' },
+                    h2: { fontFamily: md.typography.h2?.fontName || 'Montserrat', fontId: md.typography.h2?.fontId || '', size: parseFloat(md.typography.h2?.fontSize || '2.074'), color: md.typography.h2?.color || '#000000', fontWeight: md.typography.h2?.fontWeight || 400, lineHeight: md.typography.h2?.lineHeight || '1.2' },
+                    h3: { fontFamily: md.typography.h3?.fontName || 'Montserrat', fontId: md.typography.h3?.fontId || '', size: parseFloat(md.typography.h3?.fontSize || '1.73'), color: md.typography.h3?.color || '#000000', fontWeight: md.typography.h3?.fontWeight || 400, lineHeight: md.typography.h3?.lineHeight || '1.3' },
+                    h4: { fontFamily: md.typography.h4?.fontName || 'Montserrat', fontId: md.typography.h4?.fontId || '', size: parseFloat(md.typography.h4?.fontSize || '1.44'), color: md.typography.h4?.color || '#000000', fontWeight: md.typography.h4?.fontWeight || 400, lineHeight: md.typography.h4?.lineHeight || '1.4' },
+                    h5: { fontFamily: md.typography.h5?.fontName || 'Montserrat', fontId: md.typography.h5?.fontId || '', size: parseFloat(md.typography.h5?.fontSize || '1.2'), color: md.typography.h5?.color || '#000000', fontWeight: md.typography.h5?.fontWeight || 400, lineHeight: md.typography.h5?.lineHeight || '1.4' },
+                    h6: { fontFamily: md.typography.h6?.fontName || 'Montserrat', fontId: md.typography.h6?.fontId || '', size: parseFloat(md.typography.h6?.fontSize || '1.0'), color: md.typography.h6?.color || '#000000', fontWeight: md.typography.h6?.fontWeight || 400, lineHeight: md.typography.h6?.lineHeight || '1.5' },
+                    p: { fontFamily: md.typography.paragraph?.fontName || 'Montserrat', fontId: md.typography.paragraph?.fontId || '', size: parseFloat(md.typography.paragraph?.fontSize || '1.0'), color: md.typography.paragraph?.color || '#000000', fontWeight: md.typography.paragraph?.fontWeight || 400, lineHeight: md.typography.paragraph?.lineHeight || '1.6' },
                 },
                 loader: {
                     enabled: md.colors.loader?.enabled ?? false
@@ -248,13 +248,13 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
             decorator: md.colors.decorator || md.typography.decorator?.color || '#ffffff',
         });
         setStyles({
-            h1: { fontFamily: md.typography.h1?.fontName || 'Roboto', fontId: md.typography.h1?.fontId || '', size: parseFloat(md.typography.h1?.fontSize || '2.492'), color: md.typography.h1?.color || '#000000', fontWeight: md.typography.h1?.fontWeight || 400, lineHeight: md.typography.h1?.lineHeight || '1.2' },
-            h2: { fontFamily: md.typography.h2?.fontName || 'Roboto', fontId: md.typography.h2?.fontId || '', size: parseFloat(md.typography.h2?.fontSize || '2.074'), color: md.typography.h2?.color || '#000000', fontWeight: md.typography.h2?.fontWeight || 400, lineHeight: md.typography.h2?.lineHeight || '1.2' },
-            h3: { fontFamily: md.typography.h3?.fontName || 'Roboto', fontId: md.typography.h3?.fontId || '', size: parseFloat(md.typography.h3?.fontSize || '1.73'), color: md.typography.h3?.color || '#000000', fontWeight: md.typography.h3?.fontWeight || 400, lineHeight: md.typography.h3?.lineHeight || '1.3' },
-            h4: { fontFamily: md.typography.h4?.fontName || 'Roboto', fontId: md.typography.h4?.fontId || '', size: parseFloat(md.typography.h4?.fontSize || '1.44'), color: md.typography.h4?.color || '#000000', fontWeight: md.typography.h4?.fontWeight || 400, lineHeight: md.typography.h4?.lineHeight || '1.4' },
-            h5: { fontFamily: md.typography.h5?.fontName || 'Roboto', fontId: md.typography.h5?.fontId || '', size: parseFloat(md.typography.h5?.fontSize || '1.2'), color: md.typography.h5?.color || '#000000', fontWeight: md.typography.h5?.fontWeight || 400, lineHeight: md.typography.h5?.lineHeight || '1.4' },
-            h6: { fontFamily: md.typography.h6?.fontName || 'Roboto', fontId: md.typography.h6?.fontId || '', size: parseFloat(md.typography.h6?.fontSize || '1.0'), color: md.typography.h6?.color || '#000000', fontWeight: md.typography.h6?.fontWeight || 400, lineHeight: md.typography.h6?.lineHeight || '1.5' },
-            p: { fontFamily: md.typography.paragraph?.fontName || 'Roboto', fontId: md.typography.paragraph?.fontId || '', size: parseFloat(md.typography.paragraph?.fontSize || '1.0'), color: md.typography.paragraph?.color || '#000000', fontWeight: md.typography.paragraph?.fontWeight || 400, lineHeight: md.typography.paragraph?.lineHeight || '1.6' },
+            h1: { fontFamily: md.typography.h1?.fontName || 'Montserrat', fontId: md.typography.h1?.fontId || '', size: parseFloat(md.typography.h1?.fontSize || '2.492'), color: md.typography.h1?.color || '#000000', fontWeight: md.typography.h1?.fontWeight || 400, lineHeight: md.typography.h1?.lineHeight || '1.2' },
+            h2: { fontFamily: md.typography.h2?.fontName || 'Montserrat', fontId: md.typography.h2?.fontId || '', size: parseFloat(md.typography.h2?.fontSize || '2.074'), color: md.typography.h2?.color || '#000000', fontWeight: md.typography.h2?.fontWeight || 400, lineHeight: md.typography.h2?.lineHeight || '1.2' },
+            h3: { fontFamily: md.typography.h3?.fontName || 'Montserrat', fontId: md.typography.h3?.fontId || '', size: parseFloat(md.typography.h3?.fontSize || '1.73'), color: md.typography.h3?.color || '#000000', fontWeight: md.typography.h3?.fontWeight || 400, lineHeight: md.typography.h3?.lineHeight || '1.3' },
+            h4: { fontFamily: md.typography.h4?.fontName || 'Montserrat', fontId: md.typography.h4?.fontId || '', size: parseFloat(md.typography.h4?.fontSize || '1.44'), color: md.typography.h4?.color || '#000000', fontWeight: md.typography.h4?.fontWeight || 400, lineHeight: md.typography.h4?.lineHeight || '1.4' },
+            h5: { fontFamily: md.typography.h5?.fontName || 'Montserrat', fontId: md.typography.h5?.fontId || '', size: parseFloat(md.typography.h5?.fontSize || '1.2'), color: md.typography.h5?.color || '#000000', fontWeight: md.typography.h5?.fontWeight || 400, lineHeight: md.typography.h5?.lineHeight || '1.4' },
+            h6: { fontFamily: md.typography.h6?.fontName || 'Montserrat', fontId: md.typography.h6?.fontId || '', size: parseFloat(md.typography.h6?.fontSize || '1.0'), color: md.typography.h6?.color || '#000000', fontWeight: md.typography.h6?.fontWeight || 400, lineHeight: md.typography.h6?.lineHeight || '1.5' },
+            p: { fontFamily: md.typography.paragraph?.fontName || 'Montserrat', fontId: md.typography.paragraph?.fontId || '', size: parseFloat(md.typography.paragraph?.fontSize || '1.0'), color: md.typography.paragraph?.color || '#000000', fontWeight: md.typography.paragraph?.fontWeight || 400, lineHeight: md.typography.paragraph?.lineHeight || '1.6' },
         });
         setLoader({
             enabled: md.colors.loader?.enabled ?? false
@@ -356,7 +356,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
 
         const resetStyles: Record<string, TypographyStyle> = {
             h1: {
-                fontFamily: modeData.typography.h1?.fontName || 'Roboto',
+                fontFamily: modeData.typography.h1?.fontName || 'Montserrat',
                 fontId: modeData.typography.h1?.fontId || '',
                 size: parseFloat(modeData.typography.h1?.fontSize || '2.492'),
                 color: modeData.typography.h1?.color || '#000000',
@@ -364,7 +364,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                 lineHeight: modeData.typography.h1?.lineHeight || '1.2'
             },
             h2: {
-                fontFamily: modeData.typography.h2?.fontName || 'Roboto',
+                fontFamily: modeData.typography.h2?.fontName || 'Montserrat',
                 fontId: modeData.typography.h2?.fontId || '',
                 size: parseFloat(modeData.typography.h2?.fontSize || '2.074'),
                 color: modeData.typography.h2?.color || '#000000',
@@ -372,7 +372,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                 lineHeight: modeData.typography.h2?.lineHeight || '1.2'
             },
             h3: {
-                fontFamily: modeData.typography.h3?.fontName || 'Roboto',
+                fontFamily: modeData.typography.h3?.fontName || 'Montserrat',
                 fontId: modeData.typography.h3?.fontId || '',
                 size: parseFloat(modeData.typography.h3?.fontSize || '1.73'),
                 color: modeData.typography.h3?.color || '#000000',
@@ -380,7 +380,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                 lineHeight: modeData.typography.h3?.lineHeight || '1.3'
             },
             h4: {
-                fontFamily: modeData.typography.h4?.fontName || 'Roboto',
+                fontFamily: modeData.typography.h4?.fontName || 'Montserrat',
                 fontId: modeData.typography.h4?.fontId || '',
                 size: parseFloat(modeData.typography.h4?.fontSize || '1.44'),
                 color: modeData.typography.h4?.color || '#000000',
@@ -388,7 +388,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                 lineHeight: modeData.typography.h4?.lineHeight || '1.4'
             },
             h5: {
-                fontFamily: modeData.typography.h5?.fontName || 'Roboto',
+                fontFamily: modeData.typography.h5?.fontName || 'Montserrat',
                 fontId: modeData.typography.h5?.fontId || '',
                 size: parseFloat(modeData.typography.h5?.fontSize || '1.2'),
                 color: modeData.typography.h5?.color || '#000000',
@@ -396,7 +396,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                 lineHeight: modeData.typography.h5?.lineHeight || '1.4'
             },
             h6: {
-                fontFamily: modeData.typography.h6?.fontName || 'Roboto',
+                fontFamily: modeData.typography.h6?.fontName || 'Montserrat',
                 fontId: modeData.typography.h6?.fontId || '',
                 size: parseFloat(modeData.typography.h6?.fontSize || '1.0'),
                 color: modeData.typography.h6?.color || '#000000',
@@ -404,7 +404,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                 lineHeight: modeData.typography.h6?.lineHeight || '1.5'
             },
             p: {
-                fontFamily: modeData.typography.paragraph?.fontName || 'Roboto',
+                fontFamily: modeData.typography.paragraph?.fontName || 'Montserrat',
                 fontId: modeData.typography.paragraph?.fontId || '',
                 size: parseFloat(modeData.typography.paragraph?.fontSize || '1.0'),
                 color: modeData.typography.paragraph?.color || '#000000',

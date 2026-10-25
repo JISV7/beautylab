@@ -63,7 +63,7 @@ export const CouponManagement: React.FC = () => {
         message: string | React.ReactNode;
         confirmText: string;
         onConfirm: (() => void) | null;
-    }>({ isOpen: false, type: 'primary', title: '', message: '', confirmText: 'Confirm', onConfirm: null });
+    }>({ isOpen: false, type: 'primary', title: '', message: '', confirmText: 'Confirmar', onConfirm: null });
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingCoupon, setEditingCoupon] = useState<Coupon | null>(null);
@@ -80,8 +80,8 @@ export const CouponManagement: React.FC = () => {
             setTotalItems(response.data.total);
             setTotalPages(response.data.total_pages);
         } catch (error) {
-            console.error('Failed to fetch coupons:', error);
-            setMessageModal({ isOpen: true, type: 'error', message: 'Failed to load coupons.' });
+            console.error('No se pudieron cargar los cupones:', error);
+            setMessageModal({ isOpen: true, type: 'error', message: 'No se pudieron cargar los cupones.' });
         } finally {
             setLoading(false);
         }
@@ -161,11 +161,11 @@ export const CouponManagement: React.FC = () => {
 
     const handleSave = async () => {
         if (!formData.code.trim()) {
-            setMessageModal({ isOpen: true, type: 'error', message: 'Code is required.' });
+            setMessageModal({ isOpen: true, type: 'error', message: 'El código es obligatorio.' });
             return;
         }
         if (!formData.discount_value || parseFloat(formData.discount_value) <= 0) {
-            setMessageModal({ isOpen: true, type: 'error', message: 'Discount value must be greater than 0.' });
+            setMessageModal({ isOpen: true, type: 'error', message: 'El valor del descuento debe ser mayor que 0.' });
             return;
         }
 
@@ -191,16 +191,16 @@ export const CouponManagement: React.FC = () => {
                     is_active: payload.is_active,
                 };
                 await api.put(`/coupons/${editingCoupon.id}`, updatePayload);
-                setMessageModal({ isOpen: true, type: 'success', message: 'Coupon updated successfully!' });
+                setMessageModal({ isOpen: true, type: 'success', message: '¡Cupón actualizado correctamente!' });
             } else {
                 await api.post('/coupons/', payload);
-                setMessageModal({ isOpen: true, type: 'success', message: 'Coupon created successfully!' });
+                setMessageModal({ isOpen: true, type: 'success', message: '¡Cupón creado correctamente!' });
             }
             setIsModalOpen(false);
             fetchCoupons();
         } catch (error: any) {
             const detail = error?.response?.data?.detail;
-            const msg = typeof detail === 'string' ? detail : 'Failed to save coupon.';
+            const msg = typeof detail === 'string' ? detail : 'No se pudo guardar el cupón.';
             setMessageModal({ isOpen: true, type: 'error', message: msg });
         } finally {
             setSaving(false);
@@ -211,17 +211,17 @@ export const CouponManagement: React.FC = () => {
         setConfirmModal({
             isOpen: true,
             type: 'danger',
-            title: 'Deactivate Coupon',
+            title: 'Desactivar cupón',
             message: (
                 <>
-                    Are you sure you want to deactivate <strong>"{coupon.code}"</strong>?
+                    ¿Seguro que quieres desactivar <strong>"{coupon.code}"</strong>?
                     <br />
                     <span className="text-red-600 dark:text-red-400 mt-2 block">
-                        This will prevent future use but won&apos;t affect existing discounts on past invoices.
+                        Impedirá su uso futuro, pero no afectará los descuentos ya aplicados en facturas anteriores.
                     </span>
                 </>
             ),
-            confirmText: 'Deactivate',
+            confirmText: 'Desactivar',
             onConfirm: () => deleteCouponAction(coupon.id),
         });
     };
@@ -229,10 +229,10 @@ export const CouponManagement: React.FC = () => {
     const deleteCouponAction = async (id: string) => {
         try {
             await api.delete(`/coupons/${id}`);
-            setMessageModal({ isOpen: true, type: 'success', message: 'Coupon deactivated successfully!' });
+            setMessageModal({ isOpen: true, type: 'success', message: '¡Cupón desactivado correctamente!' });
             fetchCoupons();
         } catch (error) {
-            setMessageModal({ isOpen: true, type: 'error', message: 'Failed to deactivate coupon.' });
+            setMessageModal({ isOpen: true, type: 'error', message: 'No se pudo desactivar el cupón.' });
         }
     };
 
@@ -250,9 +250,9 @@ export const CouponManagement: React.FC = () => {
         <div className="space-y-6 p-6">
             {/* Header */}
             <div>
-                <h1 className="text-h1 font-bold mb-1">Coupons</h1>
+                <h1 className="text-h1 font-bold mb-1">Cupones</h1>
                 <p className="text-paragraph">
-                    Create and manage discount codes. Each code can be used once per user.
+                    Crea y administra códigos de descuento. Cada código puede usarse una vez por usuario.
                 </p>
             </div>
 
@@ -267,7 +267,7 @@ export const CouponManagement: React.FC = () => {
                                 type="text"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                placeholder="Search by code..."
+                                placeholder="Buscar por código..."
                                 className="flex-1 min-w-0 py-2 pl-2 pr-4 bg-transparent text-paragraph placeholder:text-paragraph placeholder:opacity-60 focus:outline-none"
                             />
                         </div>
@@ -282,15 +282,15 @@ export const CouponManagement: React.FC = () => {
                         }}
                         className="theme-input"
                     >
-                        <option value="all">All</option>
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
+                        <option value="all">Todos</option>
+                        <option value="active">Activos</option>
+                        <option value="inactive">Inactivos</option>
                     </select>
                 </div>
 
                 <button onClick={handleOpenCreate} className="theme-button theme-button-primary flex items-center gap-2">
                     <Plus className="w-4 h-4" />
-                    Create Coupon
+                    Crear cupón
                 </button>
             </div>
 
@@ -302,9 +302,9 @@ export const CouponManagement: React.FC = () => {
             ) : filteredCoupons.length === 0 ? (
                 <div className="palette-surface palette-border border rounded-xl p-8 text-center">
                     <Tag className="w-16 h-16 mx-auto mb-4 opacity-50" />
-                    <p className="text-paragraph">No coupons found.</p>
+                    <p className="text-paragraph">No se encontraron cupones.</p>
                     <p className="text-paragraph opacity-75 text-sm mt-2">
-                        {searchQuery ? 'Try a different search term.' : 'Create your first coupon to get started!'}
+                        {searchQuery ? 'Prueba con otro término de búsqueda.' : 'Crea tu primer cupón para comenzar.'}
                     </p>
                 </div>
             ) : (
@@ -317,35 +317,35 @@ export const CouponManagement: React.FC = () => {
                                         className="text-left py-3 px-4 text-sm font-semibold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap"
                                         onClick={() => handleSort('code')}
                                     >
-                                        <div className="flex items-center">Code<SortIcon column="code" /></div>
+                                        <div className="flex items-center">Código<SortIcon column="code" /></div>
                                     </th>
                                     <th
                                         className="text-left py-3 px-4 text-sm font-semibold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap"
                                         onClick={() => handleSort('discount')}
                                     >
-                                        <div className="flex items-center">Discount<SortIcon column="discount" /></div>
+                                        <div className="flex items-center">Descuento<SortIcon column="discount" /></div>
                                     </th>
                                     <th
                                         className="text-left py-3 px-4 text-sm font-semibold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap"
                                         onClick={() => handleSort('min_purchase')}
                                     >
-                                        <div className="flex items-center">Min Purchase<SortIcon column="min_purchase" /></div>
+                                        <div className="flex items-center">Compra mínima<SortIcon column="min_purchase" /></div>
                                     </th>
                                     <th
                                         className="text-left py-3 px-4 text-sm font-semibold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap"
                                         onClick={() => handleSort('uses')}
                                     >
-                                        <div className="flex items-center">Uses<SortIcon column="uses" /></div>
+                                        <div className="flex items-center">Usos<SortIcon column="uses" /></div>
                                     </th>
-                                    <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph whitespace-nowrap">Expires</th>
+                                    <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph whitespace-nowrap">Vence</th>
                                     <th
                                         className="text-left py-3 px-4 text-sm font-semibold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap"
                                         onClick={() => handleSort('created_at')}
                                     >
-                                        <div className="flex items-center">Created<SortIcon column="created_at" /></div>
+                                        <div className="flex items-center">Creado<SortIcon column="created_at" /></div>
                                     </th>
-                                    <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph whitespace-nowrap">Status</th>
-                                    <th className="text-right py-3 px-4 text-sm font-semibold text-paragraph">Actions</th>
+                                    <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph whitespace-nowrap">Estado</th>
+                                    <th className="text-right py-3 px-4 text-sm font-semibold text-paragraph">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -386,7 +386,7 @@ export const CouponManagement: React.FC = () => {
                                                         : 'bg-gray-100 dark:bg-gray-800 text-gray-500'
                                                     }`}
                                             >
-                                                {coupon.is_active ? 'Active' : 'Inactive'}
+                                                {coupon.is_active ? 'Activo' : 'Inactivo'}
                                             </span>
                                         </td>
                                         <td className="py-3 px-4 text-right">
@@ -394,14 +394,14 @@ export const CouponManagement: React.FC = () => {
                                                 <button
                                                     onClick={() => handleOpenEdit(coupon)}
                                                     className="p-2 rounded-lg edit-action"
-                                                    title="Edit"
+                                                    title="Editar"
                                                 >
                                                     <Edit className="w-4 h-4" />
                                                 </button>
                                                 <button
                                                     onClick={() => handleDelete(coupon)}
                                                     className="p-2 rounded-lg delete-action"
-                                                    title="Deactivate"
+                                                    title="Desactivar"
                                                 >
                                                     <Trash2 className="w-4 h-4" />
                                                 </button>
@@ -417,7 +417,7 @@ export const CouponManagement: React.FC = () => {
                     {totalPages > 1 && (
                         <div className="flex items-center justify-between px-4 py-3 border-t palette-border">
                             <p className="text-sm text-paragraph opacity-60">
-                                Showing {sortedCoupons.length} of {totalItems} coupons
+                                Mostrando {sortedCoupons.length} de {totalItems} cupones
                             </p>
                             <div className="flex items-center gap-2">
                                 <button
@@ -456,13 +456,13 @@ export const CouponManagement: React.FC = () => {
             <Modal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-                title={editingCoupon ? 'Edit Coupon' : 'Create Coupon'}
+                title={editingCoupon ? 'Editar cupón' : 'Crear cupón'}
             >
                 <div className="space-y-4">
                     {/* Code */}
                     <div>
                         <label className="text-paragraph font-medium block mb-1">
-                            Code {editingCoupon && <span className="opacity-50">(read-only)</span>}
+                            Código {editingCoupon && <span className="opacity-50">(solo lectura)</span>}
                         </label>
                         <input
                             type="text"
@@ -470,14 +470,14 @@ export const CouponManagement: React.FC = () => {
                             onChange={(e) => setFormData({ ...formData, code: e.target.value.toUpperCase().replace(/[^A-Z0-9_-]/g, '') })}
                             disabled={!!editingCoupon}
                             className="theme-input w-full"
-                            placeholder="e.g., WELCOME10"
+                            placeholder="Ej.: BIENVENIDA10"
                         />
                     </div>
 
                     {/* Discount Type */}
                     <div>
                         <label className="text-paragraph font-medium block mb-1">
-                            Discount Type {editingCoupon && <span className="opacity-50">(read-only)</span>}
+                            Tipo de descuento {editingCoupon && <span className="opacity-50">(solo lectura)</span>}
                         </label>
                         <select
                             value={formData.discount_type}
@@ -485,15 +485,15 @@ export const CouponManagement: React.FC = () => {
                             disabled={!!editingCoupon}
                             className="theme-input w-full"
                         >
-                            <option value="percentage">Percentage (%)</option>
-                            <option value="fixed">Fixed Amount (Bs.)</option>
+                            <option value="percentage">Porcentaje (%)</option>
+                            <option value="fixed">Monto fijo (Bs.)</option>
                         </select>
                     </div>
 
                     {/* Discount Value */}
                     <div>
                         <label className="text-paragraph font-medium block mb-1">
-                            Discount Value
+                            Valor del descuento
                         </label>
                         <input
                             type="number"
@@ -509,7 +509,7 @@ export const CouponManagement: React.FC = () => {
                     {/* Min Purchase */}
                     <div>
                         <label className="text-paragraph font-medium block mb-1">
-                            Minimum Purchase (Bs.)
+                            Compra mínima (Bs.)
                         </label>
                         <input
                             type="number"
@@ -525,14 +525,14 @@ export const CouponManagement: React.FC = () => {
                     {/* Max Uses */}
                     <div>
                         <label className="text-paragraph font-medium block mb-1">
-                            Max Total Uses <span className="opacity-50">(leave empty for unlimited)</span>
+                            Usos máximos <span className="opacity-50">(deja vacío para ilimitado)</span>
                         </label>
                         <input
                             type="number"
                             value={formData.max_uses}
                             onChange={(e) => setFormData({ ...formData, max_uses: e.target.value })}
                             className="theme-input w-full"
-                            placeholder="e.g., 100"
+                            placeholder="Ej.: 100"
                             min="1"
                         />
                     </div>
@@ -540,7 +540,7 @@ export const CouponManagement: React.FC = () => {
                     {/* Expires At */}
                     <div>
                         <label className="text-paragraph font-medium block mb-1">
-                            Expiration Date <span className="opacity-50">(leave empty for no expiry)</span>
+                            Fecha de vencimiento <span className="opacity-50">(deja vacío para que no venza)</span>
                         </label>
                         <input
                             type="date"
@@ -560,17 +560,17 @@ export const CouponManagement: React.FC = () => {
                             className="w-4 h-4 rounded"
                         />
                         <label htmlFor="coupon-active" className="text-paragraph font-medium">
-                            Active
+                            Activo
                         </label>
                     </div>
 
                     {/* Actions */}
                     <div className="flex justify-end gap-3 pt-4">
                         <button onClick={() => setIsModalOpen(false)} className="theme-button theme-button-secondary">
-                            Cancel
+                            Cancelar
                         </button>
                         <button onClick={handleSave} disabled={saving} className="theme-button theme-button-primary">
-                            {saving ? 'Saving...' : editingCoupon ? 'Update' : 'Create'}
+                            {saving ? 'Guardando...' : editingCoupon ? 'Actualizar' : 'Crear'}
                         </button>
                     </div>
                 </div>

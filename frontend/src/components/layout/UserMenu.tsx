@@ -73,12 +73,14 @@ export const UserMenu: React.FC<UserMenuProps> = ({
         setIsMenuOpen(false);
     };
 
-    const userName = user?.name || user?.email?.split('@')[0] || 'User';
+    const userName = user?.name || user?.email?.split('@')[0] || 'Usuario';
 
     return (
         <div className="relative" ref={menuRef}>
             <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
+                aria-label="Abrir menú de usuario"
+                aria-expanded={isMenuOpen}
                 className="flex items-center gap-2 p-2 rounded-lg palette-surface palette-border border hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
             >
                 <div className="w-8 h-8 rounded-full bg-palette-primary/10 flex items-center justify-center">
@@ -105,7 +107,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({
                             className="w-full text-left px-4 py-2 text-paragraph hover:bg-palette-primary hover:text-white flex items-center gap-2 transition-colors"
                         >
                             <Home className="w-4 h-4 rotate-180" />
-                            Go to Dashboard
+                            Ir al panel
                         </button>
                     ) : (
                         <button
@@ -113,7 +115,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({
                             className="w-full text-left px-4 py-2 text-paragraph hover:bg-palette-primary hover:text-white flex items-center gap-2 transition-colors"
                         >
                             <Home className="w-4 h-4" />
-                            Go to Home
+                            Ir al inicio
                         </button>
                     )}
                     {user?.isAdmin && (
@@ -122,7 +124,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({
                             className="w-full text-left px-4 py-2 text-paragraph hover:bg-palette-primary hover:text-white flex items-center gap-2 transition-colors"
                         >
                             <Shield className="w-4 h-4" />
-                            Admin Panel
+                            Panel de administración
                         </button>
                     )}
                     <button
@@ -130,7 +132,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({
                         className="w-full text-left px-4 py-2 text-paragraph hover:bg-palette-primary hover:text-white flex items-center gap-2 transition-colors"
                     >
                         <Settings className="w-4 h-4" />
-                        Settings
+                        Configuración
                     </button>
                     <button
                         onClick={() => {
@@ -140,7 +142,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({
                         className="w-full text-left px-4 py-2 text-paragraph hover:bg-palette-primary hover:text-white flex items-center gap-2 transition-colors rounded-b-xl"
                     >
                         <LogOut className="w-4 h-4" />
-                        Sign Out
+                        Cerrar sesión
                     </button>
                 </div>
             )}

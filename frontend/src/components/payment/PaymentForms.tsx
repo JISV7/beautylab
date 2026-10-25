@@ -38,7 +38,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({
         case 'bank_transfer':
             return <BankTransferForm {...props} />;
         default:
-            return <div className="text-paragraph">Unknown payment method</div>;
+            return <div className="text-paragraph">Método de pago no disponible</div>;
     }
 };
 

@@ -1,1 +1,1 @@
-"""BeautyLab Backend API."""
+"""Cursorg Backend API - Plataforma de Capacitación Corporativa."""

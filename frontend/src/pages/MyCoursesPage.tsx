@@ -80,7 +80,7 @@ export default function MyCoursesPage() {
             const response = await api.get<UserCourse[]>('/catalog/my-courses');
             setCourses(response.data);
         } catch (error) {
-            console.error('Failed to fetch courses:', error);
+            console.error('No se pudieron cargar los cursos:', error);
         } finally {
             setLoading(false);
         }
@@ -91,7 +91,7 @@ export default function MyCoursesPage() {
             const response = await api.get('/catalog/categories');
             setCategories(response.data.categories || []);
         } catch (error) {
-            console.error('Failed to fetch categories:', error);
+            console.error('No se pudieron cargar las categorías:', error);
         }
     };
 
@@ -102,7 +102,7 @@ export default function MyCoursesPage() {
 
     const handleRedeemLicense = async () => {
         if (!redeemCode.trim()) {
-            setRedeemError('Please enter a license code.');
+            setRedeemError('Ingresa un código de licencia.');
             return;
         }
         try {
@@ -119,7 +119,7 @@ export default function MyCoursesPage() {
             fetchCourses();
         } catch (err: any) {
             const detail = err.response?.data?.detail;
-            setRedeemError(typeof detail === 'string' ? detail : 'Failed to redeem license. Check the code and try again.');
+            setRedeemError(typeof detail === 'string' ? detail : 'No pudimos canjear la licencia. Verifica el código e inténtalo de nuevo.');
         } finally {
             setRedeemLoading(false);
         }
@@ -132,14 +132,14 @@ export default function MyCoursesPage() {
                 return (
                     <span className="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
                         <CheckCircle className="w-3 h-3 inline mr-1" />
-                        Active
+                        Activo
                     </span>
                 );
             } else {
                 return (
                     <span className="px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
                         <Key className="w-3 h-3 inline mr-1" />
-                        Ready to Redeem
+                        Listo para canjear
                     </span>
                 );
             }
@@ -147,7 +147,7 @@ export default function MyCoursesPage() {
             return (
                 <span className="px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400">
                     <Clock className="w-3 h-3 inline mr-1" />
-                    Partial ({course.payment_progress.toFixed(0)}%)
+                    Parcial ({course.payment_progress.toFixed(0)}%)
                 </span>
             );
         }
@@ -193,7 +193,7 @@ export default function MyCoursesPage() {
     if (loading) {
         return (
             <div className="flex items-center justify-center h-64">
-                <div className="text-paragraph">Loading your courses...</div>
+                <div className="text-paragraph">Cargando tus cursos...</div>
             </div>
         );
     }
@@ -204,9 +204,9 @@ export default function MyCoursesPage() {
                 {/* Header */}
                 <div className="flex items-start justify-between mb-6">
                     <div>
-                        <h1 className="text-h1 font-bold mb-1">My Courses</h1>
+                        <h1 className="text-h1 font-bold mb-1">Mis cursos</h1>
                         <p className="text-paragraph">
-                            Track your enrolled courses, licenses, and learning progress.
+                            Consulta tus cursos, licencias y avance de aprendizaje.
                         </p>
                     </div>
                     <button
@@ -214,7 +214,7 @@ export default function MyCoursesPage() {
                         className="theme-button theme-button-primary inline-flex items-center gap-2"
                     >
                         <KeyRound className="w-4 h-4" />
-                        Redeem License
+                        Canjear licencia
                     </button>
                 </div>
 
@@ -234,16 +234,16 @@ export default function MyCoursesPage() {
                 {/* Results Count */}
                 <div className="mb-6 mt-4 flex items-center justify-between">
                     <p className="text-paragraph opacity-60">
-                        Showing <span className="font-bold text-paragraph">{filteredCourses.length}</span> courses
+                        Mostrando <span className="font-bold text-paragraph">{filteredCourses.length}</span> cursos
                     </p>
                 </div>
 
                 {courses.length === 0 ? (
                     <div className="palette-surface palette-border border rounded-xl p-8 text-center">
                         <Book className="w-16 h-16 mx-auto mb-4 opacity-50" />
-                        <p className="text-paragraph">No courses yet.</p>
+                        <p className="text-paragraph">Aún no tienes cursos.</p>
                         <p className="text-paragraph opacity-75 text-sm mt-2">
-                            When you purchase a course, it will appear here.
+                            Cuando compres un curso, aparecerá aquí.
                         </p>
                     </div>
                 ) : (
@@ -282,7 +282,7 @@ export default function MyCoursesPage() {
                                     {!course.is_fully_paid && (
                                         <div className="mb-4">
                                             <div className="flex items-center justify-between text-sm mb-1">
-                                                <span className="text-paragraph opacity-75">Payment Progress</span>
+                                                <span className="text-paragraph opacity-75">Progreso de pago</span>
                                                 <span className="font-medium">
                                                     Bs. {course.total_paid} / Bs. {course.total_required}
                                                 </span>
@@ -306,7 +306,7 @@ export default function MyCoursesPage() {
                                                 <div className="flex items-center gap-2">
                                                     <Gift className="w-4 h-4 text-paragraph opacity-50" />
                                                     <span className="text-sm font-semibold text-paragraph opacity-75">
-                                                        Licenses ({course.licenses.length})
+                                                        Licencias ({course.licenses.length})
                                                     </span>
                                                 </div>
                                                 <ChevronDown className={`w-4 h-4 transition-transform ${expandedLicenses.includes(course.course_id) ? 'rotate-180' : ''
@@ -325,11 +325,11 @@ export default function MyCoursesPage() {
                                                             cancelled: course.licenses.filter(l => l.status === 'cancelled').length,
                                                         };
                                                         const statusLabels: Record<string, string> = {
-                                                            pending: 'Pending',
-                                                            active: 'Active',
-                                                            redeemed: 'Redeemed',
-                                                            expired: 'Expired',
-                                                            cancelled: 'Cancelled',
+                                                            pending: 'Pendiente',
+                                                            active: 'Activa',
+                                                            redeemed: 'Canjeada',
+                                                            expired: 'Vencida',
+                                                            cancelled: 'Cancelada',
                                                         };
                                                         return Object.entries(counts).map(([status, count]) => (
                                                             <div
@@ -360,13 +360,13 @@ export default function MyCoursesPage() {
                                             className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg theme-button theme-button-primary text-sm"
                                         >
                                             <Book className="w-4 h-4" />
-                                            View Course
+                                            Ver curso
                                         </button>
                                         {course.is_fully_paid && course.licenses.some(l => l.status === 'active') && (
                                             <>
                                                 <button
                                                     className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg theme-button theme-button-secondary text-sm"
-                                                    title="Gift license"
+                                                    title="Compartir licencia"
                                                 >
                                                     <Share2 className="w-4 h-4" />
                                                 </button>
@@ -392,7 +392,7 @@ export default function MyCoursesPage() {
                                     <KeyRound size={20} className="text-green-600 dark:text-green-400" />
                                 </div>
                                 <h3 className="text-h4">
-                                    Redeem License
+                                    Canjear licencia
                                 </h3>
                             </div>
                             <button onClick={() => { setRedeemModalOpen(false); setRedeemCode(''); setRedeemError(null); }} className="p-2 hover:bg-[var(--palette-border)] rounded-lg transition-colors">
@@ -405,21 +405,21 @@ export default function MyCoursesPage() {
                             <div className="flex items-start gap-3 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
                                 <AlertTriangle size={18} className="text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
                                 <p className="text-paragraph text-sm">
-                                    Enter the license code to redeem it. This will bind the license to your account and cannot be undone.
+                                    Ingresa el código de licencia para canjearla. La licencia quedará vinculada a tu cuenta y esta acción no se puede deshacer.
                                 </p>
                             </div>
 
                             {/* License Code Input */}
                             <div>
                                 <label className="block text-xs font-bold text-paragraph uppercase tracking-wider mb-2">
-                                    License Code
+                                    Código de licencia
                                 </label>
                                 <input
                                     type="text"
                                     value={redeemCode}
                                     onChange={(e) => { setRedeemCode(e.target.value); setRedeemError(null); }}
                                     onKeyDown={(e) => { if (e.key === 'Enter') handleRedeemLicense(); }}
-                                    placeholder="Paste your license code here..."
+                                    placeholder="Pega aquí tu código de licencia..."
                                     className="theme-input w-full font-mono text-sm"
                                     autoFocus
                                     disabled={redeemLoading}
@@ -441,14 +441,14 @@ export default function MyCoursesPage() {
                                 className="flex-1 theme-button theme-button-secondary"
                                 disabled={redeemLoading}
                             >
-                                Cancel
+                                Cancelar
                             </button>
                             <button
                                 onClick={handleRedeemLicense}
                                 disabled={redeemLoading || !redeemCode.trim()}
                                 className="flex-1 theme-button theme-button-primary disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                {redeemLoading ? 'Redeeming...' : 'Redeem'}
+                                {redeemLoading ? 'Canjeando...' : 'Canjear'}
                             </button>
                         </div>
                     </div>

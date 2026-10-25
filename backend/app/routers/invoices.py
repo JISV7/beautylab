@@ -257,8 +257,9 @@ async def download_all_invoices_as_pdfs(
             cnr_start=cnr.start_number.zfill(12) if cnr else "",
             cnr_end=cnr.end_number.zfill(12) if cnr else "",
             cnr_assigned_date=cnr.assigned_date.strftime("%d/%m/%Y") if cnr else "",
+            current_year=datetime.now().year,
         )
-        return HTML(string=html).write_pdf()
+        return HTML(string=html, base_url=str(_template_dir)).write_pdf()
 
     def _generate_zip_stream():
         """Generator that yields chunks of the zip file."""
@@ -284,7 +285,7 @@ async def download_all_invoices_as_pdfs(
 
     # Generate a nice filename with date
     today = datetime.now().strftime("%Y%m%d")
-    zip_filename = f"facturas_beautylab_{today}.zip"
+    zip_filename = f"facturas_cursorg_{today}.zip"
 
     return StreamingResponse(
         _generate_zip_stream(),

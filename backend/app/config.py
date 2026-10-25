@@ -16,7 +16,7 @@ class Settings(BaseSettings):
     )
 
     # Application
-    app_name: str = "Codyn API"
+    app_name: str = "Cursorg API"
     debug: bool = False
 
     # Database
@@ -44,14 +44,16 @@ class Settings(BaseSettings):
     smtp_port: int = 587
     smtp_user: str = ""
     smtp_password: str = ""
-    from_email: str = "noreply@codyn.com"
-    from_name: str = "Codyn Academy"
+    from_email: str = "no-reply@cursorg.ve"
+    from_name: str = "Cursorg"
 
     # Company Info
-    company_name: str = "Codyn - The Online Programming and AI Academy"
-    support_email: str = "support@codyn.com"
-    payments_email: str = "payments@codyn.com"
+    company_name: str = "Cursorg - Plataforma de Capacitación Corporativa"
+    support_email: str = "soporte@cursorg.ve"
+    payments_email: str = "pagos@cursorg.ve"
     website_url: str = "http://localhost:5173"
+    # Optional base URL for invoice links. Defaults to website_url when empty.
+    invoice_download_base_url: str = ""
 
     @property
     def async_database_url(self) -> str:
@@ -59,6 +61,11 @@ class Settings(BaseSettings):
         if self.database_url.startswith("postgresql://"):
             return self.database_url.replace("postgresql://", "postgresql+asyncpg://", 1)
         return self.database_url
+
+    @property
+    def invoice_download_base(self) -> str:
+        """Base URL used to build invoice download links."""
+        return (self.invoice_download_base_url or self.website_url).rstrip("/")
 
     @property
     def cors_origins_list(self) -> list[str]:

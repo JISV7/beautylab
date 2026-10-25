@@ -73,7 +73,7 @@ export const CategoryManagement: React.FC = () => {
         type: 'primary',
         title: '',
         message: '',
-        confirmText: 'Confirm',
+        confirmText: 'Confirmar',
         onConfirm: null,
     });
 
@@ -93,11 +93,11 @@ export const CategoryManagement: React.FC = () => {
             const response = await api.get('/catalog/categories');
             setCategories(response.data.categories || []);
         } catch (error: any) {
-            console.error('Failed to fetch categories:', error);
+            console.error('No se pudieron cargar las categorías:', error);
             setMessageModal({
                 isOpen: true,
                 type: 'error',
-                message: error.response?.data?.detail || 'Failed to load categories.',
+                message: error.response?.data?.detail || 'No se pudieron cargar las categorías.',
             });
         } finally {
             setLoading(false);
@@ -206,7 +206,7 @@ export const CategoryManagement: React.FC = () => {
     // Save category
     const handleSave = async () => {
         if (!formData.name.trim()) {
-            setMessageModal({ isOpen: true, type: 'error', message: 'Category name is required.' });
+            setMessageModal({ isOpen: true, type: 'error', message: 'El nombre de la categoría es obligatorio.' });
             return;
         }
 
@@ -240,24 +240,24 @@ export const CategoryManagement: React.FC = () => {
                 setMessageModal({
                     isOpen: true,
                     type: 'success',
-                    message: 'Category updated successfully!',
+                    message: '¡Categoría actualizada correctamente!',
                 });
             } else {
                 await api.post('/catalog/categories', categoryData);
                 setMessageModal({
                     isOpen: true,
                     type: 'success',
-                    message: 'Category created successfully!',
+                    message: '¡Categoría creada correctamente!',
                 });
             }
 
             setIsModalOpen(false);
             fetchCategories();
         } catch (error: any) {
-            console.error('Failed to save category:', error);
+            console.error('No se pudo guardar la categoría:', error);
 
             // Extract error message from validation errors
-            let errorMessage = 'Failed to save category.';
+            let errorMessage = 'No se pudo guardar la categoría.';
             const detail = error.response?.data?.detail;
             if (detail) {
                 if (Array.isArray(detail)) {
@@ -287,17 +287,17 @@ export const CategoryManagement: React.FC = () => {
         setConfirmModal({
             isOpen: true,
             type: 'danger',
-            title: 'Delete Category',
+            title: 'Eliminar categoría',
             message: (
                 <>
-                    Are you sure you want to delete <strong>"{category.name}"</strong>?
+                    ¿Seguro que quieres eliminar <strong>"{category.name}"</strong>?
                     <br />
                     <span className="text-red-600 dark:text-red-400 mt-2 block">
-                        This action cannot be undone.
+                        Esta acción no se puede deshacer.
                     </span>
                 </>
             ),
-            confirmText: 'Delete',
+            confirmText: 'Eliminar',
             onConfirm: () => deleteCategory(category.id),
         });
     };
@@ -308,15 +308,15 @@ export const CategoryManagement: React.FC = () => {
             setMessageModal({
                 isOpen: true,
                 type: 'success',
-                message: 'Category deleted successfully!',
+                message: '¡Categoría eliminada correctamente!',
             });
             fetchCategories();
         } catch (error: any) {
-            console.error('Failed to delete category:', error);
+            console.error('No se pudo eliminar la categoría:', error);
             setMessageModal({
                 isOpen: true,
                 type: 'error',
-                message: error.response?.data?.detail || 'Failed to delete category.',
+                message: error.response?.data?.detail || 'No se pudo eliminar la categoría.',
             });
         }
     };
@@ -335,10 +335,10 @@ export const CategoryManagement: React.FC = () => {
                 <div className="flex items-center justify-between flex-wrap gap-4">
                     <div>
                         <h1 className="text-h1 font-bold mb-1">
-                            Category Management
+                            Gestión de categorías
                         </h1>
                         <p className="text-paragraph">
-                            Create, edit, and organize your course categories.
+                            Crea, edita y organiza las categorías de tus cursos.
                         </p>
                     </div>
                     <button
@@ -346,7 +346,7 @@ export const CategoryManagement: React.FC = () => {
                         className="theme-button theme-button-primary"
                     >
                         <Plus size={20} />
-                        Create Category
+                        Crear categoría
                     </button>
                 </div>
 
@@ -357,7 +357,7 @@ export const CategoryManagement: React.FC = () => {
                             <Search className="w-4 h-4 text-paragraph flex-shrink-0 ml-3" />
                             <input
                                 type="text"
-                                placeholder="Search categories by name, slug, or description..."
+                                placeholder="Buscar categorías por nombre, slug o descripción..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 className="flex-1 min-w-0 py-2 pl-2 pr-4 bg-transparent text-paragraph placeholder:text-paragraph placeholder:opacity-60 focus:outline-none"
@@ -375,11 +375,11 @@ export const CategoryManagement: React.FC = () => {
                     ) : filteredCategories.length === 0 ? (
                         <div className="text-center py-12 text-paragraph">
                             {searchQuery ? (
-                                <p>No categories found matching "{searchQuery}".</p>
+                                <p>No se encontraron categorías que coincidan con "{searchQuery}".</p>
                             ) : (
                                 <>
-                                    <p>No categories found.</p>
-                                    <p className="text-sm mt-2">Create your first category to get started!</p>
+                                    <p>No se encontraron categorías.</p>
+                                    <p className="text-sm mt-2">Crea tu primera categoría para comenzar.</p>
                                 </>
                             )}
                         </div>
@@ -389,17 +389,17 @@ export const CategoryManagement: React.FC = () => {
                                 <thead className="bg-black/5 dark:bg-white/5 border-b palette-border">
                                     <tr>
                                         <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap" onClick={() => handleSort('name')}>
-                                            <div className="flex items-center">Name<SortIcon column="name" /></div>
+                                            <div className="flex items-center">Nombre<SortIcon column="name" /></div>
                                         </th>
                                         <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap" onClick={() => handleSort('slug')}>
                                             <div className="flex items-center">Slug<SortIcon column="slug" /></div>
                                         </th>
-                                        <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph">Description</th>
-                                        <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph">Parent</th>
+                                        <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph">Descripción</th>
+                                        <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph">Categoría padre</th>
                                         <th className="text-right py-3 px-4 text-sm font-semibold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap" onClick={() => handleSort('order')}>
-                                            <div className="flex items-center justify-end">Order<SortIcon column="order" /></div>
+                                            <div className="flex items-center justify-end">Orden<SortIcon column="order" /></div>
                                         </th>
-                                        <th className="text-right py-3 px-4 text-sm font-semibold text-paragraph">Actions</th>
+                                        <th className="text-right py-3 px-4 text-sm font-semibold text-paragraph">Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -432,7 +432,7 @@ export const CategoryManagement: React.FC = () => {
                                                                 onClick={() => handleViewDescription(category)}
                                                                 className="text-xs text-[var(--palette-primary)] hover:underline whitespace-nowrap font-medium"
                                                             >
-                                                                Read more
+                                                                Leer más
                                                             </button>
                                                         )}
                                                     </div>
@@ -455,14 +455,14 @@ export const CategoryManagement: React.FC = () => {
                                                     <button
                                                         onClick={() => handleOpenEdit(category)}
                                                         className="p-2 rounded-lg edit-action"
-                                                        title="Edit"
+                                                        title="Editar"
                                                     >
                                                         <Edit size={18} />
                                                     </button>
                                                     <button
                                                         onClick={() => handleDelete(category)}
                                                         className="p-2 rounded-lg delete-action"
-                                                        title="Delete"
+                                                        title="Eliminar"
                                                     >
                                                         <Trash2 size={18} />
                                                     </button>
@@ -481,18 +481,18 @@ export const CategoryManagement: React.FC = () => {
             <Modal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-                title={editingCategory ? 'Edit Category' : 'Create Category'}
+                title={editingCategory ? 'Editar categoría' : 'Crear categoría'}
             >
                 <div className="space-y-4">
                     <div>
                         <label className="block text-sm font-semibold mb-2 text-paragraph">
-                            Name <span className="text-red-500">*</span>
+                            Nombre <span className="text-red-500">*</span>
                         </label>
                         <input
                             type="text"
                             name="name"
                             className="theme-input w-full"
-                            placeholder="e.g., Machine Learning"
+                            placeholder="Ej.: Liderazgo"
                             value={formData.name}
                             onChange={handleInputChange}
                         />
@@ -500,13 +500,13 @@ export const CategoryManagement: React.FC = () => {
 
                     <div>
                         <label className="block text-sm font-semibold mb-2 text-paragraph">
-                            Slug <span className="text-paragraph opacity-60">(auto-generated)</span>
+                            Slug <span className="text-paragraph opacity-60">(generado automáticamente)</span>
                         </label>
                         <input
                             type="text"
                             name="slug"
                             className="theme-input w-full"
-                            placeholder="e.g., machine-learning"
+                            placeholder="ej.: liderazgo"
                             value={formData.slug}
                             onChange={handleInputChange}
                         />
@@ -514,13 +514,13 @@ export const CategoryManagement: React.FC = () => {
 
                     <div>
                         <label className="block text-sm font-semibold mb-2 text-paragraph">
-                            Description
+                            Descripción
                         </label>
                         <textarea
                             name="description"
                             className="theme-input w-full"
                             rows={3}
-                            placeholder="Brief description of this category..."
+                            placeholder="Breve descripción de esta categoría..."
                             value={formData.description}
                             onChange={handleInputChange}
                         />
@@ -529,7 +529,7 @@ export const CategoryManagement: React.FC = () => {
                     <div className="grid grid-cols-2 gap-4">
                         <div>
                             <label className="block text-sm font-semibold mb-2 text-paragraph">
-                                Parent Category
+                                Categoría padre
                             </label>
                             <select
                                 name="parent_id"
@@ -537,7 +537,7 @@ export const CategoryManagement: React.FC = () => {
                                 value={formData.parent_id}
                                 onChange={handleInputChange}
                             >
-                                <option value="">None (Root Category)</option>
+                                <option value="">Ninguna (categoría raíz)</option>
                                 {categories
                                     .filter(c => !editingCategory || c.id !== editingCategory.id)
                                     .map(cat => (
@@ -550,7 +550,7 @@ export const CategoryManagement: React.FC = () => {
 
                         <div>
                             <label className="block text-sm font-semibold mb-2 text-paragraph">
-                                Order
+                                Orden
                             </label>
                             <input
                                 type="number"
@@ -574,7 +574,7 @@ export const CategoryManagement: React.FC = () => {
                                 border: '1px solid var(--palette-border)',
                             }}
                         >
-                            Cancel
+                            Cancelar
                         </button>
                         <button
                             type="button"
@@ -582,7 +582,7 @@ export const CategoryManagement: React.FC = () => {
                             disabled={saving}
                             className="theme-button theme-button-primary"
                         >
-                            {saving ? 'Saving...' : (editingCategory ? 'Update' : 'Create')}
+                            {saving ? 'Guardando...' : (editingCategory ? 'Actualizar' : 'Crear')}
                         </button>
                     </div>
                 </div>
@@ -647,7 +647,7 @@ export const CategoryManagement: React.FC = () => {
                                     color: 'var(--decorator-color)',
                                 }}
                             >
-                                Close
+                                Cerrar
                             </button>
                         </div>
                     </div>

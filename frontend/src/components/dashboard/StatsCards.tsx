@@ -38,27 +38,27 @@ export const StatsCards: React.FC<StatsCardsProps> = ({
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             <StatCard
                 icon={<Flame className="w-6 h-6" style={{ color: 'var(--decorator-color)' }} />}
-                title="Day Streak"
+                title="Días consecutivos"
                 value={streak}
-                subtitle="Keep it up!"
+                subtitle="¡Sigue así!"
             />
             <StatCard
                 icon={<Trophy className="w-6 h-6" style={{ color: 'var(--decorator-color)' }} />}
-                title="Total XP"
+                title="XP total"
                 value={xp.toLocaleString()}
-                subtitle="Experience points"
+                subtitle="Puntos de experiencia"
             />
             <StatCard
                 icon={<Star className="w-6 h-6" style={{ color: 'var(--decorator-color)' }} />}
-                title="Certificates"
+                title="Certificados"
                 value={certificates}
-                subtitle="Courses completed"
+                subtitle="Cursos completados"
             />
             <StatCard
                 icon={<Clock className="w-6 h-6" style={{ color: 'var(--decorator-color)' }} />}
-                title="Hours Learned"
+                title="Horas de formación"
                 value={hoursLearned}
-                subtitle="This month"
+                subtitle="Este mes"
             />
         </div>
     );

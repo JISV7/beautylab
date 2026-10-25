@@ -58,12 +58,12 @@ class PaletteColors(BaseModel):
     model_config = ConfigDict(
         json_schema_extra={
             "example": {
-                "primary": "#2f27ce",
-                "secondary": "#dedcff",
-                "accent": "#433bff",
-                "background": "#fbfbfe",
-                "surface": "#eeeef0",
-                "border": "#dddddd",
+                "primary": "#0D2B4D",
+                "secondary": "#1E5AA8",
+                "accent": "#55C7E8",
+                "background": "#FBFBFE",
+                "surface": "#F1F5F9",
+                "border": "#D9E2EC",
             }
         },
         alias_generator=AliasGenerator(validation_alias=to_camel),
@@ -102,10 +102,10 @@ class TypographyElement(BaseModel):
         json_schema_extra={
             "example": {
                 "font_id": "550e8400-e29b-41d4-a716-446655440000",
-                "font_name": "Inter",
+                "font_name": "Montserrat",
                 "font_size": "2.5",
-                "font_weight": 800,
-                "color": "#2f27ce",
+                "font_weight": 700,
+                "color": "#0D2B4D",
                 "line_height": "1.2",
             }
         },
@@ -215,24 +215,84 @@ class ThemePalette(BaseModel):
         json_schema_extra={
             "example": {
                 "colors": {
-                    "primary": "#2f27ce",
-                    "secondary": "#dedcff",
-                    "accent": "#433bff",
-                    "background": "#fbfbfe",
-                    "surface": "#eeeef0",
-                    "border": "#dddddd",
+                    "primary": "#0D2B4D",
+                    "secondary": "#1E5AA8",
+                    "accent": "#55C7E8",
+                    "background": "#FBFBFE",
+                    "surface": "#F1F5F9",
+                    "border": "#D9E2EC",
                 },
                 "typography": {
-                    "h1": {"font_size": "2.5", "font_weight": 400, "color": "#2f27ce"},
-                    "h2": {"font_size": "2.0", "font_weight": 400, "color": "#2f27ce"},
-                    "h3": {"font_size": "1.75", "font_weight": 400, "color": "#433bff"},
-                    "h4": {"font_size": "1.5", "font_weight": 400, "color": "#1a1675"},
-                    "h5": {"font_size": "1.25", "font_weight": 400, "color": "#1a1675"},
-                    "h6": {"font_size": "1.0", "font_weight": 400, "color": "#1a1675"},
-                    "title": {"font_size": "1.5", "font_weight": 700, "color": "#1a1675"},
-                    "subtitle": {"font_size": "1.25", "font_weight": 600, "color": "#1a1675"},
-                    "paragraph": {"font_size": "1.0", "font_weight": 400, "color": "#1a1a2e"},
-                    "decorator": {"font_size": "1.0", "font_weight": 500, "color": "#ffffff"},
+                    "h1": {
+                        "font_id": "550e8400-e29b-41d4-a716-446655440000",
+                        "font_name": "Montserrat",
+                        "font_size": "2.5",
+                        "font_weight": 700,
+                        "color": "#0D2B4D",
+                    },
+                    "h2": {
+                        "font_id": "550e8400-e29b-41d4-a716-446655440000",
+                        "font_name": "Montserrat",
+                        "font_size": "2.0",
+                        "font_weight": 700,
+                        "color": "#0D2B4D",
+                    },
+                    "h3": {
+                        "font_id": "550e8400-e29b-41d4-a716-446655440000",
+                        "font_name": "Montserrat",
+                        "font_size": "1.75",
+                        "font_weight": 600,
+                        "color": "#1E5AA8",
+                    },
+                    "h4": {
+                        "font_id": "550e8400-e29b-41d4-a716-446655440000",
+                        "font_name": "Montserrat",
+                        "font_size": "1.5",
+                        "font_weight": 600,
+                        "color": "#1E5AA8",
+                    },
+                    "h5": {
+                        "font_id": "550e8400-e29b-41d4-a716-446655440000",
+                        "font_name": "Montserrat",
+                        "font_size": "1.25",
+                        "font_weight": 600,
+                        "color": "#0D2B4D",
+                    },
+                    "h6": {
+                        "font_id": "550e8400-e29b-41d4-a716-446655440000",
+                        "font_name": "Montserrat",
+                        "font_size": "1.0",
+                        "font_weight": 500,
+                        "color": "#6E7882",
+                    },
+                    "title": {
+                        "font_id": "550e8400-e29b-41d4-a716-446655440000",
+                        "font_name": "Montserrat",
+                        "font_size": "1.5",
+                        "font_weight": 700,
+                        "color": "#0D2B4D",
+                    },
+                    "subtitle": {
+                        "font_id": "550e8400-e29b-41d4-a716-446655440000",
+                        "font_name": "Montserrat",
+                        "font_size": "1.25",
+                        "font_weight": 600,
+                        "color": "#1E5AA8",
+                    },
+                    "paragraph": {
+                        "font_id": "550e8400-e29b-41d4-a716-446655440000",
+                        "font_name": "Montserrat",
+                        "font_size": "1.0",
+                        "font_weight": 400,
+                        "color": "#334155",
+                    },
+                    "decorator": {
+                        "font_id": "550e8400-e29b-41d4-a716-446655440000",
+                        "font_name": "Montserrat",
+                        "font_size": "1.0",
+                        "font_weight": 500,
+                        "color": "#FFFFFF",
+                    },
                 },
             }
         }

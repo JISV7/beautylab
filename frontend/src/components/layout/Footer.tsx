@@ -1,49 +1,39 @@
 import React from 'react';
-import { Code2, Github, Twitter, Linkedin, Facebook, Instagram, Youtube, Mail, MapPin, Phone } from 'lucide-react';
+import { Instagram, Mail, MapPin } from 'lucide-react';
+import { useTheme } from '../../contexts/ThemeContext';
+import { BrandLogo } from '../brand/BrandLogo';
 
 export const Footer: React.FC = () => {
     const currentYear = new Date().getFullYear();
+    const { currentMode } = useTheme();
 
     const footerLinks = {
         product: [
-            { id: 'courses', label: 'Courses', href: '#courses' },
-            { id: 'paths', label: 'Learning Paths', href: '#paths' },
-            { id: 'ai-lab', label: 'AI Lab', href: '#ai-lab' },
-            { id: 'pricing', label: 'Pricing', href: '#pricing' },
+            { id: 'courses', label: 'Cursos', href: '#courses' },
+            { id: 'paths', label: 'Rutas de aprendizaje', href: '#courses' },
+            { id: 'certificates', label: 'Certificados', href: '#about' },
+            { id: 'demo', label: 'Solicitar demo', href: '#contact' },
         ],
         resources: [
-            { id: 'docs', label: 'Documentation', href: '#docs' },
-            { id: 'help', label: 'Help Center', href: '#help' },
-            { id: 'community', label: 'Community', href: '#community' },
-            { id: 'blog', label: 'Blog', href: '#blog' },
+            { id: 'help', label: 'Centro de ayuda', href: '#contact' },
+            { id: 'blog', label: 'Blog', href: '#about' },
+            { id: 'cases', label: 'Casos de uso', href: '#about' },
         ],
         company: [
-            { id: 'about-us', label: 'About Us', href: '#about' },
-            { id: 'careers', label: 'Careers', href: '#careers' },
-            { id: 'contact', label: 'Contact', href: '#contact' },
-            { id: 'partners', label: 'Partners', href: '#partners' },
+            { id: 'about-us', label: 'Sobre Cursorg', href: '#about' },
+            { id: 'contact', label: 'Contacto', href: '#contact' },
+            { id: 'instagram', label: 'Instagram', href: 'https://instagram.com/cursorg.ve' },
         ],
         legal: [
-            { id: 'privacy', label: 'Privacy Policy', href: '#privacy' },
-            { id: 'terms', label: 'Terms of Service', href: '#terms' },
-            { id: 'cookies', label: 'Cookie Policy', href: '#cookies' },
-            { id: 'gdpr', label: 'GDPR', href: '#gdpr' },
+            { id: 'privacy', label: 'Privacidad', href: '#' },
+            { id: 'terms', label: 'Términos', href: '#' },
+            { id: 'cookies', label: 'Cookies', href: '#' },
         ],
     };
 
-    const socialLinks = [
-        { id: 'github', icon: Github, href: '#', label: 'GitHub' },
-        { id: 'twitter', icon: Twitter, href: '#', label: 'Twitter' },
-        { id: 'linkedin', icon: Linkedin, href: '#', label: 'LinkedIn' },
-        { id: 'facebook', icon: Facebook, href: '#', label: 'Facebook' },
-        { id: 'instagram', icon: Instagram, href: '#', label: 'Instagram' },
-        { id: 'youtube', icon: Youtube, href: '#', label: 'YouTube' },
-    ];
-
     const contactInfo = [
-        { id: 'email', icon: Mail, text: 'hello@codyn.com', href: 'mailto:hello@codyn.com' },
-        { id: 'phone', icon: Phone, text: '+1 (555) 123-4567', href: 'tel:+15551234567' },
-        { id: 'location', icon: MapPin, text: 'San Francisco, CA', href: '#' },
+        { id: 'email', icon: Mail, text: 'hola@cursorg.ve', href: 'mailto:hola@cursorg.ve' },
+        { id: 'location', icon: MapPin, text: 'Venezuela · LATAM', href: '#contact' },
     ];
 
     return (
@@ -53,18 +43,16 @@ export const Footer: React.FC = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8 lg:gap-12">
                     {/* Brand Column */}
                     <div className="lg:col-span-2">
-                        <a href="/" className="flex items-center gap-2 mb-4">
-                            <div
-                                className="rounded-lg p-2"
-                                style={{ backgroundColor: '#F83A3A' }}
-                            >
-                                <Code2 className="w-6 h-6 text-white" />
-                            </div>
-                            <span className="text-h4 font-bold">Codyn</span>
+                        <a href="/" className="inline-flex items-center mb-4" aria-label="Cursorg — Inicio">
+                            <BrandLogo
+                                variant="full"
+                                theme={currentMode === 'dark' ? 'dark' : 'light'}
+                                size="md"
+                            />
                         </a>
-                        <p className="text-paragraph mb-6 max-w-xs">
-                            Master the future of technology with cutting-edge courses in web development,
-                            programming, and agentic AI.
+                        <p className="text-paragraph mb-6 max-w-sm">
+                            Capacitación corporativa sin barreras. Cursos especializados para equipos,
+                            pago en moneda local y certificados verificables.
                         </p>
 
                         {/* Contact Info */}
@@ -86,25 +74,22 @@ export const Footer: React.FC = () => {
 
                         {/* Social Links */}
                         <div className="flex items-center gap-3">
-                            {socialLinks.map((social) => {
-                                const Icon = social.icon;
-                                return (
-                                    <a
-                                        key={social.id}
-                                        href={social.href}
-                                        aria-label={social.label}
-                                        className="w-10 h-10 rounded-lg palette-border border flex items-center justify-center text-paragraph decorator-color hover:palette-primary hover:border-palette-primary transition-all"
-                                    >
-                                        <Icon className="w-5 h-5 text-paragraph" />
-                                    </a>
-                                );
-                            })}
+                            <a
+                                href="https://instagram.com/cursorg.ve"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                aria-label="Cursorg en Instagram (@cursorg.ve)"
+                                className="w-10 h-10 rounded-lg palette-border border flex items-center justify-center text-paragraph hover:palette-primary hover:border-palette-primary transition-all"
+                            >
+                                <Instagram className="w-5 h-5 text-paragraph" />
+                            </a>
+                            <span className="text-paragraph text-sm opacity-80">@cursorg.ve</span>
                         </div>
                     </div>
 
                     {/* Product Links */}
                     <div>
-                        <h3 className="text-h3 font-semibold mb-4">Product</h3>
+                        <h3 className="text-h3 font-semibold mb-4">Producto</h3>
                         <ul className="space-y-3">
                             {footerLinks.product.map((link) => (
                                 <li key={link.id}>
@@ -121,7 +106,7 @@ export const Footer: React.FC = () => {
 
                     {/* Resources Links */}
                     <div>
-                        <h3 className="text-h3 font-semibold mb-4">Resources</h3>
+                        <h3 className="text-h3 font-semibold mb-4">Recursos</h3>
                         <ul className="space-y-3">
                             {footerLinks.resources.map((link) => (
                                 <li key={link.id}>
@@ -138,12 +123,15 @@ export const Footer: React.FC = () => {
 
                     {/* Company Links */}
                     <div>
-                        <h3 className="text-h3 font-semibold mb-4">Company</h3>
+                        <h3 className="text-h3 font-semibold mb-4">Empresa</h3>
                         <ul className="space-y-3">
                             {footerLinks.company.map((link) => (
                                 <li key={link.id}>
                                     <a
                                         href={link.href}
+                                        {...(link.id === 'instagram'
+                                            ? { target: '_blank', rel: 'noopener noreferrer' }
+                                            : {})}
                                         className="text-paragraph hover:palette-primary transition-colors"
                                     >
                                         {link.label}
@@ -162,6 +150,7 @@ export const Footer: React.FC = () => {
                                     <a
                                         href={link.href}
                                         className="text-paragraph hover:palette-primary transition-colors"
+                                        title="Contenido disponible próximamente"
                                     >
                                         {link.label}
                                     </a>
@@ -177,26 +166,22 @@ export const Footer: React.FC = () => {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                     <div className="flex flex-col md:flex-row items-center justify-between gap-4">
                         <p className="text-paragraph text-center md:text-left">
-                            © {currentYear} Codyn. All rights reserved.
+                            © {currentYear} Cursorg. Todos los derechos reservados.
                         </p>
                         <div className="flex items-center gap-6">
                             <a
-                                href="#privacy"
+                                href="https://instagram.com/cursorg.ve"
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 className="text-paragraph hover:palette-primary transition-colors"
                             >
-                                Privacy
+                                Instagram
                             </a>
                             <a
-                                href="#terms"
+                                href="mailto:hola@cursorg.ve"
                                 className="text-paragraph hover:palette-primary transition-colors"
                             >
-                                Terms
-                            </a>
-                            <a
-                                href="#cookies"
-                                className="text-paragraph hover:palette-primary transition-colors"
-                            >
-                                Cookies
+                                hola@cursorg.ve
                             </a>
                         </div>
                     </div>

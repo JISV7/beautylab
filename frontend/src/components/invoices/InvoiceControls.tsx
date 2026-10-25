@@ -42,7 +42,7 @@ export function InvoiceControls({
                     <Search className="w-4 h-4 text-paragraph flex-shrink-0 ml-3" />
                     <input
                         type="text"
-                        placeholder="Search by invoice #, control #, RIF..."
+                        placeholder="Buscar por N° de factura, N° de control, RIF..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="flex-1 min-w-0 py-2.5 pl-2 pr-4 bg-transparent text-paragraph placeholder:text-paragraph placeholder:opacity-60 focus:outline-none"
@@ -58,12 +58,12 @@ export function InvoiceControls({
                         {downloadingAll ? (
                             <>
                                 <Loader2 className="w-4 h-4 animate-spin" />
-                                Generating ZIP...
+                                Generando ZIP...
                             </>
                         ) : (
                             <>
                                 <Download className="w-4 h-4" />
-                                Download All (PDF)
+                                Descargar todo (PDF)
                             </>
                         )}
                     </button>
@@ -75,16 +75,16 @@ export function InvoiceControls({
                             onChange={(e) => setStatusFilter(e.target.value)}
                             className="theme-input !py-2 !px-3"
                         >
-                            <option value="all">All Status</option>
-                            <option value="issued">Issued</option>
-                            <option value="paid">Paid</option>
-                            <option value="partial">Partial</option>
-                            <option value="cancelled">Cancelled</option>
+                            <option value="all">Todos los estados</option>
+                            <option value="issued">Emitida</option>
+                            <option value="paid">Pagada</option>
+                            <option value="partial">Parcial</option>
+                            <option value="cancelled">Anulada</option>
                         </select>
                     </div>
 
                     <div className="flex items-center gap-2">
-                        <span className="text-paragraph opacity-60">Rows:</span>
+                        <span className="text-paragraph opacity-60">Filas:</span>
                         <select
                             value={pageSize}
                             onChange={(e) => onPageSizeChange(Number(e.target.value))}

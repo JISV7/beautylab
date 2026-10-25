@@ -107,7 +107,7 @@ export default function InvoicesPage() {
     if (loading && invoices.length === 0) {
         return (
             <div className="flex items-center justify-center h-64">
-                <div className="text-paragraph">Loading invoices...</div>
+                <div className="text-paragraph">Cargando facturas...</div>
             </div>
         );
     }
@@ -123,8 +123,8 @@ export default function InvoicesPage() {
             ) : (
                 <main className="p-8 print:p-0 print:overflow-visible">
                     <div className="max-w-7xl mx-auto">
-                        <h1 className="text-h1 font-bold mb-1">My Invoices</h1>
-                        <p className="text-paragraph mb-6">View, search, and download all your purchase invoices.</p>
+                        <h1 className="text-h1 font-bold mb-1">Mis facturas</h1>
+                        <p className="text-paragraph mb-6">Consulta, busca y descarga las facturas de tus compras.</p>
 
                         {summary && <InvoiceSummaryCards summary={summary} />}
 

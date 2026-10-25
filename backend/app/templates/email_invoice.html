@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
   {% raw %}
-  /* ---- Font: Roboto via @import, with system fallback ---- */
-  @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap');
+  /* ---- Font: Montserrat via @import, with Arial fallback ---- */
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
 
   body {
-      font-family: Roboto, Arial, Helvetica, sans-serif;
+      font-family: Montserrat, Arial, Helvetica, sans-serif;
       font-size: 14px;
-      color: #1A1A1A;
+      color: #0D2B4D;
       line-height: 1.5;
       margin: 0;
       padding: 24px 16px;
@@ -31,13 +31,14 @@
   .greeting p {
       margin: 0 0 8px;
       font-size: 14px;
-      color: #1A1A1A;
+      color: #334155;
   }
 
   /* ---- Invoice card ---- */
   .invoice-content {
       background-color: #FFFFFF;
-      border: 1px solid #DDDDDD;
+      border: 1px solid #D9E2EC;
+      border-top: 4px solid #55C7E8;
       border-radius: 12px;
       padding: 24px;
   }
@@ -47,19 +48,19 @@
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      border-bottom: 1px solid #DDD;
+      border-bottom: 1px solid #D9E2EC;
       padding-bottom: 14px;
       margin-bottom: 14px;
   }
   .header-left h1 {
       font-size: 22pt;
       font-weight: 700;
-      color: #F83A3A;
+      color: #0D2B4D;
       line-height: 1.2;
       margin: 0 0 2px;
   }
   .header-left .inv-num {
-      color: rgba(26,26,26,0.6);
+      color: #6E7882;
       font-size: 11px;
       margin: 0;
   }
@@ -70,12 +71,12 @@
   .co-name {
       font-weight: 600;
       font-size: 12px;
-      color: #1A1A1A;
+      color: #0D2B4D;
       margin: 0 0 2px;
   }
   .co-addr, .co-phone {
       font-size: 10px;
-      color: rgba(26,26,26,0.6);
+      color: #6E7882;
       margin: 0;
   }
 
@@ -90,7 +91,7 @@
   .info-label {
       font-size: 9px;
       text-transform: uppercase;
-      color: rgba(26,26,26,0.6);
+      color: #6E7882;
       margin: 0 0 1px;
   }
   .info-status { text-align: right; }
@@ -103,7 +104,7 @@
   .section-title {
       font-size: 12px;
       font-weight: 600;
-      color: #1A1A1A;
+      color: #0D2B4D;
       text-transform: uppercase;
       opacity: 0.75;
       margin: 0 0 8px;
@@ -116,13 +117,13 @@
   .client-addr { margin-top: 6px; }
   .field-label {
       font-size: 10px;
-      color: rgba(26,26,26,0.6);
+      color: #6E7882;
       margin: 0 0 1px;
   }
   .field-value {
       font-weight: 500;
       font-size: 11px;
-      color: #1A1A1A;
+      color: #0D2B4D;
       margin: 0;
   }
 
@@ -137,14 +138,14 @@
       font-size: 9px;
       font-weight: 600;
       text-transform: uppercase;
-      color: rgba(26,26,26,0.6);
-      border-bottom: 1px solid #DDD;
+      color: #6E7882;
+      border-bottom: 1px solid #D9E2EC;
       padding: 5px 4px;
   }
   .th-center { text-align: center; }
   .th-right { text-align: right; }
   .line-table tbody tr {
-      border-bottom: 1px solid #EEE;
+      border-bottom: 1px solid #E8EEF5;
   }
   .line-table td {
       padding: 5px 4px;
@@ -171,7 +172,7 @@
   }
   .adj-row p { margin: 0; white-space: nowrap; }
   .adj-amount { font-weight: 500; font-size: 11px; }
-  .adj-none { font-style: italic; color: rgba(26,26,26,0.5); padding: 3px 0; font-size: 11px; margin: 0; }
+  .adj-none { font-style: italic; color: #6E7882; padding: 3px 0; font-size: 11px; margin: 0; }
 
   .totals-panel {
       width: 190px;
@@ -185,24 +186,24 @@
       padding: 3px 0;
       white-space: nowrap;
   }
-  .tot-label { color: rgba(26,26,26,0.6); font-size: 11px; }
+  .tot-label { color: #6E7882; font-size: 11px; }
   .tot-val { font-weight: 500; font-size: 11px; }
-  .tot-green { color: #16a34a; }
+  .tot-green { color: #1E5AA8; }
   .tot-grand {
       padding: 5px 0;
       margin-top: 4px;
-      border-top: 1px solid #DDD;
+      border-top: 1px solid #D9E2EC;
   }
-  .tot-grand-label { font-weight: 700; color: #F83A3A; font-size: 11px; }
+  .tot-grand-label { font-weight: 700; color: #0D2B4D; font-size: 11px; }
   .tot-grand-val {
       font-size: 14pt;
       font-weight: 700;
-      color: #F83A3A;
+      color: #1E5AA8;
   }
 
   /* ---- Payments ---- */
   .payments-section {
-      border-top: 1px solid #DDD;
+      border-top: 1px solid #D9E2EC;
       padding-top: 10px;
       margin-top: 8px;
   }
@@ -212,10 +213,10 @@
       justify-content: space-between;
       align-items: center;
       padding: 5px 0;
-      border-bottom: 1px solid #EEE;
+      border-bottom: 1px solid #E8EEF5;
   }
   .pay-method { font-weight: 600; font-size: 11px; white-space: nowrap; }
-  .pay-detail { font-weight: 400; color: rgba(26,26,26,0.6); font-size: 10px; }
+  .pay-detail { font-weight: 400; color: #6E7882; font-size: 10px; }
   .pay-right {
       display: flex;
       align-items: center;
@@ -223,13 +224,13 @@
       flex-shrink: 0;
   }
   .pay-amount { font-weight: 600; font-size: 11px; white-space: nowrap; }
-  .pay-status { font-size: 10px; color: #15803d; white-space: nowrap; }
+  .pay-status { font-size: 10px; color: #1E5AA8; white-space: nowrap; }
 
   /* ---- Printer / Control range ---- */
   .printer-section {
       display: flex;
       gap: 20px;
-      border-top: 1px solid #DDD;
+      border-top: 1px solid #D9E2EC;
       padding-top: 10px;
       margin-top: 14px;
   }
@@ -243,7 +244,7 @@
   }
   .dl-btn {
       display: inline-block;
-      background-color: #F83A3A;
+      background-color: #1E5AA8;
       color: #FFFFFF !important;
       padding: 10px 24px;
       text-decoration: none;
@@ -256,10 +257,10 @@
   .footer {
       text-align: center;
       font-size: 9px;
-      color: #999;
+      color: #6E7882;
       margin-top: 20px;
       padding-top: 10px;
-      border-top: 1px solid #DDD;
+      border-top: 1px solid #D9E2EC;
   }
   {% endraw %}
   </style>
@@ -349,10 +350,10 @@
         <tbody>
           {% for line in lines %}
           <tr>
-            <td class="td-desc">{{ line.description }}{% if line.is_exempt %} <span style="color:rgba(26,26,26,0.6);">(E)</span>{% endif %}</td>
+            <td class="td-desc">{{ line.description }}{% if line.is_exempt %} <span style="color:#6E7882;">(E)</span>{% endif %}</td>
             <td class="td-num">{{ line.quantity }}</td>
             <td class="td-num">Bs. {{ line.unit_price | money }}</td>
-            <td class="td-num" style="color:rgba(26,26,26,0.6);">{{ line.tax_rate | tax_rate }}</td>
+            <td class="td-num" style="color:#6E7882;">{{ line.tax_rate | tax_rate }}</td>
             <td class="td-num td-total">Bs. {{ line.line_total | money }}</td>
           </tr>
           {% endfor %}
@@ -447,7 +448,7 @@
 
     {# ==================== Footer ==================== #}
     <div class="footer">
-      <p>© 2026 {% if company %}{{ company.business_name }}{% else %}Beautylab{% endif %}. Todos los derechos reservados.</p>
+      <p>© {{ current_year | default(2026) }} {% if company %}{{ company.business_name }}{% else %}Cursorg{% endif %}. Todos los derechos reservados.</p>
       <p>¿Necesita ayuda? Contáctenos en {{ support_email }}</p>
     </div>
 

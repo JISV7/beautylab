@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 112" role="img" aria-labelledby="cursorgWordmarkTitle">
+  <title id="cursorgWordmarkTitle">Cursorg — Plataforma de Capacitación Corporativa</title>
+  <g transform="translate(4 20)">
+    <path d="M56.25 18 32 4 7.75 18" fill="none" stroke="#55C7E8" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M7.75 18v28" fill="none" stroke="#1E5AA8" stroke-width="11" stroke-linecap="round"/>
+    <path d="M7.75 46 32 60l24.25-14" fill="none" stroke="#0D2B4D" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <text x="88" y="60" font-family="Montserrat, 'Segoe UI', Arial, Helvetica, sans-serif" font-size="40" font-weight="800" letter-spacing="2.6" fill="#0D2B4D">CURSORG</text>
+  <text x="90" y="86" font-family="Montserrat, 'Segoe UI', Arial, Helvetica, sans-serif" font-size="12.5" font-weight="500" letter-spacing="1.35" fill="#6E7882">PLATAFORMA DE CAPACITACIÓN CORPORATIVA</text>
+</svg>

@@ -16,16 +16,16 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
     onClose
 }) => {
     const navItems = [
-        { id: 'dashboard', label: 'Dashboard', icon: Sparkles },
-        { id: 'themes', label: 'Theme Config', icon: Palette },
-        { id: 'home', label: 'Home Config', icon: Layout },
-        { id: 'categories', label: 'Categories', icon: FolderOpen },
-        { id: 'users', label: 'Users', icon: Users },
-        { id: 'content', label: 'Courses', icon: FileText },
-        { id: 'invoices', label: 'Invoices', icon: Receipt },
-        { id: 'coupons', label: 'Coupons', icon: Tag },
-        { id: 'company-info', label: 'Company Info', icon: Building2 },
-        { id: 'printer-info', label: 'Printer Info', icon: Printer },
+        { id: 'dashboard', label: 'Panel', icon: Sparkles },
+        { id: 'themes', label: 'Configuración de temas', icon: Palette },
+        { id: 'home', label: 'Página de inicio', icon: Layout },
+        { id: 'categories', label: 'Categorías', icon: FolderOpen },
+        { id: 'users', label: 'Usuarios', icon: Users },
+        { id: 'content', label: 'Cursos', icon: FileText },
+        { id: 'invoices', label: 'Facturas', icon: Receipt },
+        { id: 'coupons', label: 'Cupones', icon: Tag },
+        { id: 'company-info', label: 'Información de la empresa', icon: Building2 },
+        { id: 'printer-info', label: 'Información de impresión', icon: Printer },
     ];
 
     const handleClick = (itemId: string) => {
@@ -45,8 +45,8 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
             `}>
                 {/* Mobile Close Button */}
                 <div className="lg:hidden flex items-center justify-between p-4 border-b palette-border">
-                    <span className="text-h4">Menu</span>
-                    <button onClick={onClose} className="p-2 text-paragraph">
+                    <span className="text-h4">Menú</span>
+                    <button onClick={onClose} aria-label="Cerrar menú" className="p-2 text-paragraph">
                         <X className="w-5 h-5" />
                     </button>
                 </div>

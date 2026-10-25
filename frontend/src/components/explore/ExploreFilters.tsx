@@ -71,17 +71,17 @@ export const ExploreFilters: React.FC<ExploreFiltersProps> = ({
                     <Search className="w-4 h-4 text-paragraph flex-shrink-0 ml-3" />
                     <input
                         type="text"
-                        placeholder="Search courses..."
+                        placeholder="Buscar cursos..."
                         value={localSearch}
                         onChange={(e) => setLocalSearch(e.target.value)}
                         className="flex-1 min-w-0 py-2 pl-2 pr-4 bg-transparent text-paragraph placeholder:text-paragraph placeholder:opacity-60 focus:outline-none"
-                        aria-label="Search courses"
+                        aria-label="Buscar cursos"
                     />
                     {localSearch && (
                         <button
                             onClick={() => setLocalSearch('')}
                             className="p-2 hover:bg-[var(--palette-border)] transition-colors"
-                            aria-label="Clear search"
+                            aria-label="Limpiar búsqueda"
                         >
                             <X size={16} className="text-paragraph opacity-60" />
                         </button>
@@ -97,7 +97,7 @@ export const ExploreFilters: React.FC<ExploreFiltersProps> = ({
                     className="md:hidden flex items-center justify-center gap-2 px-4 py-2 palette-primary decorator-color rounded-lg font-bold text-sm hover:opacity-90 transition-opacity"
                 >
                     <Filter size={16} />
-                    {isExpanded ? 'Hide Filters' : 'Show Filters'}
+                    {isExpanded ? 'Ocultar filtros' : 'Mostrar filtros'}
                     {hasActiveFilters && (
                         <span className="w-2 h-2 bg-white rounded-full" />
                     )}
@@ -108,15 +108,15 @@ export const ExploreFilters: React.FC<ExploreFiltersProps> = ({
                     {/* Category Filter */}
                     <div className="flex-1">
                         <label className="block text-sm font-bold text-paragraph mb-2">
-                            Category
+                            Categoría
                         </label>
                         <select
                             value={selectedCategory || ''}
                             onChange={(e) => onCategoryChange(e.target.value ? Number(e.target.value) : null)}
                             className="w-full py-2.5 px-4 rounded-lg palette-background palette-border border text-paragraph focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)] transition-all appearance-none cursor-pointer"
-                            aria-label="Filter by category"
+                            aria-label="Filtrar por categoría"
                         >
-                            <option value="">All Categories</option>
+                            <option value="">Todas las categorías</option>
                             {categories.map((cat) => (
                                 <option key={cat.id} value={cat.id}>
                                     {cat.name}
@@ -128,15 +128,15 @@ export const ExploreFilters: React.FC<ExploreFiltersProps> = ({
                     {/* Level Filter */}
                     <div className="flex-1">
                         <label className="block text-sm font-bold text-paragraph mb-2">
-                            Level
+                            Nivel
                         </label>
                         <select
                             value={selectedLevel || ''}
                             onChange={(e) => onLevelChange(e.target.value ? Number(e.target.value) : null)}
                             className="w-full py-2.5 px-4 rounded-lg palette-background palette-border border text-paragraph focus:outline-none focus:ring-2 focus:ring-[var(--palette-primary)] transition-all appearance-none cursor-pointer"
-                            aria-label="Filter by level"
+                            aria-label="Filtrar por nivel"
                         >
-                            <option value="">All Levels</option>
+                            <option value="">Todos los niveles</option>
                             {levels.map((lvl) => (
                                 <option key={lvl.id} value={lvl.id}>
                                     {lvl.name}
@@ -149,7 +149,7 @@ export const ExploreFilters: React.FC<ExploreFiltersProps> = ({
                     {selectedCategory !== null && (
                         <div className="flex-1">
                             <label className="block text-xs font-bold text-paragraph opacity-60 uppercase tracking-wider mb-2">
-                                Include Subcategories
+                                Incluir subcategorías
                             </label>
                             <button
                                 onClick={() => onIncludeChildrenChange(!includeChildren)}
@@ -158,7 +158,7 @@ export const ExploreFilters: React.FC<ExploreFiltersProps> = ({
                                         ? 'palette-primary decorator-color border-[var(--palette-primary)]'
                                         : 'palette-background text-paragraph opacity-60 palette-border border'
                                 }`}
-                                aria-label="Toggle include subcategories"
+                                aria-label="Alternar inclusión de subcategorías"
                                 aria-pressed={includeChildren}
                             >
                                 <span className={`w-4 h-4 rounded border-2 flex items-center justify-center ${
@@ -168,7 +168,7 @@ export const ExploreFilters: React.FC<ExploreFiltersProps> = ({
                                         <path d="M1 5L4 8L9 2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                                     </svg>}
                                 </span>
-                                {includeChildren ? 'ON' : 'OFF'}
+                                {includeChildren ? 'Sí' : 'No'}
                             </button>
                         </div>
                     )}
@@ -179,10 +179,10 @@ export const ExploreFilters: React.FC<ExploreFiltersProps> = ({
                             <button
                                 onClick={onClearFilters}
                                 className="w-full md:w-auto px-4 py-2.5 bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20 rounded-lg font-bold text-sm hover:bg-red-500/20 transition-colors flex items-center justify-center gap-2"
-                                aria-label="Clear all filters"
+                                aria-label="Limpiar todos los filtros"
                             >
                                 <X size={16} />
-                                Clear Filters
+                                Limpiar filtros
                             </button>
                         </div>
                     )}
@@ -193,7 +193,7 @@ export const ExploreFilters: React.FC<ExploreFiltersProps> = ({
             {hasActiveFilters && (
                 <div className="mt-4 pt-4 border-t palette-border flex flex-wrap items-center gap-2">
                     <span className="text-xs font-bold text-paragraph opacity-60 uppercase tracking-wider">
-                        Active filters:
+                        Filtros activos:
                     </span>
                     {selectedCategory !== null && (
                         <span className="inline-flex items-center gap-1 bg-[var(--palette-primary)]/10 text-primary px-3 py-1 rounded-full text-xs font-bold">
@@ -201,7 +201,7 @@ export const ExploreFilters: React.FC<ExploreFiltersProps> = ({
                             <button
                                 onClick={() => onCategoryChange(null)}
                                 className="hover:opacity-70 transition-opacity"
-                                aria-label="Remove category filter"
+                                aria-label="Quitar filtro de categoría"
                             >
                                 <X size={12} />
                             </button>
@@ -213,7 +213,7 @@ export const ExploreFilters: React.FC<ExploreFiltersProps> = ({
                             <button
                                 onClick={() => onLevelChange(null)}
                                 className="hover:opacity-70 transition-opacity"
-                                aria-label="Remove level filter"
+                                aria-label="Quitar filtro de nivel"
                             >
                                 <X size={12} />
                             </button>
@@ -221,14 +221,14 @@ export const ExploreFilters: React.FC<ExploreFiltersProps> = ({
                     )}
                     {searchQuery && (
                         <span className="inline-flex items-center gap-1 bg-[var(--palette-primary)]/10 text-primary px-3 py-1 rounded-full text-xs font-bold">
-                            Search: "{searchQuery}"
+                            Búsqueda: "{searchQuery}"
                             <button
                                 onClick={() => {
                                     setLocalSearch('');
                                     onSearchChange('');
                                 }}
                                 className="hover:opacity-70 transition-opacity"
-                                aria-label="Remove search filter"
+                                aria-label="Quitar filtro de búsqueda"
                             >
                                 <X size={12} />
                             </button>

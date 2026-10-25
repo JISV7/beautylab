@@ -28,10 +28,11 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onCheck
                 <div className="flex items-center justify-between p-4 border-b palette-border">
                     <div className="flex items-center gap-2">
                         <ShoppingCart className="w-5 h-5 text-[var(--palette-primary)]" />
-                        <h2 className="text-lg font-bold text-paragraph">Shopping Cart</h2>
+                        <h2 className="text-lg font-bold text-paragraph">Carrito de compras</h2>
                     </div>
                     <button
                         onClick={onClose}
+                        aria-label="Cerrar carrito"
                         className="p-2 hover:bg-[var(--palette-border)] rounded-lg transition-colors"
                     >
                         <X className="w-5 h-5 text-paragraph" />
@@ -47,9 +48,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onCheck
                     ) : !cart || cart.items.length === 0 ? (
                         <div className="flex flex-col items-center justify-center h-full text-center">
                             <ShoppingCart className="w-16 h-16 text-paragraph opacity-20 mb-4" />
-                            <p className="text-paragraph font-semibold">Your cart is empty</p>
+                            <p className="text-paragraph font-semibold">Tu carrito está vacío</p>
                             <p className="text-paragraph opacity-60 text-sm mt-1">
-                                Add courses to get started
+                                Agrega cursos para comenzar.
                             </p>
                         </div>
                     ) : (
@@ -62,10 +63,10 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onCheck
                                     {/* Product Info */}
                                     <div className="flex-1 min-w-0">
                                         <h3 className="font-semibold text-paragraph truncate">
-                                            {item.product_name || 'Course'}
+                                            {item.product_name || 'Curso'}
                                         </h3>
                                         <p className="text-xs text-paragraph opacity-60">
-                                            SKU: {item.product_sku || 'N/A'}
+                                            SKU: {item.product_sku || 'No disponible'}
                                         </p>
                                         <p className="text-sm font-bold text-[var(--palette-primary)] mt-1">
                                             {formatCurrency(item.product_price || '0')}
@@ -100,7 +101,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onCheck
                                         <button
                                             onClick={() => removeFromCart(item.id)}
                                             className="p-1 text-red-500 hover:bg-red-500/10 rounded transition-colors"
-                                            title="Remove item"
+                                            title="Quitar artículo"
                                         >
                                             <Trash2 className="w-4 h-4" />
                                         </button>
@@ -132,7 +133,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onCheck
                             onClick={onCheckout}
                             className="w-full py-3 bg-[var(--palette-primary)] text-white font-bold rounded-lg hover:opacity-90 transition-opacity"
                         >
-                            Proceed to Checkout
+                            Ir al pago
                         </button>
                     </div>
                 )}

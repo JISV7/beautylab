@@ -18,7 +18,7 @@ export const DebitCardForm: React.FC<PaymentFormProps> = ({
                 <label className="text-paragraph font-medium block mb-2">
                     <div className="flex items-center gap-2">
                         <User size={16} />
-                        Cardholder Name
+                        Nombre del titular
                     </div>
                 </label>
                 <input
@@ -26,7 +26,7 @@ export const DebitCardForm: React.FC<PaymentFormProps> = ({
                     value={value.card_holder_name || ''}
                     onChange={(e) => handleChange('card_holder_name', e.target.value)}
                     className="theme-input w-full"
-                    placeholder="John Doe"
+                    placeholder="María Pérez"
                 />
                 {errors.card_holder_name && (
                     <p className="text-red-500 text-sm mt-1">{errors.card_holder_name}</p>
@@ -37,7 +37,7 @@ export const DebitCardForm: React.FC<PaymentFormProps> = ({
                 <label className="text-paragraph font-medium block mb-2">
                     <div className="flex items-center gap-2">
                         <CreditCard size={16} />
-                        Card Number
+                        Número de tarjeta
                     </div>
                 </label>
                 <input
@@ -57,7 +57,7 @@ export const DebitCardForm: React.FC<PaymentFormProps> = ({
                 <div>
                     <label className="text-paragraph font-medium block mb-2">
                         <Calendar size={16} />
-                        Expiry Year
+                        Año de vencimiento
                     </label>
                     <select
                         value={value.expiry_year || ''}
@@ -69,7 +69,7 @@ export const DebitCardForm: React.FC<PaymentFormProps> = ({
                         }}
                         className="theme-input w-full"
                     >
-                        <option value="">Select</option>
+                        <option value="">Selecciona</option>
                         {YEARS.map((year) => (
                             <option key={year.value} value={year.value}>{year.label}</option>
                         ))}
@@ -82,14 +82,14 @@ export const DebitCardForm: React.FC<PaymentFormProps> = ({
                 <div>
                     <label className="text-paragraph font-medium block mb-2">
                         <Calendar size={16} />
-                        Expiry Month
+                        Mes de vencimiento
                     </label>
                     <select
                         value={value.expiry_month || ''}
                         onChange={(e) => handleChange('expiry_month', e.target.value)}
                         className="theme-input w-full"
                     >
-                        <option value="">Select</option>
+                        <option value="">Selecciona</option>
                         {getAvailableMonths(value.expiry_year).map((month) => (
                             <option key={month.value} value={month.value}>{month.label}</option>
                         ))}
@@ -102,7 +102,7 @@ export const DebitCardForm: React.FC<PaymentFormProps> = ({
 
             {isCardExpired(value.expiry_month, value.expiry_year) && (
                 <p className="text-red-500 text-sm font-medium">
-                    This card has expired. Please use a valid card.
+                    Esta tarjeta está vencida. Usa una tarjeta vigente.
                 </p>
             )}
 
@@ -128,7 +128,7 @@ export const DebitCardForm: React.FC<PaymentFormProps> = ({
                 <div>
                     <label className="text-paragraph font-medium block mb-2">
                         <Building size={16} />
-                        Bank Name
+                        Banco emisor
                     </label>
                     <input
                         type="text"

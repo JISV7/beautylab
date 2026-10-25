@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useCallback, useReducer } from 'react';
 import axios from 'axios';
 import type { Theme, ThemePalette, Font } from '../data/theme.types';
+import { DEFAULT_THEME } from '../data/defaultTheme';
 
 const API_URL = 'http://localhost:8000';
 
@@ -61,10 +62,10 @@ type ThemeAction =
 
 // Initial state
 const initialState: ThemeState = {
-    activeTheme: cachedTheme,
-    currentPalette: cachedTheme?.config[cachedMode] || null,
+    activeTheme: cachedTheme || DEFAULT_THEME,
+    currentPalette: (cachedTheme || DEFAULT_THEME).config[cachedMode] || (cachedTheme || DEFAULT_THEME).config.light,
     currentMode: cachedMode,
-    availableThemes: cachedTheme ? [cachedTheme] : [],
+    availableThemes: [cachedTheme || DEFAULT_THEME],
     isLoading: false,
     error: null,
 };

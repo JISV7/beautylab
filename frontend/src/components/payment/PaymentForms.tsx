@@ -7,7 +7,7 @@ import {
     PagoMovilForm,
     PaypalForm,
     BankTransferForm,
-} from './paymentForms';
+} from './paymentForms/index';
 
 export type { PaymentFormValues, PaymentFormProps } from './PaymentForms.types';
 
@@ -18,7 +18,7 @@ export {
     PagoMovilForm,
     PaypalForm,
     BankTransferForm,
-} from './paymentForms';
+} from './paymentForms/index';
 
 export const PaymentForm: React.FC<PaymentFormProps> = ({
     method,

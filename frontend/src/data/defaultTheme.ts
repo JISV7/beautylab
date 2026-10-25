@@ -1,0 +1,92 @@
+import type { Theme } from './theme.types';
+
+export const DEFAULT_THEME: Theme = {
+    id: 'default-theme',
+    name: 'Default Theme',
+    description: 'Default fallback theme',
+    type: 'preset',
+    config: {
+        light: {
+            colors: {
+                primary: '#F83A3A',
+                secondary: '#FAA2B6',
+                accent: '#D73359',
+                background: '#FBFBFE',
+                surface: '#EEEEF0',
+                border: '#DDDDDD',
+                loader: {
+                    enabled: false,
+                    selectedTangram: 1,
+                },
+            },
+            typography: {
+                h1: { fontId: 'default', fontName: 'Roboto, system-ui, sans-serif', fontSize: '2.492', fontWeight: 400, color: '#F83A3A' },
+                h2: { fontId: 'default', fontName: 'Roboto, system-ui, sans-serif', fontSize: '2.076', fontWeight: 400, color: '#F83A3A' },
+                h3: { fontId: 'default', fontName: 'Roboto, system-ui, sans-serif', fontSize: '1.73', fontWeight: 400, color: '#D73359' },
+                h4: { fontId: 'default', fontName: 'Roboto, system-ui, sans-serif', fontSize: '1.44', fontWeight: 400, color: '#8F1D1D' },
+                h5: { fontId: 'default', fontName: 'Roboto, system-ui, sans-serif', fontSize: '1.2', fontWeight: 400, color: '#8F1D1D' },
+                h6: { fontId: 'default', fontName: 'Roboto, system-ui, sans-serif', fontSize: '1.0', fontWeight: 400, color: '#8F1D1D' },
+                title: { fontId: 'default', fontName: 'Roboto, system-ui, sans-serif', fontSize: '1.5', fontWeight: 700, color: '#8F1D1D' },
+                subtitle: { fontId: 'default', fontName: 'Roboto, system-ui, sans-serif', fontSize: '1.0', fontWeight: 600, color: '#8F1D1D' },
+                paragraph: { fontId: 'default', fontName: 'Roboto, system-ui, sans-serif', fontSize: '1.0', fontWeight: 400, color: '#1A1A1A' },
+                decorator: { fontId: 'default', fontName: 'Roboto, system-ui, sans-serif', fontSize: '1.0', fontWeight: 500, color: '#FFFFFF' },
+            },
+        },
+        dark: {
+            colors: {
+                primary: '#C50707',
+                secondary: '#5C0519',
+                accent: '#CC284F',
+                background: '#010104',
+                surface: '#0E0E10',
+                border: '#212121',
+                loader: {
+                    enabled: false,
+                    selectedTangram: 1,
+                },
+            },
+            typography: {
+                h1: { fontId: 'default', fontName: 'Roboto, system-ui, sans-serif', fontSize: '2.492', fontWeight: 400, color: '#C50707' },
+                h2: { fontId: 'default', fontName: 'Roboto, system-ui, sans-serif', fontSize: '2.076', fontWeight: 400, color: '#C50707' },
+                h3: { fontId: 'default', fontName: 'Roboto, system-ui, sans-serif', fontSize: '1.73', fontWeight: 400, color: '#CC284F' },
+                h4: { fontId: 'default', fontName: 'Roboto, system-ui, sans-serif', fontSize: '1.44', fontWeight: 400, color: '#FF4D4D' },
+                h5: { fontId: 'default', fontName: 'Roboto, system-ui, sans-serif', fontSize: '1.2', fontWeight: 400, color: '#FF4D4D' },
+                h6: { fontId: 'default', fontName: 'Roboto, system-ui, sans-serif', fontSize: '1.0', fontWeight: 400, color: '#FF4D4D' },
+                title: { fontId: 'default', fontName: 'Roboto, system-ui, sans-serif', fontSize: '1.5', fontWeight: 700, color: '#FF4D4D' },
+                subtitle: { fontId: 'default', fontName: 'Roboto, system-ui, sans-serif', fontSize: '1.0', fontWeight: 600, color: '#FF4D4D' },
+                paragraph: { fontId: 'default', fontName: 'Roboto, system-ui, sans-serif', fontSize: '1.0', fontWeight: 400, color: '#E0E0E0' },
+                decorator: { fontId: 'default', fontName: 'Roboto, system-ui, sans-serif', fontSize: '1.0', fontWeight: 500, color: '#FFFFFF' },
+            },
+        },
+        accessibility: {
+            colors: {
+                primary: '#2F27CE',
+                secondary: '#DEDCFF',
+                accent: '#433BFF',
+                background: '#FBFBFE',
+                surface: '#EEEEF0',
+                border: '#DDDDDD',
+                loader: {
+                    enabled: false,
+                    selectedTangram: 1,
+                },
+            },
+            typography: {
+                h1: { fontId: 'default', fontName: 'Roboto, system-ui, sans-serif', fontSize: '2.492', fontWeight: 400, color: '#2F27CE' },
+                h2: { fontId: 'default', fontName: 'Roboto, system-ui, sans-serif', fontSize: '2.076', fontWeight: 400, color: '#2F27CE' },
+                h3: { fontId: 'default', fontName: 'Roboto, system-ui, sans-serif', fontSize: '1.73', fontWeight: 400, color: '#433BFF' },
+                h4: { fontId: 'default', fontName: 'Roboto, system-ui, sans-serif', fontSize: '1.44', fontWeight: 400, color: '#1A1675' },
+                h5: { fontId: 'default', fontName: 'Roboto, system-ui, sans-serif', fontSize: '1.2', fontWeight: 400, color: '#1A1675' },
+                h6: { fontId: 'default', fontName: 'Roboto, system-ui, sans-serif', fontSize: '1.0', fontWeight: 400, color: '#1A1675' },
+                title: { fontId: 'default', fontName: 'Roboto, system-ui, sans-serif', fontSize: '1.5', fontWeight: 700, color: '#1A1675' },
+                subtitle: { fontId: 'default', fontName: 'Roboto, system-ui, sans-serif', fontSize: '1.0', fontWeight: 600, color: '#1A1675' },
+                paragraph: { fontId: 'default', fontName: 'Roboto, system-ui, sans-serif', fontSize: '1.0', fontWeight: 400, color: '#1A1A2E' },
+                decorator: { fontId: 'default', fontName: 'Roboto, system-ui, sans-serif', fontSize: '1.0', fontWeight: 500, color: '#FFFFFF' },
+            },
+        },
+    },
+    isActive: true,
+    isDefault: true,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+};

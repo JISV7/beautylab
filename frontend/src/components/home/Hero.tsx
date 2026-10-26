@@ -31,31 +31,10 @@ const stats = [
   },
 ];
 
-const sampleCourses = [
-  {
-    id: 'sst',
-    icon: ShieldCheck,
-    title: 'Seguridad y Salud en el Trabajo',
-    detail: 'Prevención de riesgos industriales',
-    progress: 68,
-    status: 'En curso',
-  },
-  {
-    id: 'finanzas',
-    icon: Wallet,
-    title: 'Finanzas Prácticas para No Financieros',
-    detail: 'Gestión presupuestaria',
-    progress: 45,
-    status: 'Asignado',
-  },
-  {
-    id: 'liderazgo',
-    icon: Award,
-    title: 'Liderazgo Operativo',
-    detail: 'Supervisión efectiva de equipos',
-    progress: 82,
-    status: 'En curso',
-  },
+const heroMetrics = [
+  { value: '5', label: 'programas' },
+  { value: '24', label: 'colaboradores' },
+  { value: '72%', label: 'avance' },
 ];
 
 export const Hero: React.FC = () => {
@@ -63,7 +42,6 @@ export const Hero: React.FC = () => {
 
   return (
     <section className="relative overflow-hidden palette-background">
-      {/* Ambient brand background */}
       <div
         className="pointer-events-none absolute inset-0"
         aria-hidden="true"
@@ -80,7 +58,6 @@ export const Hero: React.FC = () => {
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
         <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-12 lg:gap-16 items-center">
-          {/* Copy */}
           <div className="text-center lg:text-left">
             <div className="inline-flex max-w-full items-center gap-2 px-4 py-2 rounded-full palette-surface border palette-border shadow-sm mb-6 text-left">
               <Sparkles
@@ -104,10 +81,14 @@ export const Hero: React.FC = () => {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
-              <a href="/#contact" className="theme-button theme-button-primary">
+              <button
+                type="button"
+                onClick={() => navigate('/registro-empresa')}
+                className="theme-button theme-button-primary"
+              >
                 <CalendarCheck className="w-4 h-4 decorator-color" aria-hidden="true" />
-                Solicita una demo
-              </a>
+                Registrar mi empresa
+              </button>
               <button
                 type="button"
                 onClick={() => navigate('/explore')}
@@ -145,7 +126,6 @@ export const Hero: React.FC = () => {
             </dl>
           </div>
 
-          {/* Product preview */}
           <div className="relative mx-auto w-full max-w-xl">
             <div
               className="absolute -inset-3 rounded-[2rem] opacity-30 blur-2xl"
@@ -155,103 +135,57 @@ export const Hero: React.FC = () => {
               }}
             />
 
-            <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-white/10 bg-[#0D2B4D]">
+            <div className="relative overflow-hidden rounded-2xl border border-white/10 shadow-2xl">
+              <img
+                src="/images/hero-corporate.jpg"
+                alt="Equipo corporativo colaborando en una sesión de capacitación"
+                className="h-[380px] w-full object-cover sm:h-[440px]"
+                loading="eager"
+              />
+              <div className="absolute inset-0 bg-[#1E5AA8]/50" aria-hidden="true" />
               <div
-                className="absolute inset-0 pointer-events-none"
+                className="absolute inset-0 bg-gradient-to-t from-[#0D2B4D]/90 via-[#0D2B4D]/25 to-transparent"
                 aria-hidden="true"
-                style={{
-                  background:
-                    'radial-gradient(circle at 100% 0%, rgba(85, 199, 232, 0.24), transparent 42%), linear-gradient(160deg, rgba(30, 90, 168, 0.35), transparent 60%)',
-                }}
               />
 
-              <div className="relative p-5 sm:p-6">
-                <div className="flex items-center justify-between gap-3 mb-6">
-                  <div>
-                    <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#9FC3D8]">
-                      Vista de ejemplo
-                    </p>
-                    <h2 className="text-lg sm:text-xl font-bold text-white mt-1">
-                      Panel de capacitación
-                    </h2>
-                  </div>
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-[#55C7E8]/15 border border-[#55C7E8]/30 px-3 py-1 text-[11px] font-semibold text-[#BFEAF7]">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#55C7E8]" />
-                    Programa piloto
-                  </span>
-                </div>
+              <div className="absolute inset-x-0 bottom-0 p-6 sm:p-7 text-white">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-[#55C7E8]/15 border border-[#55C7E8]/40 px-3 py-1 text-[11px] font-semibold text-[#D8F4FC] backdrop-blur-sm">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#55C7E8]" />
+                  Programa piloto
+                </span>
+                <h2 className="mt-3 text-xl sm:text-2xl font-bold text-white leading-snug">
+                  Tu equipo crece con evidencia
+                </h2>
+                <p className="mt-2 max-w-sm text-xs sm:text-sm text-[#D9E7F2] leading-relaxed">
+                  Seguimiento en tiempo real, certificados verificables y reportes de
+                  avance para RR. HH. y operaciones.
+                </p>
 
-                <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-5">
-                  {[
-                    { value: '5', label: 'cursos' },
-                    { value: '24', label: 'colaboradores' },
-                    { value: '72%', label: 'avance' },
-                  ].map((item) => (
+                <div className="mt-5 grid grid-cols-3 gap-2 sm:gap-3">
+                  {heroMetrics.map((item) => (
                     <div
                       key={item.label}
-                      className="rounded-xl bg-white/[0.06] border border-white/10 px-3 py-3 text-center"
+                      className="rounded-xl bg-white/10 border border-white/15 px-3 py-2.5 text-center backdrop-blur-sm"
                     >
                       <p className="text-lg sm:text-xl font-bold text-white leading-none">
                         {item.value}
                       </p>
-                      <p className="text-[10px] sm:text-[11px] text-[#B8CBDD] mt-1">
+                      <p className="text-[10px] sm:text-[11px] text-[#D9E7F2] mt-1">
                         {item.label}
                       </p>
                     </div>
                   ))}
                 </div>
+              </div>
+            </div>
 
-                <div className="rounded-xl bg-[#FBFBFE] p-4 sm:p-5">
-                  <div className="flex items-center justify-between gap-2 mb-4">
-                    <p className="text-sm font-bold text-[#0D2B4D]">
-                      Progreso del equipo
-                    </p>
-                    <span className="text-[11px] font-semibold text-[#1E5AA8]">
-                      Este mes
-                    </span>
-                  </div>
-
-                  <div className="space-y-3">
-                    {sampleCourses.map((course) => {
-                      const Icon = course.icon;
-                      return (
-                        <div
-                          key={course.id}
-                          className="rounded-xl border border-[#DCE5EE] bg-white p-3"
-                        >
-                          <div className="flex items-start gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-[#1E5AA8]/10 flex items-center justify-center flex-shrink-0">
-                              <Icon className="w-4 h-4 text-[#1E5AA8]" aria-hidden="true" />
-                            </div>
-                            <div className="min-w-0 flex-1">
-                              <div className="flex items-start justify-between gap-2">
-                                <p className="text-xs sm:text-sm font-bold text-[#0D2B4D] leading-snug">
-                                  {course.title}
-                                </p>
-                                <span className="text-[10px] font-semibold text-[#1E5AA8] whitespace-nowrap">
-                                  {course.progress}%
-                                </span>
-                              </div>
-                              <p className="text-[10px] sm:text-[11px] text-[#6E7882] mt-0.5">
-                                {course.detail}
-                              </p>
-                              <div className="mt-2 h-1.5 rounded-full bg-[#E6EEF5] overflow-hidden">
-                                <div
-                                  className="h-full rounded-full bg-[#55C7E8]"
-                                  style={{ width: `${course.progress}%` }}
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                <p className="text-[11px] text-[#9FC3D8] mt-4 text-center">
-                  Datos de demostración. Tu panel se configura con los cursos y equipos de tu empresa.
-                </p>
+            <div className="absolute -left-4 top-6 hidden sm:flex items-center gap-2 rounded-xl bg-white px-4 py-3 shadow-lg border border-[#E2E8F0]">
+              <div className="w-9 h-9 rounded-lg bg-[#1E5AA8]/10 flex items-center justify-center">
+                <ShieldCheck className="w-4 h-4 text-[#1E5AA8]" aria-hidden="true" />
+              </div>
+              <div>
+                <p className="text-xs font-bold text-[#0D2B4D] leading-none">Certificados</p>
+                <p className="text-[10px] text-[#6E7882] mt-1">verificables</p>
               </div>
             </div>
           </div>

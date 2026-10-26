@@ -2,6 +2,9 @@ import { BrowserRouter, Routes, Route, Navigate, useParams, useNavigate } from '
 import { Home } from './pages/Home';
 import { Dashboard } from './pages/Dashboard';
 import { AdminDashboard } from './pages/AdminDashboard';
+import { LoginPage } from './pages/LoginPage';
+import { CompanyRegisterPage } from './pages/CompanyRegisterPage';
+import { CompanyDashboardPage } from './pages/CompanyDashboardPage';
 import { ExplorePage } from './pages/ExplorePage';
 import { CourseDetailsPage } from './pages/CourseDetailsPage';
 import { CartPage } from './components/cart/CartPage';
@@ -74,6 +77,23 @@ const AdminRoute = () => {
   );
 };
 
+// Company dashboard route — company admins and platform admins
+const CompanyRoute = () => {
+  const { user, isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) return null;
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+
+  const roles = user?.roles ?? [];
+  const canAccessCompany = roles.some((role) =>
+    ['company_admin', 'admin', 'root'].includes(role),
+  );
+
+  if (!canAccessCompany) return <Navigate to="/dashboard" replace />;
+
+  return <CompanyDashboardPage />;
+};
+
 // Cart wrapper
 const CartPageWrapper = () => {
   const navigate = useNavigate();
@@ -118,6 +138,8 @@ function App() {
             <Routes>
               {/* Public routes */}
               <Route path="/" element={<Home />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/registro-empresa" element={<CompanyRegisterPage />} />
               <Route path="/explore" element={<ExploreRoute />} />
               <Route path="/course/:id" element={<CourseDetailRoute />} />
 
@@ -132,6 +154,7 @@ function App() {
                   <AdminRoute />
                 </ProtectedRoute>
               } />
+              <Route path="/empresa" element={<CompanyRoute />} />
               <Route path="/cart" element={
                 <ProtectedRoute>
                   <CartPageWrapper />

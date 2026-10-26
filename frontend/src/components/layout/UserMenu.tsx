@@ -1,14 +1,16 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { User, LogOut, Shield, Home, Settings } from 'lucide-react';
+import { User, LogOut, Shield, Home, Settings, Building2 } from 'lucide-react';
 
 interface UserMenuProps {
     user: {
         name?: string;
         email?: string;
         isAdmin?: boolean;
+        isCompanyAdmin?: boolean;
     } | null;
     onNavigate?: (page: string) => void;
     onNavigateToAdmin?: () => void;
+    onNavigateToCompany?: () => void;
     onNavigateToSettings?: () => void;
     onNavigateToHome?: () => void;
     onNavigateToDashboard?: () => void;
@@ -20,6 +22,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({
     user,
     onNavigate,
     onNavigateToAdmin,
+    onNavigateToCompany,
     onNavigateToSettings,
     onNavigateToHome,
     onNavigateToDashboard,
@@ -116,6 +119,22 @@ export const UserMenu: React.FC<UserMenuProps> = ({
                         >
                             <Home className="w-4 h-4" />
                             Ir al inicio
+                        </button>
+                    )}
+                    {user?.isCompanyAdmin && (
+                        <button
+                            onClick={() => {
+                                if (onNavigateToCompany) {
+                                    onNavigateToCompany();
+                                } else {
+                                    window.location.href = '/empresa';
+                                }
+                                setIsMenuOpen(false);
+                            }}
+                            className="w-full text-left px-4 py-2 text-paragraph hover:bg-palette-primary hover:text-on-primary flex items-center gap-2 transition-colors"
+                        >
+                            <Building2 className="w-4 h-4" />
+                            Panel de empresa
                         </button>
                     )}
                     {user?.isAdmin && (

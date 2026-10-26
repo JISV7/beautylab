@@ -3,6 +3,8 @@ import axios from 'axios';
 import { Header } from '../components/layout/Header';
 import { Footer } from '../components/layout/Footer';
 import { Hero } from '../components/home/Hero';
+import { Benefits } from '../components/home/Benefits';
+import { TrustedBy } from '../components/home/TrustedBy';
 import { Services } from '../components/home/Services';
 import { About } from '../components/home/About';
 import { ContactForm } from '../components/home/ContactForm';
@@ -79,7 +81,9 @@ export function Home() {
             <Header />
             <main className="flex-1">
                 <Hero />
-                
+                <Benefits />
+                <TrustedBy />
+
                 {homeConfig?.video?.enabled && homeConfig?.video?.url && (
                     <PromotionalVideo
                         url={normalizeUrl(homeConfig.video.url)}

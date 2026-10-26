@@ -131,6 +131,10 @@ class UserResponse(BaseModel):
     is_active: bool
     is_verified: bool
     preferred_theme_id: UUID | None = None
+    company_id: UUID | None = None
+    department_id: UUID | None = None
+    company_name: str | None = None
+    department_name: str | None = None
     created_at: datetime
     updated_at: datetime
     # Fiscal fields

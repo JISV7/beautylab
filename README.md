@@ -93,10 +93,18 @@ pnpm dev
 | Servicio | URL local |
 |----------|-----------|
 | Aplicación (frontend Vite) | `http://localhost:5173` |
+| Iniciar sesión (split-screen) | `http://localhost:5173/login` |
+| Registro de empresa (wizard) | `http://localhost:5173/registro-empresa` |
+| Panel de empresa | `http://localhost:5173/empresa` |
 | API | `http://localhost:8000` |
 | Documentación interactiva | `http://localhost:8000/docs` |
 | Referencia ReDoc | `http://localhost:8000/redoc` |
 | PostgreSQL | `localhost:5432` |
+
+El seeder crea la empresa demo **Cursorg Demo** con departamentos, clases y
+colaboradores de ejemplo. Entra a `/empresa` con `admin@cursorg.ve` /
+`password123*` para ver el panel de empresa, o usa `/registro-empresa` para
+crear un espacio nuevo con su propio administrador.
 
 Para detener el stack sin borrar datos:
 

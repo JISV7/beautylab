@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Menu, Search, Bell, ArrowLeft, X } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { useAuth } from '../../contexts/AuthContext';
@@ -35,7 +35,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({ onBack, onMenuToggle, 
                             type="button"
                             onClick={onMenuToggle}
                             className="lg:hidden w-10 h-10 inline-flex items-center justify-center rounded-lg text-paragraph hover:bg-palette-border transition-colors"
-                            aria-label="Abrir menú de administración"
+                            aria-label="Abrir menÃº de administraciÃ³n"
                         >
                             <Menu className="w-6 h-6" />
                         </button>
@@ -51,7 +51,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({ onBack, onMenuToggle, 
                                 <input
                                     type="text"
                                     placeholder="Buscar..."
-                                    aria-label="Buscar en el panel de administración"
+                                    aria-label="Buscar en el panel de administraciÃ³n"
                                     className="flex-1 min-w-0 py-2 pl-2 pr-4 bg-transparent text-paragraph placeholder:text-muted focus:outline-none"
                                 />
                             </div>
@@ -84,6 +84,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({ onBack, onMenuToggle, 
                             user={user}
                             onNavigateToDashboard={() => navigate('/dashboard?tab=dashboard')}
                             onNavigateToSettings={() => navigate('/dashboard?tab=settings')}
+                            onNavigateToCompany={() => navigate('/empresa')}
                             onNavigateToHome={() => navigate('/')}
                             isOnHome={false}
                             onLogout={handleLogout}
@@ -105,6 +106,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({ onBack, onMenuToggle, 
                             user={user}
                             onNavigateToDashboard={() => navigate('/dashboard?tab=dashboard')}
                             onNavigateToSettings={() => navigate('/dashboard?tab=settings')}
+                            onNavigateToCompany={() => navigate('/empresa')}
                             onNavigateToHome={() => navigate('/')}
                             isOnHome={false}
                             onLogout={handleLogout}
@@ -120,7 +122,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({ onBack, onMenuToggle, 
                             <input
                                 type="text"
                                 placeholder="Buscar..."
-                                aria-label="Buscar en el panel de administración"
+                                aria-label="Buscar en el panel de administraciÃ³n"
                                 className="flex-1 min-w-0 py-2 pl-2 pr-4 bg-transparent text-paragraph placeholder:text-muted focus:outline-none"
                             />
                         </div>

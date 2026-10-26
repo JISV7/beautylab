@@ -15,6 +15,8 @@ from app.routers import (
     auth,
     cart,
     catalog,
+    companies,
+    company,
     company_info,
     coupons,
     enrollments,
@@ -80,6 +82,8 @@ app.include_router(home_config.router)
 app.include_router(admin.router)
 app.include_router(fonts.router)
 app.include_router(company_info.router)
+app.include_router(companies.router)
+app.include_router(company.router)
 app.include_router(printers.router)
 
 # Mount static files for fonts, courses, and company logos

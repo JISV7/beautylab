@@ -10,6 +10,7 @@ from app.models.base import Base, TimestampMixin
 
 if TYPE_CHECKING:
     from app.models.category import Category
+    from app.models.course_module import CourseModule
     from app.models.enrollment import Enrollment
     from app.models.learning_path_course import LearningPathCourse
     from app.models.level import Level
@@ -61,6 +62,12 @@ class Course(Base, TimestampMixin):
     )
     enrollments: Mapped[list["Enrollment"]] = relationship("Enrollment", back_populates="course")
     licenses: Mapped[list["License"]] = relationship("License", back_populates="course")
+    modules: Mapped[list["CourseModule"]] = relationship(
+        "CourseModule",
+        back_populates="course",
+        cascade="all, delete-orphan",
+        order_by="CourseModule.position",
+    )
 
     def __repr__(self) -> str:
         return f"<Course(id={self.id}, title={self.title}, slug={self.slug})>"

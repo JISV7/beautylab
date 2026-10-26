@@ -4,10 +4,14 @@ from app.models.audit_log import AuditLog
 from app.models.base import Base
 from app.models.cart_item import CartItem
 from app.models.category import Category
+from app.models.company import Company
 from app.models.company_info import CompanyInfo
 from app.models.control_number_range import ControlNumberRange
 from app.models.coupon import Coupon, CouponUsage
 from app.models.course import Course
+from app.models.course_class import CourseClass
+from app.models.course_module import CourseModule
+from app.models.department import Department
 from app.models.enrollment import Enrollment
 from app.models.font import Font
 from app.models.home_config import HomeConfig
@@ -42,6 +46,10 @@ __all__ = [
     "Category",
     "Level",
     "Course",
+    "CourseModule",
+    "CourseClass",
+    "Company",
+    "Department",
     "LearningPath",
     "LearningPathCourse",
     "Invoice",

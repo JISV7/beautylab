@@ -400,6 +400,125 @@ html.accessibility {
     color: var(--text-muted-color);
     opacity: 1;
   }
+
+  /* ==================== Company (B2B) Dashboard ==================== */
+  .company-shell {
+    background-color: #f8fafc;
+    color: #0d2b4d;
+  }
+
+  .company-card {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 16px 32px -28px rgba(13, 43, 77, 0.45);
+  }
+
+  .company-input {
+    width: 100%;
+    background-color: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 0.5rem;
+    padding: 0.625rem 0.875rem;
+    font-family: var(--text-p-font);
+    font-size: 0.9375rem;
+    color: #0d2b4d;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .company-input:focus {
+    border-color: #1e5aa8;
+    box-shadow: 0 0 0 3px rgba(30, 90, 168, 0.16);
+  }
+
+  .company-input::placeholder {
+    color: #94a3b8;
+  }
+
+  .company-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 0.5rem;
+    background-color: #1e5aa8;
+    color: #ffffff;
+    padding: 0.625rem 1.125rem;
+    font-family: var(--text-p-font);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    transition: background-color 0.2s, transform 0.2s;
+  }
+
+  .company-btn-primary:hover {
+    background-color: #0d2b4d;
+  }
+
+  .company-btn-primary:active {
+    transform: scale(0.98);
+  }
+
+  .company-btn-primary:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  .company-btn-outline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 0.5rem;
+    border: 1px solid #cbd5e1;
+    background-color: #ffffff;
+    color: #0d2b4d;
+    padding: 0.625rem 1.125rem;
+    font-family: var(--text-p-font);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    transition: border-color 0.2s, color 0.2s, background-color 0.2s;
+  }
+
+  .company-btn-outline:hover {
+    border-color: #1e5aa8;
+    color: #1e5aa8;
+    background-color: #f1f5f9;
+  }
+
+  .company-nav-item {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 0.75rem;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    color: #cbd5e1;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    transition: background-color 0.2s, color 0.2s;
+  }
+
+  .company-nav-item:hover {
+    background-color: rgba(85, 199, 232, 0.12);
+    color: #55c7e8;
+  }
+
+  .company-nav-item-active {
+    background-color: rgba(85, 199, 232, 0.16);
+    color: #55c7e8;
+  }
+
+  .company-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    border-radius: 9999px;
+    padding: 0.2rem 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.1;
+  }
 }
 
 @layer utilities {
@@ -475,6 +594,35 @@ html.accessibility {
 
   .yellow-action:hover {
     background-color: color-mix(in srgb, var(--status-warning) 14%, transparent);
+  }
+
+  /* ==================== Logo marquee ==================== */
+  @keyframes logo-scroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  .logo-track {
+    display: flex;
+    width: max-content;
+    animation: logo-scroll 30s linear infinite;
+  }
+
+  .logo-track:hover {
+    animation-play-state: paused;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .logo-track {
+      animation: none;
+      flex-wrap: wrap;
+      width: 100%;
+      justify-content: center;
+    }
   }
 
   /* ==================== Scrollbar Utilities ==================== */

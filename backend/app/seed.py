@@ -13,6 +13,7 @@ import asyncio
 import shutil
 import sys
 import uuid
+from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
 from uuid import UUID
@@ -26,7 +27,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.security import hash_password
 from app.database import AsyncSessionLocal, close_db, init_db
 from app.models.category import Category
+from app.models.company import Company
 from app.models.course import Course
+from app.models.course_class import CourseClass
+from app.models.course_module import CourseModule
+from app.models.department import Department
+from app.models.enrollment import Enrollment
 from app.models.font import Font
 from app.models.learning_path import LearningPath
 from app.models.learning_path_course import LearningPathCourse
@@ -138,12 +144,164 @@ COURSE_CATALOG = [
     },
 ]
 
+DEMO_COMPANY_NAME = "Cursorg Demo"
+DEMO_COMPANY_RIF = "J-12345678-9"
+DEMO_COMPANY_SECTOR = "Servicios corporativos"
+DEMO_COMPANY_EMAIL = "demo@cursorg.ve"
+DEMO_COMPANY_PHONE = "+584121234567"
+
+DEMO_DEPARTMENTS = [
+    "Dirección",
+    "Operaciones",
+    "Ventas",
+    "Recursos Humanos",
+    "Finanzas",
+]
+
+DEMO_EMPLOYEES = [
+    {
+        "email": "maria.rodriguez@cursorg.ve",
+        "full_name": "María Rodríguez",
+        "department": "Operaciones",
+        "course_sku": "CURSORG-001",
+        "progress": 82,
+    },
+    {
+        "email": "jose.perez@cursorg.ve",
+        "full_name": "José Pérez",
+        "department": "Operaciones",
+        "course_sku": "CURSORG-001",
+        "progress": 45,
+    },
+    {
+        "email": "ana.martinez@cursorg.ve",
+        "full_name": "Ana Martínez",
+        "department": "Ventas",
+        "course_sku": "CURSORG-003",
+        "progress": 100,
+    },
+    {
+        "email": "luis.gonzalez@cursorg.ve",
+        "full_name": "Luis González",
+        "department": "Ventas",
+        "course_sku": "CURSORG-003",
+        "progress": 30,
+    },
+    {
+        "email": "carla.fernandez@cursorg.ve",
+        "full_name": "Carla Fernández",
+        "department": "Recursos Humanos",
+        "course_sku": "CURSORG-005",
+        "progress": 65,
+    },
+    {
+        "email": "pedro.ramirez@cursorg.ve",
+        "full_name": "Pedro Ramírez",
+        "department": "Finanzas",
+        "course_sku": "CURSORG-002",
+        "progress": 15,
+    },
+]
+
+DEMO_COMPANY_PASSWORD = "password123*"
+
+COURSE_MODULES = {
+    "CURSORG-001": [
+        {
+            "title": "Módulo 1: Fundamentos de seguridad",
+            "classes": [
+                "Introducción a la prevención de riesgos",
+                "Identificación de peligros en planta",
+            ],
+        },
+        {
+            "title": "Módulo 2: Aplicación en el puesto de trabajo",
+            "classes": [
+                "Uso seguro de equipos y EPP",
+                "Evaluación final de seguridad laboral",
+            ],
+        },
+    ],
+    "CURSORG-002": [
+        {
+            "title": "Módulo 1: Lenguaje financiero",
+            "classes": [
+                "Estados financieros para no financieros",
+                "Indicadores clave del negocio",
+            ],
+        },
+        {
+            "title": "Módulo 2: Presupuesto y control",
+            "classes": [
+                "Construcción de un presupuesto práctico",
+                "Evaluación de control de costos",
+            ],
+        },
+    ],
+    "CURSORG-003": [
+        {
+            "title": "Módulo 1: Venta consultiva",
+            "classes": [
+                "Diagnóstico de necesidades del cliente",
+                "Manejo de objeciones con confianza",
+            ],
+        },
+        {
+            "title": "Módulo 2: Experiencia del cliente",
+            "classes": [
+                "Comunicación y seguimiento comercial",
+                "Evaluación de atención al cliente",
+            ],
+        },
+    ],
+    "CURSORG-004": [
+        {
+            "title": "Módulo 1: Productividad digital",
+            "classes": [
+                "Organización del trabajo en la nube",
+                "Colaboración con herramientas digitales",
+            ],
+        },
+        {
+            "title": "Módulo 2: Hábitos y automatización",
+            "classes": [
+                "Automatización de tareas repetitivas",
+                "Evaluación de productividad personal",
+            ],
+        },
+    ],
+    "CURSORG-005": [
+        {
+            "title": "Módulo 1: Rol del supervisor",
+            "classes": [
+                "Comunicación y liderazgo operativo",
+                "Delegación y seguimiento de equipos",
+            ],
+        },
+        {
+            "title": "Módulo 2: Resultados y retroalimentación",
+            "classes": [
+                "Conversaciones de retroalimentación",
+                "Evaluación de supervisión efectiva",
+            ],
+        },
+    ],
+}
+
+COURSE_THUMBNAILS = {
+    "CURSORG-001": "/images/courses/cursorg-001.jpg",
+    "CURSORG-002": "/images/courses/cursorg-002.jpg",
+    "CURSORG-003": "/images/courses/cursorg-003.jpg",
+    "CURSORG-004": "/images/courses/cursorg-004.jpg",
+    "CURSORG-005": "/images/courses/cursorg-005.jpg",
+}
+
 
 async def seed_roles(db: AsyncSession) -> dict[str, Role]:
     """Seed default roles."""
     print("Seeding roles...")
 
-    default_roles = ["root", "admin", "user"]
+    default_roles = ["root", "admin", "company_admin", "user"]
     roles = {}
 
     for role_name in default_roles:
@@ -935,6 +1093,201 @@ async def seed_learning_path(db: AsyncSession, courses: list[Course]) -> None:
     print(f"  Learning path contains {len(courses)} courses")
 
 
+async def seed_company(
+    db: AsyncSession,
+    root_user: User,
+    admin_user: User,
+    roles: dict[str, Role],
+) -> tuple[Company, dict[str, Department]]:
+    """Seed the demo company, its departments and access for platform admins."""
+    print("Seeding demo company...")
+
+    result = await db.execute(select(Company).where(Company.rif == DEMO_COMPANY_RIF))
+    company = result.scalar_one_or_none()
+
+    if not company:
+        company = Company(
+            name=DEMO_COMPANY_NAME,
+            rif=DEMO_COMPANY_RIF,
+            sector=DEMO_COMPANY_SECTOR,
+            email=DEMO_COMPANY_EMAIL,
+            phone=DEMO_COMPANY_PHONE,
+            is_active=True,
+        )
+        db.add(company)
+        await db.flush()
+        print(f"  Created company: {DEMO_COMPANY_NAME}")
+    else:
+        print(f"  Company exists: {company.name}")
+
+    departments: dict[str, Department] = {}
+    for name in DEMO_DEPARTMENTS:
+        result = await db.execute(
+            select(Department).where(
+                Department.company_id == company.id,
+                Department.name == name,
+            )
+        )
+        department = result.scalar_one_or_none()
+        if not department:
+            department = Department(company_id=company.id, name=name)
+            db.add(department)
+            await db.flush()
+            print(f"  Created department: {name}")
+        departments[name] = department
+
+    direction = departments.get("Dirección")
+    for user in (root_user, admin_user):
+        if user.company_id is None:
+            user.company_id = company.id
+        if user.department_id is None and direction:
+            user.department_id = direction.id
+
+    await _ensure_user_role(db, admin_user, roles["company_admin"])
+
+    await db.commit()
+    await db.refresh(company)
+    return company, departments
+
+
+async def seed_course_modules(db: AsyncSession, courses: list[Course]) -> None:
+    """Seed modules and classes for the demo courses."""
+    if not courses:
+        return
+
+    print("Seeding course modules and classes...")
+    sku_by_slug = {entry["slug"]: entry["sku"] for entry in COURSE_CATALOG}
+
+    for course in courses:
+        sku = sku_by_slug.get(course.slug)
+        module_config = COURSE_MODULES.get(sku or "")
+        if not module_config:
+            continue
+
+        thumbnail = COURSE_THUMBNAILS.get(sku or "")
+
+        for module_position, module_data in enumerate(module_config, start=1):
+            result = await db.execute(
+                select(CourseModule).where(
+                    CourseModule.course_id == course.id,
+                    CourseModule.title == module_data["title"],
+                )
+            )
+            module = result.scalar_one_or_none()
+
+            if not module:
+                module = CourseModule(
+                    course_id=course.id,
+                    title=module_data["title"],
+                    position=module_position,
+                )
+                db.add(module)
+                await db.flush()
+                print(f"  Created module: {module_data['title']}")
+
+            for class_position, class_title in enumerate(
+                module_data["classes"], start=1
+            ):
+                existing = await db.execute(
+                    select(CourseClass).where(
+                        CourseClass.module_id == module.id,
+                        CourseClass.title == class_title,
+                    )
+                )
+                if existing.scalar_one_or_none():
+                    continue
+
+                db.add(
+                    CourseClass(
+                        module_id=module.id,
+                        title=class_title,
+                        video_url=course.video_url,
+                        thumbnail_url=thumbnail,
+                        duration_minutes=12 + class_position * 6,
+                        has_evaluation=class_title.startswith("Evaluación"),
+                        position=class_position,
+                    )
+                )
+                print(f"    Created class: {class_title}")
+
+    await db.commit()
+
+
+async def seed_demo_employees(
+    db: AsyncSession,
+    company: Company,
+    departments: dict[str, Department],
+    courses: list[Course],
+    roles: dict[str, Role],
+) -> None:
+    """Seed demo employees with course progress for the dashboard."""
+    print("Seeding demo employees...")
+    sku_by_slug = {entry["slug"]: entry["sku"] for entry in COURSE_CATALOG}
+    course_by_sku = {
+        sku_by_slug[course.slug]: course
+        for course in courses
+        if course.slug in sku_by_slug
+    }
+
+    for employee in DEMO_EMPLOYEES:
+        result = await db.execute(select(User).where(User.email == employee["email"]))
+        user = result.scalar_one_or_none()
+
+        if not user:
+            user = User(
+                email=employee["email"],
+                password_hash=hash_password(DEMO_COMPANY_PASSWORD),
+                full_name=employee["full_name"],
+                is_active=True,
+                is_verified=True,
+                company_id=company.id,
+                department_id=departments.get(employee["department"]).id
+                if departments.get(employee["department"])
+                else None,
+            )
+            db.add(user)
+            await db.flush()
+            await _ensure_user_role(db, user, roles["user"])
+            print(f"  Created employee: {employee['full_name']}")
+        else:
+            if user.company_id is None:
+                user.company_id = company.id
+            if user.department_id is None:
+                department = departments.get(employee["department"])
+                if department:
+                    user.department_id = department.id
+
+        course = course_by_sku.get(employee["course_sku"])
+        if not course:
+            continue
+
+        enrollment_result = await db.execute(
+            select(Enrollment).where(
+                Enrollment.user_id == user.id,
+                Enrollment.course_id == course.id,
+            )
+        )
+        if not enrollment_result.scalar_one_or_none():
+            progress = employee["progress"]
+            completed = progress >= 100
+            db.add(
+                Enrollment(
+                    user_id=user.id,
+                    course_id=course.id,
+                    status="completed" if completed else "active",
+                    progress=progress,
+                    enrolled_at=datetime.now(),
+                    completed_at=datetime.now() if completed else None,
+                )
+            )
+            print(
+                f"    Enrolled {employee['full_name']} in "
+                f"{employee['course_sku']} ({progress}%)"
+            )
+
+    await db.commit()
+
+
 async def seed_database() -> None:
     """Main seeding function."""
     print("=" * 50)
@@ -959,7 +1312,7 @@ async def seed_database() -> None:
             root_user = await seed_root_user(db, roles)
 
             # Seed admin user
-            await seed_admin_user(db, roles)
+            admin_user = await seed_admin_user(db, roles)
 
             # Seed fonts (owned by root user)
             default_font = await seed_fonts(db, root_user)
@@ -972,6 +1325,11 @@ async def seed_database() -> None:
             categories = await seed_categories(db)
             courses = await seed_catalog(db, levels, categories)
             await seed_learning_path(db, courses)
+
+            # Seed B2B company workspace, modules and demo employees
+            company, departments = await seed_company(db, root_user, admin_user, roles)
+            await seed_course_modules(db, courses)
+            await seed_demo_employees(db, company, departments, courses, roles)
 
             print("=" * 50)
             print("Database seeding completed successfully!")

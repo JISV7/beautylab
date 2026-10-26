@@ -48,6 +48,8 @@ async def get_current_user_profile(
         fiscal_address=current_user.fiscal_address,
         phone=current_user.phone,
         is_contributor=current_user.is_contributor,
+        company_id=current_user.company_id,
+        department_id=current_user.department_id,
     )
 
 
@@ -135,6 +137,8 @@ async def list_users(
                 fiscal_address=user.fiscal_address,
                 phone=user.phone,
                 is_contributor=user.is_contributor,
+                company_id=user.company_id,
+                department_id=user.department_id,
             )
         )
 
@@ -195,6 +199,8 @@ async def get_user(
         fiscal_address=user.fiscal_address,
         phone=user.phone,
         is_contributor=user.is_contributor,
+        company_id=user.company_id,
+        department_id=user.department_id,
     )
 
 

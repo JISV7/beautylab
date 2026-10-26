@@ -9,7 +9,10 @@ export interface User {
     full_name?: string;
     name?: string;
     isAdmin?: boolean;
+    isCompanyAdmin?: boolean;
     roles?: string[];
+    company_id?: string;
+    department_id?: string;
     // Fiscal fields
     document_type?: string;
     document_number?: string;
@@ -37,9 +40,21 @@ interface AuthContextType {
         business_name?: string,
         is_contributor?: boolean,
     ) => Promise<void>;
+    registerCompany: (payload: CompanyRegistrationPayload) => Promise<void>;
     logout: () => void;
     updateProfile: (profileData: { full_name?: string; fiscal_address?: string; rif?: string }) => Promise<void>;
     resetPassword: (email: string) => Promise<void>;
+}
+
+export interface CompanyRegistrationPayload {
+    name: string;
+    rif: string;
+    sector?: string;
+    email: string;
+    phone: string;
+    admin_name: string;
+    password: string;
+    departments: string[];
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -127,6 +142,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             });
             const userData = response.data;
             const isAdmin = userData.roles?.some((roleName: string) => ['admin', 'root'].includes(roleName));
+            const isCompanyAdmin = userData.roles?.some((roleName: string) =>
+                ['company_admin', 'admin', 'root'].includes(roleName),
+            );
             setUser({
                 id: userData.id,
                 email: userData.email,
@@ -134,6 +152,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 name: userData.full_name,
                 roles: userData.roles,
                 isAdmin,
+                isCompanyAdmin,
+                company_id: userData.company_id,
+                department_id: userData.department_id,
                 rif: userData.rif,
                 document_type: userData.document_type,
                 document_number: userData.document_number,
@@ -251,6 +272,36 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     };
 
+    const registerCompany = async (payload: CompanyRegistrationPayload) => {
+        try {
+            await axios.post(`${API_URL}/companies/register`, {
+                name: payload.name,
+                rif: payload.rif,
+                sector: payload.sector || null,
+                email: payload.email,
+                phone: payload.phone,
+                admin_name: payload.admin_name,
+                password: payload.password,
+                departments: payload.departments,
+            });
+            await login(payload.email, payload.password);
+        } catch (error: unknown) {
+            if (axios.isAxiosError(error) && error.response) {
+                const detail = (error.response.data as { detail?: unknown }).detail;
+                if (typeof detail === 'string') {
+                    throw new Error(detail);
+                }
+                if (Array.isArray(detail)) {
+                    const first = detail[0] as { msg?: unknown } | undefined;
+                    if (typeof first?.msg === 'string') {
+                        throw new Error(first.msg);
+                    }
+                }
+            }
+            throw new Error('No se pudo registrar la empresa');
+        }
+    };
+
     const logout = () => {
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
@@ -312,7 +363,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, user, isLoading, login, register, logout, updateProfile, resetPassword }}>
+        <AuthContext.Provider value={{ isAuthenticated, user, isLoading, login, register, registerCompany, logout, updateProfile, resetPassword }}>
             {children}
         </AuthContext.Provider>
     );

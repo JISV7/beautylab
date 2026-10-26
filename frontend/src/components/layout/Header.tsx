@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { CalendarCheck, LogIn, Menu, X } from 'lucide-react';
+import { Building2, CalendarCheck, LogIn, Menu, X } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
-import { LoginDialog } from './LoginDialog';
 import { UserMenu } from './UserMenu';
 import { BrandLogo } from '../brand/BrandLogo';
 import { ThemeModeToggle } from './ThemeModeToggle';
@@ -19,12 +18,7 @@ export const Header: React.FC = () => {
   const navigate = useNavigate();
   const { currentMode } = useTheme();
   const { isAuthenticated, user, logout: authLogout } = useAuth();
-  const [loginDialogOpen, setLoginDialogOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  const handleLoginSuccess = () => {
-    navigate('/dashboard');
-  };
 
   const handleLogout = () => {
     authLogout();
@@ -74,38 +68,38 @@ export const Header: React.FC = () => {
               <ThemeModeToggle compact />
             </div>
 
-            {/* Demo CTA */}
-            <div className="hidden sm:block">
-              <a
-                href="/#contact"
-                className="theme-button theme-button-secondary !px-3 sm:!px-4"
-              >
-                <CalendarCheck className="w-4 h-4" />
-                <span className="hidden lg:inline">Solicita una demo</span>
-                <span className="lg:hidden">Demo</span>
-              </a>
-            </div>
-
-            {/* Authentication */}
             {isAuthenticated ? (
               <UserMenu
                 user={user}
                 onNavigateToDashboard={() => navigate('/dashboard')}
                 onNavigateToSettings={() => navigate('/dashboard?tab=settings')}
+                onNavigateToCompany={() => navigate('/empresa')}
                 onNavigateToAdmin={() => navigate('/admin')}
                 onNavigateToHome={() => navigate('/')}
                 isOnHome={window.location.pathname === '/'}
                 onLogout={handleLogout}
               />
             ) : (
-              <button
-                onClick={() => setLoginDialogOpen(true)}
-                className="theme-button theme-button-primary !px-3 sm:!px-4"
-              >
-                <LogIn className="w-4 h-4" />
-                <span className="hidden sm:inline">Iniciar sesión</span>
-                <span className="sm:hidden">Entrar</span>
-              </button>
+              <>
+                <button
+                  type="button"
+                  onClick={() => navigate('/registro-empresa')}
+                  className="company-btn-outline hidden sm:inline-flex"
+                >
+                  <Building2 className="w-4 h-4" />
+                  <span className="hidden lg:inline">Registrar Empresa</span>
+                  <span className="lg:hidden">Empresa</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => navigate('/login')}
+                  className="theme-button theme-button-primary !px-3 sm:!px-4"
+                >
+                  <LogIn className="w-4 h-4" />
+                  <span className="hidden sm:inline">Iniciar sesión</span>
+                  <span className="sm:hidden">Entrar</span>
+                </button>
+              </>
             )}
 
             {/* Mobile menu trigger */}
@@ -143,7 +137,33 @@ export const Header: React.FC = () => {
               ))}
             </nav>
 
-            <div className="border-t palette-border pt-4 flex flex-col gap-4">
+            <div className="border-t palette-border pt-4 flex flex-col gap-3">
+              {!isAuthenticated && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      navigate('/registro-empresa');
+                    }}
+                    className="theme-button theme-button-secondary w-full"
+                  >
+                    <Building2 className="w-4 h-4" />
+                    Registrar Empresa
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      navigate('/login');
+                    }}
+                    className="theme-button theme-button-primary w-full"
+                  >
+                    <LogIn className="w-4 h-4" />
+                    Iniciar sesión
+                  </button>
+                </>
+              )}
               <a
                 href="/#contact"
                 onClick={() => setMobileMenuOpen(false)}
@@ -162,12 +182,6 @@ export const Header: React.FC = () => {
         </div>
       )}
 
-      {/* Login/Register Dialog */}
-      <LoginDialog
-        open={loginDialogOpen}
-        onOpenChange={setLoginDialogOpen}
-        onLoginSuccess={handleLoginSuccess}
-      />
     </header>
   );
 };

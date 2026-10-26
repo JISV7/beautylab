@@ -11,6 +11,8 @@ from app.models.base import Base, TimestampMixin
 if TYPE_CHECKING:
     from app.models.audit_log import AuditLog
     from app.models.cart_item import CartItem
+    from app.models.company import Company
+    from app.models.department import Department
     from app.models.enrollment import Enrollment
     from app.models.invoice import Invoice
     from app.models.license import License, LicenseAssignment
@@ -39,6 +41,18 @@ class User(Base, TimestampMixin):
         ForeignKey("themes.id", ondelete="SET NULL"),
         nullable=True,
     )
+    company_id: Mapped[UUID | None] = mapped_column(
+        Uuid(as_uuid=True),
+        ForeignKey("companies.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True,
+    )
+    department_id: Mapped[UUID | None] = mapped_column(
+        Uuid(as_uuid=True),
+        ForeignKey("departments.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True,
+    )
     # Fiscal fields (migration 004)
     rif: Mapped[str | None] = mapped_column(String(20), nullable=True, index=True)
     document_type: Mapped[str | None] = mapped_column(String(10), nullable=True)
@@ -57,6 +71,12 @@ class User(Base, TimestampMixin):
     )
     preferred_theme: Mapped[Optional["Theme"]] = relationship(
         "Theme", foreign_keys=[preferred_theme_id], back_populates="users_with_preference"
+    )
+    company: Mapped[Optional["Company"]] = relationship(
+        "Company", back_populates="users", foreign_keys=[company_id]
+    )
+    department: Mapped[Optional["Department"]] = relationship(
+        "Department", back_populates="users", foreign_keys=[department_id]
     )
     created_themes: Mapped[list["Theme"]] = relationship(
         "Theme", back_populates="creator", foreign_keys="Theme.created_by"

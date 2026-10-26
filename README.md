@@ -294,12 +294,11 @@ El panel usa el parámetro `?tab=` para navegar entre secciones. También acepta
 
 | Ruta | Sección | Estado |
 |------|---------|--------|
-| `/dashboard?tab=home` | Inicio del colaborador | Placeholder actual |
+| `/dashboard?tab=home` | Inicio del colaborador | Funcional |
 | `/dashboard?tab=my-courses` | Mis cursos | Funcional |
 | `/dashboard?tab=explore` | Explorar cursos | Funcional |
-| `/dashboard?tab=learning-paths` | Rutas de aprendizaje | Placeholder actual |
-| `/dashboard?tab=community` | Comunidad | Placeholder actual |
-| `/dashboard?tab=ai-lab` | Laboratorio IA | Placeholder actual |
+| `/dashboard?tab=learning-paths` | Rutas de aprendizaje | Funcional |
+| `/dashboard?tab=community` | Comunidad | Funcional |
 | `/dashboard?tab=invoices` | Facturas del colaborador | Funcional |
 | `/dashboard?tab=cart` | Carrito dentro del panel | Funcional |
 | `/dashboard?tab=settings` | Configuración de perfil | Funcional |

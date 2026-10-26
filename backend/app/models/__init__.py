@@ -4,6 +4,8 @@ from app.models.audit_log import AuditLog
 from app.models.base import Base
 from app.models.cart_item import CartItem
 from app.models.category import Category
+from app.models.chat_message import ChatMessage
+from app.models.chat_room import ChatRoom
 from app.models.class_completion import ClassCompletion
 from app.models.company import Company
 from app.models.company_info import CompanyInfo
@@ -56,6 +58,8 @@ __all__ = [
     "Course",
     "CourseModule",
     "CourseClass",
+    "ChatRoom",
+    "ChatMessage",
     "Quiz",
     "QuizQuestion",
     "QuizOption",

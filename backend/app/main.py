@@ -15,10 +15,12 @@ from app.routers import (
     auth,
     cart,
     catalog,
+    community,
     companies,
     company,
     company_info,
     coupons,
+    dashboard,
     enrollments,
     fonts,
     home_config,
@@ -87,6 +89,8 @@ app.include_router(company_info.router)
 app.include_router(companies.router)
 app.include_router(company.router)
 app.include_router(printers.router)
+app.include_router(dashboard.router)
+app.include_router(community.router)
 
 # Mount static files for fonts, courses, and company logos
 app.mount("/static/fonts", StaticFiles(directory="uploads/fonts"), name="fonts")

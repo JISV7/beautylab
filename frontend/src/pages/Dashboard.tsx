@@ -8,7 +8,9 @@ import MyCoursesPage from './MyCoursesPage';
 import { CourseDetailsPage } from './CourseDetailsPage';
 import CoursePlayerPage from './CoursePlayerPage';
 import { SettingsPage } from './SettingsPage';
-import { DashboardHomePage } from './DashboardHomePage';
+import { UserHomePage } from './UserHomePage';
+import { LearningPathsPage } from './LearningPathsPage';
+import { CommunityPage } from './CommunityPage';
 
 interface DashboardProps {
     onNavigateToAdmin?: () => void;
@@ -86,10 +88,16 @@ export const Dashboard: React.FC<DashboardProps> = ({
             onNavigateToHome={handleNavigateToHome}
             onLogout={onLogout}
         >
-            {activeTab === 'explore' ? (
+            {activeTab === 'home' ? (
+                <UserHomePage />
+            ) : activeTab === 'explore' ? (
                 <ExplorePage />
             ) : activeTab === 'my-courses' ? (
                 <MyCoursesPage />
+            ) : activeTab === 'learning-paths' ? (
+                <LearningPathsPage />
+            ) : activeTab === 'community' ? (
+                <CommunityPage />
             ) : activeTab === 'invoices' ? (
                 <InvoicesPage />
             ) : activeTab === 'cart' ? (
@@ -97,7 +105,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
             ) : activeTab === 'settings' ? (
                 <SettingsPage />
             ) : (
-                <DashboardHomePage onNavigate={handleNavigate} />
+                <UserHomePage />
             )}
         </DashboardLayout>
     );

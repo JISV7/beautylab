@@ -373,7 +373,11 @@ class LearningPathCourseResponse(BaseModel):
     # Nested course info
     course_title: str | None = None
     course_slug: str | None = None
+    course_description: str | None = None
+    course_image_url: str | None = None
     course_duration_hours: int | None = None
+    category_name: str | None = None
+    level_name: str | None = None
 
 
 class LearningPathBase(BaseModel):

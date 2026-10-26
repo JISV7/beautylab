@@ -819,7 +819,11 @@ async def get_learning_path(
                     created_at=pc.created_at,
                     course_title=course.title,
                     course_slug=course.slug,
+                    course_description=course.description,
+                    course_image_url=course.image_url,
                     course_duration_hours=course.duration_hours,
+                    category_name=course.category.name if course.category else None,
+                    level_name=course.level.name if course.level else None,
                 )
             )
             if course.duration_hours:

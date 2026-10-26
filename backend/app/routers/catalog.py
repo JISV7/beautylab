@@ -1019,6 +1019,8 @@ class UserCourseResponse(BaseModel):
     enrollment_status: str | None = None
     progress: int = 0
     completed_at: datetime | None = None
+    # Latest class completion, or the enrollment date when nothing is done yet.
+    last_activity_at: datetime | None = None
     has_access: bool = False
     can_redeem: bool = False
     access_state: str = "payment_pending"
@@ -1075,9 +1077,10 @@ async def get_my_courses(
     - Payment progress (how much has been paid vs total required)
     - Learning progress and the next action available to the customer
     """
-    from sqlalchemy import or_
+    from sqlalchemy import func, or_
     from sqlalchemy.orm import selectinload
 
+    from app.models.class_completion import ClassCompletion
     from app.models.course import Course
     from app.models.enrollment import Enrollment
     from app.models.invoice import Invoice, InvoiceLine
@@ -1119,6 +1122,13 @@ async def get_my_courses(
     enrollment_by_course = {
         enrollment.course_id: enrollment for enrollment in enrollment_result.scalars().all()
     }
+
+    activity_result = await db.execute(
+        select(ClassCompletion.enrollment_id, func.max(ClassCompletion.completed_at))
+        .where(ClassCompletion.user_id == current_user.id)
+        .group_by(ClassCompletion.enrollment_id)
+    )
+    last_activity_by_enrollment = dict(activity_result.all())
 
     # Group by course and calculate payment progress
     course_data = {}
@@ -1181,6 +1191,11 @@ async def get_my_courses(
         )
         learning_progress = enrollment.progress if enrollment else 0
         completed_at = enrollment.completed_at if enrollment else None
+        last_activity_at = (
+            last_activity_by_enrollment.get(enrollment.id) or enrollment.enrolled_at
+            if enrollment
+            else None
+        )
 
         if has_access:
             access_state = (
@@ -1226,6 +1241,7 @@ async def get_my_courses(
                 enrollment_status=enrollment.status if enrollment else None,
                 progress=learning_progress,
                 completed_at=completed_at,
+                last_activity_at=last_activity_at,
                 has_access=has_access,
                 can_redeem=can_redeem,
                 access_state=access_state,

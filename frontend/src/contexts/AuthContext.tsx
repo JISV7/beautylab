@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import { DEMO_TOKEN, demoModeAllowed, demoUser, isNetworkError } from '../data/demoData';
 
 const API_URL = 'http://localhost:8000';
 
@@ -134,6 +135,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [isLoading, setIsLoading] = useState(true);
 
     const fetchUser = async (token: string) => {
+        if (token === DEMO_TOKEN) {
+            setUser(demoUser);
+            setIsAuthenticated(true);
+            setIsLoading(false);
+            return;
+        }
         try {
             const response = await axios.get(`${API_URL}/users/me`, {
                 headers: {
@@ -176,7 +183,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const token = localStorage.getItem('access_token');
         if (token) {
             // Check if token is expired
-            if (isTokenExpired(token)) {
+            if (token !== DEMO_TOKEN && isTokenExpired(token)) {
                 // Token expired, try to refresh
                 refreshAccessToken().then((newToken) => {
                     if (newToken) {
@@ -225,6 +232,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             // Notify cart to refresh after login
             window.dispatchEvent(new CustomEvent('cart:refresh'));
         } catch (error: any) {
+            // Backend unreachable in dev/demo builds: open a local demo session.
+            if (demoModeAllowed && isNetworkError(error)) {
+                localStorage.setItem('access_token', DEMO_TOKEN);
+                localStorage.setItem('currentPage', 'dashboard');
+                await fetchUser(DEMO_TOKEN);
+                return;
+            }
             if (axios.isAxiosError(error) && error.response) {
                 throw new Error(error.response.data.detail || 'Login failed');
             }

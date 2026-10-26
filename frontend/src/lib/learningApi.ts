@@ -131,7 +131,47 @@ export interface ClassCompletionResponse {
   status: string;
 }
 
+export interface UserCourseLicense {
+  id: string;
+  license_code: string;
+  status: string;
+  license_type: string;
+  redeemed_at: string | null;
+  redeemed_by_user_id: string | null;
+  can_redeem: boolean;
+}
+
+export type CourseAccessState =
+  | 'payment_pending'
+  | 'ready_to_redeem'
+  | 'in_progress'
+  | 'completed'
+  | 'unavailable';
+
+export interface UserCourse {
+  course_id: string;
+  course_title: string;
+  course_slug: string;
+  course_image_url: string | null;
+  category_id: number | null;
+  category_name: string | null;
+  licenses: UserCourseLicense[];
+  total_paid: string;
+  total_required: string;
+  payment_progress: number;
+  is_fully_paid: boolean;
+  enrollment_id: number | null;
+  enrollment_status: string | null;
+  progress: number;
+  completed_at: string | null;
+  last_activity_at: string | null;
+  has_access: boolean;
+  can_redeem: boolean;
+  access_state: CourseAccessState;
+}
+
 export const learningApi = {
+  getMyCourses: () => client.get<UserCourse[]>('/my-courses').then((r) => r.data),
   getCourseContent: (courseId: string) =>
     client.get<CourseContent>(`/my-courses/${courseId}/content`).then((r) => r.data),
   completeClass: (courseId: string, classId: string) =>

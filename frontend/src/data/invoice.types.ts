@@ -95,3 +95,17 @@ export interface InvoicesResponse {
     page: number;
     totalPages: number;
 }
+
+export const invoiceStatusLabels: Record<string, string> = {
+    paid: 'Pagada',
+    partial: 'Parcial',
+    cancelled: 'Anulada',
+    issued: 'Emitida',
+};
+
+export const invoiceStatusClasses: Record<string, string> = {
+    paid: 'bg-green-100 text-success dark:bg-green-900/30 dark:text-success',
+    partial: 'bg-blue-100 text-info dark:bg-blue-900/30 dark:text-info',
+    cancelled: 'bg-red-100 text-danger dark:bg-red-900/30 dark:text-danger',
+    issued: 'bg-yellow-100 text-warning dark:bg-yellow-900/30 dark:text-warning',
+};

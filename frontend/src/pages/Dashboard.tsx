@@ -8,6 +8,7 @@ import MyCoursesPage from './MyCoursesPage';
 import { CourseDetailsPage } from './CourseDetailsPage';
 import CoursePlayerPage from './CoursePlayerPage';
 import { SettingsPage } from './SettingsPage';
+import { DashboardHomePage } from './DashboardHomePage';
 
 interface DashboardProps {
     onNavigateToAdmin?: () => void;
@@ -96,14 +97,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
             ) : activeTab === 'settings' ? (
                 <SettingsPage />
             ) : (
-                <div className="mx-auto p-6">
-                    <h1 className="text-h1 text-h1 text-h1">Hello World</h1>
-                    <h2 className="text-h2 text-h2 text-h2">Hello World</h2>
-                    <h3 className="text-h3 text-h3 text-h3">Hello World</h3>
-                    <h4 className="text-h4 text-h4 text-h4">Hello World</h4>
-                    <h5 className="text-h5 text-h5 text-h5">Hello World</h5>
-                    <h6 className="text-h6 text-h6 text-h6">Hello World</h6>
-                </div>
+                <DashboardHomePage onNavigate={handleNavigate} />
             )}
         </DashboardLayout>
     );

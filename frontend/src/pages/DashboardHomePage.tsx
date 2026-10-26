@@ -31,15 +31,6 @@ import {
 } from '../data/invoice.types';
 import { formatCurrency } from '../utils/formatCurrency';
 import { normalizeUrl } from '../utils/url';
-import {
-    demoCourses,
-    demoInvoices,
-    demoInvoiceSummary,
-    demoModeAllowed,
-    getDemoCourseContent,
-    isDemoSession,
-    isNetworkError,
-} from '../data/demoData';
 
 interface DashboardHomePageProps {
     onNavigate: (tab: string) => void;
@@ -158,7 +149,7 @@ function ContinuePanel({ course, onOpen }: { course: UserCourse; onOpen: () => v
         learningApi
             .getCourseContent(course.course_id)
             .then((data) => active && setContent(data))
-            .catch(() => active && setContent(getDemoCourseContent(course.course_id)));
+            .catch(() => active && setContent(null));
         return () => {
             active = false;
         };
@@ -270,7 +261,6 @@ export function DashboardHomePage({ onNavigate }: DashboardHomePageProps) {
     const [invoiceSummary, setInvoiceSummary] = useState<InvoiceSummary | null>(null);
     const [loading, setLoading] = useState(true);
     const [loadError, setLoadError] = useState<string | null>(null);
-    const [isDemo, setIsDemo] = useState(false);
 
     const load = useCallback(async () => {
         setLoading(true);
@@ -280,22 +270,13 @@ export function DashboardHomePage({ onNavigate }: DashboardHomePageProps) {
             fetchInvoices(1, 4),
             fetchSummary(),
         ]);
-        const useDemo =
-            coursesResult.status === 'rejected' &&
-            demoModeAllowed &&
-            (isDemoSession() || isNetworkError(coursesResult.reason));
-        setIsDemo(useDemo);
         if (coursesResult.status === 'fulfilled') {
             setCourses(coursesResult.value);
-        } else if (useDemo) {
-            setCourses(demoCourses);
         } else {
             setLoadError('No pudimos cargar tu resumen. Revisa tu conexión e inténtalo de nuevo.');
         }
-        const invoiceData = invoicesResult.status === 'fulfilled' ? invoicesResult.value : null;
-        const summaryData = summaryResult.status === 'fulfilled' ? summaryResult.value : null;
-        setInvoices(invoiceData?.invoices ?? (useDemo ? demoInvoices : []));
-        setInvoiceSummary(summaryData ?? (useDemo ? demoInvoiceSummary : null));
+        if (invoicesResult.status === 'fulfilled') setInvoices(invoicesResult.value?.invoices ?? []);
+        if (summaryResult.status === 'fulfilled') setInvoiceSummary(summaryResult.value);
         setLoading(false);
     }, []);
 
@@ -374,13 +355,6 @@ export function DashboardHomePage({ onNavigate }: DashboardHomePageProps) {
                     </button>
                 )}
             </header>
-
-            {isDemo && (
-                <p className="flex items-center gap-2 rounded-lg border border-palette-border bg-palette-surface px-4 py-2.5 text-sm text-muted">
-                    <AlertTriangle className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
-                    Datos de ejemplo: el servidor no está disponible en este momento.
-                </p>
-            )}
 
             {loadError && (
                 <div className="flex items-start justify-between gap-3 rounded-xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20 p-4">

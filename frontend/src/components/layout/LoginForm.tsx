@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { Mail, Lock, ArrowRight, Eye, EyeOff } from 'lucide-react';
+import { demoModeEnabled } from '../../demo/mockApi';
 
 interface LoginFormProps {
   onSwitchToRegister: () => void;
@@ -44,6 +45,12 @@ export const LoginForm: React.FC<LoginFormProps> = ({
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
+        {demoModeEnabled && (
+          <p className="rounded-lg border border-palette-border bg-palette-surface px-3 py-2.5 text-sm text-muted">
+            Modo demo: entra con cualquier correo y contraseña. Usa un correo con
+            «empresa» para el panel de empresa o con «admin» para administración.
+          </p>
+        )}
         <div>
           <label className="text-paragraph block mb-1.5">
             Correo electrónico

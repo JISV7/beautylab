@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
-import { DEMO_TOKEN, demoModeAllowed, demoUser, isNetworkError } from '../data/demoData';
 
 const API_URL = 'http://localhost:8000';
 
@@ -135,22 +134,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [isLoading, setIsLoading] = useState(true);
 
     const fetchUser = async (token: string) => {
-        if (token === DEMO_TOKEN) {
-            // A demo session only lives while the API is down; once it answers,
-            // drop it so the user signs in for real and sees their own courses.
-            const apiReachable = await axios
-                .get(`${API_URL}/health`, { timeout: 3000 })
-                .then(() => true)
-                .catch((error) => !isNetworkError(error));
-            if (apiReachable || !demoModeAllowed) {
-                logout();
-            } else {
-                setUser(demoUser);
-                setIsAuthenticated(true);
-            }
-            setIsLoading(false);
-            return;
-        }
         try {
             const response = await axios.get(`${API_URL}/users/me`, {
                 headers: {
@@ -193,7 +176,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const token = localStorage.getItem('access_token');
         if (token) {
             // Check if token is expired
-            if (token !== DEMO_TOKEN && isTokenExpired(token)) {
+            if (isTokenExpired(token)) {
                 // Token expired, try to refresh
                 refreshAccessToken().then((newToken) => {
                     if (newToken) {
@@ -242,14 +225,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             // Notify cart to refresh after login
             window.dispatchEvent(new CustomEvent('cart:refresh'));
         } catch (error: any) {
-            // Backend unreachable in dev/demo builds: open a local demo session.
-            if (demoModeAllowed && isNetworkError(error)) {
-                localStorage.setItem('access_token', DEMO_TOKEN);
-                localStorage.setItem('currentPage', 'dashboard');
-                await fetchUser(DEMO_TOKEN);
-                if (localStorage.getItem('access_token') === DEMO_TOKEN) return;
-                throw new Error('Login failed');
-            }
             if (axios.isAxiosError(error) && error.response) {
                 throw new Error(error.response.data.detail || 'Login failed');
             }

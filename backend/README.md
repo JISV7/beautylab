@@ -37,15 +37,22 @@ SQLAlchemy async, Alembic y theming dinámico.
 - PostgreSQL 17+
 - [uv](https://docs.astral.sh/uv/) (gestor de paquetes de Python)
 
+> **Windows 10:** `uvloop` está marcado como dependencia solo para plataformas
+> no Windows. `uv sync` instala el resto de dependencias y Uvicorn usa `asyncio`.
+> Para facturas PDF, WeasyPrint necesita GTK3/Pango; el backend en Docker ya las
+> incluye.
+
 ### Instalación local
 
-```bash
+En PowerShell:
+
+```powershell
 cd backend
 uv sync
 
 # Configura las variables de entorno
-cp .env.example .env
-# Edita .env con tus credenciales de PostgreSQL y un JWT_SECRET_KEY seguro
+Copy-Item .env.example .env
+# Edita .env: DATABASE_URL debe usar localhost y un JWT_SECRET_KEY seguro.
 
 # Crea el esquema y carga los datos iniciales
 uv run alembic upgrade head
@@ -54,6 +61,9 @@ uv run python -m app.seed
 # Inicia la API
 uv run uvicorn app.main:app --reload
 ```
+
+En Linux/macOS los comandos son equivalentes con `cp` en lugar de
+`Copy-Item`.
 
 La API queda disponible en `http://localhost:8000`.
 La documentación interactiva está en `http://localhost:8000/docs` y
@@ -136,11 +146,22 @@ cinco cursos.
 | POST | `/auth/refresh` | Refrescar token de acceso |
 | GET | `/users/me` | Perfil del usuario autenticado |
 | GET | `/catalog/courses` | Catálogo público de cursos |
+| GET | `/catalog/courses/{id}/admin` | Curso editable con su URL de video (admin) |
 | GET | `/catalog/categories` | Categorías del catálogo |
+| GET | `/catalog/my-courses` | Cursos del cliente con pago, acceso y avance |
+| GET | `/catalog/my-courses/{id}/player` | Video protegido e inscripción (requiere licencia o asignación) |
+| PATCH | `/enrollments/my/{id}` | Guardar avance de forma monotónica |
 | GET | `/themes/default` | Tema por defecto |
 | GET | `/invoices/` | Facturas del usuario |
 | POST | `/payments/purchase-course` | Compra de curso con pago dividido |
 | GET | `/invoices/download-all` | Descargar todas las facturas en ZIP |
+
+Los videos de los cursos se sirven desde `/static/course-videos/`. El archivo de
+demostración está en `app/static/videos/cursorg-demo.mp4` y las respuestas de
+Starlette soportan `Range`, por lo que el reproductor puede buscar dentro del
+video. La URL del video no se devuelve en los endpoints públicos del catálogo:
+solo aparece en el endpoint protegido del reproductor y en el endpoint de
+administración.
 
 La referencia completa está disponible en `/docs`.
 
@@ -158,6 +179,7 @@ backend/
 │   ├── schemas/             # Esquemas Pydantic
 │   ├── routers/             # Endpoints
 │   ├── services/            # Lógica de negocio
+│   ├── static/videos/       # Video local de demostración de los cursos
 │   ├── templates/           # Plantillas de correo y facturas
 │   └── fonts/               # Fuentes incluidas (Montserrat, Roboto)
 ├── alembic/                 # Migraciones

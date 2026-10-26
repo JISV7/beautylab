@@ -51,6 +51,10 @@ LEARNING_PATH_SKU = "CURSORG-100"
 LEARNING_PATH_SLUG = "ruta-de-capacitacion-corporativa"
 LEARNING_PATH_TITLE = "Ruta de Capacitación Corporativa"
 
+# Local, CC0 demo clip served by FastAPI. It is only a placeholder so the
+# customer player can be tested end-to-end without an external video CDN.
+DEMO_COURSE_VIDEO_URL = "/static/course-videos/cursorg-demo.mp4"
+
 COURSE_CATALOG = [
     {
         "title": "Seguridad y Salud en el Trabajo",
@@ -777,6 +781,7 @@ async def seed_catalog(
                 slug=entry["slug"],
                 description=entry["description"],
                 image_url=entry["image_url"],
+                video_url=DEMO_COURSE_VIDEO_URL,
                 duration_hours=entry["duration_hours"],
                 level_id=level.id,
                 category_id=category.id,
@@ -805,6 +810,8 @@ async def seed_catalog(
             course.slug = entry["slug"]
             course.description = entry["description"]
             course.image_url = entry["image_url"]
+            if not course.video_url:
+                course.video_url = DEMO_COURSE_VIDEO_URL
             course.duration_hours = entry["duration_hours"]
             course.level_id = level.id
             course.category_id = category.id

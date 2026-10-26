@@ -2,6 +2,7 @@
 
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -89,6 +90,17 @@ app.mount(
 )
 app.mount("/static/videos", StaticFiles(directory="uploads/videos"), name="videos")
 app.mount("/static/carousel", StaticFiles(directory="uploads/carousel"), name="carousel")
+
+# Course videos are bundled with the application so local playback does not
+# depend on an external CDN. Administrators can still store signed URLs or
+# uploaded files and reference them from the course video_url field.
+COURSE_VIDEO_DIR = Path(__file__).resolve().parent / "static" / "videos"
+COURSE_VIDEO_DIR.mkdir(parents=True, exist_ok=True)
+app.mount(
+    "/static/course-videos",
+    StaticFiles(directory=COURSE_VIDEO_DIR),
+    name="course_videos",
+)
 
 
 @app.get("/", tags=["Health"])

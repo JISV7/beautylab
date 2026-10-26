@@ -31,6 +31,7 @@ class Course(Base, TimestampMixin):
     slug: Mapped[str] = mapped_column(String(280), unique=True, nullable=False)
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
     image_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    video_url: Mapped[str | None] = mapped_column(String(1000), nullable=True)
     duration_hours: Mapped[int | None] = mapped_column(Integer, nullable=True)
     level_id: Mapped[int | None] = mapped_column(
         ForeignKey("levels.id", ondelete="SET NULL"),

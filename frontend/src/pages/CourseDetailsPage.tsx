@@ -17,6 +17,7 @@ const API_URL = 'http://localhost:8000';
 interface CourseDetailsPageProps {
     courseId: string;
     onBack?: () => void;
+    onViewCourses?: () => void;
     isAuthenticated?: boolean;
 }
 
@@ -67,7 +68,12 @@ interface ReceiptData {
 
 type PaymentStep = 'idle' | 'payment_details' | 'processing' | 'confirmation';
 
-export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, onBack, isAuthenticated = false }) => {
+export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({
+    courseId,
+    onBack,
+    onViewCourses,
+    isAuthenticated = false,
+}) => {
     const { addToCart, isInCart, getQuantityInCart } = useCart();
     const [course, setCourse] = useState<CourseDetails | null>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -353,8 +359,7 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({ courseId, 
     };
 
     const handleViewCourses = () => {
-        // Navigate to user's courses
-        console.log('Navigate to courses');
+        onViewCourses?.();
     };
 
     const handleGift = (licenseId: string) => {

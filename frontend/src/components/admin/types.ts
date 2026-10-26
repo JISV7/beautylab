@@ -106,6 +106,7 @@ export interface Course {
     slug: string;
     description?: string;
     image_url?: string;
+    video_url?: string;
     duration_hours?: number;
     level_id?: number;
     category_id?: number;
@@ -126,6 +127,7 @@ export interface CourseFormData {
     slug: string;
     description: string;
     image_url: string;
+    video_url: string;
     duration_hours: string;
     level_id: string;
     category_id: string;

@@ -48,7 +48,7 @@ export const MyCoursesFilters: React.FC<MyCoursesFiltersProps> = ({
                     />
                 </div>
             </div>
-            <div className="w-[180px]">
+            <div className="w-full sm:w-[180px]">
                 <label className="block text-sm font-semibold mb-2 text-paragraph">
                     Estado
                 </label>
@@ -58,12 +58,14 @@ export const MyCoursesFilters: React.FC<MyCoursesFiltersProps> = ({
                     onChange={(e) => onStatusFilterChange(e.target.value)}
                 >
                     <option value="all">Todos</option>
-                    <option value="partial">Pago parcial</option>
-                    <option value="ready">Listo para canjear</option>
-                    <option value="active">Activo</option>
+                    <option value="payment_pending">Pago pendiente</option>
+                    <option value="ready_to_redeem">Listo para canjear</option>
+                    <option value="in_progress">En progreso</option>
+                    <option value="completed">Completado</option>
+                    <option value="unavailable">Sin acceso</option>
                 </select>
             </div>
-            <div className="w-[180px]">
+            <div className="w-full sm:w-[180px]">
                 <label className="block text-sm font-semibold mb-2 text-paragraph">
                     Categoría
                 </label>
@@ -72,14 +74,14 @@ export const MyCoursesFilters: React.FC<MyCoursesFiltersProps> = ({
                     value={categoryFilter}
                     onChange={(e) => onCategoryFilterChange(e.target.value)}
                 >
-                    <option value="">Todas las categorías</option>
+                    <option value="">Todas</option>
                     {categories.map(cat => (
                         <option key={cat.id} value={cat.id}>{cat.name}</option>
                     ))}
                 </select>
             </div>
             {categoryFilter && (
-                <div className="w-[180px]">
+                <div className="w-full sm:w-[180px]">
                     <label className="block text-sm font-semibold mb-2 text-paragraph">
                         Subcategorías
                     </label>

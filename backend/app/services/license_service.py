@@ -6,6 +6,7 @@ from uuid import UUID
 
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from app.models.course import Course
 from app.models.learning_path import LearningPath
@@ -39,13 +40,21 @@ class LicenseService:
         self.db = db
 
     async def get_license_by_id(self, license_id: UUID) -> License | None:
-        """Get license by ID."""
-        result = await self.db.execute(select(License).where(License.id == license_id))
+        """Get license by ID with its assignments eagerly loaded."""
+        result = await self.db.execute(
+            select(License)
+            .options(selectinload(License.assignments))
+            .where(License.id == license_id)
+        )
         return result.scalar_one_or_none()
 
     async def get_license_by_code(self, license_code: UUID) -> License | None:
-        """Get license by license code."""
-        result = await self.db.execute(select(License).where(License.license_code == license_code))
+        """Get license by code with its assignments eagerly loaded."""
+        result = await self.db.execute(
+            select(License)
+            .options(selectinload(License.assignments))
+            .where(License.license_code == license_code)
+        )
         return result.scalar_one_or_none()
 
     async def purchase_licenses(
@@ -65,8 +74,6 @@ class LicenseService:
         Returns:
             List of created licenses
         """
-        from sqlalchemy.orm import selectinload
-
         from app.models.product import Product
 
         licenses = []
@@ -144,6 +151,14 @@ class LicenseService:
 
         if license_obj.status in ["cancelled", "expired"]:
             raise LicenseInvalidError(f"License is {license_obj.status} and cannot be redeemed")
+
+        # A corporate license assigned to an employee belongs to that employee;
+        # the purchaser must not be able to redeem it for themselves.
+        if license_obj.assignments and not any(
+            assignment.assigned_to_user_id == user_id
+            for assignment in license_obj.assignments
+        ):
+            raise LicenseInvalidError("License is assigned to another user")
 
         # Update license status
         license_obj.status = "redeemed"

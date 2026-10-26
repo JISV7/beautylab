@@ -1,15 +1,16 @@
 """Catalog router for categories, levels, courses, and learning paths."""
 
+from datetime import datetime
 from decimal import Decimal
 from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter, Body, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Body, Depends, HTTPException, Query, Response, status
 from pydantic import BaseModel, ConfigDict
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.dependencies import CurrentUser, OptionalUser
+from app.core.dependencies import CurrentUser, OptionalUser, RequireAdmin
 from app.database import get_db
 from app.models.user import User
 from app.schemas.catalog import (
@@ -21,6 +22,9 @@ from app.schemas.catalog import (
     CourseCreate,
     CourseDetailsWithLicenses,
     CourseListResponse,
+    CoursePlayerCourse,
+    CoursePlayerEnrollment,
+    CoursePlayerResponse,
     CoursePublicListResponse,
     CoursePublicResponse,
     CourseResponse,
@@ -44,6 +48,10 @@ from app.services.catalog_service import (
     CatalogInUseError,
     CatalogNotFoundError,
     CatalogService,
+)
+from app.services.enrollment_service import (
+    EnrollmentAlreadyExistsError,
+    EnrollmentService,
 )
 
 router = APIRouter(prefix="/catalog", tags=["Catalog"])
@@ -622,6 +630,50 @@ async def get_course(
         product_price=product_price,
         product_sku=product_sku,
         product_tax_rate=course.product.tax_rate if course.product else None,
+        # The protected player is the only place where the video URL is
+        # returned. The public course endpoint must never leak it.
+        video_url=None,
+    )
+
+
+@router.get("/courses/{course_id}/admin", response_model=CourseWithDetails)
+async def get_course_for_admin(
+    course_id: UUID,
+    current_user: User = Depends(RequireAdmin),
+    db: AsyncSession = Depends(get_db),
+) -> CourseWithDetails:
+    """Get the editable course payload, including its protected video URL."""
+    catalog_service = CatalogService(db)
+    course = await catalog_service.get_course_by_id(course_id)
+
+    if not course:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Course with ID {course_id} not found",
+        )
+
+    return CourseWithDetails(
+        id=course.id,
+        title=course.title,
+        slug=course.slug,
+        description=course.description,
+        image_url=course.image_url,
+        video_url=course.video_url,
+        duration_hours=course.duration_hours,
+        level_id=course.level_id,
+        category_id=course.category_id,
+        product_id=course.product_id,
+        published=course.published,
+        created_at=course.created_at,
+        updated_at=course.updated_at,
+        level_name=course.level.name if course.level else None,
+        level_slug=course.level.slug if course.level else None,
+        category_name=course.category.name if course.category else None,
+        category_slug=course.category.slug if course.category else None,
+        product_name=course.product.name if course.product else None,
+        product_price=course.product.price if course.product else None,
+        product_sku=course.product.sku if course.product else None,
+        product_tax_rate=course.product.tax_rate if course.product else None,
     )
 
 
@@ -899,7 +951,7 @@ async def add_course_to_learning_path(
 async def remove_course_from_learning_path(
     path_id: UUID,
     course_id: UUID,
-    current_user: User = Depends(CurrentUser),
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> None:
     """Remove a course from a learning path (admin only).
@@ -945,7 +997,7 @@ async def delete_learning_path(
 
 
 class UserCourseResponse(BaseModel):
-    """User's purchased course with license information."""
+    """User's purchased course with license and learning information."""
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -962,6 +1014,53 @@ class UserCourseResponse(BaseModel):
     total_required: str = "0.00"
     payment_progress: float = 0.0
     is_fully_paid: bool = False
+    # Learning progress
+    enrollment_id: int | None = None
+    enrollment_status: str | None = None
+    progress: int = 0
+    completed_at: datetime | None = None
+    has_access: bool = False
+    can_redeem: bool = False
+    access_state: str = "payment_pending"
+
+
+def _license_grants_course_access(
+    licenses: list,
+    user_id: UUID,
+) -> bool:
+    """Return whether one of the user's licenses already grants access."""
+    for license_obj in licenses:
+        if (
+            license_obj.status == "redeemed"
+            and license_obj.redeemed_by_user_id == user_id
+        ):
+            return True
+
+        if license_obj.status in ("active", "redeemed") and any(
+            assignment.assigned_to_user_id == user_id
+            for assignment in license_obj.assignments
+        ):
+            return True
+
+    return False
+
+
+def _license_is_redeemable_by(license_obj, user_id: UUID) -> bool:
+    """Return whether the customer can still redeem this license.
+
+    A license assigned to another person must not be redeemable by the
+    purchaser; it belongs to the assignee.
+    """
+    if license_obj.status not in ("pending", "active") or license_obj.redeemed_at:
+        return False
+
+    if license_obj.assignments:
+        return any(
+            assignment.assigned_to_user_id == user_id
+            for assignment in license_obj.assignments
+        )
+
+    return True
 
 
 @router.get("/my-courses", response_model=list[UserCourseResponse])
@@ -974,26 +1073,52 @@ async def get_my_courses(
     Returns courses with:
     - License information (pending, active, redeemed)
     - Payment progress (how much has been paid vs total required)
-    - Ownership status (partial or full)
+    - Learning progress and the next action available to the customer
     """
+    from sqlalchemy import or_
     from sqlalchemy.orm import selectinload
 
     from app.models.course import Course
-    from app.models.invoice import Invoice
-    from app.models.license import License
+    from app.models.enrollment import Enrollment
+    from app.models.invoice import Invoice, InvoiceLine
+    from app.models.license import License, LicenseAssignment
     from app.models.payment import Payment
 
-    # Get all licenses purchased by user
+    assigned_exists = (
+        select(LicenseAssignment.id)
+        .where(
+            LicenseAssignment.license_id == License.id,
+            LicenseAssignment.assigned_to_user_id == current_user.id,
+        )
+        .exists()
+    )
+
+    # Include licenses bought by the customer, received as a gift, or assigned
+    # to them by a corporate administrator.
     result = await db.execute(
         select(License)
         .options(
             selectinload(License.course).selectinload(Course.category),
             selectinload(License.product),
+            selectinload(License.assignments),
         )
-        .where(License.purchased_by_user_id == current_user.id)
+        .where(
+            or_(
+                License.purchased_by_user_id == current_user.id,
+                License.redeemed_by_user_id == current_user.id,
+                assigned_exists,
+            )
+        )
         .order_by(License.created_at.desc())
     )
     licenses = list(result.scalars().all())
+
+    enrollment_result = await db.execute(
+        select(Enrollment).where(Enrollment.user_id == current_user.id)
+    )
+    enrollment_by_course = {
+        enrollment.course_id: enrollment for enrollment in enrollment_result.scalars().all()
+    }
 
     # Group by course and calculate payment progress
     course_data = {}
@@ -1010,9 +1135,6 @@ async def get_my_courses(
             }
         course_data[course_id]["licenses"].append(lic)
         if lic.invoice_line_id:
-            # Get invoice from invoice_line
-            from app.models.invoice import InvoiceLine
-
             inv_line_result = await db.execute(
                 select(InvoiceLine).where(InvoiceLine.id == lic.invoice_line_id)
             )
@@ -1032,15 +1154,47 @@ async def get_my_courses(
             invoice = inv_result.scalar_one_or_none()
             if invoice:
                 total_required += invoice.total
-                # Get payments for this invoice
                 pay_result = await db.execute(
                     select(Payment).where(Payment.invoice_id == invoice_id)
                 )
                 payments = pay_result.scalars().all()
                 total_paid += sum(p.amount for p in payments)
 
-        is_fully_paid = total_paid >= total_required if total_required > 0 else False
-        progress = float((total_paid / total_required) * 100) if total_required > 0 else 0.0
+        # A zero-price course is fully paid by definition. This also covers
+        # licenses created directly by an administrator without an invoice.
+        is_fully_paid = total_paid >= total_required
+        payment_progress = (
+            100.0
+            if total_required <= 0
+            else float((total_paid / total_required) * 100)
+        )
+
+        enrollment = enrollment_by_course.get(data["course"].id)
+        has_access = _license_grants_course_access(data["licenses"], current_user.id)
+        can_redeem = (
+            not has_access
+            and is_fully_paid
+            and any(
+                _license_is_redeemable_by(lic, current_user.id)
+                for lic in data["licenses"]
+            )
+        )
+        learning_progress = enrollment.progress if enrollment else 0
+        completed_at = enrollment.completed_at if enrollment else None
+
+        if has_access:
+            access_state = (
+                "completed"
+                if learning_progress >= 100
+                or (enrollment and enrollment.status == "completed")
+                else "in_progress"
+            )
+        elif can_redeem:
+            access_state = "ready_to_redeem"
+        elif is_fully_paid:
+            access_state = "unavailable"
+        else:
+            access_state = "payment_pending"
 
         response.append(
             UserCourseResponse(
@@ -1057,14 +1211,124 @@ async def get_my_courses(
                         "status": lic.status,
                         "license_type": lic.license_type,
                         "redeemed_at": lic.redeemed_at.isoformat() if lic.redeemed_at else None,
+                        "redeemed_by_user_id": (
+                            str(lic.redeemed_by_user_id) if lic.redeemed_by_user_id else None
+                        ),
+                        "can_redeem": _license_is_redeemable_by(lic, current_user.id),
                     }
                     for lic in data["licenses"]
                 ],
                 total_paid=str(total_paid),
                 total_required=str(total_required),
-                payment_progress=round(progress, 2),
+                payment_progress=round(payment_progress, 2),
                 is_fully_paid=is_fully_paid,
+                enrollment_id=enrollment.id if enrollment else None,
+                enrollment_status=enrollment.status if enrollment else None,
+                progress=learning_progress,
+                completed_at=completed_at,
+                has_access=has_access,
+                can_redeem=can_redeem,
+                access_state=access_state,
             )
         )
 
     return response
+
+
+@router.get("/my-courses/{course_id}/player", response_model=CoursePlayerResponse)
+async def get_my_course_player(
+    course_id: UUID,
+    response: Response,
+    current_user: CurrentUser,
+    db: AsyncSession = Depends(get_db),
+) -> CoursePlayerResponse:
+    """Return the protected video URL and learning progress for a course.
+
+    Access is granted only when the current customer has a redeemed license or
+    a valid corporate assignment. The enrollment is created on first access so
+    older redeemed licenses also get a progress record.
+    """
+    from sqlalchemy import and_, or_
+
+    from app.models.license import License, LicenseAssignment
+
+    course = await CatalogService(db).get_course_by_id(course_id)
+    if not course:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Course with ID {course_id} not found",
+        )
+
+    access_result = await db.execute(
+        select(License)
+        .outerjoin(LicenseAssignment, LicenseAssignment.license_id == License.id)
+        .where(
+            License.course_id == course_id,
+            or_(
+                and_(
+                    License.status == "redeemed",
+                    License.redeemed_by_user_id == current_user.id,
+                ),
+                and_(
+                    LicenseAssignment.assigned_to_user_id == current_user.id,
+                    License.status.in_(["active", "redeemed"]),
+                ),
+            ),
+        )
+        .order_by(License.redeemed_at.desc().nullslast(), License.created_at.desc())
+        .limit(1)
+    )
+    license_obj = access_result.scalar_one_or_none()
+
+    if not license_obj:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=(
+                "No tienes acceso a este curso. Canjea una licencia válida o "
+                "contacta a tu administrador."
+            ),
+        )
+
+    enrollment_service = EnrollmentService(db)
+    enrollment = await enrollment_service.get_user_enrollment(current_user.id, course_id)
+    if not enrollment:
+        try:
+            enrollment = await enrollment_service.create_enrollment(
+                user_id=current_user.id,
+                course_id=course_id,
+                allow_duplicate=False,
+            )
+        except EnrollmentAlreadyExistsError:
+            enrollment = await enrollment_service.get_user_enrollment(
+                current_user.id, course_id
+            )
+
+    if not enrollment:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="No se pudo crear el registro de avance del curso.",
+        )
+
+    response.headers["Cache-Control"] = "private, no-store"
+
+    return CoursePlayerResponse(
+        course=CoursePlayerCourse(
+            id=course.id,
+            title=course.title,
+            description=course.description,
+            image_url=course.image_url,
+            duration_hours=course.duration_hours,
+            level_name=course.level.name if course.level else None,
+            category_name=course.category.name if course.category else None,
+            video_url=course.video_url,
+        ),
+        enrollment=CoursePlayerEnrollment(
+            id=enrollment.id,
+            status=enrollment.status,
+            progress=enrollment.progress,
+            enrolled_at=enrollment.enrolled_at,
+            completed_at=enrollment.completed_at,
+        ),
+        license_id=license_obj.id,
+        license_type=license_obj.license_type,
+    )

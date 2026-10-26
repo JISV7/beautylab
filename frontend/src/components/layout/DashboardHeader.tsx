@@ -44,7 +44,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNavigate, on
                 </a>
 
                 {/* Search Bar */}
-                <div className="flex-1 min-w-0 max-w-xs sm:max-w-xl">
+                <div className="hidden sm:block flex-1 min-w-0 max-w-xs sm:max-w-xl">
                     <div className="flex items-center palette-surface palette-border border rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-palette-primary">
                         <Search className="w-4 h-4 text-paragraph flex-shrink-0 ml-3" />
                         <input
@@ -58,9 +58,9 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNavigate, on
             </div>
 
             {/* Right Side Actions */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 sm:gap-4">
                 {/* Theme Toggle */}
-                <div className="flex items-center gap-1">
+                <div className="hidden sm:flex items-center gap-1">
                     <button
                         onClick={() => setPaletteMode('light')}
                         className={`p-2 rounded-lg transition-colors ${currentMode === 'light'

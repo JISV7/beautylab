@@ -44,6 +44,7 @@ const emptyFormData: CourseFormData = {
     slug: '',
     description: '',
     image_url: '',
+    video_url: '',
     duration_hours: '',
     level_id: '',
     category_id: '',
@@ -100,7 +101,7 @@ export const CourseManagement: React.FC<CourseManagementProps> = ({ courseId, on
                 setLevels(levelsRes.data.levels || []);
 
                 if (courseId) {
-                    const courseRes = await api.get(`/catalog/courses/${courseId}`);
+                    const courseRes = await api.get(`/catalog/courses/${courseId}/admin`);
                     const course: Course = courseRes.data;
 
                     setFormData({
@@ -108,6 +109,7 @@ export const CourseManagement: React.FC<CourseManagementProps> = ({ courseId, on
                         slug: course.slug,
                         description: course.description || '',
                         image_url: course.image_url || '',
+                        video_url: course.video_url || '',
                         duration_hours: course.duration_hours?.toString() || '',
                         level_id: course.level_id?.toString() || '',
                         category_id: course.category_id?.toString() || '',
@@ -254,6 +256,7 @@ export const CourseManagement: React.FC<CourseManagementProps> = ({ courseId, on
                     slug: formData.slug,
                     description: formData.description,
                     image_url: formData.image_url || null,
+                    video_url: formData.video_url || null,
                     duration_hours: formData.duration_hours ? parseInt(formData.duration_hours) : null,
                     level_id: formData.level_id ? parseInt(formData.level_id) : null,
                     category_id: formData.category_id ? parseInt(formData.category_id) : null,
@@ -272,6 +275,7 @@ export const CourseManagement: React.FC<CourseManagementProps> = ({ courseId, on
                     slug: formData.slug,
                     description: formData.description,
                     image_url: formData.image_url || null,
+                    video_url: formData.video_url || null,
                     duration_hours: formData.duration_hours ? parseInt(formData.duration_hours) : null,
                     level_id: formData.level_id ? parseInt(formData.level_id) : null,
                     category_id: formData.category_id ? parseInt(formData.category_id) : null,

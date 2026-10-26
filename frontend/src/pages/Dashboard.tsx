@@ -6,6 +6,7 @@ import { CartPage } from '../components/cart/CartPage';
 import InvoicesPage from './InvoicesPage';
 import MyCoursesPage from './MyCoursesPage';
 import { CourseDetailsPage } from './CourseDetailsPage';
+import CoursePlayerPage from './CoursePlayerPage';
 import { SettingsPage } from './SettingsPage';
 
 interface DashboardProps {
@@ -51,7 +52,26 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 <CourseDetailsPage
                     courseId={courseId}
                     onBack={() => handleNavigate('explore')}
+                    onViewCourses={() => handleNavigate('my-courses')}
                     isAuthenticated={true}
+                />
+            </DashboardLayout>
+        );
+    }
+
+    // Protected learning player
+    if (activeTab === 'course-player' && courseId) {
+        return (
+            <DashboardLayout
+                activeItem="my-courses"
+                onNavigate={handleNavigate}
+                onAdminNavigate={handleAdminNavigate}
+                onNavigateToHome={handleNavigateToHome}
+                onLogout={onLogout}
+            >
+                <CoursePlayerPage
+                    courseId={courseId}
+                    onBack={() => handleNavigate('my-courses')}
                 />
             </DashboardLayout>
         );

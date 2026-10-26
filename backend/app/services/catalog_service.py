@@ -440,6 +440,7 @@ class CatalogService:
             slug=course_data.slug,
             description=course_data.description,
             image_url=course_data.image_url,
+            video_url=course_data.video_url,
             duration_hours=course_data.duration_hours,
             level_id=course_data.level_id,
             category_id=course_data.category_id,
@@ -501,6 +502,8 @@ class CatalogService:
             course.description = course_data.description
         if course_data.image_url is not None:
             course.image_url = course_data.image_url
+        if "video_url" in course_data.model_fields_set:
+            course.video_url = course_data.video_url
         if course_data.duration_hours is not None:
             course.duration_hours = course_data.duration_hours
         if course_data.published is not None:

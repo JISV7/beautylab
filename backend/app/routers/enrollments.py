@@ -7,7 +7,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.dependencies import CurrentUser
 from app.database import get_db
-from app.models.user import User
 from app.schemas.enrollment import (
     EnrollmentListResponse,
     EnrollmentResponse,
@@ -25,8 +24,8 @@ router = APIRouter(prefix="/enrollments", tags=["Enrollments"])
 
 @router.get("/my", response_model=EnrollmentListResponse)
 async def get_my_enrollments(
+    current_user: CurrentUser,
     status: str | None = None,
-    current_user: User = Depends(CurrentUser),
     db: AsyncSession = Depends(get_db),
 ) -> EnrollmentListResponse:
     """
@@ -53,7 +52,7 @@ async def get_my_enrollments(
 @router.get("/my/{enrollment_id}", response_model=EnrollmentWithDetails)
 async def get_my_enrollment(
     enrollment_id: int,
-    current_user: User = Depends(CurrentUser),
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> EnrollmentWithDetails:
     """Get details of a specific enrollment."""
@@ -81,7 +80,7 @@ async def get_my_enrollment(
 async def update_my_enrollment(
     enrollment_id: int,
     enrollment_data: EnrollmentUpdate,
-    current_user: User = Depends(CurrentUser),
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> EnrollmentResponse:
     """
@@ -134,7 +133,7 @@ async def update_my_enrollment(
 @router.post("/", response_model=EnrollmentResponse, status_code=status.HTTP_201_CREATED)
 async def create_enrollment(
     course_id: UUID,
-    current_user: User = Depends(CurrentUser),
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> EnrollmentResponse:
     """
@@ -173,7 +172,7 @@ async def create_enrollment(
 @router.get("/course/{course_id}")
 async def get_course_enrollments(
     course_id: UUID,
-    current_user: User = Depends(CurrentUser),
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> dict:
     """
@@ -199,7 +198,7 @@ async def get_course_enrollments(
 @router.delete("/my/{enrollment_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def cancel_enrollment(
     enrollment_id: int,
-    current_user: User = Depends(CurrentUser),
+    current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> None:
     """

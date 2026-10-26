@@ -166,6 +166,9 @@ class CourseBase(BaseModel):
     slug: str = Field(..., max_length=280, description="URL-friendly slug")
     description: str | None = Field(None, description="Course description")
     image_url: str | None = Field(None, max_length=500, description="Course image URL")
+    video_url: str | None = Field(
+        None, max_length=1000, description="Protected course video URL"
+    )
     duration_hours: int | None = Field(None, ge=1, description="Course duration in hours")
     level_id: int | None = Field(None, description="Level ID")
     category_id: int | None = Field(None, description="Category ID")
@@ -197,6 +200,7 @@ class CourseUpdate(BaseModel):
     slug: str | None = Field(None, max_length=280)
     description: str | None = None
     image_url: str | None = Field(None, max_length=500)
+    video_url: str | None = Field(None, max_length=1000)
     duration_hours: int | None = Field(None, ge=1)
     level_id: int | None = None
     category_id: int | None = None
@@ -255,6 +259,38 @@ class CourseDetailsWithLicenses(CourseWithDetails):
     """Schema for course details with user's licenses."""
 
     user_licenses: list["LicenseWithCourseDetails"] = []
+
+
+class CoursePlayerCourse(BaseModel):
+    """Course information shown inside the protected learning player."""
+
+    id: UUID
+    title: str
+    description: str | None = None
+    image_url: str | None = None
+    duration_hours: int | None = None
+    level_name: str | None = None
+    category_name: str | None = None
+    video_url: str | None = None
+
+
+class CoursePlayerEnrollment(BaseModel):
+    """Learning progress associated with the current customer."""
+
+    id: int
+    status: str
+    progress: int
+    enrolled_at: datetime | None = None
+    completed_at: datetime | None = None
+
+
+class CoursePlayerResponse(BaseModel):
+    """Protected payload used by the customer course player."""
+
+    course: CoursePlayerCourse
+    enrollment: CoursePlayerEnrollment
+    license_id: UUID
+    license_type: str
 
 
 class CourseListResponse(BaseModel):

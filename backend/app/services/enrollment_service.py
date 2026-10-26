@@ -162,9 +162,13 @@ class EnrollmentService:
         if not enrollment:
             raise EnrollmentNotFoundError(f"Enrollment {enrollment_id} not found")
 
-        enrollment.progress = max(0, min(100, progress))
+        # Progress is cumulative: a delayed request must never move a learner
+        # backwards. This also makes the player's throttled saves race-safe.
+        next_progress = max(0, min(100, progress))
+        if next_progress > enrollment.progress:
+            enrollment.progress = next_progress
 
-        if enrollment.progress >= 100:
+        if enrollment.progress >= 100 and enrollment.status != "completed":
             enrollment.status = "completed"
             enrollment.completed_at = datetime.now()
 

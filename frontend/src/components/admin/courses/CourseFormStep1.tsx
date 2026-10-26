@@ -302,6 +302,25 @@ export const CourseFormStep1: React.FC<CourseFormStep1Props> = ({
                         )}
                     </div>
                 </div>
+
+                <div className="md:col-span-2">
+                    <label className="block text-sm font-bold mb-2 text-paragraph">
+                        Video del curso
+                    </label>
+                    <input
+                        type="text"
+                        name="video_url"
+                        className="theme-input w-full font-mono text-sm"
+                        placeholder="https://... o /static/course-videos/mi-curso.mp4"
+                        value={formData.video_url}
+                        onChange={onChange}
+                    />
+                    <p className="mt-2 text-xs text-paragraph opacity-60">
+                        Este enlace solo se entrega a clientes con una licencia canjeada.
+                        Para videos MP4 locales, usa una ruta que comience con
+                        <span className="font-mono"> /static/</span>.
+                    </p>
+                </div>
             </div>
 
             <div className="flex justify-end gap-3 pt-4">

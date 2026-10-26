@@ -1,7 +1,7 @@
 /**
  * Placeholder data so the customer dashboard can be explored without the API.
- * Only used when the backend is unreachable and demo mode is allowed
- * (Vite dev server, or VITE_DEMO_MODE=true in a build).
+ * Opt-in only: set VITE_DEMO_MODE=true (e.g. in frontend/.env.local) and it
+ * is used when the backend is unreachable. Never active otherwise.
  */
 import axios from 'axios';
 import type { User } from '../contexts/AuthContext';
@@ -10,8 +10,7 @@ import type { Invoice, InvoiceSummary } from './invoice.types';
 
 export const DEMO_TOKEN = 'demo-session';
 
-export const demoModeAllowed =
-    import.meta.env.DEV || import.meta.env.VITE_DEMO_MODE === 'true';
+export const demoModeAllowed = import.meta.env.VITE_DEMO_MODE === 'true';
 
 /** True when the request never reached a server (backend down, CORS, offline). */
 export const isNetworkError = (error: unknown) =>

@@ -19,7 +19,7 @@ export const CourseStepper: React.FC<CourseStepperProps> = ({ currentStep }) => 
                 </div>
                 <div>
                     <p className="text-sm font-bold text-paragraph">Course Info</p>
-                    <p className="text-xs text-paragraph opacity-60">Identity and metadata</p>
+                    <p className="text-xs text-muted">Identity and metadata</p>
                 </div>
             </div>
             <div className="h-px bg-[var(--palette-border)] flex-1 mx-4 hidden lg:block"></div>
@@ -35,7 +35,7 @@ export const CourseStepper: React.FC<CourseStepperProps> = ({ currentStep }) => 
                 </div>
                 <div>
                     <p className="text-sm font-bold text-paragraph">Commercial</p>
-                    <p className="text-xs text-paragraph opacity-60">Pricing and SKU</p>
+                    <p className="text-xs text-muted">Pricing and SKU</p>
                 </div>
             </div>
             <div className="h-px bg-[var(--palette-border)] flex-1 mx-4 hidden lg:block"></div>
@@ -51,7 +51,7 @@ export const CourseStepper: React.FC<CourseStepperProps> = ({ currentStep }) => 
                 </div>
                 <div>
                     <p className="text-sm font-bold text-paragraph">Publishing</p>
-                    <p className="text-xs text-paragraph opacity-60">Review & Launch</p>
+                    <p className="text-xs text-muted">Review & Launch</p>
                 </div>
             </div>
         </div>

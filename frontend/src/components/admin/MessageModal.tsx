@@ -49,7 +49,7 @@ export const MessageModal: React.FC<MessageModalProps> = ({
         >
             <div className="flex items-start gap-4">
                 <div className={`shrink-0 ${
-                    type === 'success' ? 'text-green-600' : 'text-red-600'
+                    type === 'success' ? 'text-success' : 'text-danger'
                 }`}>
                     {type === 'success' ? (
                         <CheckCircle className="w-12 h-12" />

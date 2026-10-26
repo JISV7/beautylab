@@ -66,7 +66,7 @@ export const CourseTable: React.FC<CourseTableProps> = ({
                                                 className="w-full h-full object-cover"
                                             />
                                         ) : (
-                                            <div className="w-full h-full flex items-center justify-center text-paragraph opacity-40">
+                                            <div className="w-full h-full flex items-center justify-center text-muted">
                                                 <FileText size={20} />
                                             </div>
                                         )}
@@ -75,7 +75,7 @@ export const CourseTable: React.FC<CourseTableProps> = ({
                                         <p className="font-semibold text-paragraph table-row-hover-title">
                                             {course.title}
                                         </p>
-                                        <p className="text-xs text-paragraph opacity-60">
+                                        <p className="text-xs text-muted">
                                             ID: {course.id.slice(0, 8).toUpperCase()}
                                         </p>
                                     </div>
@@ -107,7 +107,7 @@ export const CourseTable: React.FC<CourseTableProps> = ({
                                         course.published ? 'bg-green-500' : 'bg-amber-500'
                                     }`}></span>
                                     <span className={`text-xs font-bold uppercase tracking-wider ${
-                                        course.published ? 'text-green-600 dark:text-green-400' : 'text-amber-500'
+                                        course.published ? 'text-success dark:text-success' : 'text-warning'
                                     }`}>
                                         {course.published ? 'Published' : 'Draft'}
                                     </span>

@@ -60,7 +60,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
             <h3 className="text-xl font-bold theme-text-base mb-2">
                 {config.title}
             </h3>
-            <p className="theme-text-secondary mb-6 max-w-md mx-auto">
+            <p className="theme-text-link mb-6 max-w-md mx-auto">
                 {config.description}
             </p>
             {config.actionLabel && (

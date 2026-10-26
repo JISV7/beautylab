@@ -29,7 +29,7 @@ export const PresetSelector: React.FC<PresetSelectorProps> = ({
                 <Palette className="w-5 h-5 theme-primary" />
                 <h3 className="text-lg font-semibold theme-text-base">Theme Presets</h3>
             </div>
-            <p className="text-sm theme-text-secondary mb-4">
+            <p className="text-sm theme-text-link mb-4">
                 Quick start with pre-configured theme combinations
             </p>
             

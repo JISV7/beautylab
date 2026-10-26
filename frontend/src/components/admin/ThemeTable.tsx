@@ -77,7 +77,7 @@ export const ThemeTable: React.FC<ThemeTableProps> = ({
                 <thead className="bg-palette-border border-b palette-border">
                     <tr>
                         <th
-                            className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-bold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap"
+                            className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-bold text-muted cursor-pointer hover:text-paragraph whitespace-nowrap"
                             onClick={() => onSort('name')}
                             role="columnheader"
                             aria-sort={sortColumn === 'name' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
@@ -88,7 +88,7 @@ export const ThemeTable: React.FC<ThemeTableProps> = ({
                             </div>
                         </th>
                         <th
-                            className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-bold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap"
+                            className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-bold text-muted cursor-pointer hover:text-paragraph whitespace-nowrap"
                             onClick={() => onSort('isActive')}
                             role="columnheader"
                             aria-sort={sortColumn === 'isActive' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
@@ -99,7 +99,7 @@ export const ThemeTable: React.FC<ThemeTableProps> = ({
                             </div>
                         </th>
                         <th
-                            className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-bold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap"
+                            className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-bold text-muted cursor-pointer hover:text-paragraph whitespace-nowrap"
                             onClick={() => onSort('isDefault')}
                             role="columnheader"
                             aria-sort={sortColumn === 'isDefault' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
@@ -128,20 +128,20 @@ export const ThemeTable: React.FC<ThemeTableProps> = ({
                             </td>
                             <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 whitespace-nowrap">
                                 {row.isActive ? (
-                                    <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
+                                    <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-info dark:bg-blue-900/30 dark:text-info">
                                         <Check className="w-3 h-3" /> Active
                                     </span>
                                 ) : (
-                                    <span className="text-paragraph opacity-60">-</span>
+                                    <span className="text-muted">-</span>
                                 )}
                             </td>
                             <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 whitespace-nowrap">
                                 {row.isDefault ? (
-                                    <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                                    <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-success dark:bg-green-900/30 dark:text-success">
                                         <Eye className="w-3 h-3" /> Default
                                     </span>
                                 ) : (
-                                    <span className="text-paragraph opacity-60">-</span>
+                                    <span className="text-muted">-</span>
                                 )}
                             </td>
                             <td className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 whitespace-nowrap">
@@ -151,7 +151,7 @@ export const ThemeTable: React.FC<ThemeTableProps> = ({
                                 <div className="flex items-center justify-end gap-1 sm:gap-2">
                                     <button
                                         onClick={() => onEdit(row.id)}
-                                        className="p-1.5 sm:p-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 text-blue-600 dark:text-blue-400 transition-colors"
+                                        className="p-1.5 sm:p-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 text-info dark:text-info transition-colors"
                                         title="Edit"
                                     >
                                         <Edit className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -165,14 +165,14 @@ export const ThemeTable: React.FC<ThemeTableProps> = ({
                                     </button>
                                     <button
                                         onClick={() => onDuplicate(row.id)}
-                                        className="p-1.5 sm:p-2 rounded-lg hover:bg-amber-50 dark:hover:bg-amber-900/20 text-amber-600 dark:text-amber-400 transition-colors"
+                                        className="p-1.5 sm:p-2 rounded-lg hover:bg-amber-50 dark:hover:bg-amber-900/20 text-warning dark:text-warning transition-colors"
                                         title="Duplicate"
                                     >
                                         <Copy className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                     </button>
                                     <button
                                         onClick={() => onDelete(row.id)}
-                                        className="p-1.5 sm:p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                                        className="p-1.5 sm:p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-danger dark:text-danger transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                                         title="Delete"
                                     >
                                         <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />

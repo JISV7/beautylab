@@ -26,7 +26,7 @@ export const ZelleForm: React.FC<PaymentFormProps> = ({
                     placeholder="María Pérez"
                 />
                 {errors.sender_name && (
-                    <p className="text-red-500 text-sm mt-1">{errors.sender_name}</p>
+                    <p className="text-danger text-sm mt-1">{errors.sender_name}</p>
                 )}
             </div>
 
@@ -43,7 +43,7 @@ export const ZelleForm: React.FC<PaymentFormProps> = ({
                     placeholder="maria@empresa.com"
                 />
                 {errors.sender_email && (
-                    <p className="text-red-500 text-sm mt-1">{errors.sender_email}</p>
+                    <p className="text-danger text-sm mt-1">{errors.sender_email}</p>
                 )}
             </div>
 
@@ -74,7 +74,7 @@ export const ZelleForm: React.FC<PaymentFormProps> = ({
                     placeholder="pagos@cursorg.ve"
                 />
                 {errors.recipient_email && (
-                    <p className="text-red-500 text-sm mt-1">{errors.recipient_email}</p>
+                    <p className="text-danger text-sm mt-1">{errors.recipient_email}</p>
                 )}
             </div>
 
@@ -91,7 +91,7 @@ export const ZelleForm: React.FC<PaymentFormProps> = ({
                     placeholder="ZELLE123456"
                 />
                 {errors.confirmation_code && (
-                    <p className="text-red-500 text-sm mt-1">{errors.confirmation_code}</p>
+                    <p className="text-danger text-sm mt-1">{errors.confirmation_code}</p>
                 )}
             </div>
         </div>

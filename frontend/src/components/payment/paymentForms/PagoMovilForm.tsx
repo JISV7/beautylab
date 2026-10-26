@@ -27,7 +27,7 @@ export const PagoMovilForm: React.FC<PaymentFormProps> = ({
                     placeholder="Banesco, Mercantil, Venezuela, etc."
                 />
                 {errors.bank_name && (
-                    <p className="text-red-500 text-sm mt-1">{errors.bank_name}</p>
+                    <p className="text-danger text-sm mt-1">{errors.bank_name}</p>
                 )}
             </div>
 
@@ -44,7 +44,7 @@ export const PagoMovilForm: React.FC<PaymentFormProps> = ({
                     placeholder="0412 123 4567"
                 />
                 {errors.phone_number && (
-                    <p className="text-red-500 text-sm mt-1">{errors.phone_number}</p>
+                    <p className="text-danger text-sm mt-1">{errors.phone_number}</p>
                 )}
             </div>
 
@@ -61,7 +61,7 @@ export const PagoMovilForm: React.FC<PaymentFormProps> = ({
                     placeholder="J-123456789 o 12345678"
                 />
                 {errors.rif_cedula && (
-                    <p className="text-red-500 text-sm mt-1">{errors.rif_cedula}</p>
+                    <p className="text-danger text-sm mt-1">{errors.rif_cedula}</p>
                 )}
             </div>
 
@@ -78,7 +78,7 @@ export const PagoMovilForm: React.FC<PaymentFormProps> = ({
                     placeholder="Últimos 6 dígitos de la transacción"
                 />
                 {errors.reference_code && (
-                    <p className="text-red-500 text-sm mt-1">{errors.reference_code}</p>
+                    <p className="text-danger text-sm mt-1">{errors.reference_code}</p>
                 )}
             </div>
 

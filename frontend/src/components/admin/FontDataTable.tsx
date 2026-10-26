@@ -64,11 +64,11 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
                 <>
                     This font is currently being used in:
                     <br />
-                    <span className="text-amber-600 dark:text-amber-400 mt-2 block font-medium">
+                    <span className="text-warning dark:text-warning mt-2 block font-medium">
                         {usageText}
                     </span>
                     <br />
-                    <span className="text-red-600 dark:text-red-400 mt-2 block">
+                    <span className="text-danger dark:text-danger mt-2 block">
                         Please remove it from these themes before deleting.
                     </span>
                 </>
@@ -78,7 +78,7 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
             <>
                 Are you sure you want to delete <strong>"{font.name}"</strong>?
                 <br />
-                <span className="text-red-600 dark:text-red-400 mt-2 block">
+                <span className="text-danger dark:text-danger mt-2 block">
                     This action cannot be undone.
                 </span>
             </>
@@ -152,11 +152,11 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
                                 setSearchQuery(e.target.value);
                                 setPageConfig(prev => ({ ...prev, currentPage: 0 }));
                             }}
-                            className="flex-1 min-w-0 py-2 pl-2 pr-4 bg-transparent text-paragraph placeholder:text-paragraph placeholder:opacity-60 focus:outline-none"
+                            className="flex-1 min-w-0 py-2 pl-2 pr-4 bg-transparent text-paragraph placeholder:text-muted focus:outline-none"
                         />
                     </div>
                 </div>
-                <div className="text-paragraph text-slate-500 whitespace-nowrap">
+                <div className="text-paragraph text-muted whitespace-nowrap">
                     {filteredAndSortedData.length} font{filteredAndSortedData.length !== 1 ? 's' : ''} found
                 </div>
             </div>
@@ -166,27 +166,27 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
                 <table className="w-full">
                     <thead className="bg-palette-border border-b palette-border">
                         <tr>
-                            <th className="px-4 py-3 text-left font-bold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap">
+                            <th className="px-4 py-3 text-left font-bold text-muted cursor-pointer hover:text-paragraph whitespace-nowrap">
                                 <button onClick={() => handleSort('name')} className="flex items-center">
                                     Font Name<SortIcon column="name" />
                                 </button>
                             </th>
-                            <th className="px-4 py-3 text-left font-bold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap">
+                            <th className="px-4 py-3 text-left font-bold text-muted cursor-pointer hover:text-paragraph whitespace-nowrap">
                                 <button onClick={() => handleSort('filename')} className="flex items-center">
                                     Filename<SortIcon column="filename" />
                                 </button>
                             </th>
-                            <th className="px-4 py-3 text-left font-bold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap">
+                            <th className="px-4 py-3 text-left font-bold text-muted cursor-pointer hover:text-paragraph whitespace-nowrap">
                                 <button onClick={() => handleSort('created_by')} className="flex items-center">
                                     Uploaded By<SortIcon column="created_by" />
                                 </button>
                             </th>
-                            <th className="px-4 py-3 text-left font-bold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap">
+                            <th className="px-4 py-3 text-left font-bold text-muted cursor-pointer hover:text-paragraph whitespace-nowrap">
                                 <button onClick={() => handleSort('created_at')} className="flex items-center">
                                     Uploaded<SortIcon column="created_at" />
                                 </button>
                             </th>
-                            <th className="px-4 py-3 text-left font-bold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap">
+                            <th className="px-4 py-3 text-left font-bold text-muted cursor-pointer hover:text-paragraph whitespace-nowrap">
                                 <button onClick={() => handleSort('usage_count')} className="flex items-center">
                                     Usage Count<SortIcon column="usage_count" />
                                 </button>
@@ -225,8 +225,8 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
                                 <td className="px-4 py-3">
                                     <span className={`inline-flex items-center px-2 py-1 rounded text-[0.75em] font-medium ${
                                         (font.usageCount || 0) > 0
-                                            ? 'bg-amber-100 text-amber-800'
-                                            : 'bg-slate-100 text-slate-600'
+                                            ? 'bg-amber-100 text-warning'
+                                            : 'bg-slate-100 text-muted'
                                     }`}>
                                         {font.usageCount || 0} usage{(font.usageCount || 0) !== 1 ? 's' : ''}
                                     </span>
@@ -270,7 +270,7 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
             {/* Pagination */}
             {totalPages > 1 && (
                 <div className="px-4 py-3 border-t palette-border flex items-center justify-between">
-                    <div className="text-paragraph text-slate-500">
+                    <div className="text-paragraph text-muted">
                         Showing {start + 1} to {Math.min(start + pageConfig.rowsPerPage, filteredAndSortedData.length)} of {filteredAndSortedData.length} fonts
                     </div>
                     <div className="flex items-center gap-2">
@@ -288,7 +288,7 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
                                     onClick={() => setPageConfig(prev => ({ ...prev, currentPage: i }))}
                                     className={`theme-button w-9 h-9 rounded-lg transition-colors ${
                                         pageConfig.currentPage === i
-                                            ? 'bg-palette-primary text-white'
+                                            ? 'bg-palette-primary text-on-primary'
                                             : 'border palette-border btn-hover-surface'
                                     }`}
                                 >
@@ -323,7 +323,7 @@ export const FontDataTable: React.FC<FontDataTableProps> = ({
                         {/* Scrollable content area */}
                         <div className="p-6 overflow-y-auto flex-1">
                             <div className="flex items-start gap-4 mb-4">
-                                <Trash2 className="w-6 h-6 text-red-600 shrink-0" />
+                                <Trash2 className="w-6 h-6 text-danger shrink-0" />
                                 <div className="flex-1">
                                     <h2 className="text-paragraph font-bold mb-2">
                                         Delete Font

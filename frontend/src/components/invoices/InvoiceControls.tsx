@@ -29,9 +29,9 @@ export function InvoiceControls({
         <div className="palette-surface palette-border border rounded-xl p-4 mb-6 print:hidden">
             {downloadError && (
                 <div className="mb-4 flex items-center gap-2 p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
-                    <AlertTriangle className="w-4 h-4 text-red-500 flex-shrink-0" />
-                    <p className="text-sm text-red-600 dark:text-red-400 flex-1">{downloadError}</p>
-                    <button onClick={onDismissDownloadError} className="text-red-400 hover:text-red-600">
+                    <AlertTriangle className="w-4 h-4 text-danger flex-shrink-0" />
+                    <p className="text-sm text-danger dark:text-danger flex-1">{downloadError}</p>
+                    <button onClick={onDismissDownloadError} className="text-danger hover:text-danger">
                         <X className="w-4 h-4" />
                     </button>
                 </div>
@@ -45,7 +45,7 @@ export function InvoiceControls({
                         placeholder="Buscar por N° de factura, N° de control, RIF..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="flex-1 min-w-0 py-2.5 pl-2 pr-4 bg-transparent text-paragraph placeholder:text-paragraph placeholder:opacity-60 focus:outline-none"
+                        className="flex-1 min-w-0 py-2.5 pl-2 pr-4 bg-transparent text-paragraph placeholder:text-muted focus:outline-none"
                     />
                 </div>
 
@@ -69,7 +69,7 @@ export function InvoiceControls({
                     </button>
 
                     <div className="flex items-center gap-2">
-                        <Filter className="w-4 h-4 text-paragraph opacity-50" />
+                        <Filter className="w-4 h-4 text-muted" />
                         <select
                             value={statusFilter}
                             onChange={(e) => setStatusFilter(e.target.value)}
@@ -84,7 +84,7 @@ export function InvoiceControls({
                     </div>
 
                     <div className="flex items-center gap-2">
-                        <span className="text-paragraph opacity-60">Filas:</span>
+                        <span className="text-muted">Filas:</span>
                         <select
                             value={pageSize}
                             onChange={(e) => onPageSizeChange(Number(e.target.value))}

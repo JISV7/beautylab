@@ -216,7 +216,7 @@ export const CouponManagement: React.FC = () => {
                 <>
                     ¿Seguro que quieres desactivar <strong>"{coupon.code}"</strong>?
                     <br />
-                    <span className="text-red-600 dark:text-red-400 mt-2 block">
+                    <span className="text-danger dark:text-danger mt-2 block">
                         Impedirá su uso futuro, pero no afectará los descuentos ya aplicados en facturas anteriores.
                     </span>
                 </>
@@ -268,7 +268,7 @@ export const CouponManagement: React.FC = () => {
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 placeholder="Buscar por código..."
-                                className="flex-1 min-w-0 py-2 pl-2 pr-4 bg-transparent text-paragraph placeholder:text-paragraph placeholder:opacity-60 focus:outline-none"
+                                className="flex-1 min-w-0 py-2 pl-2 pr-4 bg-transparent text-paragraph placeholder:text-muted focus:outline-none"
                             />
                         </div>
                     </div>
@@ -303,7 +303,7 @@ export const CouponManagement: React.FC = () => {
                 <div className="palette-surface palette-border border rounded-xl p-8 text-center">
                     <Tag className="w-16 h-16 mx-auto mb-4 opacity-50" />
                     <p className="text-paragraph">No se encontraron cupones.</p>
-                    <p className="text-paragraph opacity-75 text-sm mt-2">
+                    <p className="text-muted text-sm mt-2">
                         {searchQuery ? 'Prueba con otro término de búsqueda.' : 'Crea tu primer cupón para comenzar.'}
                     </p>
                 </div>
@@ -314,32 +314,32 @@ export const CouponManagement: React.FC = () => {
                             <thead className="bg-black/5 dark:bg-white/5 border-b palette-border">
                                 <tr>
                                     <th
-                                        className="text-left py-3 px-4 text-sm font-semibold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap"
+                                        className="text-left py-3 px-4 text-sm font-semibold text-muted cursor-pointer hover:text-paragraph whitespace-nowrap"
                                         onClick={() => handleSort('code')}
                                     >
                                         <div className="flex items-center">Código<SortIcon column="code" /></div>
                                     </th>
                                     <th
-                                        className="text-left py-3 px-4 text-sm font-semibold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap"
+                                        className="text-left py-3 px-4 text-sm font-semibold text-muted cursor-pointer hover:text-paragraph whitespace-nowrap"
                                         onClick={() => handleSort('discount')}
                                     >
                                         <div className="flex items-center">Descuento<SortIcon column="discount" /></div>
                                     </th>
                                     <th
-                                        className="text-left py-3 px-4 text-sm font-semibold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap"
+                                        className="text-left py-3 px-4 text-sm font-semibold text-muted cursor-pointer hover:text-paragraph whitespace-nowrap"
                                         onClick={() => handleSort('min_purchase')}
                                     >
                                         <div className="flex items-center">Compra mínima<SortIcon column="min_purchase" /></div>
                                     </th>
                                     <th
-                                        className="text-left py-3 px-4 text-sm font-semibold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap"
+                                        className="text-left py-3 px-4 text-sm font-semibold text-muted cursor-pointer hover:text-paragraph whitespace-nowrap"
                                         onClick={() => handleSort('uses')}
                                     >
                                         <div className="flex items-center">Usos<SortIcon column="uses" /></div>
                                     </th>
                                     <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph whitespace-nowrap">Vence</th>
                                     <th
-                                        className="text-left py-3 px-4 text-sm font-semibold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap"
+                                        className="text-left py-3 px-4 text-sm font-semibold text-muted cursor-pointer hover:text-paragraph whitespace-nowrap"
                                         onClick={() => handleSort('created_at')}
                                     >
                                         <div className="flex items-center">Creado<SortIcon column="created_at" /></div>
@@ -360,7 +360,7 @@ export const CouponManagement: React.FC = () => {
                                             </span>
                                         </td>
                                         <td className="py-3 px-4">
-                                            <span className={`text-sm font-bold ${coupon.discount_type === 'percentage' ? 'text-[var(--palette-primary)]' : 'text-green-600'}`}>
+                                            <span className={`text-sm font-bold ${coupon.discount_type === 'percentage' ? 'text-link' : 'text-success'}`}>
                                                 {formatDiscount(coupon)}
                                             </span>
                                         </td>
@@ -382,7 +382,7 @@ export const CouponManagement: React.FC = () => {
                                         <td className="py-3 px-4">
                                             <span
                                                 className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-bold ${coupon.is_active
-                                                        ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
+                                                        ? 'bg-green-100 dark:bg-green-900/30 text-success dark:text-success'
                                                         : 'bg-gray-100 dark:bg-gray-800 text-gray-500'
                                                     }`}
                                             >
@@ -416,23 +416,24 @@ export const CouponManagement: React.FC = () => {
                     {/* Pagination */}
                     {totalPages > 1 && (
                         <div className="flex items-center justify-between px-4 py-3 border-t palette-border">
-                            <p className="text-sm text-paragraph opacity-60">
+                            <p className="text-sm text-muted">
                                 Mostrando {sortedCoupons.length} de {totalItems} cupones
                             </p>
                             <div className="flex items-center gap-2">
                                 <button
                                     onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                                     disabled={currentPage === 1}
+                                    aria-label="Página anterior"
                                     className="p-2 rounded btn-hover-surface disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                                 >
-                                    <ChevronLeft className="w-4 h-4 text-paragraph" />
+                                    <ChevronLeft className="w-4 h-4 text-paragraph" aria-hidden="true" />
                                 </button>
                                 {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
                                     <button
                                         key={page}
                                         onClick={() => setCurrentPage(page)}
                                         className={`w-8 h-8 rounded text-sm font-medium transition-colors ${currentPage === page
-                                                ? 'bg-palette-primary text-white'
+                                                ? 'bg-palette-primary text-on-primary'
                                                 : 'btn-hover-surface text-paragraph'
                                             }`}
                                     >
@@ -442,9 +443,10 @@ export const CouponManagement: React.FC = () => {
                                 <button
                                     onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                                     disabled={currentPage === totalPages}
+                                    aria-label="Página siguiente"
                                     className="p-2 rounded btn-hover-surface disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                                 >
-                                    <ChevronRight className="w-4 h-4 text-paragraph" />
+                                    <ChevronRight className="w-4 h-4 text-paragraph" aria-hidden="true" />
                                 </button>
                             </div>
                         </div>

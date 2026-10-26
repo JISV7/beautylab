@@ -166,10 +166,10 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
     if (licenses.length === 0) {
         return (
             <div className="palette-surface palette-border border rounded-xl p-8 text-center">
-                <p className="text-paragraph opacity-60 mb-2">
+                <p className="text-muted mb-2">
                     No licenses owned for this course yet
                 </p>
-                <p className="text-sm text-paragraph opacity-40">
+                <p className="text-sm text-muted">
                     Purchase a license to start learning
                 </p>
             </div>
@@ -182,27 +182,27 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
                 <div className="palette-surface palette-border border rounded-lg p-3 text-center">
                     <p className="text-2xl font-black text-paragraph">{stats.total}</p>
-                    <p className="text-xs text-paragraph opacity-60 uppercase tracking-wider">Total</p>
+                    <p className="text-xs text-muted uppercase tracking-wider">Total</p>
                 </div>
                 <div className="palette-surface palette-border border rounded-lg p-3 text-center">
-                    <p className="text-2xl font-black text-green-600 dark:text-green-400">{stats.byStatus.active || 0}</p>
-                    <p className="text-xs text-paragraph opacity-60 uppercase tracking-wider">Active</p>
+                    <p className="text-2xl font-black text-success dark:text-success">{stats.byStatus.active || 0}</p>
+                    <p className="text-xs text-muted uppercase tracking-wider">Active</p>
                 </div>
                 <div className="palette-surface palette-border border rounded-lg p-3 text-center">
-                    <p className="text-2xl font-black text-blue-600 dark:text-blue-400">{stats.byStatus.redeemed || 0}</p>
-                    <p className="text-xs text-paragraph opacity-60 uppercase tracking-wider">Redeemed</p>
+                    <p className="text-2xl font-black text-info dark:text-info">{stats.byStatus.redeemed || 0}</p>
+                    <p className="text-xs text-muted uppercase tracking-wider">Redeemed</p>
                 </div>
                 <div className="palette-surface palette-border border rounded-lg p-3 text-center">
-                    <p className="text-2xl font-black text-amber-600 dark:text-amber-400">{stats.byStatus.pending || 0}</p>
-                    <p className="text-xs text-paragraph opacity-60 uppercase tracking-wider">Pending</p>
+                    <p className="text-2xl font-black text-warning dark:text-warning">{stats.byStatus.pending || 0}</p>
+                    <p className="text-xs text-muted uppercase tracking-wider">Pending</p>
                 </div>
                 <div className="palette-surface palette-border border rounded-lg p-3 text-center">
                     <p className="text-lg font-black text-paragraph">{formatAmount(stats.totalPaid.toString())}</p>
-                    <p className="text-xs text-paragraph opacity-60 uppercase tracking-wider">Total Paid</p>
+                    <p className="text-xs text-muted uppercase tracking-wider">Total Paid</p>
                 </div>
                 <div className="palette-surface palette-border border rounded-lg p-3 text-center">
-                    <p className="text-lg font-black text-amber-600 dark:text-amber-400">{formatAmount(stats.totalRemaining.toString())}</p>
-                    <p className="text-xs text-paragraph opacity-60 uppercase tracking-wider">Remaining</p>
+                    <p className="text-lg font-black text-warning dark:text-warning">{formatAmount(stats.totalRemaining.toString())}</p>
+                    <p className="text-xs text-muted uppercase tracking-wider">Remaining</p>
                 </div>
             </div>
 
@@ -218,14 +218,14 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
                                 placeholder="Search by license code or email..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="flex-1 min-w-0 py-2 pl-2 pr-4 bg-transparent text-paragraph placeholder:text-paragraph placeholder:opacity-60 focus:outline-none"
+                                className="flex-1 min-w-0 py-2 pl-2 pr-4 bg-transparent text-paragraph placeholder:text-muted focus:outline-none"
                             />
                         </div>
                     </div>
 
                     {/* Status Filter */}
                     <div className="relative">
-                        <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-paragraph opacity-40" />
+                        <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
                         <select
                             value={statusFilter}
                             onChange={(e) => setStatusFilter(e.target.value as LicenseStatus | 'all')}
@@ -242,7 +242,7 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
 
                     {/* Payment Filter */}
                     <div className="relative">
-                        <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-paragraph opacity-40" />
+                        <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
                         <select
                             value={paymentFilter}
                             onChange={(e) => setPaymentFilter(e.target.value as PaymentFilter)}
@@ -259,7 +259,7 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
                     {hasActiveFilters && (
                         <button
                             onClick={clearFilters}
-                            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800 transition-colors"
+                            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-danger dark:text-danger hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800 transition-colors"
                         >
                             <X size={16} />
                             Clear
@@ -268,7 +268,7 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
                 </div>
 
                 {/* Results count */}
-                <div className="mt-3 flex items-center justify-between text-sm text-paragraph opacity-60">
+                <div className="mt-3 flex items-center justify-between text-sm text-muted">
                     <span>Showing {filteredLicenses.length} of {licenses.length} licenses</span>
                     {hasActiveFilters && <span>Filters active</span>}
                 </div>
@@ -282,7 +282,7 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
                     <thead className="bg-black/5 dark:bg-white/5 border-b palette-border">
                         <tr>
                             <th
-                                className="text-left text-xs font-bold text-paragraph uppercase tracking-wider px-4 py-3 cursor-pointer hover:opacity-70 whitespace-nowrap"
+                                className="text-left text-xs font-bold text-muted uppercase tracking-wider px-4 py-3 cursor-pointer hover:text-paragraph whitespace-nowrap"
                                 onClick={() => handleSort('license_code')}
                             >
                                 <div className="flex items-center gap-2">
@@ -291,7 +291,7 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
                                 </div>
                             </th>
                             <th
-                                className="text-left text-xs font-bold text-paragraph uppercase tracking-wider px-4 py-3 cursor-pointer hover:opacity-70 whitespace-nowrap"
+                                className="text-left text-xs font-bold text-muted uppercase tracking-wider px-4 py-3 cursor-pointer hover:text-paragraph whitespace-nowrap"
                                 onClick={() => handleSort('status')}
                             >
                                 <div className="flex items-center gap-2">
@@ -300,7 +300,7 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
                                 </div>
                             </th>
                             <th
-                                className="text-left text-xs font-bold text-paragraph uppercase tracking-wider px-4 py-3 cursor-pointer hover:opacity-70 whitespace-nowrap"
+                                className="text-left text-xs font-bold text-muted uppercase tracking-wider px-4 py-3 cursor-pointer hover:text-paragraph whitespace-nowrap"
                                 onClick={() => handleSort('amount_paid')}
                             >
                                 <div className="flex items-center gap-2">
@@ -309,7 +309,7 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
                                 </div>
                             </th>
                             <th
-                                className="text-left text-xs font-bold text-paragraph uppercase tracking-wider px-4 py-3 cursor-pointer hover:opacity-70 whitespace-nowrap"
+                                className="text-left text-xs font-bold text-muted uppercase tracking-wider px-4 py-3 cursor-pointer hover:text-paragraph whitespace-nowrap"
                                 onClick={() => handleSort('amount_remaining')}
                             >
                                 <div className="flex items-center gap-2">
@@ -318,7 +318,7 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
                                 </div>
                             </th>
                             <th
-                                className="text-left text-xs font-bold text-paragraph uppercase tracking-wider px-4 py-3 cursor-pointer hover:opacity-70 whitespace-nowrap"
+                                className="text-left text-xs font-bold text-muted uppercase tracking-wider px-4 py-3 cursor-pointer hover:text-paragraph whitespace-nowrap"
                                 onClick={() => handleSort('purchase_date')}
                             >
                                 <div className="flex items-center gap-2">
@@ -327,7 +327,7 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
                                 </div>
                             </th>
                             <th
-                                className="text-left text-xs font-bold text-paragraph uppercase tracking-wider px-4 py-3 cursor-pointer hover:opacity-70 whitespace-nowrap"
+                                className="text-left text-xs font-bold text-muted uppercase tracking-wider px-4 py-3 cursor-pointer hover:text-paragraph whitespace-nowrap"
                                 onClick={() => handleSort('redemption_date')}
                             >
                                 <div className="flex items-center gap-2">
@@ -357,9 +357,9 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
                                             title="Copy full code"
                                         >
                                             {copiedCode === license.license_code ? (
-                                                <Check size={14} className="text-green-500" />
+                                                <Check size={14} className="text-success" />
                                             ) : (
-                                                <Copy size={14} className="text-paragraph opacity-60" />
+                                                <Copy size={14} className="text-muted" />
                                             )}
                                         </button>
                                     </div>
@@ -372,11 +372,11 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
                                 </td>
                                 <td className="px-4 py-3">
                                     {parseFloat(license.amount_remaining) > 0 ? (
-                                        <span className="text-amber-600 dark:text-amber-400 font-medium">
+                                        <span className="text-warning dark:text-warning font-medium">
                                             {formatAmount(license.amount_remaining)}
                                         </span>
                                     ) : (
-                                        <span className="text-green-600 dark:text-green-400 font-medium">
+                                        <span className="text-success dark:text-success font-medium">
                                             Paid
                                         </span>
                                     )}
@@ -395,7 +395,7 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
                                         {license.status === 'pending' && (
                                             <button
                                                 onClick={() => onRedeem?.(license.license_code)}
-                                                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-colors"
+                                                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-success dark:text-success hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-colors"
                                             >
                                                 <KeyRound size={14} />
                                                 Redeem
@@ -404,7 +404,7 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
                                         {license.can_gift && (
                                             <button
                                                 onClick={() => onGift?.(license.id)}
-                                                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[var(--palette-primary)] hover:bg-[var(--palette-primary)]/10 rounded-lg transition-colors"
+                                                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-link hover:bg-[var(--palette-primary)]/10 rounded-lg transition-colors"
                                             >
                                                 <Gift size={14} />
                                                 Gift
@@ -433,9 +433,9 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
                                     className="p-1 hover:bg-[var(--palette-border)] rounded transition-colors"
                                 >
                                     {copiedCode === license.license_code ? (
-                                        <Check size={14} className="text-green-500" />
+                                        <Check size={14} className="text-success" />
                                     ) : (
-                                        <Copy size={14} className="text-paragraph opacity-60" />
+                                        <Copy size={14} className="text-muted" />
                                     )}
                                 </button>
                             </div>
@@ -445,7 +445,7 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
                         {/* Payment Info */}
                         <div className="grid grid-cols-2 gap-3">
                             <div>
-                                <p className="text-[10px] font-bold text-paragraph opacity-40 uppercase">
+                                <p className="text-[10px] font-bold text-muted uppercase">
                                     Paid
                                 </p>
                                 <p className="text-sm font-medium text-paragraph">
@@ -453,13 +453,13 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
                                 </p>
                             </div>
                             <div>
-                                <p className="text-[10px] font-bold text-paragraph opacity-40 uppercase">
+                                <p className="text-[10px] font-bold text-muted uppercase">
                                     Remaining
                                 </p>
                                 <p className={`text-sm font-medium ${
                                     parseFloat(license.amount_remaining) > 0
-                                        ? 'text-amber-600 dark:text-amber-400'
-                                        : 'text-green-600 dark:text-green-400'
+                                        ? 'text-warning dark:text-warning'
+                                        : 'text-success dark:text-success'
                                 }`}>
                                     {parseFloat(license.amount_remaining) > 0
                                         ? formatAmount(license.amount_remaining)
@@ -471,7 +471,7 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
                         {/* Dates */}
                         <div className="grid grid-cols-2 gap-3">
                             <div>
-                                <p className="text-[10px] font-bold text-paragraph opacity-40 uppercase">
+                                <p className="text-[10px] font-bold text-muted uppercase">
                                     Purchased
                                 </p>
                                 <p className="text-xs text-paragraph opacity-80">
@@ -479,7 +479,7 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
                                 </p>
                             </div>
                             <div>
-                                <p className="text-[10px] font-bold text-paragraph opacity-40 uppercase">
+                                <p className="text-[10px] font-bold text-muted uppercase">
                                     Redeemed
                                 </p>
                                 <p className="text-xs text-paragraph opacity-80">
@@ -491,7 +491,7 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
                         {/* Assigned To */}
                         {(license.assigned_to_name || license.assigned_to_email) && (
                             <div>
-                                <p className="text-[10px] font-bold text-paragraph opacity-40 uppercase">
+                                <p className="text-[10px] font-bold text-muted uppercase">
                                     Assigned To
                                 </p>
                                 <p className="text-xs text-paragraph">
@@ -506,7 +506,7 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
                                 {license.status === 'pending' && (
                                     <button
                                         onClick={() => onRedeem?.(license.license_code)}
-                                        className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/30 rounded-lg transition-colors"
+                                        className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-success dark:text-success bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/30 rounded-lg transition-colors"
                                     >
                                         <KeyRound size={16} />
                                         Redeem
@@ -515,7 +515,7 @@ export const LicenseTable: React.FC<LicenseTableProps> = ({ licenses, onGift, on
                                 {license.can_gift && (
                                     <button
                                         onClick={() => onGift?.(license.id)}
-                                        className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-[var(--palette-primary)] bg-[var(--palette-primary)]/10 hover:bg-[var(--palette-primary)]/20 rounded-lg transition-colors"
+                                        className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-link bg-[var(--palette-primary)]/10 hover:bg-[var(--palette-primary)]/20 rounded-lg transition-colors"
                                     >
                                         <Gift size={16} />
                                         Gift License

@@ -45,10 +45,10 @@ export const ComponentStyleEditor: React.FC<ComponentStyleEditorProps> = ({
                 <div className="p-4 pt-0 space-y-3 border-t theme-border">
                     {fields.map((field) => (
                         <div key={field.key} className="flex items-center justify-between py-2">
-                            <label className="text-sm theme-text-secondary">{field.label}</label>
+                            <label className="text-sm theme-text-link">{field.label}</label>
                             {field.type === 'color' ? (
                                 <div className="flex items-center gap-2">
-                                    <span className="text-xs theme-text-secondary font-mono">
+                                    <span className="text-xs theme-text-link font-mono">
                                         {values[field.key]}
                                     </span>
                                     <input

@@ -118,7 +118,7 @@ export const CreateThemeModal: React.FC<CreateThemeModalProps> = ({
                         </div>
                         <div className="flex-1">
                             <div className="flex items-center gap-2">
-                                <Palette className="w-4 h-4 text-paragraph opacity-60" />
+                                <Palette className="w-4 h-4 text-muted" />
                                 <input
                                     type="text"
                                     value={baseColor}
@@ -132,7 +132,7 @@ export const CreateThemeModal: React.FC<CreateThemeModalProps> = ({
                                     className="theme-input w-full py-2 px-3 font-mono text-sm"
                                 />
                             </div>
-                            <p className="text-xs text-paragraph opacity-60 mt-1.5">
+                            <p className="text-xs text-muted mt-1.5">
                                 Pick a base color. Secondary will be a close analogous color, accent will provide contrast. Leave empty for fully random.
                             </p>
                         </div>

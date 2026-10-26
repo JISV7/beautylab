@@ -61,7 +61,7 @@ export const CourseHero: React.FC<CourseHeroProps> = ({
                         }}
                     />
                 ) : (
-                    <div className="w-full h-48 flex items-center justify-center text-paragraph opacity-40">
+                    <div className="w-full h-48 flex items-center justify-center text-muted">
                         <span className="text-paragraph">Imagen no disponible</span>
                     </div>
                 )}
@@ -72,17 +72,17 @@ export const CourseHero: React.FC<CourseHeroProps> = ({
                 {/* Category and Level Badges */}
                 <div className="flex flex-wrap items-center gap-3 mb-4">
                     {category_name && (
-                        <span className="text-[var(--palette-primary)] text-xs font-black uppercase tracking-widest">
+                        <span className="text-link text-xs font-black uppercase tracking-widest">
                             {category_name}
                         </span>
                     )}
                     {level_name && (
-                        <span className="bg-[var(--palette-primary)]/10 text-[var(--palette-primary)] font-bold px-3 py-1 rounded-lg text-xs">
+                        <span className="bg-[var(--palette-primary)]/10 text-link font-bold px-3 py-1 rounded-lg text-xs">
                             {level_name}
                         </span>
                     )}
                     {duration_hours && (
-                        <div className="flex items-center gap-1.5 text-paragraph opacity-60">
+                        <div className="flex items-center gap-1.5 text-muted">
                             <Clock size={14} />
                             <span className="text-sm">{duration_hours}h</span>
                         </div>
@@ -107,7 +107,7 @@ export const CourseHero: React.FC<CourseHeroProps> = ({
                         href={normalizeUrl(video_url)}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 text-[var(--palette-primary)] hover:opacity-80 transition-opacity mb-6"
+                        className="inline-flex items-center gap-2 text-link hover:opacity-80 transition-opacity mb-6"
                     >
                         <PlayCircle size={18} />
                         <span className="text-paragraph">Ver video del curso</span>
@@ -121,7 +121,7 @@ export const CourseHero: React.FC<CourseHeroProps> = ({
                         {/* Product Name */}
                         {product_name && (
                             <div>
-                                <p className="text-[10px] font-bold text-paragraph opacity-40 uppercase tracking-wider mb-1">
+                                <p className="text-[10px] font-bold text-muted uppercase tracking-wider mb-1">
                                     Nombre del producto
                                 </p>
                                 <p className="text-sm font-semibold text-paragraph">
@@ -132,7 +132,7 @@ export const CourseHero: React.FC<CourseHeroProps> = ({
                         {/* Product SKU */}
                         {product_sku && (
                             <div>
-                                <p className="text-[10px] font-bold text-paragraph opacity-40 uppercase tracking-wider mb-1">
+                                <p className="text-[10px] font-bold text-muted uppercase tracking-wider mb-1">
                                     SKU
                                 </p>
                                 <p className="text-sm font-mono text-paragraph opacity-80">
@@ -142,7 +142,7 @@ export const CourseHero: React.FC<CourseHeroProps> = ({
                         )}
                         {/* Price */}
                         <div>
-                            <p className="text-[10px] font-bold text-paragraph opacity-40 uppercase tracking-wider mb-1">
+                            <p className="text-[10px] font-bold text-muted uppercase tracking-wider mb-1">
                                 Precio de inscripción
                             </p>
                             <p className="text-2xl font-black text-paragraph">
@@ -154,7 +154,7 @@ export const CourseHero: React.FC<CourseHeroProps> = ({
                         {/* Quantity Selector */}
                         {onAddToCart && (
                             <div className="flex items-center gap-2">
-                                <span className="text-sm font-semibold text-paragraph opacity-75">Cant.:</span>
+                                <span className="text-sm font-semibold text-muted">Cant.:</span>
                                 <button
                                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
                                     className="p-1.5 hover:bg-[var(--palette-border)] rounded transition-colors"
@@ -190,7 +190,7 @@ export const CourseHero: React.FC<CourseHeroProps> = ({
                                     onClick={() => onAddToCart(quantity)}
                                     className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-bold transition-colors ${
                                         isInCart
-                                            ? 'bg-green-500/10 text-green-600 border border-green-500/20'
+                                            ? 'bg-green-500/10 text-success border border-green-500/20'
                                             : 'bg-[var(--palette-secondary)] text-white hover:opacity-90'
                                     }`}
                                 >

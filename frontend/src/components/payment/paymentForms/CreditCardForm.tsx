@@ -29,7 +29,7 @@ export const CreditCardForm: React.FC<PaymentFormProps> = ({
                     placeholder="María Pérez"
                 />
                 {errors.card_holder_name && (
-                    <p className="text-red-500 text-sm mt-1">{errors.card_holder_name}</p>
+                    <p className="text-danger text-sm mt-1">{errors.card_holder_name}</p>
                 )}
             </div>
 
@@ -49,7 +49,7 @@ export const CreditCardForm: React.FC<PaymentFormProps> = ({
                     maxLength={19}
                 />
                 {errors.card_number && (
-                    <p className="text-red-500 text-sm mt-1">{errors.card_number}</p>
+                    <p className="text-danger text-sm mt-1">{errors.card_number}</p>
                 )}
             </div>
 
@@ -79,7 +79,7 @@ export const CreditCardForm: React.FC<PaymentFormProps> = ({
                         ))}
                     </select>
                     {errors.expiry_year && (
-                        <p className="text-red-500 text-sm mt-1">{errors.expiry_year}</p>
+                        <p className="text-danger text-sm mt-1">{errors.expiry_year}</p>
                     )}
                 </div>
 
@@ -103,13 +103,13 @@ export const CreditCardForm: React.FC<PaymentFormProps> = ({
                         ))}
                     </select>
                     {errors.expiry_month && (
-                        <p className="text-red-500 text-sm mt-1">{errors.expiry_month}</p>
+                        <p className="text-danger text-sm mt-1">{errors.expiry_month}</p>
                     )}
                 </div>
             </div>
 
             {isCardExpired(value.expiry_month, value.expiry_year) && (
-                <p className="text-red-500 text-sm font-medium">
+                <p className="text-danger text-sm font-medium">
                     Esta tarjeta está vencida. Usa una tarjeta vigente.
                 </p>
             )}
@@ -131,7 +131,7 @@ export const CreditCardForm: React.FC<PaymentFormProps> = ({
                         maxLength={4}
                     />
                     {errors.cvv && (
-                        <p className="text-red-500 text-sm mt-1">{errors.cvv}</p>
+                        <p className="text-danger text-sm mt-1">{errors.cvv}</p>
                     )}
                 </div>
 
@@ -155,7 +155,7 @@ export const CreditCardForm: React.FC<PaymentFormProps> = ({
                         ))}
                     </select>
                     {errors.card_brand && (
-                        <p className="text-red-500 text-sm mt-1">{errors.card_brand}</p>
+                        <p className="text-danger text-sm mt-1">{errors.card_brand}</p>
                     )}
                 </div>
             </div>

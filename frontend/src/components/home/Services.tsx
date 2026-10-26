@@ -82,7 +82,7 @@ export const Services: React.FC = () => {
                       aria-hidden="true"
                     />
                   </div>
-                  <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-paragraph opacity-50">
+                  <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-muted">
                     0{index + 1}
                   </span>
                 </div>
@@ -91,7 +91,7 @@ export const Services: React.FC = () => {
                   {course.category}
                 </p>
                 <h3 className="text-h3 mb-3 leading-snug">{course.title}</h3>
-                <p className="text-paragraph opacity-75 text-sm leading-relaxed flex-grow">
+                <p className="text-muted text-sm leading-relaxed flex-grow">
                   {course.description}
                 </p>
 

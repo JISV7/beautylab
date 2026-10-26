@@ -6,7 +6,7 @@ from decimal import Decimal
 from typing import Literal
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 # ==================== Payment Method Schemas ====================
 
@@ -327,20 +327,15 @@ class SplitPaymentItem(BaseModel):
 
 
 class SplitPaymentRequest(BaseModel):
-    """Request for split payment."""
+    """Request for split payment.
+
+    An empty ``payments`` list is valid only for invoices whose total is zero.
+    The amount is validated against the invoice in the service layer, where the
+    invoice total is available.
+    """
 
     invoice_id: UUID
     payments: list[SplitPaymentItem]
-
-    @model_validator(mode="after")
-    def validate_total_amount(self):
-        """Validate that sum of payments equals invoice total.
-
-        Note: Actual validation against invoice total happens in service layer.
-        """
-        if not self.payments:
-            raise ValueError("At least one payment is required")
-        return self
 
 
 class SplitPaymentResponse(BaseModel):

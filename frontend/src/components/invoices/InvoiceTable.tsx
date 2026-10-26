@@ -26,10 +26,10 @@ const statusLabels: Record<string, string> = {
 };
 
 const statusClasses: Record<string, string> = {
-    paid: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
-    partial: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
-    cancelled: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
-    issued: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400',
+    paid: 'bg-green-100 text-success dark:bg-green-900/30 dark:text-success',
+    partial: 'bg-blue-100 text-info dark:bg-blue-900/30 dark:text-info',
+    cancelled: 'bg-red-100 text-danger dark:bg-red-900/30 dark:text-danger',
+    issued: 'bg-yellow-100 text-warning dark:bg-yellow-900/30 dark:text-warning',
 };
 
 const columns: { key: SortableColumn; label: string }[] = [
@@ -46,7 +46,7 @@ export function InvoiceTable({ invoices, onViewDetails, sortColumn, sortDirectio
             <div className="palette-surface palette-border border rounded-xl p-8 text-center">
                 <FileText className="w-16 h-16 mx-auto mb-4 opacity-50" />
                 <p className="text-paragraph">No se encontraron facturas.</p>
-                <p className="text-paragraph opacity-75 text-sm mt-2">
+                <p className="text-muted text-sm mt-2">
                     Cuando compres un curso, tus facturas aparecerán aquí.
                 </p>
             </div>
@@ -57,7 +57,7 @@ export function InvoiceTable({ invoices, onViewDetails, sortColumn, sortDirectio
         <div className="palette-surface rounded-lg shadow-sm palette-border overflow-hidden">
             <table className="w-full text-left border-collapse">
                 <thead>
-                    <tr className="palette-surface border-b palette-border text-paragraph uppercase tracking-wider opacity-75">
+                    <tr className="palette-surface border-b palette-border text-muted uppercase tracking-wider">
                         {columns.map((col) => (
                             <th
                                 key={col.key}
@@ -85,7 +85,7 @@ export function InvoiceTable({ invoices, onViewDetails, sortColumn, sortDirectio
                             <td className="p-4">{(() => { const [y, m, d] = invoice.issue_date.split('-').map(Number); return `${y}/${m}/${d}`; })()}</td>
                             <td className="p-4">
                                 <div className="flex flex-col gap-1">
-                                    <span className="font-semibold text-primary">
+                                    <span className="font-semibold text-link">
                                         Bs. {parseFloat(invoice.total).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                     </span>
                                     {invoice.payment_progress !== undefined && (
@@ -103,7 +103,7 @@ export function InvoiceTable({ invoices, onViewDetails, sortColumn, sortDirectio
                                                         style={{ width: `${Math.min(invoice.payment_progress, 100)}%` }}
                                                     />
                                                 </div>
-                                                <span className="text-[0.75em] text-paragraph opacity-75 w-10">
+                                                <span className="text-[0.75em] text-muted w-10">
                                                     {invoice.payment_progress.toFixed(0)}%
                                                 </span>
                                             </div>
@@ -122,7 +122,7 @@ export function InvoiceTable({ invoices, onViewDetails, sortColumn, sortDirectio
                                         e.stopPropagation();
                                         onViewDetails(invoice);
                                     }}
-                                    className="text-primary hover:underline"
+                                    className="text-link hover:underline"
                                 >
                                     Ver
                                 </button>

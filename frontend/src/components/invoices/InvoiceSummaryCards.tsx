@@ -9,26 +9,26 @@ export function InvoiceSummaryCards({ summary }: Props) {
     return (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
             <div className="palette-surface palette-border border rounded-xl p-4 flex items-center gap-4">
-                <Receipt className="w-6 h-6 text-red-600 dark:text-red-400" />
+                <Receipt className="w-6 h-6 text-danger dark:text-danger" />
                 <div>
                     <p className="text-[var(--text-p-size)] opacity-75">Total de facturas</p>
-                    <p className="text-[var(--text-h2-size)] font-bold text-red-600 dark:text-red-400">{summary.total_invoices}</p>
+                    <p className="text-[var(--text-h2-size)] font-bold text-danger dark:text-danger">{summary.total_invoices}</p>
                 </div>
             </div>
             <div className="palette-surface palette-border border rounded-xl p-4 flex items-center gap-4">
-                <DollarSign className="w-6 h-6 text-green-600 dark:text-green-400" />
+                <DollarSign className="w-6 h-6 text-success dark:text-success" />
                 <div>
                     <p className="text-[var(--text-p-size)] opacity-75">Base imponible</p>
-                    <p className="text-[var(--text-h2-size)] font-bold text-green-600 dark:text-green-400">
+                    <p className="text-[var(--text-h2-size)] font-bold text-success dark:text-success">
                         {parseFloat(summary.total_subtotal).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </p>
                 </div>
             </div>
             <div className="palette-surface palette-border border rounded-xl p-4 flex items-center gap-4">
-                <Percent className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                <Percent className="w-6 h-6 text-info dark:text-info" />
                 <div>
                     <p className="text-[var(--text-p-size)] opacity-75">Total IVA (16%)</p>
-                    <p className="text-[var(--text-h2-size)] font-bold text-blue-600 dark:text-blue-400">
+                    <p className="text-[var(--text-h2-size)] font-bold text-info dark:text-info">
                         {parseFloat(summary.total_iva).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </p>
                 </div>

@@ -56,7 +56,7 @@ export const CourseFormStep2: React.FC<CourseFormStep2Props> = ({
                         Price (Bs.)
                     </label>
                     <div className="relative">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-paragraph opacity-40 font-bold">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted font-bold">
                             Bs.
                         </span>
                         <input

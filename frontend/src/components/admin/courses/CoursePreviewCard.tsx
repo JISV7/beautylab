@@ -21,8 +21,8 @@ export const CoursePreviewCard: React.FC<CoursePreviewCardProps> = ({
     return (
         <div className="sticky top-24">
             <div className="flex items-center gap-2 mb-4">
-                <EyeIcon size={20} className="text-paragraph opacity-40" />
-                <span className="text-xs font-black text-paragraph opacity-60 uppercase tracking-widest">
+                <EyeIcon size={20} className="text-muted" />
+                <span className="text-xs font-black text-muted uppercase tracking-widest">
                     Live Preview
                 </span>
             </div>
@@ -40,13 +40,13 @@ export const CoursePreviewCard: React.FC<CoursePreviewCardProps> = ({
                             }}
                         />
                     ) : (
-                        <div className="w-full h-full flex items-center justify-center text-paragraph opacity-40">
+                        <div className="w-full h-full flex items-center justify-center text-muted">
                             <span className="text-sm">No image</span>
                         </div>
                     )}
                     <div className="absolute top-4 left-4 flex gap-2">
                         {formData.published && (
-                            <span className="bg-[var(--palette-primary)]/90 text-white text-[10px] font-black px-2 py-1 rounded-full uppercase tracking-widest">
+                            <span className="bg-[var(--palette-primary)]/90 text-on-primary text-[10px] font-black px-2 py-1 rounded-full uppercase tracking-widest">
                                 Featured
                             </span>
                         )}
@@ -59,34 +59,34 @@ export const CoursePreviewCard: React.FC<CoursePreviewCardProps> = ({
                 </div>
                 <div className="p-6">
                     <div className="flex items-center justify-between mb-3">
-                        <span className="text-[var(--palette-primary)] text-[10px] font-black uppercase tracking-widest">
+                        <span className="text-link text-[10px] font-black uppercase tracking-widest">
                             {categoryName}
                         </span>
-                        <div className="flex items-center text-amber-400 gap-0.5">
+                        <div className="flex items-center text-warning gap-0.5">
                             <Star size={14} fill="currentColor" />
                             <Star size={14} fill="currentColor" />
                             <Star size={14} fill="currentColor" />
                             <Star size={14} fill="currentColor" />
                             <Star size={14} />
-                            <span className="text-xs font-bold text-paragraph opacity-60 ml-1">(4.8)</span>
+                            <span className="text-xs font-bold text-muted ml-1">(4.8)</span>
                         </div>
                     </div>
                     <h4 className="text-xl font-black text-paragraph leading-tight mb-2">
                         {formData.title || 'Course Title'}
                     </h4>
-                    <p className="text-sm text-paragraph opacity-60 line-clamp-2 mb-6 leading-relaxed">
+                    <p className="text-sm text-muted line-clamp-2 mb-6 leading-relaxed">
                         {formData.description || 'Course description will appear here...'}
                     </p>
                     <div className="flex items-center justify-between pt-4 border-t border-[var(--palette-border)]">
                         <div>
-                            <p className="text-[10px] font-bold text-paragraph opacity-40 uppercase">
+                            <p className="text-[10px] font-bold text-muted uppercase">
                                 Enrollment Price
                             </p>
                             <p className="text-lg font-black text-paragraph">
                                 {formatPrice(formData.price)}
                             </p>
                         </div>
-                        <span className="bg-[var(--palette-primary)]/10 text-[var(--palette-primary)] font-bold px-3 py-1 rounded-lg text-xs">
+                        <span className="bg-[var(--palette-primary)]/10 text-link font-bold px-3 py-1 rounded-lg text-xs">
                             {levelName}
                         </span>
                     </div>

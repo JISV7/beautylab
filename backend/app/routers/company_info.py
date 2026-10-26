@@ -78,6 +78,26 @@ async def upload_company_logo(
     }
 
 
+@router.get("/active/public", response_model=CompanyInfoResponse)
+async def get_active_company_public(db: AsyncSession = Depends(get_db)):
+    """Get the active company profile for public checkout flows.
+
+    This exposes only the active company's public contact/fiscal information and
+    requires no authentication. It must be declared before ``/{company_id}`` so
+    FastAPI does not try to parse ``active`` as an integer ID.
+    """
+    service = CompanyInfoService(db)
+    company = await service.get_active_company()
+
+    if not company:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No active company information found",
+        )
+
+    return CompanyInfoResponse.model_validate(company)
+
+
 @router.get("/{company_id}", response_model=CompanyInfoResponse)
 async def get_company_info(
     company_id: int,

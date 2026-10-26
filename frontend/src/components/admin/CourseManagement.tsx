@@ -348,10 +348,10 @@ export const CourseManagement: React.FC<CourseManagementProps> = ({ courseId, on
                 {/* Header */}
                 <div className="flex items-center justify-between flex-wrap gap-4">
                     <div>
-                        <nav className="flex text-xs font-bold text-paragraph opacity-60 mb-2 gap-2 uppercase tracking-widest">
+                        <nav className="flex text-xs font-bold text-muted mb-2 gap-2 uppercase tracking-widest">
                             <span>Courses</span>
                             <span>/</span>
-                            <span className="text-[var(--palette-primary)]">
+                            <span className="text-link">
                                 {courseId ? 'Edit' : 'Create New'}
                             </span>
                         </nav>

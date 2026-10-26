@@ -58,7 +58,7 @@ export const GiftLicenseModal: React.FC<GiftLicenseModalProps> = ({
                 <div className="flex items-center justify-between p-6 border-b border-[var(--palette-border)]">
                     <div className="flex items-center gap-3">
                         <div className="p-2 bg-[var(--palette-primary)]/10 rounded-lg">
-                            <Gift size={20} className="text-[var(--palette-primary)]" />
+                            <Gift size={20} className="text-link" />
                         </div>
                         <h2 className="text-h4">
                             Gift License
@@ -78,7 +78,7 @@ export const GiftLicenseModal: React.FC<GiftLicenseModalProps> = ({
                     <div className="p-6 space-y-4">
                         {licenseCode && (
                             <div className="p-3 bg-[var(--palette-background)] rounded-lg">
-                                <p className="text-[10px] font-bold text-paragraph opacity-40 uppercase mb-1">
+                                <p className="text-[10px] font-bold text-muted uppercase mb-1">
                                     License Code
                                 </p>
                                 <code className="text-xs font-mono text-paragraph">
@@ -93,7 +93,7 @@ export const GiftLicenseModal: React.FC<GiftLicenseModalProps> = ({
                                 Recipient Email
                             </label>
                             <div className="relative">
-                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-paragraph opacity-40" />
+                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted" />
                                 <input
                                     type="email"
                                     value={email}
@@ -111,7 +111,7 @@ export const GiftLicenseModal: React.FC<GiftLicenseModalProps> = ({
                                 Message (Optional)
                             </label>
                             <div className="relative">
-                                <MessageSquare className="absolute left-3 top-3 w-5 h-5 text-paragraph opacity-40" />
+                                <MessageSquare className="absolute left-3 top-3 w-5 h-5 text-muted" />
                                 <textarea
                                     value={message}
                                     onChange={(e) => setMessage(e.target.value)}
@@ -124,14 +124,14 @@ export const GiftLicenseModal: React.FC<GiftLicenseModalProps> = ({
 
                         {/* Error Message */}
                         {error && (
-                            <p className="text-sm text-red-600 dark:text-red-400">
+                            <p className="text-sm text-danger dark:text-danger">
                                 {error}
                             </p>
                         )}
 
                         {/* Info */}
                         <div className="p-3 bg-[var(--palette-background)] rounded-lg">
-                            <p className="text-xs text-paragraph opacity-60">
+                            <p className="text-xs text-muted">
                                 The recipient will receive an email with instructions on how to redeem this license.
                             </p>
                         </div>
@@ -148,7 +148,7 @@ export const GiftLicenseModal: React.FC<GiftLicenseModalProps> = ({
                         </button>
                         <button
                             type="submit"
-                            className="flex-1 px-4 py-2.5 rounded-lg bg-[var(--palette-primary)] text-[var(--decorator-color)] hover:opacity-90 transition-opacity font-medium"
+                            className="flex-1 px-4 py-2.5 rounded-lg bg-[var(--palette-primary)] text-on-primary hover:opacity-90 transition-opacity font-medium"
                         >
                             Send Gift
                         </button>

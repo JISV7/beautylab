@@ -202,7 +202,7 @@ export default function MyCoursesPage() {
     const getStatusBadge = (course: UserCourse) => {
         if (course.access_state === 'completed') {
             return (
-                <span className="px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
+                <span className="px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-success dark:bg-green-900/30 dark:text-success">
                     <CheckCircle className="w-3 h-3 inline mr-1" />
                     Completado
                 </span>
@@ -211,7 +211,7 @@ export default function MyCoursesPage() {
 
         if (course.access_state === 'in_progress') {
             return (
-                <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
+                <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-info dark:bg-blue-900/30 dark:text-info">
                     <PlayCircle className="w-3 h-3 inline mr-1" />
                     En progreso
                 </span>
@@ -220,7 +220,7 @@ export default function MyCoursesPage() {
 
         if (course.access_state === 'ready_to_redeem') {
             return (
-                <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
+                <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-info dark:bg-blue-900/30 dark:text-info">
                     <Key className="w-3 h-3 inline mr-1" />
                     Listo para canjear
                 </span>
@@ -229,7 +229,7 @@ export default function MyCoursesPage() {
 
         if (course.access_state === 'unavailable') {
             return (
-                <span className="px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400">
+                <span className="px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-danger dark:bg-red-900/30 dark:text-danger">
                     <AlertTriangle className="w-3 h-3 inline mr-1" />
                     Sin acceso
                 </span>
@@ -237,7 +237,7 @@ export default function MyCoursesPage() {
         }
 
         return (
-            <span className="px-3 py-1 rounded-full text-xs font-bold bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400">
+            <span className="px-3 py-1 rounded-full text-xs font-bold bg-yellow-100 text-warning dark:bg-yellow-900/30 dark:text-warning">
                 <Clock className="w-3 h-3 inline mr-1" />
                 {course.is_fully_paid
                     ? 'Pago en revisión'
@@ -366,12 +366,12 @@ export default function MyCoursesPage() {
                 {loadError && (
                     <div className="mb-6 flex items-start justify-between gap-3 rounded-xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20 p-4">
                         <div className="flex items-start gap-3">
-                            <AlertTriangle className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
+                            <AlertTriangle className="w-5 h-5 text-danger dark:text-danger flex-shrink-0 mt-0.5" />
                             <p className="text-sm text-paragraph">{loadError}</p>
                         </div>
                         <button
                             onClick={() => void fetchCourses()}
-                            className="inline-flex items-center gap-1.5 text-sm font-bold text-red-700 dark:text-red-400 whitespace-nowrap"
+                            className="inline-flex items-center gap-1.5 text-sm font-bold text-danger dark:text-danger whitespace-nowrap"
                         >
                             <RefreshCw size={15} />
                             Reintentar
@@ -382,7 +382,7 @@ export default function MyCoursesPage() {
                 {actionError && (
                     <div className="mb-6 flex items-start justify-between gap-3 rounded-xl border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-900/20 p-4">
                         <div className="flex items-start gap-3">
-                            <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+                            <AlertTriangle className="w-5 h-5 text-warning dark:text-warning flex-shrink-0 mt-0.5" />
                             <p className="text-sm text-paragraph">{actionError}</p>
                         </div>
                         <button
@@ -410,7 +410,7 @@ export default function MyCoursesPage() {
 
                 {/* Results Count */}
                 <div className="mb-6 mt-4 flex items-center justify-between">
-                    <p className="text-paragraph opacity-60">
+                    <p className="text-muted">
                         Mostrando{' '}
                         <span className="font-bold text-paragraph">
                             {filteredCourses.length}
@@ -423,7 +423,7 @@ export default function MyCoursesPage() {
                     <div className="palette-surface palette-border border rounded-xl p-8 text-center">
                         <Book className="w-16 h-16 mx-auto mb-4 opacity-50" />
                         <p className="text-paragraph font-semibold">Aún no tienes cursos.</p>
-                        <p className="text-paragraph opacity-75 text-sm mt-2">
+                        <p className="text-muted text-sm mt-2">
                             Cuando compres un curso, aparecerá aquí. También puedes canjear
                             una licencia si ya tienes tu código.
                         </p>
@@ -441,7 +441,7 @@ export default function MyCoursesPage() {
                                 setCategoryFilter('');
                                 setIncludeChildren(false);
                             }}
-                            className="mt-4 text-sm font-bold text-[var(--palette-primary)] hover:opacity-75"
+                            className="mt-4 text-sm font-bold text-link hover:opacity-75"
                         >
                             Limpiar filtros
                         </button>
@@ -467,14 +467,14 @@ export default function MyCoursesPage() {
                                                 className="w-full h-full object-cover"
                                             />
                                         ) : (
-                                            <Book className="w-16 h-16 text-primary opacity-50" />
+                                            <Book className="w-16 h-16 text-link opacity-50" />
                                         )}
                                     </div>
 
                                     {/* Course Info */}
                                     <div className="p-4 flex flex-col flex-1">
                                         {course.category_name && (
-                                            <p className="text-[11px] font-bold uppercase tracking-wider text-[var(--palette-primary)] mb-1.5">
+                                            <p className="text-[11px] font-bold uppercase tracking-wider text-link mb-1.5">
                                                 {course.category_name}
                                             </p>
                                         )}
@@ -489,7 +489,7 @@ export default function MyCoursesPage() {
                                         {course.has_access && (
                                             <div className="mb-4">
                                                 <div className="flex items-center justify-between text-sm mb-1.5">
-                                                    <span className="text-paragraph opacity-75">
+                                                    <span className="text-muted">
                                                         Avance del curso
                                                     </span>
                                                     <span className="font-bold">
@@ -519,7 +519,7 @@ export default function MyCoursesPage() {
                                                     />
                                                 </div>
                                                 {isCompleted && (
-                                                    <p className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-green-700 dark:text-green-400">
+                                                    <p className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-success dark:text-success">
                                                         <CheckCircle size={13} />
                                                         Curso completado
                                                     </p>
@@ -531,7 +531,7 @@ export default function MyCoursesPage() {
                                         {!course.is_fully_paid && (
                                             <div className="mb-4">
                                                 <div className="flex items-center justify-between gap-2 text-xs mb-1.5">
-                                                    <span className="text-paragraph opacity-75">
+                                                    <span className="text-muted">
                                                         Progreso de pago
                                                     </span>
                                                     <span className="font-medium text-right">
@@ -566,8 +566,8 @@ export default function MyCoursesPage() {
                                                     )}
                                                 >
                                                     <div className="flex items-center gap-2">
-                                                        <Gift className="w-4 h-4 text-paragraph opacity-50" />
-                                                        <span className="text-sm font-semibold text-paragraph opacity-75">
+                                                        <Gift className="w-4 h-4 text-muted" />
+                                                        <span className="text-sm font-semibold text-muted">
                                                             Licencias ({course.licenses.length})
                                                         </span>
                                                     </div>
@@ -634,7 +634,7 @@ export default function MyCoursesPage() {
                                                                         key={status}
                                                                         className="flex items-center justify-between p-2 bg-[var(--palette-surface)] rounded-lg"
                                                                     >
-                                                                        <span className="text-sm text-paragraph opacity-75">
+                                                                        <span className="text-sm text-muted">
                                                                             {
                                                                                 statusLabels[
                                                                                     status
@@ -653,7 +653,7 @@ export default function MyCoursesPage() {
                                         )}
 
                                         {course.access_state === 'unavailable' && (
-                                            <p className="mb-4 text-xs text-paragraph opacity-70">
+                                            <p className="mb-4 text-xs text-muted">
                                                 Tus licencias para este curso no están
                                                 vigentes. Revisa el detalle o contacta a tu
                                                 administrador.
@@ -708,7 +708,7 @@ export default function MyCoursesPage() {
                                 <div className="p-2 bg-green-500/10 rounded-lg">
                                     <KeyRound
                                         size={20}
-                                        className="text-green-600 dark:text-green-400"
+                                        className="text-success dark:text-success"
                                     />
                                 </div>
                                 <h3 className="text-h4">Canjear licencia</h3>
@@ -731,7 +731,7 @@ export default function MyCoursesPage() {
                             <div className="flex items-start gap-3 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
                                 <AlertTriangle
                                     size={18}
-                                    className="text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5"
+                                    className="text-warning dark:text-warning flex-shrink-0 mt-0.5"
                                 />
                                 <p className="text-paragraph text-sm">
                                     Ingresa el código de licencia para canjearla. La licencia
@@ -762,7 +762,7 @@ export default function MyCoursesPage() {
                             </div>
 
                             {redeemError && (
-                                <p className="text-red-600 dark:text-red-400 text-sm font-medium">
+                                <p className="text-danger dark:text-danger text-sm font-medium">
                                     {redeemError}
                                 </p>
                             )}

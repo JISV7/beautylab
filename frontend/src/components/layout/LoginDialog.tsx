@@ -44,7 +44,7 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({ open, onOpenChange, on
           <button
             onClick={() => setView('login')}
             className={`flex-1 py-3 text-sm sm:text-base text-paragraph font-medium transition-colors border-b-2 ${
-              view === 'login' ? 'border-[var(--palette-primary)] text-[var(--palette-primary)]' : 'border-transparent text-[var(--text-paragraph)]'
+              view === 'login' ? 'border-[var(--palette-primary)] text-link' : 'border-transparent text-[var(--text-paragraph)]'
             }`}
           >
             Iniciar sesión
@@ -52,7 +52,7 @@ export const LoginDialog: React.FC<LoginDialogProps> = ({ open, onOpenChange, on
           <button
             onClick={() => setView('register')}
             className={`flex-1 py-3 text-sm sm:text-base text-paragraph font-medium transition-colors border-b-2 ${
-              view === 'register' ? 'border-[var(--palette-primary)] text-[var(--palette-primary)]' : 'border-transparent text-[var(--text-paragraph)]'
+              view === 'register' ? 'border-[var(--palette-primary)] text-link' : 'border-transparent text-[var(--text-paragraph)]'
             }`}
           >
             Crear cuenta

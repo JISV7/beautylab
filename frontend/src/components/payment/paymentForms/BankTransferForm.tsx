@@ -26,7 +26,7 @@ export const BankTransferForm: React.FC<PaymentFormProps> = ({
                     placeholder="Nombre del banco"
                 />
                 {errors.bank_name && (
-                    <p className="text-red-500 text-sm mt-1">{errors.bank_name}</p>
+                    <p className="text-danger text-sm mt-1">{errors.bank_name}</p>
                 )}
             </div>
 
@@ -43,7 +43,7 @@ export const BankTransferForm: React.FC<PaymentFormProps> = ({
                     placeholder="Nombre del titular de la cuenta"
                 />
                 {errors.account_holder && (
-                    <p className="text-red-500 text-sm mt-1">{errors.account_holder}</p>
+                    <p className="text-danger text-sm mt-1">{errors.account_holder}</p>
                 )}
             </div>
 
@@ -60,7 +60,7 @@ export const BankTransferForm: React.FC<PaymentFormProps> = ({
                     placeholder="Número de referencia"
                 />
                 {errors.transfer_reference && (
-                    <p className="text-red-500 text-sm mt-1">{errors.transfer_reference}</p>
+                    <p className="text-danger text-sm mt-1">{errors.transfer_reference}</p>
                 )}
             </div>
 
@@ -76,7 +76,7 @@ export const BankTransferForm: React.FC<PaymentFormProps> = ({
                     className="theme-input w-full"
                 />
                 {errors.transfer_date && (
-                    <p className="text-red-500 text-sm mt-1">{errors.transfer_date}</p>
+                    <p className="text-danger text-sm mt-1">{errors.transfer_date}</p>
                 )}
             </div>
         </div>

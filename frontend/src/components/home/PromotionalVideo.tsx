@@ -168,7 +168,7 @@ const AudioTrackSelector: React.FC<{
                         <button 
                             key={idx}
                             onClick={() => onAudioChange(track.lang)}
-                            className={`w-full text-left px-3 py-1.5 text-sm rounded transition-colors ${selectedAudio === track.lang ? 'bg-palette-primary text-white' : 'text-gray-300 hover:bg-white/10'}`}
+                            className={`w-full text-left px-3 py-1.5 text-sm rounded transition-colors ${selectedAudio === track.lang ? 'bg-palette-primary text-on-primary' : 'text-gray-300 hover:bg-white/10'}`}
                         >
                             {track.label}
                         </button>
@@ -198,7 +198,7 @@ const SubtitleSelector: React.FC<{
                     <p className="text-[10px] uppercase font-bold text-white/40 px-3 py-1">Captions</p>
                     <button 
                         onClick={() => onSubtitleChange('none')}
-                        className={`w-full text-left px-3 py-1.5 text-sm rounded transition-colors ${selectedSubtitle === 'none' ? 'bg-palette-primary text-white' : 'text-gray-300 hover:bg-white/10'}`}
+                        className={`w-full text-left px-3 py-1.5 text-sm rounded transition-colors ${selectedSubtitle === 'none' ? 'bg-palette-primary text-on-primary' : 'text-gray-300 hover:bg-white/10'}`}
                     >
                         Off
                     </button>
@@ -206,7 +206,7 @@ const SubtitleSelector: React.FC<{
                         <button 
                             key={idx}
                             onClick={() => onSubtitleChange(sub.srcLang)}
-                            className={`w-full text-left px-3 py-1.5 text-sm rounded transition-colors ${selectedSubtitle === sub.srcLang ? 'bg-palette-primary text-white' : 'text-gray-300 hover:bg-white/10'}`}
+                            className={`w-full text-left px-3 py-1.5 text-sm rounded transition-colors ${selectedSubtitle === sub.srcLang ? 'bg-palette-primary text-on-primary' : 'text-gray-300 hover:bg-white/10'}`}
                         >
                             {sub.label}
                         </button>

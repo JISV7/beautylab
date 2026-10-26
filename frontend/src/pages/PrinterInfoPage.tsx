@@ -127,7 +127,7 @@ export default function PrinterInfoPage() {
         <>
           Are you sure you want to delete <strong>"{printer.businessName}"</strong>?
           <br />
-          <span className="text-red-600 dark:text-red-400 mt-2 block">
+          <span className="text-danger dark:text-danger mt-2 block">
             This action cannot be undone.
           </span>
         </>

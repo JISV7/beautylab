@@ -165,7 +165,7 @@ const CoursePlayerUI: React.FC<CourseVideoPlayerProps> = ({
             {hasError && (
                 <div className="absolute inset-0 flex items-center justify-center bg-black/80 p-6 text-center">
                     <div>
-                        <AlertTriangle className="w-10 h-10 mx-auto mb-3 text-amber-400" />
+                        <AlertTriangle className="w-10 h-10 mx-auto mb-3 text-warning" />
                         <p className="text-white font-semibold">
                             No se pudo cargar el video.
                         </p>

@@ -233,7 +233,7 @@ export const CompanyForm: React.FC<CompanyFormProps> = ({
             <button
               type="button"
               onClick={onCancel}
-              className="text-paragraph hover:text-primary transition-colors"
+              className="text-paragraph hover:text-link transition-colors"
             >
               <X className="w-6 h-6" />
             </button>
@@ -255,7 +255,7 @@ export const CompanyForm: React.FC<CompanyFormProps> = ({
                   Business Name (Razón Social) *
                 </label>
                 <div className="relative">
-                  <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-paragraph opacity-75" />
+                  <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted" />
                   <input
                     type="text"
                     name="businessName"
@@ -310,7 +310,7 @@ export const CompanyForm: React.FC<CompanyFormProps> = ({
                 </div>
 
                 <div className="relative">
-                  <FileText className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-paragraph opacity-75" />
+                  <FileText className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted" />
                   <input
                     type="text"
                     name="rif"
@@ -328,16 +328,16 @@ export const CompanyForm: React.FC<CompanyFormProps> = ({
                     disabled={saving}
                   />
                   {rifValid && (
-                    <CheckCircle className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-green-500" />
+                    <CheckCircle className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-success" />
                   )}
                   {rifError && (
-                    <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-red-500" />
+                    <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-danger" />
                   )}
                 </div>
 
                 {/* RIF validation messages */}
                 {rifError && (
-                  <p className="text-red-600 dark:text-red-400 mt-1 text-[0.875em] text-paragraph">
+                  <p className="text-danger dark:text-danger mt-1 text-[0.875em] text-paragraph">
                     {rifError}
                   </p>
                 )}
@@ -385,7 +385,7 @@ export const CompanyForm: React.FC<CompanyFormProps> = ({
                 )}
 
                 {!rifError && rifValid && formData.rif && (
-                  <p className="text-green-600 dark:text-green-400 mt-1 text-[0.875em] text-paragraph">
+                  <p className="text-success dark:text-success mt-1 text-[0.875em] text-paragraph">
                     RIF is valid
                   </p>
                 )}
@@ -396,7 +396,7 @@ export const CompanyForm: React.FC<CompanyFormProps> = ({
                   Fiscal Address (Domicilio Fiscal) *
                 </label>
                 <div className="relative">
-                  <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-paragraph opacity-75" />
+                  <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted" />
                   <textarea
                     name="fiscalAddress"
                     value={formData.fiscalAddress}
@@ -416,7 +416,7 @@ export const CompanyForm: React.FC<CompanyFormProps> = ({
                     Phone *
                   </label>
                   <div className="relative">
-                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-paragraph opacity-75" />
+                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted" />
                     <input
                       type="tel"
                       name="phone"
@@ -434,7 +434,7 @@ export const CompanyForm: React.FC<CompanyFormProps> = ({
                     Email
                   </label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-paragraph opacity-75" />
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted" />
                     <input
                       type="email"
                       name="email"
@@ -479,7 +479,7 @@ export const CompanyForm: React.FC<CompanyFormProps> = ({
                 {/* Upload Section */}
                 <div className="flex items-start gap-3">
                   <div className="relative flex-1">
-                    <ImageIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-paragraph opacity-75" />
+                    <ImageIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted" />
                     <input
                       type="url"
                       name="logoUrl"
@@ -515,13 +515,13 @@ export const CompanyForm: React.FC<CompanyFormProps> = ({
 
                 {/* Upload Status */}
                 {uploadSuccess && (
-                  <p className="text-green-600 dark:text-green-400 mt-2 text-[0.875em] text-paragraph flex items-center gap-1">
+                  <p className="text-success dark:text-success mt-2 text-[0.875em] text-paragraph flex items-center gap-1">
                     <CheckCircle className="w-4 h-4" />
                     Logo uploaded successfully!
                   </p>
                 )}
                 {uploadError && (
-                  <p className="text-red-600 dark:text-red-400 mt-2 text-[0.875em] text-paragraph">
+                  <p className="text-danger dark:text-danger mt-2 text-[0.875em] text-paragraph">
                     {uploadError}
                   </p>
                 )}
@@ -535,12 +535,12 @@ export const CompanyForm: React.FC<CompanyFormProps> = ({
                     name="isActive"
                     checked={formData.isActive ?? false}
                     onChange={(e) => onChange('isActive', e.target.checked)}
-                    className="w-5 h-5 rounded border-[var(--palette-border)] text-[var(--palette-primary)] focus:ring-[var(--palette-primary)] focus:ring-2"
+                    className="w-5 h-5 rounded border-[var(--palette-border)] text-link focus:ring-[var(--palette-primary)] focus:ring-2"
                     disabled={saving}
                   />
                   <div className="flex flex-col">
                     <span className="text-paragraph font-bold">Set as Active Company</span>
-                    <span className="text-[0.75em] text-paragraph opacity-75">
+                    <span className="text-[0.75em] text-muted">
                       Only one company can be active at a time. Activating this company will deactivate others.
                     </span>
                   </div>

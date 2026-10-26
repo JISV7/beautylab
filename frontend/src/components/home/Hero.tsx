@@ -118,7 +118,7 @@ export const Hero: React.FC = () => {
               </button>
             </div>
 
-            <p className="text-paragraph text-sm opacity-70 mt-4">
+            <p className="text-muted text-sm mt-4">
               Demo guiada para equipos de RR. HH., operaciones y formación.
             </p>
 
@@ -135,7 +135,7 @@ export const Hero: React.FC = () => {
                     </div>
                     <div>
                       <dt className="text-h5 font-bold leading-tight">{stat.value}</dt>
-                      <dd className="text-paragraph text-xs sm:text-sm opacity-70 mt-1 leading-snug">
+                      <dd className="text-muted text-xs sm:text-sm mt-1 leading-snug">
                         {stat.label}
                       </dd>
                     </div>

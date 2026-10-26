@@ -44,7 +44,7 @@ export const CourseFilters: React.FC<CourseFiltersProps> = ({
                         placeholder="Search courses..."
                         value={searchQuery}
                         onChange={(e) => onSearchChange(e.target.value)}
-                        className="flex-1 min-w-0 py-2 pl-2 pr-4 bg-transparent text-paragraph placeholder:text-paragraph placeholder:opacity-60 focus:outline-none"
+                        className="flex-1 min-w-0 py-2 pl-2 pr-4 bg-transparent text-paragraph placeholder:text-muted focus:outline-none"
                     />
                 </div>
             </div>
@@ -83,8 +83,8 @@ export const CourseFilters: React.FC<CourseFiltersProps> = ({
                         onClick={() => onIncludeChildrenChange(!includeChildren)}
                         className={`w-full py-2 px-3 rounded-lg border font-semibold text-sm transition-all flex items-center justify-center gap-2 ${
                             includeChildren
-                                ? 'bg-[var(--palette-primary)] text-[var(--decorator-color)] border-[var(--palette-primary)]'
-                                : 'bg-[var(--palette-background)] text-paragraph opacity-60 border-[var(--palette-border)]'
+                                ? 'bg-[var(--palette-primary)] text-on-primary border-[var(--palette-primary)]'
+                                : 'bg-[var(--palette-background)] text-muted border-[var(--palette-border)]'
                         }`}
                         aria-label="Toggle include subcategories"
                         aria-pressed={includeChildren}

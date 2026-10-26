@@ -178,7 +178,7 @@ export const PrinterForm: React.FC<PrinterFormProps> = ({
             <button
               type="button"
               onClick={onCancel}
-              className="text-paragraph hover:text-primary transition-colors"
+              className="text-paragraph hover:text-link transition-colors"
             >
               <X className="w-6 h-6" />
             </button>
@@ -200,7 +200,7 @@ export const PrinterForm: React.FC<PrinterFormProps> = ({
                   Business Name (Razón Social) *
                 </label>
                 <div className="relative">
-                  <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-paragraph opacity-75" />
+                  <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted" />
                   <input
                     type="text"
                     name="businessName"
@@ -255,7 +255,7 @@ export const PrinterForm: React.FC<PrinterFormProps> = ({
                 </div>
 
                 <div className="relative">
-                  <FileText className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-paragraph opacity-75" />
+                  <FileText className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted" />
                   <input
                     type="text"
                     name="rif"
@@ -273,16 +273,16 @@ export const PrinterForm: React.FC<PrinterFormProps> = ({
                     disabled={saving}
                   />
                   {rifValid && (
-                    <CheckCircle className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-green-500" />
+                    <CheckCircle className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-success" />
                   )}
                   {rifError && (
-                    <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-red-500" />
+                    <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-danger" />
                   )}
                 </div>
 
                 {/* RIF validation messages */}
                 {rifError && (
-                  <p className="text-red-600 dark:text-red-400 mt-1 text-[0.875em] text-paragraph">
+                  <p className="text-danger dark:text-danger mt-1 text-[0.875em] text-paragraph">
                     {rifError}
                   </p>
                 )}
@@ -330,7 +330,7 @@ export const PrinterForm: React.FC<PrinterFormProps> = ({
                 )}
 
                 {!rifError && rifValid && formData.rif && (
-                  <p className="text-green-600 dark:text-green-400 mt-1 text-[0.875em] text-paragraph">
+                  <p className="text-success dark:text-success mt-1 text-[0.875em] text-paragraph">
                     RIF is valid
                   </p>
                 )}
@@ -342,7 +342,7 @@ export const PrinterForm: React.FC<PrinterFormProps> = ({
                   Authorization Providence (Providencia Administrativa) *
                 </label>
                 <div className="relative">
-                  <FileText className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-paragraph opacity-75" />
+                  <FileText className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted" />
                   <input
                     type="text"
                     name="authorizationProvidence"
@@ -354,7 +354,7 @@ export const PrinterForm: React.FC<PrinterFormProps> = ({
                     disabled={saving}
                   />
                 </div>
-                <p className="text-[0.75em] text-paragraph opacity-60 mt-1">
+                <p className="text-[0.75em] text-muted mt-1">
                   Example: SNAT/2023/001234
                 </p>
               </div>
@@ -365,7 +365,7 @@ export const PrinterForm: React.FC<PrinterFormProps> = ({
                   Authorization Date (Fecha de Asignación) *
                 </label>
                 <div className="relative">
-                  <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-paragraph opacity-75" />
+                  <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted" />
                   <input
                     type="text"
                     value={authorizationDate}
@@ -379,17 +379,17 @@ export const PrinterForm: React.FC<PrinterFormProps> = ({
                   />
                 </div>
                 {authorizationDate && authorizationDate.length >= 4 && (
-                  <p className="text-[0.75em] text-paragraph opacity-60 mt-1">
+                  <p className="text-[0.75em] text-muted mt-1">
                     Formatted: {authorizationDate.substring(0, 2)}/{authorizationDate.substring(2, 4)}/{authorizationDate.substring(4)}
                   </p>
                 )}
                 {authorizationDateError && (
-                  <p className="text-red-600 dark:text-red-400 mt-1 text-[0.875em] text-paragraph">
+                  <p className="text-danger dark:text-danger mt-1 text-[0.875em] text-paragraph">
                     {authorizationDateError}
                   </p>
                 )}
                 {!authorizationDateError && authorizationDate.length === 8 && (
-                  <p className="text-green-600 dark:text-green-400 mt-1 text-[0.875em] text-paragraph flex items-center gap-1">
+                  <p className="text-success dark:text-success mt-1 text-[0.875em] text-paragraph flex items-center gap-1">
                     <CheckCircle className="w-4 h-4" />
                     Valid date format
                   </p>
@@ -404,12 +404,12 @@ export const PrinterForm: React.FC<PrinterFormProps> = ({
                     name="isActive"
                     checked={formData.isActive ?? false}
                     onChange={(e) => onChange('isActive', e.target.checked)}
-                    className="w-5 h-5 rounded border-[var(--palette-border)] text-[var(--palette-primary)] focus:ring-[var(--palette-primary)] focus:ring-2"
+                    className="w-5 h-5 rounded border-[var(--palette-border)] text-link focus:ring-[var(--palette-primary)] focus:ring-2"
                     disabled={saving}
                   />
                   <div className="flex flex-col">
                     <span className="text-paragraph font-bold">Set as Active Printer</span>
-                    <span className="text-[0.75em] text-paragraph opacity-75">
+                    <span className="text-[0.75em] text-muted">
                       Only one printer can be active at a time. Activating this printer will deactivate others.
                     </span>
                   </div>

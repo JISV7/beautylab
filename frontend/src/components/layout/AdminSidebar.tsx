@@ -65,7 +65,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                                     w-full flex items-center gap-3 px-4 py-3 rounded-lg
                                     text-paragraph transition-all
                                     ${isActive
-                                        ? 'bg-palette-primary text-paragraph'
+                                        ? 'bg-palette-primary text-on-primary'
                                         : 'text-paragraph hover:bg-palette-border'
                                     }
                                 `}

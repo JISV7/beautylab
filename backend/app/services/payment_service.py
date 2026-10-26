@@ -132,6 +132,13 @@ class PaymentService:
         # Calculate total payment amount
         total_payment = sum(item.amount for item in request.payments)
 
+        # An empty payment list is only valid for a zero-total invoice. Paid
+        # invoices must always receive at least one payment.
+        if not request.payments and invoice.total > Decimal("0.00"):
+            raise PaymentAmountMismatchError(
+                "At least one payment is required for an invoice with a positive total"
+            )
+
         # Allow partial payments (total can be less than or equal to invoice total)
         if total_payment > invoice.total:
             raise PaymentAmountMismatchError(
@@ -405,6 +412,18 @@ class PaymentService:
         from app.services.invoice_service import InvoiceService
 
         logger = logging.getLogger("cursorg.email")
+
+        # A course purchase must be paid in full. The only exception is a
+        # zero-total invoice, which is finalized with an empty payment list.
+        invoice = await self._get_invoice_by_id(request.invoice_id)
+        if not invoice:
+            raise PaymentMethodNotFoundError(f"Invoice {request.invoice_id} not found")
+
+        total_payment = sum(item.amount for item in request.payments)
+        if total_payment != invoice.total:
+            raise PaymentAmountMismatchError(
+                f"Payment total ({total_payment}) does not match invoice total ({invoice.total})"
+            )
 
         # Process the split payment
         payments = await self.process_split_payment(request)

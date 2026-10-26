@@ -50,7 +50,7 @@ export const PurchaseConfirmation: React.FC<PurchaseConfirmationProps> = ({
                     Tu inscripción ha sido confirmada. Enviamos el comprobante a tu correo electrónico.
                 </p>
                 {userEmail && (
-                    <div className="flex items-center justify-center gap-2 mt-3 text-sm text-paragraph opacity-60">
+                    <div className="flex items-center justify-center gap-2 mt-3 text-sm text-muted">
                         <Mail size={14} />
                         <span>{userEmail}</span>
                     </div>
@@ -67,7 +67,7 @@ export const PurchaseConfirmation: React.FC<PurchaseConfirmationProps> = ({
                         <h2 className="text-h3 mb-1">
                             {courseName}
                         </h2>
-                        <p className="text-paragraph opacity-60">
+                        <p className="text-muted">
                             Ya tienes acceso a este curso y a todos sus materiales.
                         </p>
                     </div>
@@ -94,7 +94,7 @@ export const PurchaseConfirmation: React.FC<PurchaseConfirmationProps> = ({
             {/* Invoice Details */}
             <div className="palette-surface palette-border border rounded-xl p-6 mb-6">
                 <div className="flex items-center gap-3 mb-4">
-                    <Receipt size={24} className="text-[var(--palette-primary)]" />
+                    <Receipt size={24} className="text-link" />
                     <h2 className="text-h4 font-semibold">
                         Detalles de la factura
                     </h2>
@@ -102,7 +102,7 @@ export const PurchaseConfirmation: React.FC<PurchaseConfirmationProps> = ({
 
                 <div className="grid grid-cols-2 gap-4 mb-6">
                     <div>
-                        <p className="text-paragraph opacity-60 text-sm mb-1">
+                        <p className="text-muted text-sm mb-1">
                             Número de factura
                         </p>
                         <p className="text-h5 font-semibold">
@@ -110,11 +110,11 @@ export const PurchaseConfirmation: React.FC<PurchaseConfirmationProps> = ({
                         </p>
                     </div>
                     <div>
-                        <p className="text-paragraph opacity-60 text-sm mb-1">
+                        <p className="text-muted text-sm mb-1">
                             Fecha de compra
                         </p>
                         <div className="flex items-center gap-2">
-                            <Calendar size={16} className="text-paragraph opacity-60" />
+                            <Calendar size={16} className="text-muted" />
                             <p className="text-h5 font-semibold">
                                 {new Date(issueDate).toLocaleDateString('es-VE', {
                                     year: 'numeric',
@@ -174,7 +174,7 @@ export const PurchaseConfirmation: React.FC<PurchaseConfirmationProps> = ({
                         <span className="text-h4 font-bold">
                             Total pagado
                         </span>
-                        <span className="text-h2 font-black text-[var(--palette-primary)]">
+                        <span className="text-h2 font-black text-link">
                             {formatCurrency(totalPaid)}
                         </span>
                     </div>
@@ -198,7 +198,7 @@ export const PurchaseConfirmation: React.FC<PurchaseConfirmationProps> = ({
                                         {payment.method}
                                     </p>
                                     {payment.reference && (
-                                        <p className="text-sm text-paragraph opacity-60">
+                                        <p className="text-sm text-muted">
                                             Ref: {payment.reference}
                                         </p>
                                     )}
@@ -219,7 +219,7 @@ export const PurchaseConfirmation: React.FC<PurchaseConfirmationProps> = ({
                 </h2>
                 <ol className="space-y-3 text-paragraph">
                     <li className="flex items-start gap-3">
-                        <span className="w-6 h-6 rounded-full bg-[var(--palette-primary)] text-white flex items-center justify-center flex-shrink-0 text-sm font-bold">
+                        <span className="w-6 h-6 rounded-full bg-[var(--palette-primary)] text-on-primary flex items-center justify-center flex-shrink-0 text-sm font-bold">
                             1
                         </span>
                         <span>
@@ -227,7 +227,7 @@ export const PurchaseConfirmation: React.FC<PurchaseConfirmationProps> = ({
                         </span>
                     </li>
                     <li className="flex items-start gap-3">
-                        <span className="w-6 h-6 rounded-full bg-[var(--palette-primary)] text-white flex items-center justify-center flex-shrink-0 text-sm font-bold">
+                        <span className="w-6 h-6 rounded-full bg-[var(--palette-primary)] text-on-primary flex items-center justify-center flex-shrink-0 text-sm font-bold">
                             2
                         </span>
                         <span>
@@ -235,7 +235,7 @@ export const PurchaseConfirmation: React.FC<PurchaseConfirmationProps> = ({
                         </span>
                     </li>
                     <li className="flex items-start gap-3">
-                        <span className="w-6 h-6 rounded-full bg-[var(--palette-primary)] text-white flex items-center justify-center flex-shrink-0 text-sm font-bold">
+                        <span className="w-6 h-6 rounded-full bg-[var(--palette-primary)] text-on-primary flex items-center justify-center flex-shrink-0 text-sm font-bold">
                             3
                         </span>
                         <span>
@@ -246,9 +246,9 @@ export const PurchaseConfirmation: React.FC<PurchaseConfirmationProps> = ({
             </div>
 
             {/* Support Info */}
-            <div className="text-center text-paragraph opacity-60">
+            <div className="text-center text-muted">
                 <p>¿Necesitas ayuda? Escríbenos a nuestro equipo de soporte:</p>
-                <p className="font-medium text-[var(--palette-primary)]">
+                <p className="font-medium text-link">
                     soporte@cursorg.ve
                 </p>
             </div>

@@ -66,7 +66,7 @@ export const ExploreCard: React.FC<ExploreCardProps> = ({ course, onViewDetails 
 
                 {/* Placeholder when no image */}
                 <div className={`w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-800 ${course.image_url ? 'hidden' : ''}`}>
-                    <span className="text-paragraph opacity-40 text-sm">Sin imagen</span>
+                    <span className="text-muted text-sm">Sin imagen</span>
                 </div>
 
                 {/* Top-left Badges */}
@@ -77,7 +77,7 @@ export const ExploreCard: React.FC<ExploreCardProps> = ({ course, onViewDetails 
                         </span>
                     )}
                     {isFeatured && (
-                        <span className="bg-[var(--palette-primary)]/90 text-white text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm">
+                        <span className="bg-[var(--palette-primary)]/90 text-on-primary text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm">
                             Publicado
                         </span>
                     )}
@@ -102,7 +102,7 @@ export const ExploreCard: React.FC<ExploreCardProps> = ({ course, onViewDetails 
                 {/* Category */}
                 {course.category_name && (
                     <div className="mb-2">
-                        <span className="text-[var(--palette-primary)] text-[10px] font-black uppercase tracking-widest">
+                        <span className="text-link text-[10px] font-black uppercase tracking-widest">
                             {course.category_name}
                         </span>
                     </div>
@@ -114,19 +114,19 @@ export const ExploreCard: React.FC<ExploreCardProps> = ({ course, onViewDetails 
                 </h3>
 
                 {/* Description - 2 lines max */}
-                <p className="text-paragraph mb-4 flex-grow line-clamp-2 opacity-75 text-sm leading-relaxed">
+                <p className="text-muted mb-4 flex-grow line-clamp-2 text-sm leading-relaxed">
                     {course.description || 'Desarrolla nuevas capacidades con un programa diseñado para tu equipo.'}
                 </p>
 
                 {/* Meta Row: Level + Duration */}
                 <div className="flex items-center gap-2 mb-3">
                     {course.level_name && (
-                        <span className="bg-[var(--palette-primary)]/10 text-[var(--palette-primary)] font-bold px-2.5 py-0.5 rounded-md text-[11px]">
+                        <span className="bg-[var(--palette-primary)]/10 text-link font-bold px-2.5 py-0.5 rounded-md text-[11px]">
                             {course.level_name}
                         </span>
                     )}
                     {course.duration_hours && (
-                        <span className="bg-[var(--palette-primary)]/10 text-[var(--palette-primary)] font-bold px-2.5 py-0.5 rounded-md text-[11px] flex items-center gap-1">
+                        <span className="bg-[var(--palette-primary)]/10 text-link font-bold px-2.5 py-0.5 rounded-md text-[11px] flex items-center gap-1">
                             <Clock className="w-3 h-3" />
                             {course.duration_hours}h
                         </span>
@@ -136,7 +136,7 @@ export const ExploreCard: React.FC<ExploreCardProps> = ({ course, onViewDetails 
                 {/* Footer: Price & CTA */}
                 <div className="flex items-center justify-between mb-3">
                     <div>
-                        <p className="text-[10px] font-bold text-paragraph opacity-40 uppercase tracking-wider">
+                        <p className="text-[10px] font-bold text-muted uppercase tracking-wider">
                             Precio
                         </p>
                         <p className="text-lg font-black text-paragraph">

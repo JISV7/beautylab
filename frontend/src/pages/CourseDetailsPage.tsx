@@ -135,6 +135,18 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({
         fetchCompanyInfo();
     }, [courseId]);
 
+    const parsePrice = (priceStr: string | null): number => {
+        if (!priceStr) return 0;
+        const cleaned = priceStr.replace(/[^0-9.]/g, '');
+        return parseFloat(cleaned) || 0;
+    };
+
+    const courseBasePrice = parsePrice(course?.product_price ?? null);
+    const courseTaxRate = parsePrice(course?.product_tax_rate ?? null);
+    const courseTax = courseBasePrice * (courseTaxRate / 100);
+    const coursePrice = Math.round((courseBasePrice + courseTax) * 100) / 100; // Total with IVA, rounded to 2 decimals
+    const isFreeCourse = coursePrice <= 0;
+
     const handleBuy = () => {
         setPaymentStep('payment_details');
         setPurchaseError(null);
@@ -278,14 +290,17 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({
         return null;
     };
 
-    const handleSubmitPayment = async () => {
-        if (!isPaymentValid || !course) return;
+    const handleSubmitPayment = async (freePurchase = false) => {
+        if (!course) return;
+        if (!freePurchase && !isPaymentValid) return;
 
-        // Validate form before submission
-        const validationError = validatePaymentForm();
-        if (validationError) {
-            setPurchaseError(validationError);
-            return;
+        // A free course has nothing to validate: no payment method is needed.
+        if (!freePurchase) {
+            const validationError = validatePaymentForm();
+            if (validationError) {
+                setPurchaseError(validationError);
+                return;
+            }
         }
 
         setPaymentStep('processing');
@@ -295,11 +310,13 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({
             const token = localStorage.getItem('access_token');
 
             // Format payments for API - send amount as number, not string
-            const payments = splitPayments.map((entry) => ({
-                method_type: entry.method,
-                amount: entry.amount, // Send as number, not string
-                details: formatPaymentDetails(entry),
-            }));
+            const payments = freePurchase
+                ? []
+                : splitPayments.map((entry) => ({
+                    method_type: entry.method,
+                    amount: entry.amount, // Send as number, not string
+                    details: formatPaymentDetails(entry),
+                }));
 
             const response = await axios.post<PurchaseResponse>(
                 `${API_URL}/payments/purchase-course`,
@@ -417,17 +434,6 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({
         }
     };
 
-    const parsePrice = (priceStr: string | null): number => {
-        if (!priceStr) return 0;
-        const cleaned = priceStr.replace(/[^0-9.]/g, '');
-        return parseFloat(cleaned) || 0;
-    };
-
-    const courseBasePrice = parsePrice(course?.product_price ?? null);
-    const courseTaxRate = parsePrice(course?.product_tax_rate ?? null);
-    const courseTax = courseBasePrice * (courseTaxRate / 100);
-    const coursePrice = Math.round((courseBasePrice + courseTax) * 100) / 100; // Total with IVA, rounded to 2 decimals
-
     if (isLoading) {
         return (
             <div className="p-6">
@@ -442,7 +448,7 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({
         return (
             <div className="p-6">
                 <div className="palette-surface palette-border border rounded-xl p-8 text-center">
-                    <p className="text-red-600 dark:text-red-400 mb-4">{error || 'Curso no encontrado'}</p>
+                    <p className="text-danger dark:text-danger mb-4">{error || 'Curso no encontrado'}</p>
                     <button
                         onClick={onBack}
                         className="theme-button theme-button-secondary"
@@ -461,7 +467,7 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({
                 {onBack && (
                     <button
                         onClick={onBack}
-                        className="inline-flex items-center gap-2 text-paragraph text-paragraph hover:opacity-60 transition-opacity mb-6"
+                        className="inline-flex items-center gap-2 text-muted text-paragraph hover:text-paragraph transition-opacity mb-6"
                     >
                         <ArrowLeft size={18} />
                         Volver a explorar
@@ -488,7 +494,7 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({
             {onBack && paymentStep !== 'payment_details' && (
                 <button
                     onClick={onBack}
-                    className="inline-flex items-center gap-2 text-paragraph text-paragraph hover:opacity-60 transition-opacity mb-6"
+                    className="inline-flex items-center gap-2 text-muted text-paragraph hover:text-paragraph transition-opacity mb-6"
                 >
                     <ArrowLeft size={18} />
                     Volver a explorar
@@ -505,7 +511,7 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({
                                 <h2 className="text-h3">
                                     Completa tu compra
                                 </h2>
-                                <p className="text-paragraph opacity-60">
+                                <p className="text-muted">
                                     {course.title}
                                 </p>
                             </div>
@@ -522,22 +528,22 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({
                         <div className="p-6 space-y-6">
                             {/* Price Display with IVA breakdown */}
                             <div className="palette-surface palette-border border rounded-xl p-4 space-y-3">
-                                <div className="flex items-center justify-between text-paragraph opacity-75">
+                                <div className="flex items-center justify-between text-muted">
                                     <span className="text-sm font-medium">Precio base</span>
                                     <span className="text-sm font-medium">Bs. {courseBasePrice.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                                 </div>
-                                <div className="flex items-center justify-between text-paragraph opacity-75">
+                                <div className="flex items-center justify-between text-muted">
                                     <span className="text-sm font-medium">IVA ({courseTaxRate}%)</span>
                                     <span className="text-sm font-medium">Bs. {courseTax.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                                 </div>
                                 <div className="border-t palette-border pt-3 flex items-center justify-between">
                                     <div className="flex items-center gap-2">
-                                        <ShoppingCart size={20} className="text-[var(--palette-primary)]" />
+                                        <ShoppingCart size={20} className="text-link" />
                                         <span className="text-paragraph font-bold">
                                             Total (con IVA)
                                         </span>
                                     </div>
-                                    <span className="text-h3 font-black text-[var(--palette-primary)]">
+                                    <span className="text-h3 font-black text-link">
                                         Bs. {coursePrice.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                     </span>
                                 </div>
@@ -546,39 +552,58 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({
                             {/* Error Display */}
                             {purchaseError && (
                                 <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4">
-                                    <p className="text-red-600 dark:text-red-400 font-medium">
+                                    <p className="text-danger dark:text-danger font-medium">
                                         {purchaseError}
                                     </p>
                                 </div>
                             )}
 
-                            {/* Payment Details */}
-                            <div className="space-y-4">
-                                <div className="flex items-center gap-2 text-paragraph opacity-80">
-                                    <span>💡</span>
-                                    <span>Puedes dividir el pago entre varios métodos. Agrega otro método y asigna el monto correspondiente a cada uno.</span>
+                            {isFreeCourse ? (
+                                <div className="space-y-4">
+                                    <div className="rounded-xl border border-[var(--palette-border)] bg-[var(--palette-background)] p-4">
+                                        <p className="font-semibold text-success">
+                                            Curso sin costo
+                                        </p>
+                                        <p className="text-paragraph text-sm mt-1">
+                                            No necesitas ingresar datos de pago. Al confirmar, se generará tu licencia y podrás canjearla para comenzar el curso.
+                                        </p>
+                                    </div>
+
+                                    <button
+                                        onClick={() => handleSubmitPayment(true)}
+                                        className="theme-button theme-button-primary w-full"
+                                    >
+                                        Obtener curso gratis
+                                    </button>
                                 </div>
+                            ) : (
+                                <div className="space-y-4">
+                                    <div className="flex items-center gap-2 text-muted">
+                                        <span aria-hidden="true">💡</span>
+                                        <span>Puedes dividir el pago entre varios métodos. Agrega otro método y asigna el monto correspondiente a cada uno.</span>
+                                    </div>
 
-                                <SplitPaymentManager
-                                    totalAmount={coursePrice}
-                                    onPaymentsChange={handlePaymentsChange}
-                                    onValid={setIsPaymentValid}
-                                    companyInfo={companyInfo}
-                                />
+                                    <SplitPaymentManager
+                                        totalAmount={coursePrice}
+                                        onPaymentsChange={handlePaymentsChange}
+                                        onValid={setIsPaymentValid}
+                                        companyInfo={companyInfo}
+                                    />
 
-                                <button
-                                    onClick={handleSubmitPayment}
-                                    disabled={!isPaymentValid}
-                                    className="theme-button theme-button-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    Completar compra - Bs. {totalAllocated.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                                    {totalAllocated < coursePrice && (
-                                        <span className="block text-xs opacity-75 mt-1">
-                                            (Restante: Bs. {(coursePrice - totalAllocated).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })})
-                                        </span>
-                                    )}
-                                </button>
-                            </div>
+                                    <button
+                                        onClick={() => handleSubmitPayment()}
+                                        disabled={!isPaymentValid}
+                                        className="theme-button theme-button-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        Completar compra - Bs. {totalAllocated.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                        {totalAllocated < coursePrice && (
+                                            <span className="block text-xs opacity-75 mt-1">
+                                                (Restante: Bs. {(coursePrice - totalAllocated).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })})
+                                            </span>
+                                        )}
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -588,11 +613,11 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({
             {paymentStep === 'processing' && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
                     <div className="palette-surface palette-border border rounded-xl p-8 text-center max-w-md">
-                        <Loader2 size={48} className="animate-spin mx-auto mb-4 text-[var(--palette-primary)]" />
+                        <Loader2 size={48} className="animate-spin mx-auto mb-4 text-link" />
                         <h3 className="text-h4 mb-2">
                             Procesando pago
                         </h3>
-                        <p className="text-paragraph opacity-60">
+                        <p className="text-muted">
                             Espera mientras procesamos tu pago...
                         </p>
                     </div>
@@ -623,7 +648,7 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({
                     <h3 className="text-h4 mb-2">
                         ¿Te interesa este curso?
                     </h3>
-                    <p className="text-paragraph opacity-75 mb-4">
+                    <p className="text-muted mb-4">
                         Inicia sesión para comprar y comenzar a aprender.
                     </p>
                     <a
@@ -641,7 +666,7 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({
                         ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800'
                         : 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800'
                     }`}>
-                    <p className={addToCartError ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'}>
+                    <p className={addToCartError ? 'text-danger dark:text-danger' : 'text-success dark:text-success'}>
                         {addToCartMessage}
                     </p>
                 </div>
@@ -680,7 +705,7 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({
                         {/* Header */}
                         <div className="flex items-center gap-3 p-6 border-b border-[var(--palette-border)]">
                             <div className="p-2 bg-green-500/10 rounded-lg">
-                                <KeyRound size={20} className="text-green-600 dark:text-green-400" />
+                                <KeyRound size={20} className="text-success dark:text-success" />
                             </div>
                             <h2 className="text-h4">
                                 Canjear licencia
@@ -690,14 +715,14 @@ export const CourseDetailsPage: React.FC<CourseDetailsPageProps> = ({
                         {/* Body */}
                         <div className="p-6 space-y-4">
                             <div className="flex items-start gap-3 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
-                                <AlertTriangle size={18} className="text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+                                <AlertTriangle size={18} className="text-warning dark:text-warning flex-shrink-0 mt-0.5" />
                                 <p className="text-paragraph text-sm">
                                     Esta acción vinculará la licencia a tu cuenta. Una vez canjeada, no podrá transferirse ni regalarse a otro usuario.
                                 </p>
                             </div>
 
                             {redeemError && (
-                                <p className="text-red-600 dark:text-red-400 text-sm font-medium">
+                                <p className="text-danger dark:text-danger text-sm font-medium">
                                     {redeemError}
                                 </p>
                             )}

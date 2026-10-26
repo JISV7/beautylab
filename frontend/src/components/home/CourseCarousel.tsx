@@ -112,7 +112,7 @@ export const CourseCarousel: React.FC = () => {
                     {course.title}
                   </h3>
 
-                  <p className="text-paragraph opacity-75 mb-6 flex-grow line-clamp-3">
+                  <p className="text-muted mb-6 flex-grow line-clamp-3">
                     {course.description}
                   </p>
 

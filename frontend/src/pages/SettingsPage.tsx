@@ -71,7 +71,7 @@ export const SettingsPage: React.FC = () => {
             <div className="palette-surface palette-border border rounded-3xl p-8">
                 <div className="flex flex-col gap-3 mb-6">
                     <h1 className="text-h3 font-semibold text-paragraph">Configuración</h1>
-                    <p className="text-paragraph opacity-75 max-w-2xl">
+                    <p className="text-muted max-w-2xl">
                         Edita los datos de tu cuenta. Por ahora puedes actualizar tu nombre y domicilio fiscal.
                     </p>
                 </div>
@@ -110,11 +110,11 @@ export const SettingsPage: React.FC = () => {
                                 maxLength={10}
                             />
                             {rifError ? (
-                                <p className="text-paragraph text-red-600 dark:text-red-400 mt-1">
+                                <p className="text-paragraph text-danger dark:text-danger mt-1">
                                     {rifError}
                                 </p>
                             ) : (
-                                <p className="text-paragraph opacity-60 mt-1">
+                                <p className="text-muted mt-1">
                                     Usa el formato <code className="font-mono">V123456784</code> con dígito verificador válido.
                                 </p>
                             )}
@@ -122,24 +122,24 @@ export const SettingsPage: React.FC = () => {
                     </div>
 
                     {message && (
-                        <div className="rounded-xl border border-green-300 bg-green-50 px-4 py-3 text-sm text-green-700">
+                        <div className="rounded-xl border border-green-300 bg-green-50 px-4 py-3 text-sm text-success">
                             {message}
                         </div>
                     )}
                     {error && (
-                        <div className="rounded-xl border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-700">
+                        <div className="rounded-xl border border-red-300 bg-red-50 px-4 py-3 text-sm text-danger">
                             {error}
                         </div>
                     )}
 
                     <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                        <p className="text-paragraph opacity-75">
+                        <p className="text-muted">
                             Sesión iniciada como {user?.email ?? 'tu cuenta'}.
                         </p>
                         <button
                             type="submit"
                             disabled={isSaving}
-                            className="inline-flex items-center justify-center rounded-xl bg-palette-primary px-5 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                            className="inline-flex items-center justify-center rounded-xl bg-palette-primary px-5 py-3 text-sm font-semibold text-on-primary transition-colors hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
                         >
                             {isSaving ? 'Guardando...' : 'Guardar cambios'}
                         </button>
@@ -149,7 +149,7 @@ export const SettingsPage: React.FC = () => {
 
             <div className="palette-surface palette-border border rounded-3xl p-6">
                 <h2 className="text-h5 font-semibold text-paragraph mb-2">Más opciones próximamente</h2>
-                <p className="text-paragraph opacity-70">
+                <p className="text-muted">
                     Ampliaremos esta sección con opciones adicionales de cuenta.
                 </p>
             </div>

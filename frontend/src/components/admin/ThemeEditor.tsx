@@ -458,7 +458,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                     </button>
                     <button
                         onClick={onPublish}
-                        className="theme-button px-3 py-2 !text-[var(--decorator-color)] bg-palette-secondary hover:opacity-90 rounded-lg transition-opacity flex items-center gap-2 shrink-0"
+                        className="theme-button px-3 py-2 !text-on-primary bg-palette-secondary hover:opacity-90 rounded-lg transition-opacity flex items-center gap-2 shrink-0"
                         title="Set theme to site"
                     >
                         <span className="sm:hidden">Set theme</span>
@@ -482,15 +482,15 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                         <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
                             <div className="flex items-start gap-3">
                                 <div className="shrink-0">
-                                    <svg className="w-5 h-5 text-red-600 dark:text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <svg className="w-5 h-5 text-danger dark:text-danger" fill="currentColor" viewBox="0 0 20 20">
                                         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                                     </svg>
                                 </div>
                                 <div className="flex-1">
-                                    <h3 className="text-paragraph font-semibold text-red-800 dark:text-red-200">
+                                    <h3 className="text-paragraph font-semibold text-danger dark:text-danger">
                                         Typography Size Validation Errors
                                     </h3>
-                                    <ul className="mt-2 text-paragraph text-red-700 dark:text-red-300 list-disc list-inside space-y-1">
+                                    <ul className="mt-2 text-paragraph text-danger dark:text-danger list-disc list-inside space-y-1">
                                         {validationErrors.map((error, idx) => (
                                             <li key={idx}>{error}</li>
                                         ))}
@@ -507,7 +507,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                                 key={mode}
                                 onClick={() => onModeChange(mode)}
                                 className={`px-4 py-2 text-paragraph rounded-lg transition-colors capitalize ${activeMode === mode
-                                        ? 'bg-palette-primary !text-[var(--decorator-color)]'
+                                        ? 'bg-palette-primary !text-on-primary'
                                         : 'hover:bg-black/5 dark:hover:bg-white/5'
                                     }`}
                             >
@@ -521,7 +521,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                         <button
                             onClick={() => setActiveTab('colors')}
                             className={`pb-2 flex items-center gap-2 text-paragraph transition-colors ${activeTab === 'colors'
-                                    ? '!text-palette-primary border-b-2 border-palette-primary'
+                                    ? '!text-link border-b-2 border-palette-primary'
                                     : 'hover:text-slate-900 dark:hover:text-white'
                                 }`}
                         >
@@ -531,7 +531,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                         <button
                             onClick={() => setActiveTab('typography')}
                             className={`pb-2 flex items-center gap-2 text-paragraph transition-colors ${activeTab === 'typography'
-                                    ? '!text-palette-primary border-b-2 border-palette-primary'
+                                    ? '!text-link border-b-2 border-palette-primary'
                                     : 'hover:text-slate-900 dark:hover:text-white'
                                 }`}
                         >
@@ -541,7 +541,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                         <button
                             onClick={() => setActiveTab('loader')}
                             className={`pb-2 flex items-center gap-2 text-paragraph transition-colors ${activeTab === 'loader'
-                                    ? '!text-palette-primary border-b-2 border-palette-primary'
+                                    ? '!text-link border-b-2 border-palette-primary'
                                     : 'hover:text-slate-900 dark:hover:text-white'
                                 }`}
                         >
@@ -582,7 +582,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                             <div className="theme-card">
                                 <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-                                    <Palette className="w-5 h-5 text-palette-primary" />
+                                    <Palette className="w-5 h-5 text-link" />
                                     Tangram Loader Settings
                                 </h3>
                                 
@@ -590,7 +590,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                                     <div className="flex items-center justify-between p-4 bg-black/5 dark:bg-white/5 rounded-xl border palette-border">
                                         <div>
                                             <p className="text-paragraph font-bold">Enable Animated Loader</p>
-                                            <p className="text-sm text-paragraph opacity-70">Shows a 3D Tangram animation before loading the site.</p>
+                                            <p className="text-sm text-muted">Shows a 3D Tangram animation before loading the site.</p>
                                         </div>
                                         <button 
                                             onClick={() => setLoader(prev => ({ ...prev, enabled: !prev.enabled }))}

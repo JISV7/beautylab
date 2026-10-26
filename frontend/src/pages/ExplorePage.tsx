@@ -80,19 +80,19 @@ export const ExplorePage: React.FC = () => {
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <div className="text-center">
                             <p className="text-3xl font-black text-paragraph">{courses.length}</p>
-                            <p className="text-sm text-paragraph opacity-60">Cursos</p>
+                            <p className="text-sm text-muted">Cursos</p>
                         </div>
                         <div className="text-center">
                             <p className="text-3xl font-black text-paragraph">{categories.length}</p>
-                            <p className="text-sm text-paragraph opacity-60">Categorías</p>
+                            <p className="text-sm text-muted">Categorías</p>
                         </div>
                         <div className="text-center">
                             <p className="text-3xl font-black text-paragraph">{levels.length}</p>
-                            <p className="text-sm text-paragraph opacity-60">Niveles</p>
+                            <p className="text-sm text-muted">Niveles</p>
                         </div>
                         <div className="text-center">
                             <p className="text-3xl font-black text-paragraph">LATAM</p>
-                            <p className="text-sm text-paragraph opacity-60">Enfoque regional</p>
+                            <p className="text-sm text-muted">Enfoque regional</p>
                         </div>
                     </div>
                 </div>
@@ -115,7 +115,7 @@ export const ExplorePage: React.FC = () => {
                 {/* Results Count */}
                 {!isLoading && !error && (
                     <div className="mb-6 flex items-center justify-between">
-                        <p className="text-paragraph opacity-60">
+                        <p className="text-muted">
                             Mostrando <span className="font-bold text-paragraph">{courses.length}</span>{' '}
                             {courses.length === 1 ? 'curso' : 'cursos'}
                             {selectedCategory || selectedLevel || searchQuery ? (
@@ -130,10 +130,10 @@ export const ExplorePage: React.FC = () => {
                 {/* Error State */}
                 {error && (
                     <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-6 text-center">
-                        <p className="text-red-600 dark:text-red-400 font-bold mb-2">
+                        <p className="text-danger dark:text-danger font-bold mb-2">
                             Algo salió mal
                         </p>
-                        <p className="text-red-600/80 dark:text-red-400/80 text-sm">{error}</p>
+                        <p className="text-danger/80 dark:text-danger/80 text-sm">{error}</p>
                         <button
                             onClick={fetchCourses}
                             className="mt-4 px-6 py-2 bg-red-600 text-white rounded-lg font-bold text-sm hover:bg-red-700 transition-colors"

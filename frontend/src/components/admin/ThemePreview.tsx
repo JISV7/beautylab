@@ -2,6 +2,43 @@ import React from 'react';
 import { Eye, Edit, X } from 'lucide-react';
 import type { ThemePreviewProps } from './types';
 
+const hexToRgb = (hex: string): { r: number; g: number; b: number } | null => {
+    const raw = hex.replace('#', '');
+    if (!/^[0-9a-f]{3}$|^[0-9a-f]{6}$/i.test(raw)) return null;
+    const expanded = raw.length === 3
+        ? raw.split('').map((char) => char + char).join('')
+        : raw;
+    return {
+        r: parseInt(expanded.slice(0, 2), 16),
+        g: parseInt(expanded.slice(2, 4), 16),
+        b: parseInt(expanded.slice(4, 6), 16),
+    };
+};
+
+const luminance = (hex: string): number => {
+    const rgb = hexToRgb(hex);
+    if (!rgb) return 0;
+    const channel = (value: number) => {
+        const normalized = value / 255;
+        return normalized <= 0.03928
+            ? normalized / 12.92
+            : ((normalized + 0.055) / 1.055) ** 2.4;
+    };
+    return 0.2126 * channel(rgb.r) + 0.7152 * channel(rgb.g) + 0.0722 * channel(rgb.b);
+};
+
+const contrast = (a: string, b: string): number => {
+    const la = luminance(a);
+    const lb = luminance(b);
+    return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
+};
+
+const readableTextColor = (background: string): string => {
+    const white = '#FFFFFF';
+    const ink = '#071A2E';
+    return contrast(white, background) >= contrast(ink, background) ? white : ink;
+};
+
 interface PaletteCardProps {
     mode: 'light' | 'dark' | 'accessibility';
     theme: ThemePreviewProps['theme'];
@@ -56,7 +93,7 @@ const PaletteCard: React.FC<PaletteCardProps> = ({ mode, theme, onEdit, headerRe
                 </h3>
                 <button
                     onClick={() => onEdit(mode)}
-                    className="absolute top-4 right-4 text-sm hover:underline text-palette-primary"
+                    className="absolute top-4 right-4 text-sm hover:underline text-link"
                 >
                     Edit
                 </button>
@@ -65,20 +102,29 @@ const PaletteCard: React.FC<PaletteCardProps> = ({ mode, theme, onEdit, headerRe
                 {/* Color swatches */}
                 <div className="grid grid-cols-3 gap-2 min-w-0">
                     <div
-                        className="rounded-lg px-1 py-2 text-center break-words text-paragraph"
-                        style={{ backgroundColor: 'var(--palette-primary)' }}
+                        className="rounded-lg px-1 py-2 text-center break-words font-semibold"
+                        style={{
+                            backgroundColor: modeData.colors.primary,
+                            color: readableTextColor(modeData.colors.primary),
+                        }}
                     >
                         Primary
                     </div>
                     <div
-                        className="rounded-lg px-1 py-2 text-center break-words text-paragraph"
-                        style={{ backgroundColor: 'var(--palette-secondary)' }}
+                        className="rounded-lg px-1 py-2 text-center break-words font-semibold"
+                        style={{
+                            backgroundColor: modeData.colors.secondary,
+                            color: readableTextColor(modeData.colors.secondary),
+                        }}
                     >
                         Secondary
                     </div>
                     <div
-                        className="rounded-lg px-1 py-2 text-center break-words text-paragraph"
-                        style={{ backgroundColor: 'var(--palette-accent)' }}
+                        className="rounded-lg px-1 py-2 text-center break-words font-semibold"
+                        style={{
+                            backgroundColor: modeData.colors.accent,
+                            color: readableTextColor(modeData.colors.accent),
+                        }}
                     >
                         Accent
                     </div>

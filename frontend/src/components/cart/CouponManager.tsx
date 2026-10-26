@@ -119,7 +119,7 @@ export const CouponManager: React.FC<CouponManagerProps> = ({
                     </button>
                 </div>
                 {couponError && (
-                    <p className="text-red-500 text-sm mt-1">{couponError}</p>
+                    <p className="text-danger text-sm mt-1">{couponError}</p>
                 )}
             </div>
 
@@ -131,18 +131,18 @@ export const CouponManager: React.FC<CouponManagerProps> = ({
                             key={cp.code}
                             className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-100 dark:bg-green-900/30 border border-green-300 dark:border-green-700 rounded-full"
                         >
-                            <Tag className="w-3 h-3 text-green-600 dark:text-green-400" />
-                            <span className="text-sm font-semibold text-green-700 dark:text-green-400">
+                            <Tag className="w-3 h-3 text-success dark:text-success" />
+                            <span className="text-sm font-semibold text-success dark:text-success">
                                 {cp.code}
                             </span>
-                            <span className="text-xs text-green-600 dark:text-green-500">
+                            <span className="text-xs text-success dark:text-success">
                                 −{formatCurrency(cp.discountAmount)}
                             </span>
                             <button
                                 onClick={() => handleRemoveCoupon(cp.code)}
                                 className="ml-0.5 p-0.5 hover:bg-green-200 dark:hover:bg-green-800/50 rounded-full transition-colors"
                             >
-                                <XIcon className="w-3 h-3 text-green-600 dark:text-green-400" />
+                                <XIcon className="w-3 h-3 text-success dark:text-success" />
                             </button>
                         </div>
                     ))}

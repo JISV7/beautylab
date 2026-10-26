@@ -256,16 +256,16 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                 disabled={isLoading}
               />
               {rifValid && (
-                <CheckCircle className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-green-500" />
+                <CheckCircle className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-success" />
               )}
               {rifError && (
-                <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-red-500" />
+                <AlertCircle className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-danger" />
               )}
             </div>
             
             {/* RIF validation messages */}
             {rifError && (
-              <p className="text-paragraph text-red-600 dark:text-red-400 mt-1">
+              <p className="text-paragraph text-danger dark:text-danger mt-1">
                 {rifError}
               </p>
             )}
@@ -308,7 +308,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
             )}
 
             {!rifError && rifValid && (
-              <p className="text-paragraph text-green-600 dark:text-green-400 mt-1">
+              <p className="text-paragraph text-success dark:text-success mt-1">
                 El RIF es válido
               </p>
             )}
@@ -356,7 +356,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
               id="isContributor"
               checked={isContributor}
               onChange={(e) => setIsContributor(e.target.checked)}
-              className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary"
+              className="w-4 h-4 rounded border-gray-300 text-link focus:ring-primary"
               disabled={isLoading}
             />
             <label htmlFor="isContributor" className="text-sm text-gray-700 dark:text-gray-300">
@@ -460,14 +460,14 @@ Soy contribuyente de IVA (requiero factura con RIF)
         </div>
 
         {error && (
-          <div className="text-sm rounded-lg p-3 text-red-600 bg-red-50 dark:text-red-400 dark:bg-red-900/30 border border-red-200 dark:border-red-800">
+          <div className="text-sm rounded-lg p-3 text-danger bg-red-50 dark:text-danger dark:bg-red-900/30 border border-red-200 dark:border-red-800">
             {error}
           </div>
         )}
 
         <button
           type="submit"
-          className="w-full py-2.5 px-4 rounded-lg bg-[var(--palette-primary)] text-[var(--decorator-color)] font-semibold hover:bg-[var(--palette-secondary)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-paragraph"
+          className="w-full py-2.5 px-4 rounded-lg bg-[var(--palette-primary)] text-on-primary font-semibold hover:bg-[var(--palette-secondary)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-paragraph"
           disabled={isLoading}
         >
           {isLoading ? 'Creando cuenta...' : 'Crear cuenta'}
@@ -480,7 +480,7 @@ Soy contribuyente de IVA (requiero factura con RIF)
           ¿Ya tienes una cuenta?{' '}
           <button
             onClick={onSwitchToLogin}
-            className="text-paragraph text-palette-primary hover:opacity-80 transition-opacity"
+            className="text-paragraph text-link hover:opacity-80 transition-opacity"
           >
             Inicia sesión
           </button>

@@ -146,7 +146,7 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
                     <span className="text-paragraph">
                         Asignado
                     </span>
-                    <span className={`font-semibold ${isOverAllocated ? 'text-red-500' : 'text-paragraph'}`}>
+                    <span className={`font-semibold ${isOverAllocated ? 'text-danger' : 'text-paragraph'}`}>
                         {formatAmount(totalAllocated)}
                     </span>
                 </div>
@@ -157,9 +157,9 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
                     </span>
                     <span className={`font-bold ${
                         isOverAllocated
-                            ? 'text-red-500'
+                            ? 'text-danger'
                             : isFullyAllocated
-                            ? 'text-green-500'
+                            ? 'text-success'
                             : 'text-paragraph'
                     }`}>
                         {formatAmount(remaining)}
@@ -167,21 +167,21 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
                 </div>
 
                 {isOverAllocated && (
-                    <div className="mt-3 flex items-center gap-2 text-red-500 text-sm">
+                    <div className="mt-3 flex items-center gap-2 text-danger text-sm">
                         <AlertCircle size={16} />
                         <span>El monto asignado supera el precio del curso</span>
                     </div>
                 )}
 
                 {isFullyAllocated && !isOverAllocated && (
-                    <div className="mt-3 flex items-center gap-2 text-green-500 text-sm">
+                    <div className="mt-3 flex items-center gap-2 text-success text-sm">
                         <AlertCircle size={16} />
                         <span>✓ Monto completo asignado · Listo para continuar</span>
                     </div>
                 )}
 
                 {!isFullyAllocated && !isOverAllocated && totalAllocated > 0 && remaining > 0.001 && (
-                    <div className="mt-3 flex items-center gap-2 text-amber-500 text-sm">
+                    <div className="mt-3 flex items-center gap-2 text-warning text-sm">
                         <AlertCircle size={16} />
                         <span>
                             Quedan {formatAmount(remaining)} por asignar · se requiere el pago completo
@@ -190,7 +190,7 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
                 )}
 
                 {totalAllocated <= 0 && !isOverAllocated && (
-                    <div className="mt-3 flex items-center gap-2 text-amber-500 text-sm">
+                    <div className="mt-3 flex items-center gap-2 text-warning text-sm">
                         <AlertCircle size={16} />
                         <span>Ingresa un monto para asignar</span>
                     </div>
@@ -207,7 +207,7 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
                         {/* Header */}
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-full bg-[var(--palette-primary)] text-white flex items-center justify-center font-bold text-sm">
+                                <div className="w-8 h-8 rounded-full bg-[var(--palette-primary)] text-on-primary flex items-center justify-center font-bold text-sm">
                                     {index + 1}
                                 </div>
                                 <h3 className="text-h4 font-semibold">
@@ -217,7 +217,7 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
 
                             <button
                                 onClick={() => removePaymentMethod(payment.id)}
-                                className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                                className="p-2 text-danger hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                                 title="Eliminar método de pago"
                             >
                                 <Trash2 size={18} />
@@ -317,7 +317,7 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
                                     max={totalAmount - (totalAllocated - payment.amount)}
                                 />
                             </div>
-                            <p className="text-sm text-paragraph opacity-60 mt-1">
+                            <p className="text-sm text-muted mt-1">
                                 Disponible: {formatAmount(totalAmount - (totalAllocated - payment.amount))}
                             </p>
                         </div>
@@ -337,7 +337,7 @@ export const SplitPaymentManager: React.FC<SplitPaymentManagerProps> = ({
             {/* Add Payment Button */}
             <button
                 onClick={addPaymentMethod}
-                className="w-full py-3 px-4 border-2 border-dashed border-[var(--palette-border)] rounded-xl text-paragraph hover:border-[var(--palette-primary)] hover:text-[var(--palette-primary)] transition-colors flex items-center justify-center gap-2"
+                className="w-full py-3 px-4 border-2 border-dashed border-[var(--palette-border)] rounded-xl text-paragraph hover:border-[var(--palette-primary)] hover:text-link transition-colors flex items-center justify-center gap-2"
             >
                 <Plus size={20} />
                 <span className="font-medium">Agregar otro método de pago</span>

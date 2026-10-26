@@ -98,7 +98,7 @@ export const CoursesInProgress: React.FC<CoursesInProgressProps> = ({
                                 {course.title}
                             </h3>
 
-                            <div className="flex items-center gap-2 mb-3 theme-text-secondary">
+                            <div className="flex items-center gap-2 mb-3 theme-text-link">
                                 <Clock className="w-4 h-4" style={{ color: 'var(--decorator-color)' }} />
                                 <span className="text-sm">Siguiente: {course.nextLesson}</span>
                             </div>
@@ -111,7 +111,7 @@ export const CoursesInProgress: React.FC<CoursesInProgressProps> = ({
                                 />
                             </div>
 
-                            <div className="flex items-center justify-between text-xs theme-text-secondary mb-4">
+                            <div className="flex items-center justify-between text-xs theme-text-link mb-4">
                                 <span>{course.completedLessons}/{course.totalLessons} lecciones</span>
                                 <span>Última sesión: {course.lastAccessed}</span>
                             </div>

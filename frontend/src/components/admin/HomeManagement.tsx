@@ -539,7 +539,7 @@ export function HomeManagement() {
     if (loading) return <div className="flex h-64 items-center justify-center text-paragraph">Loading...</div>;
     if (error || !config) return (
         <div className="p-8 text-center theme-card">
-            <h2 className="text-h2 text-red-500 mb-4">Error loading configuration</h2>
+            <h2 className="text-h2 text-danger mb-4">Error loading configuration</h2>
             <p className="text-paragraph mb-4">{error || 'Configuration data is missing'}</p>
             <button
                 onClick={() => { setError(null); setLoading(true); fetchConfigs(); }}
@@ -555,13 +555,13 @@ export function HomeManagement() {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
                 <div>
                     <h1 className="text-h1 mb-2">Home Management</h1>
-                    <p className="text-paragraph opacity-70">Manage your promotional video and carousel slides.</p>
+                    <p className="text-muted">Manage your promotional video and carousel slides.</p>
                 </div>
                 <div className="flex gap-3">
                     {selectedConfig && !selectedConfig.is_active && (
                         <button
                             onClick={handleActivate}
-                            className="theme-button theme-button-secondary border-green-500 text-green-500 hover:bg-green-500/10"
+                            className="theme-button theme-button-secondary border-green-500 text-success hover:bg-green-500/10"
                         >
                             <CheckCircle2 size={20} />
                             Activate
@@ -582,7 +582,7 @@ export function HomeManagement() {
             <div className="theme-card mb-8 palette-surface border-palette-primary/20">
                 <div className="flex flex-col md:flex-row items-center justify-between gap-6">
                     <div className="flex items-center gap-4 w-full md:w-auto">
-                        <div className="p-3 rounded-xl bg-palette-primary/10 text-palette-primary">
+                        <div className="p-3 rounded-xl bg-palette-primary/10 text-link">
                             <Settings2 size={24} />
                         </div>
                         <div>
@@ -618,7 +618,7 @@ export function HomeManagement() {
                         <button
                             onClick={handleDelete}
                             disabled={!selectedConfig || selectedConfig.is_active}
-                            className={`p-2 rounded-lg transition-colors ${!selectedConfig || selectedConfig.is_active ? 'opacity-30 cursor-not-allowed' : 'hover:bg-red-500/10 text-red-500'}`}
+                            className={`p-2 rounded-lg transition-colors ${!selectedConfig || selectedConfig.is_active ? 'opacity-30 cursor-not-allowed' : 'hover:bg-red-500/10 text-danger'}`}
                             title="Delete Config"
                         >
                             <Trash2 size={20} />
@@ -643,14 +643,14 @@ export function HomeManagement() {
             <div className="flex gap-4 mb-8 border-b palette-border">
                 <button
                     onClick={() => setActiveTab('video')}
-                    className={`flex items-center gap-2 px-6 py-3 font-semibold transition-colors border-b-2 ${activeTab === 'video' ? 'border-palette-primary text-palette-primary' : 'border-transparent text-paragraph opacity-60'}`}
+                    className={`flex items-center gap-2 px-6 py-3 font-semibold transition-colors border-b-2 ${activeTab === 'video' ? 'border-palette-primary text-link' : 'border-transparent text-muted'}`}
                 >
                     <Video size={20} />
                     Promotional Video
                 </button>
                 <button
                     onClick={() => setActiveTab('carousel')}
-                    className={`flex items-center gap-2 px-6 py-3 font-semibold transition-colors border-b-2 ${activeTab === 'carousel' ? 'border-palette-primary text-palette-primary' : 'border-transparent text-paragraph opacity-60'}`}
+                    className={`flex items-center gap-2 px-6 py-3 font-semibold transition-colors border-b-2 ${activeTab === 'carousel' ? 'border-palette-primary text-link' : 'border-transparent text-muted'}`}
                 >
                     <Layout size={20} />
                     Carousel Slides
@@ -694,7 +694,7 @@ export function HomeManagement() {
                         <div className="grid md:grid-cols-2 gap-6">
                             <div className="space-y-4">
                                 <div>
-                                    <label className="text-paragraph block mb-1.5 opacity-60">Video Title</label>
+                                    <label className="text-muted block mb-1.5">Video Title</label>
                                     <input
                                         type="text"
                                         value={config.video.title}
@@ -703,7 +703,7 @@ export function HomeManagement() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="text-paragraph block mb-1.5 opacity-60">Description</label>
+                                    <label className="text-muted block mb-1.5">Description</label>
                                     <textarea
                                         value={config.video.description}
                                         onChange={(e) => setConfig({ ...config, video: { ...config.video, description: e.target.value } })}
@@ -713,11 +713,11 @@ export function HomeManagement() {
                             </div>
 
                             <div className="space-y-4">
-                                <label className="text-paragraph block mb-1.5 opacity-60">Video File</label>
+                                <label className="text-muted block mb-1.5">Video File</label>
                                 <div className="relative border-2 border-dashed palette-border rounded-2xl p-8 flex flex-col items-center justify-center gap-2 hover:bg-palette-surface transition-colors cursor-pointer overflow-hidden">
                                     {config.video.url ? (
                                         <div className="text-center w-full">
-                                            <FileVideo size={48} className="mx-auto mb-2 opacity-50 text-palette-primary" />
+                                            <FileVideo size={48} className="mx-auto mb-2 opacity-50 text-link" />
                                             <p className="text-paragraph text-xs truncate max-w-full px-4">{config.video.url}</p>
                                         </div>
                                     ) : (
@@ -729,7 +729,7 @@ export function HomeManagement() {
                                         onChange={handleVideoUpload}
                                         className="absolute inset-0 opacity-0 cursor-pointer"
                                     />
-                                    <p className="text-paragraph text-xs opacity-60">Click or drag video to upload</p>
+                                    <p className="text-muted text-xs">Click or drag video to upload</p>
                                 </div>
                             </div>
                         </div>
@@ -887,13 +887,13 @@ export function HomeManagement() {
                     <div className="theme-card space-y-6">
                         <div className="border-b border-palette-border pb-4">
                             <h3 className="text-h3">Carousel Settings</h3>
-                            <p className="text-paragraph text-sm opacity-60">Global visibility and display options for the carousel slides.</p>
+                            <p className="text-muted text-sm">Global visibility and display options for the carousel slides.</p>
                         </div>
                         
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                             {/* Control 1: Visibility */}
                             <div className="flex flex-col gap-2 p-4 rounded-xl bg-palette-background/30 border border-palette-border">
-                                <span className="text-paragraph text-xs font-semibold opacity-60">Visibility</span>
+                                <span className="text-muted text-xs font-semibold">Visibility</span>
                                 <div className="flex items-center justify-between mt-auto pt-2">
                                     <span className="text-paragraph font-medium">{config.carousel.enabled ? 'Enabled' : 'Disabled'}</span>
                                     <button
@@ -910,7 +910,7 @@ export function HomeManagement() {
 
                             {/* Control 2: Slides Per View */}
                             <div className="flex flex-col gap-2 p-4 rounded-xl bg-palette-background/30 border border-palette-border">
-                                <span className="text-paragraph text-xs font-semibold opacity-60">Slides Per View (Desktop)</span>
+                                <span className="text-muted text-xs font-semibold">Slides Per View (Desktop)</span>
                                 <select
                                     value={config.carousel.slides_per_view || 1}
                                     onChange={(e) => setConfig({
@@ -928,7 +928,7 @@ export function HomeManagement() {
 
                             {/* Control 3: Aspect Ratio */}
                             <div className="flex flex-col gap-2 p-4 rounded-xl bg-palette-background/30 border border-palette-border">
-                                <span className="text-paragraph text-xs font-semibold opacity-60">Aspect Ratio</span>
+                                <span className="text-muted text-xs font-semibold">Aspect Ratio</span>
                                 <select
                                     value={config.carousel.aspect_ratio || '16:9'}
                                     onChange={(e) => setConfig({
@@ -947,7 +947,7 @@ export function HomeManagement() {
 
                             {/* Control 4: Max Dimensions */}
                             <div className="flex flex-col gap-2 p-4 rounded-xl bg-palette-background/30 border border-palette-border">
-                                <span className="text-paragraph text-xs font-semibold opacity-60">Max Dimensions (Width × Height)</span>
+                                <span className="text-muted text-xs font-semibold">Max Dimensions (Width × Height)</span>
                                 <div className="flex items-center gap-1.5 mt-auto">
                                     <input
                                         type="number"
@@ -1025,7 +1025,7 @@ export function HomeManagement() {
                                 <div className="flex-1 grid md:grid-cols-2 gap-4 w-full">
                                     <div className="space-y-4">
                                         <div>
-                                            <label className="text-paragraph text-xs font-medium mb-1 opacity-60 block">Title</label>
+                                            <label className="text-muted text-xs font-medium mb-1 block">Title</label>
                                             <input
                                                 type="text"
                                                 value={slide.title}
@@ -1037,7 +1037,7 @@ export function HomeManagement() {
                                             />
                                         </div>
                                         <div>
-                                            <label className="text-paragraph text-xs font-medium mb-1 opacity-60 block">Description</label>
+                                            <label className="text-muted text-xs font-medium mb-1 block">Description</label>
                                             <input
                                                 type="text"
                                                 value={slide.description}
@@ -1051,7 +1051,7 @@ export function HomeManagement() {
                                     </div>
                                     <div className="space-y-4">
                                         <div>
-                                            <label className="text-paragraph text-xs font-medium mb-1 opacity-60 block">Link URL</label>
+                                            <label className="text-muted text-xs font-medium mb-1 block">Link URL</label>
                                             <input
                                                 type="text"
                                                 value={slide.link_url}
@@ -1068,7 +1068,7 @@ export function HomeManagement() {
                                                     const updated = config.carousel.slides.map(s => s.id === slide.id ? { ...s, is_active: !s.is_active } : s);
                                                     setConfig({ ...config, carousel: { ...config.carousel, slides: updated } });
                                                 }}
-                                                className={`flex items-center gap-2 text-sm font-semibold transition-colors ${slide.is_active ? 'text-green-500' : 'text-paragraph opacity-50'}`}
+                                                className={`flex items-center gap-2 text-sm font-semibold transition-colors ${slide.is_active ? 'text-success' : 'text-muted'}`}
                                             >
                                                 {slide.is_active ? <Eye size={18} /> : <EyeOff size={18} />}
                                                 {slide.is_active ? 'Visible' : 'Hidden'}

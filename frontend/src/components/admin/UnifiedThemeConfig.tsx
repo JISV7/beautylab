@@ -748,7 +748,7 @@ export const UnifiedThemeConfig: React.FC = () => {
                 <>
                     Are you sure you want to delete <strong>"{theme.name}"</strong>?
                     <br />
-                    <span className="text-red-600 dark:text-red-400 mt-2 block">
+                    <span className="text-danger dark:text-danger mt-2 block">
                         This action cannot be undone.
                     </span>
                 </>
@@ -856,14 +856,14 @@ export const UnifiedThemeConfig: React.FC = () => {
                                         placeholder="Search themes..."
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
-                                        className="flex-1 min-w-0 py-2 pl-2 pr-4 bg-transparent text-paragraph placeholder:text-paragraph placeholder:opacity-60 focus:outline-none"
+                                        className="flex-1 min-w-0 py-2 pl-2 pr-4 bg-transparent text-paragraph placeholder:text-muted focus:outline-none"
                                     />
                                     {searchQuery && (
                                         <button
                                             onClick={() => setSearchQuery('')}
                                             className="p-2 hover:bg-[var(--palette-border)] transition-colors"
                                         >
-                                            <span className="text-paragraph opacity-60">×</span>
+                                            <span className="text-muted">×</span>
                                         </button>
                                     )}
                                 </div>

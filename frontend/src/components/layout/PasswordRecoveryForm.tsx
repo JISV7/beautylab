@@ -24,7 +24,7 @@ export const PasswordRecoveryForm: React.FC<PasswordRecoveryFormProps> = ({
       <div className="space-y-5">
         <div className="text-center">
           <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 bg-[rgba(30,90,168,0.1)]">
-            <Mail className="w-8 h-8 text-[var(--palette-primary)]" />
+            <Mail className="w-8 h-8 text-link" />
           </div>
           <h2 className="text-h2 mb-2">Revisa tu correo</h2>
           <p className="text-paragraph text-sm">
@@ -73,7 +73,7 @@ export const PasswordRecoveryForm: React.FC<PasswordRecoveryFormProps> = ({
 
         <button
           type="submit"
-          className="w-full py-2.5 px-4 rounded-lg bg-[var(--palette-primary)] text-[var(--decorator-color)] font-semibold hover:bg-[var(--palette-accent)] transition-colors flex items-center justify-center gap-2 text-paragraph"
+          className="w-full py-2.5 px-4 rounded-lg bg-[var(--palette-primary)] text-on-primary font-semibold hover:bg-[var(--palette-accent)] transition-colors flex items-center justify-center gap-2 text-paragraph"
         >
           Enviar enlace
           <Send className="w-4 h-4" />

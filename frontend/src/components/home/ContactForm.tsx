@@ -69,13 +69,13 @@ export const ContactForm: React.FC = () => {
                 </div>
                 <div>
                   <h3 className="text-h5 mb-1">Atención</h3>
-                  <p className="text-paragraph opacity-75">Lunes a viernes · horario LATAM</p>
+                  <p className="text-muted">Lunes a viernes · horario LATAM</p>
                 </div>
               </div>
 
               <div className="rounded-2xl border palette-border palette-surface p-5">
                 <p className="text-sm font-semibold mb-1">¿Ya eres cliente?</p>
-                <p className="text-paragraph text-sm opacity-70">
+                <p className="text-muted text-sm">
                   Para consultas de compra o facturación, escríbenos a{' '}
                   <a
                     href="mailto:soporte@cursorg.ve"
@@ -209,7 +209,7 @@ export const ContactForm: React.FC = () => {
                 <Send className="w-4 h-4 decorator-color" aria-hidden="true" />
               </button>
 
-              <p className="text-paragraph text-xs opacity-60 text-center">
+              <p className="text-muted text-xs text-center">
                 Te responderemos en horario laboral LATAM.
               </p>
             </form>

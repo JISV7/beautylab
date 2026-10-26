@@ -49,7 +49,7 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
                     {label}
                 </h4>
             </div>
-            {expanded ? <ChevronUp className="w-5 h-5 text-slate-400" /> : <ChevronDown className="w-5 h-5 text-slate-400" />}
+            {expanded ? <ChevronUp className="w-5 h-5 text-muted" /> : <ChevronDown className="w-5 h-5 text-muted" />}
         </div>
 
         {expanded && (
@@ -76,7 +76,7 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
                                 <option key={f.id} value={f.name}>{f.name}</option>
                             ))}
                         </select>
-                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
+                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-muted">
                             <ChevronDown className="w-4 h-4" />
                         </div>
                     </div>
@@ -105,11 +105,11 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
                             }}
                         />
                         <span className={`absolute right-4 text-sm font-medium ${
-                            hasError ? 'text-red-500' : 'text-slate-500'
+                            hasError ? 'text-danger' : 'text-muted'
                         }`}>rem</span>
                     </div>
                     {hasError && minRequired && (
-                        <span className="text-xs text-red-600 dark:text-red-400 mt-1">
+                        <span className="text-xs text-danger dark:text-danger mt-1">
                             Minimum required: {minRequired.toFixed(3)}rem
                         </span>
                     )}
@@ -130,7 +130,7 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
                             value={Math.min(Math.max(style.fontWeight || 400, 100), 900)}
                             onChange={(e) => onStyleChange('fontWeight', Math.min(Math.max(parseInt(e.target.value) || 400, 100), 900))}
                         />
-                        <span className="absolute right-4 text-sm text-slate-500 font-medium">wght</span>
+                        <span className="absolute right-4 text-sm text-muted font-medium">wght</span>
                     </div>
                 </label>
 
@@ -154,7 +154,7 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
                                 }
                             }}
                         />
-                        <span className="absolute right-4 text-sm text-slate-500 font-medium">lh</span>
+                        <span className="absolute right-4 text-sm text-muted font-medium">lh</span>
                     </div>
                 </label>
 
@@ -180,7 +180,7 @@ const StyleBlock: React.FC<StyleBlockProps> = ({
                                 value={style.color}
                                 onChange={(e) => onStyleChange('color', e.target.value)}
                             />
-                            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
+                            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-muted">
                                 <Palette className="w-4 h-4" />
                             </div>
                         </div>

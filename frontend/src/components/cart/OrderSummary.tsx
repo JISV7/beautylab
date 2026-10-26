@@ -29,7 +29,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
             <h3 className="text-h3">Resumen del pedido</h3>
             <div className={`space-y-2 ${compact ? '' : 'pt-4 border-t palette-border'}`}>
                 <div className="flex justify-between text-paragraph">
-                    <span className="text-paragraph opacity-75">Subtotal</span>
+                    <span className="text-muted">Subtotal</span>
                     <span className="text-paragraph font-medium">
                         {formatCurrency(subtotal)}
                     </span>
@@ -37,18 +37,18 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
 
                 {hasCoupons && appliedCoupons.map((cp) => (
                     <div key={cp.code} className="flex justify-between text-paragraph">
-                        <span className="text-green-600 dark:text-green-400 font-medium flex items-center gap-1">
+                        <span className="text-success dark:text-success font-medium flex items-center gap-1">
                             <Tag className="w-3 h-3" />
                             {cp.code}
                         </span>
-                        <span className="text-green-600 dark:text-green-400 font-medium">
+                        <span className="text-success dark:text-success font-medium">
                             −{formatCurrency(cp.discountAmount)}
                         </span>
                     </div>
                 ))}
 
                 <div className="flex justify-between text-paragraph">
-                    <span className="text-paragraph opacity-75">IVA (16%)</span>
+                    <span className="text-muted">IVA (16%)</span>
                     <span className="text-paragraph font-medium">
                         {hasCoupons ? formatCurrency(
                             Math.round(Math.max(0, parseFloat(subtotal) - appliedCoupons.reduce((s, c) => s + c.discountAmount, 0)) * 0.16 * 100) / 100
@@ -58,7 +58,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
 
                 <div className="flex justify-between text-h4 pt-3 border-t palette-border">
                     <span className="text-h4 font-bold">Total</span>
-                    <span className="text-[var(--palette-primary)] font-bold">
+                    <span className="text-link font-bold">
                         {hasCoupons
                             ? formatCurrency(Math.max(0, totalAfterCoupons))
                             : formatCurrency(parseFloat(subtotal) + parseFloat(taxTotal))}

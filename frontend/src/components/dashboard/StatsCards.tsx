@@ -16,7 +16,7 @@ const StatCard: React.FC<StatCardProps> = ({ icon, title, value, subtitle }) => 
         <div>
             <p className="dashboard-stat-title text-sm font-medium">{title}</p>
             <p className="dashboard-stat-value text-2xl font-bold">{value}</p>
-            {subtitle && <p className="text-xs theme-text-secondary mt-1">{subtitle}</p>}
+            {subtitle && <p className="text-xs theme-text-link mt-1">{subtitle}</p>}
         </div>
     </div>
 );

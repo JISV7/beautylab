@@ -223,7 +223,7 @@ export default function CoursePlayerPage({ courseId, onBack }: CoursePlayerPageP
                 <div className="max-w-2xl mx-auto">
                     <button
                         onClick={handleBack}
-                        className="inline-flex items-center gap-2 text-paragraph opacity-70 hover:opacity-100 transition-opacity mb-6"
+                        className="inline-flex items-center gap-2 text-muted hover:opacity-100 transition-opacity mb-6"
                     >
                         <ArrowLeft size={18} />
                         Volver a mis cursos
@@ -231,10 +231,10 @@ export default function CoursePlayerPage({ courseId, onBack }: CoursePlayerPageP
 
                     <div className="palette-surface palette-border border rounded-2xl p-8 md:p-10 text-center">
                         <div className="w-16 h-16 mx-auto mb-5 rounded-2xl bg-amber-500/10 flex items-center justify-center">
-                            <LockKeyhole className="w-8 h-8 text-amber-600 dark:text-amber-400" />
+                            <LockKeyhole className="w-8 h-8 text-warning dark:text-warning" />
                         </div>
                         <h1 className="text-h2 mb-3">Acceso al curso</h1>
-                        <p className="text-paragraph opacity-75 max-w-lg mx-auto">
+                        <p className="text-muted max-w-lg mx-auto">
                             {error?.message ||
                                 'No pudimos verificar tu acceso a este curso.'}
                         </p>
@@ -261,7 +261,7 @@ export default function CoursePlayerPage({ courseId, onBack }: CoursePlayerPageP
             <div className="max-w-6xl mx-auto">
                 <button
                     onClick={handleBack}
-                    className="inline-flex items-center gap-2 text-paragraph opacity-70 hover:opacity-100 transition-opacity mb-5"
+                    className="inline-flex items-center gap-2 text-muted hover:opacity-100 transition-opacity mb-5"
                 >
                     <ArrowLeft size={18} />
                     Mis cursos
@@ -270,17 +270,17 @@ export default function CoursePlayerPage({ courseId, onBack }: CoursePlayerPageP
                 <div className="flex flex-col gap-4 mb-6">
                     <div className="flex flex-wrap items-center gap-2 text-xs font-bold uppercase tracking-wider">
                         {course.category_name && (
-                            <span className="text-[var(--palette-primary)]">
+                            <span className="text-link">
                                 {course.category_name}
                             </span>
                         )}
                         {course.level_name && (
-                            <span className="px-2.5 py-1 rounded-lg bg-[var(--palette-primary)]/10 text-[var(--palette-primary)]">
+                            <span className="px-2.5 py-1 rounded-lg bg-[var(--palette-primary)]/10 text-link">
                                 {course.level_name}
                             </span>
                         )}
                         {course.duration_hours && (
-                            <span className="inline-flex items-center gap-1.5 text-paragraph opacity-60">
+                            <span className="inline-flex items-center gap-1.5 text-muted">
                                 <Clock size={13} />
                                 {course.duration_hours} h
                             </span>
@@ -291,7 +291,7 @@ export default function CoursePlayerPage({ courseId, onBack }: CoursePlayerPageP
                         <div>
                             <h1 className="text-h1 mb-2">{course.title}</h1>
                             {course.description && (
-                                <p className="text-paragraph opacity-75 max-w-3xl leading-relaxed">
+                                <p className="text-muted max-w-3xl leading-relaxed">
                                     {course.description}
                                 </p>
                             )}
@@ -299,8 +299,8 @@ export default function CoursePlayerPage({ courseId, onBack }: CoursePlayerPageP
                         <div
                             className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold self-start whitespace-nowrap ${
                                 isCompleted
-                                    ? 'bg-green-500/10 text-green-700 dark:text-green-400'
-                                    : 'bg-[var(--palette-primary)]/10 text-[var(--palette-primary)]'
+                                    ? 'bg-green-500/10 text-success dark:text-success'
+                                    : 'bg-[var(--palette-primary)]/10 text-link'
                             }`}
                         >
                             {isCompleted ? (
@@ -340,7 +340,7 @@ export default function CoursePlayerPage({ courseId, onBack }: CoursePlayerPageP
 
                         <section className="palette-surface palette-border border rounded-2xl p-6">
                             <div className="flex items-center gap-2 mb-4">
-                                <BookOpen size={20} className="text-[var(--palette-primary)]" />
+                                <BookOpen size={20} className="text-link" />
                                 <h2 className="text-h4">Contenido del curso</h2>
                             </div>
                             <div className="flex items-center justify-between gap-4 rounded-xl border palette-border p-4">
@@ -348,14 +348,14 @@ export default function CoursePlayerPage({ courseId, onBack }: CoursePlayerPageP
                                     <div className="w-10 h-10 rounded-lg bg-[var(--palette-primary)]/10 flex items-center justify-center flex-shrink-0">
                                         <PlayCircle
                                             size={20}
-                                            className="text-[var(--palette-primary)]"
+                                            className="text-link"
                                         />
                                     </div>
                                     <div className="min-w-0">
                                         <p className="font-semibold text-paragraph truncate">
                                             Video del curso
                                         </p>
-                                        <p className="text-xs text-paragraph opacity-60 mt-0.5">
+                                        <p className="text-xs text-muted mt-0.5">
                                             Reproducción protegida con tu licencia
                                         </p>
                                     </div>
@@ -363,8 +363,8 @@ export default function CoursePlayerPage({ courseId, onBack }: CoursePlayerPageP
                                 <span
                                     className={`text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap ${
                                         videoUrl
-                                            ? 'bg-green-500/10 text-green-700 dark:text-green-400'
-                                            : 'bg-amber-500/10 text-amber-700 dark:text-amber-400'
+                                            ? 'bg-green-500/10 text-success dark:text-success'
+                                            : 'bg-amber-500/10 text-warning dark:text-warning'
                                     }`}
                                 >
                                     {videoUrl ? 'Disponible' : 'Pendiente'}
@@ -379,7 +379,7 @@ export default function CoursePlayerPage({ courseId, onBack }: CoursePlayerPageP
                                 <div className="flex items-center gap-2">
                                     <BarChart3
                                         size={19}
-                                        className="text-[var(--palette-primary)]"
+                                        className="text-link"
                                     />
                                     <h2 className="font-bold text-paragraph">Tu progreso</h2>
                                 </div>
@@ -406,7 +406,7 @@ export default function CoursePlayerPage({ courseId, onBack }: CoursePlayerPageP
                                 />
                             </div>
 
-                            <div className="mt-4 flex items-center gap-2 text-xs text-paragraph opacity-65 min-h-5">
+                            <div className="mt-4 flex items-center gap-2 text-xs text-muted min-h-5">
                                 {saveState === 'saving' && (
                                     <>
                                         <Loader2 size={13} className="animate-spin" />
@@ -420,7 +420,7 @@ export default function CoursePlayerPage({ courseId, onBack }: CoursePlayerPageP
                                     </>
                                 )}
                                 {saveState === 'error' && (
-                                    <span className="text-amber-600 dark:text-amber-400">
+                                    <span className="text-warning dark:text-warning">
                                         No se pudo guardar el avance. Se reintentará al continuar.
                                     </span>
                                 )}
@@ -446,20 +446,20 @@ export default function CoursePlayerPage({ courseId, onBack }: CoursePlayerPageP
                             <div className="flex items-center gap-2 mb-4">
                                 <ShieldCheck
                                     size={19}
-                                    className="text-green-600 dark:text-green-400"
+                                    className="text-success dark:text-success"
                                 />
                                 <h2 className="font-bold text-paragraph">Acceso verificado</h2>
                             </div>
                             <div className="space-y-3 text-sm">
                                 <div className="flex items-center justify-between gap-3">
-                                    <span className="text-paragraph opacity-60">Licencia</span>
+                                    <span className="text-muted">Licencia</span>
                                     <span className="font-semibold text-paragraph text-right">
                                         {formatLicenseType(data.license_type)}
                                     </span>
                                 </div>
                                 <div className="flex items-center justify-between gap-3">
-                                    <span className="text-paragraph opacity-60">Estado</span>
-                                    <span className="font-semibold text-green-700 dark:text-green-400">
+                                    <span className="text-muted">Estado</span>
+                                    <span className="font-semibold text-success dark:text-success">
                                         Activa
                                     </span>
                                 </div>
@@ -470,19 +470,19 @@ export default function CoursePlayerPage({ courseId, onBack }: CoursePlayerPageP
                             <h2 className="font-bold text-paragraph mb-4">Detalles</h2>
                             <div className="space-y-3 text-sm">
                                 <div className="flex items-center justify-between gap-3">
-                                    <span className="text-paragraph opacity-60">Categoría</span>
+                                    <span className="text-muted">Categoría</span>
                                     <span className="font-semibold text-paragraph text-right">
                                         {course.category_name || 'General'}
                                     </span>
                                 </div>
                                 <div className="flex items-center justify-between gap-3">
-                                    <span className="text-paragraph opacity-60">Nivel</span>
+                                    <span className="text-muted">Nivel</span>
                                     <span className="font-semibold text-paragraph text-right">
                                         {course.level_name || 'Todos los niveles'}
                                     </span>
                                 </div>
                                 <div className="flex items-center justify-between gap-3">
-                                    <span className="text-paragraph opacity-60">Duración</span>
+                                    <span className="text-muted">Duración</span>
                                     <span className="font-semibold text-paragraph text-right">
                                         {course.duration_hours
                                             ? `${course.duration_hours} horas`
@@ -494,7 +494,7 @@ export default function CoursePlayerPage({ courseId, onBack }: CoursePlayerPageP
                     </aside>
                 </div>
 
-                <div className="mt-8 flex items-center gap-2 text-xs text-paragraph opacity-50">
+                <div className="mt-8 flex items-center gap-2 text-xs text-muted">
                     <ChevronRight size={13} />
                     El enlace del video se entrega solo a clientes con acceso vigente.
                 </div>

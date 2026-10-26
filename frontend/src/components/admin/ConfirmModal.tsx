@@ -46,9 +46,9 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
     const getIcon = () => {
         switch (type) {
             case 'danger':
-                return <AlertTriangle className="w-6 h-6 text-red-600" />;
+                return <AlertTriangle className="w-6 h-6 text-danger" />;
             case 'success':
-                return <CheckCircle className="w-6 h-6 text-green-600" />;
+                return <CheckCircle className="w-6 h-6 text-success" />;
             default:
                 return null;
         }

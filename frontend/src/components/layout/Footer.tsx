@@ -63,7 +63,7 @@ export const Footer: React.FC = () => {
                                     <a
                                         key={item.id}
                                         href={item.href}
-                                        className="flex items-center gap-3 text-paragraph hover:palette-primary transition-colors"
+                                        className="flex items-center gap-3 text-paragraph hover:text-link transition-colors"
                                     >
                                         <Icon className="w-5 h-5 text-paragraph flex-shrink-0" />
                                         <span className="text-paragraph">{item.text}</span>
@@ -79,7 +79,7 @@ export const Footer: React.FC = () => {
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 aria-label="Cursorg en Instagram (@cursorg.ve)"
-                                className="w-10 h-10 rounded-lg palette-border border flex items-center justify-center text-paragraph hover:palette-primary hover:border-palette-primary transition-all"
+                                className="w-10 h-10 rounded-lg palette-border border flex items-center justify-center text-paragraph hover:text-link hover:border-palette-primary transition-all"
                             >
                                 <Instagram className="w-5 h-5 text-paragraph" />
                             </a>
@@ -95,7 +95,7 @@ export const Footer: React.FC = () => {
                                 <li key={link.id}>
                                     <a
                                         href={link.href}
-                                        className="text-paragraph hover:palette-primary transition-colors"
+                                        className="text-paragraph hover:text-link transition-colors"
                                     >
                                         {link.label}
                                     </a>
@@ -112,7 +112,7 @@ export const Footer: React.FC = () => {
                                 <li key={link.id}>
                                     <a
                                         href={link.href}
-                                        className="text-paragraph hover:palette-primary transition-colors"
+                                        className="text-paragraph hover:text-link transition-colors"
                                     >
                                         {link.label}
                                     </a>
@@ -132,7 +132,7 @@ export const Footer: React.FC = () => {
                                         {...(link.id === 'instagram'
                                             ? { target: '_blank', rel: 'noopener noreferrer' }
                                             : {})}
-                                        className="text-paragraph hover:palette-primary transition-colors"
+                                        className="text-paragraph hover:text-link transition-colors"
                                     >
                                         {link.label}
                                     </a>
@@ -149,7 +149,7 @@ export const Footer: React.FC = () => {
                                 <li key={link.id}>
                                     <a
                                         href={link.href}
-                                        className="text-paragraph hover:palette-primary transition-colors"
+                                        className="text-paragraph hover:text-link transition-colors"
                                         title="Contenido disponible próximamente"
                                     >
                                         {link.label}
@@ -173,13 +173,13 @@ export const Footer: React.FC = () => {
                                 href="https://instagram.com/cursorg.ve"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-paragraph hover:palette-primary transition-colors"
+                                className="text-paragraph hover:text-link transition-colors"
                             >
                                 Instagram
                             </a>
                             <a
                                 href="mailto:hola@cursorg.ve"
-                                className="text-paragraph hover:palette-primary transition-colors"
+                                className="text-paragraph hover:text-link transition-colors"
                             >
                                 hola@cursorg.ve
                             </a>

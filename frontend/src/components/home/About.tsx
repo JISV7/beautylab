@@ -51,7 +51,7 @@ export const About: React.FC = () => {
               <p className="text-sm font-semibold text-[var(--palette-secondary)] mb-2">
                 Formación que habla tu idioma y opera en tu moneda.
               </p>
-              <p className="text-paragraph text-sm opacity-70">
+              <p className="text-muted text-sm">
                 Menos fricción administrativa. Más tiempo para lo que importa: que tu
                 equipo aprenda y aplique.
               </p>
@@ -73,7 +73,7 @@ export const About: React.FC = () => {
                     />
                   </div>
                   <h3 className="text-h4 mb-2">{feature.title}</h3>
-                  <p className="text-paragraph text-sm opacity-75 leading-relaxed">
+                  <p className="text-muted text-sm leading-relaxed">
                     {feature.description}
                   </p>
                 </article>

@@ -292,7 +292,7 @@ export const CategoryManagement: React.FC = () => {
                 <>
                     ¿Seguro que quieres eliminar <strong>"{category.name}"</strong>?
                     <br />
-                    <span className="text-red-600 dark:text-red-400 mt-2 block">
+                    <span className="text-danger dark:text-danger mt-2 block">
                         Esta acción no se puede deshacer.
                     </span>
                 </>
@@ -360,7 +360,7 @@ export const CategoryManagement: React.FC = () => {
                                 placeholder="Buscar categorías por nombre, slug o descripción..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="flex-1 min-w-0 py-2 pl-2 pr-4 bg-transparent text-paragraph placeholder:text-paragraph placeholder:opacity-60 focus:outline-none"
+                                className="flex-1 min-w-0 py-2 pl-2 pr-4 bg-transparent text-paragraph placeholder:text-muted focus:outline-none"
                             />
                         </div>
                     </div>
@@ -388,15 +388,15 @@ export const CategoryManagement: React.FC = () => {
                             <table className="w-full">
                                 <thead className="bg-black/5 dark:bg-white/5 border-b palette-border">
                                     <tr>
-                                        <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap" onClick={() => handleSort('name')}>
+                                        <th className="text-left py-3 px-4 text-sm font-semibold text-muted cursor-pointer hover:text-paragraph whitespace-nowrap" onClick={() => handleSort('name')}>
                                             <div className="flex items-center">Nombre<SortIcon column="name" /></div>
                                         </th>
-                                        <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap" onClick={() => handleSort('slug')}>
+                                        <th className="text-left py-3 px-4 text-sm font-semibold text-muted cursor-pointer hover:text-paragraph whitespace-nowrap" onClick={() => handleSort('slug')}>
                                             <div className="flex items-center">Slug<SortIcon column="slug" /></div>
                                         </th>
                                         <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph">Descripción</th>
                                         <th className="text-left py-3 px-4 text-sm font-semibold text-paragraph">Categoría padre</th>
-                                        <th className="text-right py-3 px-4 text-sm font-semibold text-paragraph cursor-pointer hover:opacity-70 whitespace-nowrap" onClick={() => handleSort('order')}>
+                                        <th className="text-right py-3 px-4 text-sm font-semibold text-muted cursor-pointer hover:text-paragraph whitespace-nowrap" onClick={() => handleSort('order')}>
                                             <div className="flex items-center justify-end">Orden<SortIcon column="order" /></div>
                                         </th>
                                         <th className="text-right py-3 px-4 text-sm font-semibold text-paragraph">Acciones</th>
@@ -430,7 +430,7 @@ export const CategoryManagement: React.FC = () => {
                                                         {category.description.length > 100 && (
                                                             <button
                                                                 onClick={() => handleViewDescription(category)}
-                                                                className="text-xs text-[var(--palette-primary)] hover:underline whitespace-nowrap font-medium"
+                                                                className="text-xs text-link hover:underline whitespace-nowrap font-medium"
                                                             >
                                                                 Leer más
                                                             </button>
@@ -486,7 +486,7 @@ export const CategoryManagement: React.FC = () => {
                 <div className="space-y-4">
                     <div>
                         <label className="block text-sm font-semibold mb-2 text-paragraph">
-                            Nombre <span className="text-red-500">*</span>
+                            Nombre <span className="text-danger">*</span>
                         </label>
                         <input
                             type="text"
@@ -500,7 +500,7 @@ export const CategoryManagement: React.FC = () => {
 
                     <div>
                         <label className="block text-sm font-semibold mb-2 text-paragraph">
-                            Slug <span className="text-paragraph opacity-60">(generado automáticamente)</span>
+                            Slug <span className="text-muted">(generado automáticamente)</span>
                         </label>
                         <input
                             type="text"
@@ -622,7 +622,7 @@ export const CategoryManagement: React.FC = () => {
                             </h3>
                             <button
                                 onClick={() => setDescriptionModal(prev => ({ ...prev, isOpen: false }))}
-                                className="text-[var(--text-paragraph)] hover:text-primary transition-colors"
+                                className="text-[var(--text-paragraph)] hover:text-link transition-colors"
                             >
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

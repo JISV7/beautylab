@@ -1,125 +1,139 @@
 @import "tailwindcss";
 
-:root {
-  font-family: 'Montserrat', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-html,
-body {
-  font-family: 'Montserrat', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
-}
-
-button,
-input,
-select,
-textarea {
-  font-family: inherit;
-}
-
 @theme {
-  /* Palette colors - mapped from theme API */
+  /* Palette colors - mapped from the theme API at runtime. */
   --color-palette-primary: var(--palette-primary);
   --color-palette-secondary: var(--palette-secondary);
   --color-palette-accent: var(--palette-accent);
   --color-palette-surface: var(--palette-surface);
   --color-palette-background: var(--palette-background);
   --color-palette-border: var(--palette-border);
+
+  /* Semantic colors - resolved for readable contrast in every mode. */
+  --color-on-primary: var(--on-primary);
+  --color-on-secondary: var(--on-secondary);
+  --color-on-accent: var(--on-accent);
+  --color-link: var(--link-color);
+  --color-muted: var(--text-muted-color);
+  --color-success: var(--status-success);
+  --color-warning: var(--status-warning);
+  --color-danger: var(--status-danger);
+  --color-info: var(--status-info);
+
+  --font-sans: 'Montserrat', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
 }
 
-@layer utilities {
-  /* ==================== Table Utilities ==================== */
-  .table-row-hover:hover {
-    background-color: var(--palette-surface);
+:root {
+  font-family: 'Montserrat', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Safe defaults before the active theme is loaded. ThemeContext updates these. */
+  color-scheme: light;
+  --palette-primary: #0d2b4d;
+  --palette-secondary: #1e5aa8;
+  --palette-accent: #55c7e8;
+  --palette-background: #fbfbfe;
+  --palette-surface: #f1f5f9;
+  --palette-border: #cbd5e1;
+
+  --on-primary: #ffffff;
+  --on-secondary: #ffffff;
+  --on-accent: #071a2e;
+  --link-color: #1e5aa8;
+  --text-muted-color: #475569;
+  --status-success: #166534;
+  --status-warning: #92400e;
+  --status-danger: #b91c1c;
+  --status-info: #1d4ed8;
+  --focus-ring-color: #1e5aa8;
+
+  --text-h1-font: 'Montserrat', 'Segoe UI', system-ui, sans-serif;
+  --text-h1-size: 2.492rem;
+  --text-h1-color: #0d2b4d;
+  --text-h1-weight: 800;
+  --text-h1-line-height: 1.12;
+  --text-h2-font: 'Montserrat', 'Segoe UI', system-ui, sans-serif;
+  --text-h2-size: 2.076rem;
+  --text-h2-color: #0d2b4d;
+  --text-h2-weight: 700;
+  --text-h2-line-height: 1.18;
+  --text-h3-font: 'Montserrat', 'Segoe UI', system-ui, sans-serif;
+  --text-h3-size: 1.73rem;
+  --text-h3-color: #1e5aa8;
+  --text-h3-weight: 700;
+  --text-h3-line-height: 1.25;
+  --text-h4-font: 'Montserrat', 'Segoe UI', system-ui, sans-serif;
+  --text-h4-size: 1.44rem;
+  --text-h4-color: #0d2b4d;
+  --text-h4-weight: 600;
+  --text-h4-line-height: 1.3;
+  --text-h5-font: 'Montserrat', 'Segoe UI', system-ui, sans-serif;
+  --text-h5-size: 1.2rem;
+  --text-h5-color: #0d2b4d;
+  --text-h5-weight: 600;
+  --text-h5-line-height: 1.35;
+  --text-h6-font: 'Montserrat', 'Segoe UI', system-ui, sans-serif;
+  --text-h6-size: 1rem;
+  --text-h6-color: #0d2b4d;
+  --text-h6-weight: 600;
+  --text-h6-line-height: 1.4;
+  --text-p-font: 'Montserrat', 'Segoe UI', system-ui, sans-serif;
+  --text-p-size: 1rem;
+  --text-p-color: #0d2b4d;
+  --text-p-weight: 400;
+  --text-p-line-height: 1.65;
+  --decorator-color: #ffffff;
+  --decorator-size: 1rem;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+html.accessibility {
+  color-scheme: light;
+}
+
+@layer base {
+  html,
+  body {
+    font-family: var(--font-sans);
+    min-width: 320px;
   }
 
-  .btn-hover-surface:hover {
-    background-color: var(--palette-surface);
+  body {
+    background-color: var(--palette-background);
+    color: var(--text-p-color);
+    transition: background-color 0.2s, color 0.2s;
   }
 
-  .table-row-hover:hover .table-row-hover-title {
-    color: var(--palette-primary);
-    transition: color 0.15s;
+  button,
+  input,
+  select,
+  textarea {
+    font-family: inherit;
   }
 
-  .edit-action {
-    color: #2563eb;
-    transition: background-color 0.15s;
-  }
-  .edit-action:hover {
-    background-color: #eff6ff;
-  }
-  :where(html.dark) .edit-action:hover {
-    background-color: rgba(30, 58, 138, 0.2);
-  }
-
-  .delete-action {
-    color: #dc2626;
-    transition: background-color 0.15s;
-  }
-  .delete-action:hover {
-    background-color: #fef2f2;
-  }
-  :where(html.dark) .delete-action:hover {
-    background-color: rgba(153, 27, 27, 0.2);
+  /*
+   * Element typography lives in the base layer on purpose. Utility classes such
+   * as text-white, text-danger or text-muted must always be able to override it.
+   * The same rule applies to the composite heading and paragraph classes in
+   * the components layer below.
+   */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    text-wrap: balance;
   }
 
-  .yellow-action {
-    color: #ca8a04;
-    transition: background-color 0.15s;
-  }
-  .yellow-action:hover {
-    background-color: #fefce8;
-  }
-  :where(html.dark) .yellow-action:hover {
-    background-color: rgba(113, 63, 18, 0.2);
-  }
-
-  /* ==================== Scrollbar Utilities ==================== */
-  .scrollbar-hide {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
-  }
-  
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;  /* Chrome, Safari and Opera */
-  }
-
-  /* ==================== Color Utilities ==================== */
-  .palette-primary { background-color: var(--palette-primary); }
-  .palette-secondary { background-color: var(--palette-secondary); }
-  .palette-accent { background-color: var(--palette-accent); }
-  .palette-surface { background-color: var(--palette-surface); }
-  .palette-background { background-color: var(--palette-background); }
-  .palette-border { border-color: var(--palette-border); }
-  .bg-palette-border { background-color: var(--palette-border); }
-
-  /* ==================== Composite Typography Utilities ==================== */
-  .text-h1 { font-family: var(--text-h1-font, 'Montserrat', 'Segoe UI', system-ui, sans-serif); font-size: var(--text-h1-size); color: var(--text-h1-color); font-weight: var(--text-h1-weight); line-height: var(--text-h1-line-height); }
-  .text-h2 { font-family: var(--text-h2-font, 'Montserrat', 'Segoe UI', system-ui, sans-serif); font-size: var(--text-h2-size); color: var(--text-h2-color); font-weight: var(--text-h2-weight); line-height: var(--text-h2-line-height); }
-  .text-h3 { font-family: var(--text-h3-font, 'Montserrat', 'Segoe UI', system-ui, sans-serif); font-size: var(--text-h3-size); color: var(--text-h3-color); font-weight: var(--text-h3-weight); line-height: var(--text-h3-line-height); }
-  .text-h4 { font-family: var(--text-h4-font, 'Montserrat', 'Segoe UI', system-ui, sans-serif); font-size: var(--text-h4-size); color: var(--text-h4-color); font-weight: var(--text-h4-weight); line-height: var(--text-h4-line-height); }
-  .text-h5 { font-family: var(--text-h5-font, 'Montserrat', 'Segoe UI', system-ui, sans-serif); font-size: var(--text-h5-size); color: var(--text-h5-color); font-weight: var(--text-h5-weight); line-height: var(--text-h5-line-height); }
-  .text-h6 { font-family: var(--text-h6-font, 'Montserrat', 'Segoe UI', system-ui, sans-serif); font-size: var(--text-h6-size); color: var(--text-h6-color); font-weight: var(--text-h6-weight); line-height: var(--text-h6-line-height); }
-  .text-paragraph { font-family: var(--text-p-font, 'Montserrat', 'Segoe UI', system-ui, sans-serif); font-size: var(--text-p-size); color: var(--text-p-color); font-weight: var(--text-p-weight); line-height: var(--text-p-line-height); }
-
-  /* ==================== Decorator Utilities ==================== */
-  .decorator-color { color: var(--decorator-color); }
-  .decorator-size { width: calc(1rem * var(--decorator-size)); height: calc(1rem * var(--decorator-size)); }
-
-  /* ==================== Additional Color Utilities ==================== */
-  .text-primary { color: var(--palette-primary); }
-  .text-secondary { color: var(--palette-secondary); }
-  .text-accent { color: var(--palette-accent); }
-
-  .bg-gradient { background: linear-gradient(to bottom right, var(--palette-primary), var(--palette-secondary), var(--palette-accent)); }
-
-  /* ==================== HTML Element Defaults ==================== */
   h1 {
-    font-family: var(--text-h1-font, 'Montserrat', 'Segoe UI', system-ui, sans-serif);
+    font-family: var(--text-h1-font);
     font-size: var(--text-h1-size);
     color: var(--text-h1-color);
     font-weight: var(--text-h1-weight);
@@ -127,7 +141,7 @@ textarea {
   }
 
   h2 {
-    font-family: var(--text-h2-font, 'Montserrat', 'Segoe UI', system-ui, sans-serif);
+    font-family: var(--text-h2-font);
     font-size: var(--text-h2-size);
     color: var(--text-h2-color);
     font-weight: var(--text-h2-weight);
@@ -135,7 +149,7 @@ textarea {
   }
 
   h3 {
-    font-family: var(--text-h3-font, 'Montserrat', 'Segoe UI', system-ui, sans-serif);
+    font-family: var(--text-h3-font);
     font-size: var(--text-h3-size);
     color: var(--text-h3-color);
     font-weight: var(--text-h3-weight);
@@ -143,7 +157,7 @@ textarea {
   }
 
   h4 {
-    font-family: var(--text-h4-font, 'Montserrat', 'Segoe UI', system-ui, sans-serif);
+    font-family: var(--text-h4-font);
     font-size: var(--text-h4-size);
     color: var(--text-h4-color);
     font-weight: var(--text-h4-weight);
@@ -151,7 +165,7 @@ textarea {
   }
 
   h5 {
-    font-family: var(--text-h5-font, 'Montserrat', 'Segoe UI', system-ui, sans-serif);
+    font-family: var(--text-h5-font);
     font-size: var(--text-h5-size);
     color: var(--text-h5-color);
     font-weight: var(--text-h5-weight);
@@ -159,7 +173,7 @@ textarea {
   }
 
   h6 {
-    font-family: var(--text-h6-font, 'Montserrat', 'Segoe UI', system-ui, sans-serif);
+    font-family: var(--text-h6-font);
     font-size: var(--text-h6-size);
     color: var(--text-h6-color);
     font-weight: var(--text-h6-weight);
@@ -167,7 +181,7 @@ textarea {
   }
 
   p {
-    font-family: var(--text-p-font, 'Montserrat', 'Segoe UI', system-ui, sans-serif);
+    font-family: var(--text-p-font);
     font-size: var(--text-p-size);
     color: var(--text-p-color);
     font-weight: var(--text-p-weight);
@@ -175,18 +189,111 @@ textarea {
   }
 
   a {
-    color: var(--text-p-color);
+    color: var(--link-color);
     text-decoration: none;
     transition: color 0.2s;
   }
 
   a:hover {
-    color: var(--palette-primary);
+    color: var(--link-color);
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
   }
 
-  /* ==================== Form Elements ==================== */
+  ::placeholder {
+    color: var(--text-muted-color);
+    opacity: 1;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--focus-ring-color);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background-color: var(--palette-secondary);
+    color: var(--on-secondary);
+  }
+}
+
+@layer components {
+  /* ==================== Composite Typography ==================== */
+  .text-h1 {
+    font-family: var(--text-h1-font);
+    font-size: var(--text-h1-size);
+    color: var(--text-h1-color);
+    font-weight: var(--text-h1-weight);
+    line-height: var(--text-h1-line-height);
+  }
+
+  .text-h2 {
+    font-family: var(--text-h2-font);
+    font-size: var(--text-h2-size);
+    color: var(--text-h2-color);
+    font-weight: var(--text-h2-weight);
+    line-height: var(--text-h2-line-height);
+  }
+
+  .text-h3 {
+    font-family: var(--text-h3-font);
+    font-size: var(--text-h3-size);
+    color: var(--text-h3-color);
+    font-weight: var(--text-h3-weight);
+    line-height: var(--text-h3-line-height);
+  }
+
+  .text-h4 {
+    font-family: var(--text-h4-font);
+    font-size: var(--text-h4-size);
+    color: var(--text-h4-color);
+    font-weight: var(--text-h4-weight);
+    line-height: var(--text-h4-line-height);
+  }
+
+  .text-h5 {
+    font-family: var(--text-h5-font);
+    font-size: var(--text-h5-size);
+    color: var(--text-h5-color);
+    font-weight: var(--text-h5-weight);
+    line-height: var(--text-h5-line-height);
+  }
+
+  .text-h6 {
+    font-family: var(--text-h6-font);
+    font-size: var(--text-h6-size);
+    color: var(--text-h6-color);
+    font-weight: var(--text-h6-weight);
+    line-height: var(--text-h6-line-height);
+  }
+
+  .text-paragraph {
+    font-family: var(--text-p-font);
+    font-size: var(--text-p-size);
+    color: var(--text-p-color);
+    font-weight: var(--text-p-weight);
+    line-height: var(--text-p-line-height);
+  }
+
+  /* ==================== Brand Text Helpers ==================== */
+  .text-primary {
+    color: var(--link-color);
+  }
+
+  .text-secondary {
+    color: var(--link-color);
+  }
+
+  .text-accent {
+    color: var(--link-color);
+  }
+
+  .decorator-color {
+    color: var(--decorator-color);
+  }
+
+  /* ==================== Forms ==================== */
   .theme-input {
-    font-family: var(--text-p-font, 'Montserrat', 'Segoe UI', system-ui, sans-serif);
+    font-family: var(--text-p-font);
     font-size: var(--text-p-size);
     color: var(--text-p-color);
     background-color: var(--palette-surface);
@@ -198,18 +305,18 @@ textarea {
   }
 
   .theme-input:focus {
-    border-color: var(--palette-primary);
-    box-shadow: 0 0 0 3px rgba(30, 90, 168, 0.16);
+    border-color: var(--link-color);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus-ring-color) 22%, transparent);
   }
 
   .theme-input::placeholder {
-    color: var(--text-p-color);
-    opacity: 0.6;
+    color: var(--text-muted-color);
+    opacity: 1;
   }
 
   .theme-input:is(select) {
     appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23888'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23475569'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 0.75rem center;
     background-size: 1em;
@@ -217,15 +324,16 @@ textarea {
     cursor: pointer;
   }
 
+  /* ==================== Buttons ==================== */
   .theme-button {
-    font-family: var(--text-p-font, 'Montserrat', 'Segoe UI', system-ui, sans-serif);
+    font-family: var(--text-p-font);
     font-size: var(--text-p-size);
     font-weight: 600;
     padding: 0.75rem 1.5rem;
     border-radius: 0.5rem;
     border: none;
     cursor: pointer;
-    transition: background-color 0.2s, transform 0.2s;
+    transition: background-color 0.2s, color 0.2s, transform 0.2s;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -242,11 +350,12 @@ textarea {
 
   .theme-button-primary {
     background-color: var(--palette-primary);
-    color: var(--decorator-color);
+    color: var(--on-primary);
   }
 
   .theme-button-primary:hover {
     background-color: var(--palette-secondary);
+    color: var(--on-secondary);
   }
 
   .theme-button-primary:active {
@@ -255,14 +364,14 @@ textarea {
 
   .theme-button-secondary {
     background-color: transparent;
-    color: var(--palette-primary);
-    border: 2px solid var(--palette-primary);
+    color: var(--link-color);
+    border: 2px solid var(--link-color);
   }
 
   .theme-button-secondary:hover {
     background-color: var(--palette-secondary);
     border-color: var(--palette-secondary);
-    color: #FFFFFF;
+    color: var(--on-secondary);
   }
 
   .theme-card {
@@ -274,7 +383,7 @@ textarea {
 
   /* ==================== Auth Forms ==================== */
   .auth-input {
-    font-family: var(--text-p-font, 'Montserrat', 'Segoe UI', system-ui, sans-serif);
+    font-family: var(--text-p-font);
     font-size: var(--text-p-size);
     color: var(--text-p-color);
     background-color: var(--palette-surface);
@@ -283,18 +392,104 @@ textarea {
   }
 
   .auth-input:focus {
-    border-color: var(--palette-primary);
-    box-shadow: 0 0 0 3px rgba(30, 90, 168, 0.16);
+    border-color: var(--link-color);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus-ring-color) 22%, transparent);
   }
 
   .auth-input::placeholder {
-    color: var(--text-p-color);
-    opacity: 0.6;
+    color: var(--text-muted-color);
+    opacity: 1;
   }
 }
 
-body {
-  background-color: var(--palette-background);
-  color: var(--text-p-color);
-  transition: background-color 0.2s, color 0.2s;
+@layer utilities {
+  /* ==================== Palette Backgrounds ==================== */
+  .palette-primary {
+    background-color: var(--palette-primary);
+  }
+
+  .palette-secondary {
+    background-color: var(--palette-secondary);
+  }
+
+  .palette-accent {
+    background-color: var(--palette-accent);
+  }
+
+  .palette-surface {
+    background-color: var(--palette-surface);
+  }
+
+  .palette-background {
+    background-color: var(--palette-background);
+  }
+
+  .palette-border {
+    border-color: var(--palette-border);
+  }
+
+  .bg-palette-border {
+    background-color: var(--palette-border);
+  }
+
+  .bg-gradient {
+    background: linear-gradient(to bottom right, var(--palette-primary), var(--palette-secondary), var(--palette-accent));
+  }
+
+  /* ==================== Table Utilities ==================== */
+  .table-row-hover:hover {
+    background-color: var(--palette-surface);
+  }
+
+  .btn-hover-surface:hover {
+    background-color: var(--palette-surface);
+  }
+
+  .table-row-hover:hover .table-row-hover-title {
+    color: var(--link-color);
+    transition: color 0.15s;
+  }
+
+  .edit-action {
+    color: var(--status-info);
+    transition: background-color 0.15s;
+  }
+
+  .edit-action:hover {
+    background-color: color-mix(in srgb, var(--status-info) 12%, transparent);
+  }
+
+  .delete-action {
+    color: var(--status-danger);
+    transition: background-color 0.15s;
+  }
+
+  .delete-action:hover {
+    background-color: color-mix(in srgb, var(--status-danger) 12%, transparent);
+  }
+
+  .yellow-action {
+    color: var(--status-warning);
+    transition: background-color 0.15s;
+  }
+
+  .yellow-action:hover {
+    background-color: color-mix(in srgb, var(--status-warning) 14%, transparent);
+  }
+
+  /* ==================== Scrollbar Utilities ==================== */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* ==================== Decorator Size ==================== */
+  .decorator-size {
+    width: calc(1rem * var(--decorator-size));
+    height: calc(1rem * var(--decorator-size));
+  }
 }

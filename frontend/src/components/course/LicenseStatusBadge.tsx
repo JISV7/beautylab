@@ -10,15 +10,15 @@ export const LicenseStatusBadge: React.FC<LicenseStatusBadgeProps> = ({ status }
     const getStatusStyles = () => {
         switch (status) {
             case 'pending':
-                return 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800';
+                return 'bg-amber-100 dark:bg-amber-900/30 text-warning dark:text-warning border-amber-200 dark:border-amber-800';
             case 'active':
-                return 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800';
+                return 'bg-green-100 dark:bg-green-900/30 text-success dark:text-success border-green-200 dark:border-green-800';
             case 'redeemed':
-                return 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800';
+                return 'bg-blue-100 dark:bg-blue-900/30 text-info dark:text-info border-blue-200 dark:border-blue-800';
             case 'expired':
                 return 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-700';
             case 'cancelled':
-                return 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800';
+                return 'bg-red-100 dark:bg-red-900/30 text-danger dark:text-danger border-red-200 dark:border-red-800';
             default:
                 return 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-700';
         }

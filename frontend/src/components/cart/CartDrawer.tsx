@@ -27,7 +27,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onCheck
                 {/* Header */}
                 <div className="flex items-center justify-between p-4 border-b palette-border">
                     <div className="flex items-center gap-2">
-                        <ShoppingCart className="w-5 h-5 text-[var(--palette-primary)]" />
+                        <ShoppingCart className="w-5 h-5 text-link" />
                         <h2 className="text-lg font-bold text-paragraph">Carrito de compras</h2>
                     </div>
                     <button
@@ -49,7 +49,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onCheck
                         <div className="flex flex-col items-center justify-center h-full text-center">
                             <ShoppingCart className="w-16 h-16 text-paragraph opacity-20 mb-4" />
                             <p className="text-paragraph font-semibold">Tu carrito está vacío</p>
-                            <p className="text-paragraph opacity-60 text-sm mt-1">
+                            <p className="text-muted text-sm mt-1">
                                 Agrega cursos para comenzar.
                             </p>
                         </div>
@@ -65,10 +65,10 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onCheck
                                         <h3 className="font-semibold text-paragraph truncate">
                                             {item.product_name || 'Curso'}
                                         </h3>
-                                        <p className="text-xs text-paragraph opacity-60">
+                                        <p className="text-xs text-muted">
                                             SKU: {item.product_sku || 'No disponible'}
                                         </p>
-                                        <p className="text-sm font-bold text-[var(--palette-primary)] mt-1">
+                                        <p className="text-sm font-bold text-link mt-1">
                                             {formatCurrency(item.product_price || '0')}
                                         </p>
                                     </div>
@@ -100,7 +100,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onCheck
                                         </div>
                                         <button
                                             onClick={() => removeFromCart(item.id)}
-                                            className="p-1 text-red-500 hover:bg-red-500/10 rounded transition-colors"
+                                            className="p-1 text-danger hover:bg-red-500/10 rounded transition-colors"
                                             title="Quitar artículo"
                                         >
                                             <Trash2 className="w-4 h-4" />
@@ -115,23 +115,23 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onCheck
                 {/* Footer with Totals */}
                 {cart && cart.items.length > 0 && (
                     <div className="border-t palette-border p-4 space-y-3">
-                        <div className="flex justify-between text-sm text-paragraph opacity-75">
+                        <div className="flex justify-between text-sm text-muted">
                             <span>Subtotal</span>
                             <span>{formatCurrency(cart.subtotal)}</span>
                         </div>
-                        <div className="flex justify-between text-sm text-paragraph opacity-75">
+                        <div className="flex justify-between text-sm text-muted">
                             <span>IVA ({cart.tax_total !== '0.00' ? '16%' : '0%'})</span>
                             <span>{formatCurrency(cart.tax_total)}</span>
                         </div>
                         <div className="flex justify-between text-lg font-bold text-paragraph pt-2 border-t palette-border">
                             <span>Total</span>
-                            <span className="text-[var(--palette-primary)]">
+                            <span className="text-link">
                                 {formatCurrency(cart.total)}
                             </span>
                         </div>
                         <button
                             onClick={onCheckout}
-                            className="w-full py-3 bg-[var(--palette-primary)] text-white font-bold rounded-lg hover:opacity-90 transition-opacity"
+                            className="w-full py-3 bg-[var(--palette-primary)] text-on-primary font-bold rounded-lg hover:opacity-90 transition-opacity"
                         >
                             Ir al pago
                         </button>

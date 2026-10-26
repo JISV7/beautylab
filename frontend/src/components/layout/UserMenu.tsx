@@ -79,12 +79,12 @@ export const UserMenu: React.FC<UserMenuProps> = ({
         <div className="relative" ref={menuRef}>
             <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                aria-label="Abrir menú de usuario"
+                aria-label={`${isMenuOpen ? 'Cerrar' : 'Abrir'} menú de usuario de ${userName}`}
                 aria-expanded={isMenuOpen}
                 className="flex items-center gap-2 p-2 rounded-lg palette-surface palette-border border hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
             >
                 <div className="w-8 h-8 rounded-full bg-palette-primary/10 flex items-center justify-center">
-                    <User className="w-4 h-4 text-palette-primary" />
+                    <User className="w-4 h-4 text-link" />
                 </div>
                 <span className="text-paragraph hidden md:inline">
                     {userName}
@@ -97,14 +97,14 @@ export const UserMenu: React.FC<UserMenuProps> = ({
                         <p className="text-paragraph font-semibold whitespace-nowrap">
                             {userName}
                         </p>
-                        <p className="text-paragraph whitespace-nowrap opacity-75">
+                        <p className="text-muted whitespace-nowrap">
                             {user?.email}
                         </p>
                     </div>
                     {isOnHome ? (
                         <button
                             onClick={handleGoToDashboard}
-                            className="w-full text-left px-4 py-2 text-paragraph hover:bg-palette-primary hover:text-white flex items-center gap-2 transition-colors"
+                            className="w-full text-left px-4 py-2 text-paragraph hover:bg-palette-primary hover:text-on-primary flex items-center gap-2 transition-colors"
                         >
                             <Home className="w-4 h-4 rotate-180" />
                             Ir al panel
@@ -112,7 +112,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({
                     ) : (
                         <button
                             onClick={handleGoToHome}
-                            className="w-full text-left px-4 py-2 text-paragraph hover:bg-palette-primary hover:text-white flex items-center gap-2 transition-colors"
+                            className="w-full text-left px-4 py-2 text-paragraph hover:bg-palette-primary hover:text-on-primary flex items-center gap-2 transition-colors"
                         >
                             <Home className="w-4 h-4" />
                             Ir al inicio
@@ -121,7 +121,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({
                     {user?.isAdmin && (
                         <button
                             onClick={handleAdminPanel}
-                            className="w-full text-left px-4 py-2 text-paragraph hover:bg-palette-primary hover:text-white flex items-center gap-2 transition-colors"
+                            className="w-full text-left px-4 py-2 text-paragraph hover:bg-palette-primary hover:text-on-primary flex items-center gap-2 transition-colors"
                         >
                             <Shield className="w-4 h-4" />
                             Panel de administración
@@ -129,7 +129,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({
                     )}
                     <button
                         onClick={handleSettings}
-                        className="w-full text-left px-4 py-2 text-paragraph hover:bg-palette-primary hover:text-white flex items-center gap-2 transition-colors"
+                        className="w-full text-left px-4 py-2 text-paragraph hover:bg-palette-primary hover:text-on-primary flex items-center gap-2 transition-colors"
                     >
                         <Settings className="w-4 h-4" />
                         Configuración
@@ -139,7 +139,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({
                             setIsMenuOpen(false);
                             onLogout?.();
                         }}
-                        className="w-full text-left px-4 py-2 text-paragraph hover:bg-palette-primary hover:text-white flex items-center gap-2 transition-colors rounded-b-xl"
+                        className="w-full text-left px-4 py-2 text-paragraph hover:bg-palette-primary hover:text-on-primary flex items-center gap-2 transition-colors rounded-b-xl"
                     >
                         <LogOut className="w-4 h-4" />
                         Cerrar sesión

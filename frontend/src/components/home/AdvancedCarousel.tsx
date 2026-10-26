@@ -70,7 +70,7 @@ export const AdvancedCarousel: React.FC<CarouselProps> = ({ slides, slidesPerVie
                                     </h2>
                                 )}
                                 {slide.description && (
-                                    <p className="text-paragraph text-accent mb-8 max-w-2xl">
+                                    <p className="text-paragraph text-link mb-8 max-w-2xl">
                                         {slide.description}
                                     </p>
                                 )}

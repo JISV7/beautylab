@@ -48,6 +48,7 @@ export const CartPage: React.FC<CartPageProps> = ({ onBack }) => {
     const discountedSubtotal = Math.max(0, parseFloat(cart?.subtotal || '0') - totalCouponDiscount);
     const recalculatedTax = Math.round(discountedSubtotal * 0.16 * 100) / 100;
     const totalAfterCoupons = Math.round((discountedSubtotal + recalculatedTax) * 100) / 100;
+    const isFreeCheckout = totalAfterCoupons <= 0;
 
     const handleCheckout = () => {
         setCheckoutStep('payment');
@@ -59,13 +60,16 @@ export const CartPage: React.FC<CartPageProps> = ({ onBack }) => {
         setTotalAllocated(total);
     };
 
-    const handleCompletePurchase = async () => {
-        if (!isPaymentValid || !cart) return;
+    const handleCompletePurchase = async (freePurchase = false) => {
+        if (!cart) return;
+        if (!freePurchase && !isPaymentValid) return;
 
-        const validationError = validatePaymentForm(splitPayments);
-        if (validationError) {
-            setPurchaseError(validationError);
-            return;
+        if (!freePurchase) {
+            const validationError = validatePaymentForm(splitPayments);
+            if (validationError) {
+                setPurchaseError(validationError);
+                return;
+            }
         }
 
         setCheckoutStep('processing');
@@ -73,11 +77,13 @@ export const CartPage: React.FC<CartPageProps> = ({ onBack }) => {
 
         try {
             const token = localStorage.getItem('access_token');
-            const payments = splitPayments.map((entry) => ({
-                method_type: entry.method,
-                amount: entry.amount,
-                details: formatPaymentDetails(entry),
-            }));
+            const payments = freePurchase
+                ? []
+                : splitPayments.map((entry) => ({
+                    method_type: entry.method,
+                    amount: entry.amount,
+                    details: formatPaymentDetails(entry),
+                }));
 
             const checkoutResponse = await api.post(
                 '/cart/checkout',
@@ -249,26 +255,39 @@ export const CartPage: React.FC<CartPageProps> = ({ onBack }) => {
                         compact
                     />
 
-                    <SplitPaymentManager
-                        totalAmount={Math.max(0, Math.round(totalAfterCoupons * 100) / 100)}
-                        onPaymentsChange={handlePaymentsChange}
-                        onValid={setIsPaymentValid}
-                    />
+                    {isFreeCheckout ? (
+                        <div className="rounded-xl border border-[var(--palette-border)] bg-[var(--palette-surface)] p-4">
+                            <p className="font-semibold text-success">
+                                Compra sin costo
+                            </p>
+                            <p className="text-paragraph text-sm mt-1">
+                                El total de tu carrito es Bs. 0,00. No necesitas ingresar datos de pago: al confirmar se generarán tus licencias.
+                            </p>
+                        </div>
+                    ) : (
+                        <SplitPaymentManager
+                            totalAmount={Math.max(0, Math.round(totalAfterCoupons * 100) / 100)}
+                            onPaymentsChange={handlePaymentsChange}
+                            onValid={setIsPaymentValid}
+                        />
+                    )}
 
                     {purchaseError && (
                         <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4">
-                            <p className="text-paragraph text-red-600 dark:text-red-400 font-medium">
+                            <p className="text-paragraph text-danger dark:text-danger font-medium">
                                 {purchaseError}
                             </p>
                         </div>
                     )}
 
                     <button
-                        onClick={handleCompletePurchase}
-                        disabled={!isPaymentValid}
+                        onClick={() => handleCompletePurchase(isFreeCheckout)}
+                        disabled={!isFreeCheckout && !isPaymentValid}
                         className="theme-button theme-button-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        Completar compra - {formatCurrency(totalAllocated)}
+                        {isFreeCheckout
+                            ? 'Obtener cursos gratis'
+                            : `Completar compra - ${formatCurrency(totalAllocated)}`}
                     </button>
                 </div>
             )}
@@ -278,7 +297,7 @@ export const CartPage: React.FC<CartPageProps> = ({ onBack }) => {
                     <div className="palette-surface palette-border border rounded-xl p-8 text-center max-w-md">
                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--palette-primary)] mx-auto mb-4"></div>
                         <h3 className="text-h3 mb-2">Procesando pago</h3>
-                        <p className="text-paragraph opacity-60">
+                        <p className="text-muted">
                             Espera mientras procesamos tu pago...
                         </p>
                     </div>

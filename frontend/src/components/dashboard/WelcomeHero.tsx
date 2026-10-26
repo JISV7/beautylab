@@ -56,14 +56,14 @@ export const WelcomeHero: React.FC<WelcomeHeroProps> = ({
                             <div className="flex-1">
                                 <div className="flex items-center gap-2 mb-2">
                                     <Play className="w-4 h-4 theme-primary" style={{ color: 'var(--decorator-color)' }} />
-                                    <span className="text-xs font-medium theme-text-secondary">
+                                    <span className="text-xs font-medium theme-text-link">
                                         CONTINÚA DONDE LO DEJASTE
                                     </span>
                                 </div>
                                 <h3 className="text-lg font-semibold theme-text-base mb-1">
                                     {lastActivity.lessonTitle}
                                 </h3>
-                                <p className="text-sm theme-text-secondary mb-4">
+                                <p className="text-sm theme-text-link mb-4">
                                     {lastActivity.courseTitle}
                                 </p>
                                 <div className="w-full theme-border rounded-full h-2 mb-2">
@@ -72,7 +72,7 @@ export const WelcomeHero: React.FC<WelcomeHeroProps> = ({
                                         style={{ width: `${lastActivity.progress}%` }}
                                     />
                                 </div>
-                                <p className="text-xs theme-text-secondary">
+                                <p className="text-xs theme-text-link">
                                     {lastActivity.progress}% completado
                                 </p>
                             </div>

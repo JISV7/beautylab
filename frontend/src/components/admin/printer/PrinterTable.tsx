@@ -41,7 +41,7 @@ export const PrinterTable: React.FC<PrinterTableProps> = ({
       label: 'Authorization Providence',
       sortable: false,
       render: (item) => (
-        <span className="text-paragraph opacity-75 text-sm">{item.authorizationProvidence}</span>
+        <span className="text-muted text-sm">{item.authorizationProvidence}</span>
       ),
     },
     {
@@ -51,7 +51,7 @@ export const PrinterTable: React.FC<PrinterTableProps> = ({
       render: (item) => (
         <div className="flex items-center gap-2">
           {item.isActive ? (
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-success dark:bg-green-900/30 dark:text-success">
               <CheckCircle className="w-3.5 h-3.5" />
               Active
             </span>
@@ -73,7 +73,7 @@ export const PrinterTable: React.FC<PrinterTableProps> = ({
           {!item.isActive && onSetActive && (
             <button
               onClick={() => onSetActive(item)}
-              className="p-1.5 rounded-lg hover:bg-yellow-50 dark:hover:bg-yellow-900/20 text-yellow-600 dark:text-yellow-400 transition-colors"
+              className="p-1.5 rounded-lg hover:bg-yellow-50 dark:hover:bg-yellow-900/20 text-warning dark:text-warning transition-colors"
               title="Set as Active"
             >
               <Star className="w-4 h-4" />
@@ -81,7 +81,7 @@ export const PrinterTable: React.FC<PrinterTableProps> = ({
           )}
           <button
             onClick={() => onEdit(item)}
-            className="p-1.5 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 text-blue-600 dark:text-blue-400 transition-colors"
+            className="p-1.5 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 text-info dark:text-info transition-colors"
             title="Edit"
           >
             <Edit className="w-4 h-4" />
@@ -92,7 +92,7 @@ export const PrinterTable: React.FC<PrinterTableProps> = ({
             className={`p-1.5 rounded-lg transition-colors ${
               item.isActive
                 ? 'opacity-30 cursor-not-allowed text-gray-400'
-                : 'hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400'
+                : 'hover:bg-red-50 dark:hover:bg-red-900/20 text-danger dark:text-danger'
             }`}
             title={item.isActive ? 'Cannot delete active printer' : 'Delete'}
           >

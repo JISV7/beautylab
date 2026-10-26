@@ -182,6 +182,152 @@ api.interceptors.response.use(
     }
 );
 
+// ---------------------------------------------------------------------------
+// Color helpers used to derive accessible semantic tokens from the active theme
+// ---------------------------------------------------------------------------
+
+type Rgb = { r: number; g: number; b: number };
+
+const WHITE = '#FFFFFF';
+const INK = '#071A2E';
+
+const parseHexColor = (value: string | undefined): Rgb | null => {
+    if (!value) return null;
+    const raw = value.trim().replace('#', '');
+    if (!/^[0-9a-f]{3}$|^[0-9a-f]{6}$/i.test(raw)) return null;
+    const expanded = raw.length === 3
+        ? raw.split('').map((char) => char + char).join('')
+        : raw;
+    return {
+        r: parseInt(expanded.slice(0, 2), 16),
+        g: parseInt(expanded.slice(2, 4), 16),
+        b: parseInt(expanded.slice(4, 6), 16),
+    };
+};
+
+const toHex = ({ r, g, b }: Rgb): string =>
+    `#${[r, g, b].map((channel) => Math.round(channel).toString(16).padStart(2, '0')).join('')}`;
+
+const relativeLuminance = (color: Rgb): number => {
+    const channel = (value: number) => {
+        const normalized = value / 255;
+        return normalized <= 0.03928
+            ? normalized / 12.92
+            : ((normalized + 0.055) / 1.055) ** 2.4;
+    };
+    return 0.2126 * channel(color.r) + 0.7152 * channel(color.g) + 0.0722 * channel(color.b);
+};
+
+const contrastRatio = (foreground: string, background: string): number => {
+    const fg = parseHexColor(foreground);
+    const bg = parseHexColor(background);
+    if (!fg || !bg) return 0;
+    const lighter = Math.max(relativeLuminance(fg), relativeLuminance(bg));
+    const darker = Math.min(relativeLuminance(fg), relativeLuminance(bg));
+    return (lighter + 0.05) / (darker + 0.05);
+};
+
+const mixColors = (foreground: string, background: string, amount: number): string => {
+    const fg = parseHexColor(foreground);
+    const bg = parseHexColor(background);
+    if (!fg || !bg) return foreground;
+    return toHex({
+        r: fg.r + (bg.r - fg.r) * amount,
+        g: fg.g + (bg.g - fg.g) * amount,
+        b: fg.b + (bg.b - fg.b) * amount,
+    });
+};
+
+const pickReadableText = (background: string): string => {
+    const whiteContrast = contrastRatio(WHITE, background);
+    const inkContrast = contrastRatio(INK, background);
+    return whiteContrast >= inkContrast ? WHITE : INK;
+};
+
+const ensureContrast = (candidate: string, backgrounds: string[], minimum = 4.5): string => {
+    if (backgrounds.every((background) => contrastRatio(candidate, background) >= minimum)) {
+        return candidate;
+    }
+    return pickReadableText(backgrounds[0]);
+};
+
+const deriveLinkColor = (palette: ThemePalette, mode: string): string => {
+    const backgrounds = [palette.colors.background, palette.colors.surface];
+    const candidates = [
+        palette.colors.primary,
+        palette.colors.secondary,
+        palette.colors.accent,
+        mode === 'dark' ? '#BAE6FD' : '#0D2B4D',
+        mode === 'dark' ? '#E2E8F0' : '#1E293B',
+    ].filter(Boolean);
+
+    let best = candidates[0];
+    let bestScore = 0;
+    for (const candidate of candidates) {
+        const score = Math.min(
+            ...backgrounds.map((background) => contrastRatio(candidate, background))
+        );
+        if (score > bestScore) {
+            best = candidate;
+            bestScore = score;
+        }
+    }
+
+    return bestScore >= 4.5 ? best : pickReadableText(backgrounds[0]);
+};
+
+const deriveMutedColor = (palette: ThemePalette): string => {
+    const backgrounds = [palette.colors.background, palette.colors.surface];
+    const paragraph = palette.typography.paragraph.color;
+
+    if (backgrounds.every((background) => contrastRatio(paragraph, background) >= 4.5)) {
+        let candidate = paragraph;
+        for (let amount = 0.1; amount <= 0.55; amount += 0.05) {
+            const mixed = mixColors(paragraph, palette.colors.background, amount);
+            if (backgrounds.every((background) => contrastRatio(mixed, background) >= 4.5)) {
+                candidate = mixed;
+            } else {
+                break;
+            }
+        }
+        return candidate;
+    }
+
+    return pickReadableText(backgrounds[0]);
+};
+
+const deriveStatusColors = (palette: ThemePalette, mode: string) => {
+    const backgrounds = [palette.colors.background, palette.colors.surface];
+    const sets: Record<string, { success: string; warning: string; danger: string; info: string }> = {
+        light: {
+            success: '#166534',
+            warning: '#92400E',
+            danger: '#B91C1C',
+            info: '#1D4ED8',
+        },
+        dark: {
+            success: '#86EFAC',
+            warning: '#FCD34D',
+            danger: '#FCA5A5',
+            info: '#93C5FD',
+        },
+        accessibility: {
+            success: '#14532D',
+            warning: '#78350F',
+            danger: '#991B1B',
+            info: '#1E3A8A',
+        },
+    };
+    const set = sets[mode] || sets.light;
+
+    return {
+        success: ensureContrast(set.success, backgrounds),
+        warning: ensureContrast(set.warning, backgrounds),
+        danger: ensureContrast(set.danger, backgrounds),
+        info: ensureContrast(set.info, backgrounds),
+    };
+};
+
 // Apply CSS variables from palette
 const applyPalette = (palette: ThemePalette, mode: string): void => {
     const root = document.documentElement;
@@ -192,6 +338,22 @@ const applyPalette = (palette: ThemePalette, mode: string): void => {
     root.style.setProperty('--palette-background', palette.colors.background);
     root.style.setProperty('--palette-surface', palette.colors.surface);
     root.style.setProperty('--palette-border', palette.colors.border);
+
+    // Semantic tokens guarantee readable text no matter which palette is active.
+    const linkColor = deriveLinkColor(palette, mode);
+    const mutedColor = deriveMutedColor(palette);
+    const status = deriveStatusColors(palette, mode);
+
+    root.style.setProperty('--on-primary', pickReadableText(palette.colors.primary));
+    root.style.setProperty('--on-secondary', pickReadableText(palette.colors.secondary));
+    root.style.setProperty('--on-accent', pickReadableText(palette.colors.accent));
+    root.style.setProperty('--link-color', linkColor);
+    root.style.setProperty('--text-muted-color', mutedColor);
+    root.style.setProperty('--status-success', status.success);
+    root.style.setProperty('--status-warning', status.warning);
+    root.style.setProperty('--status-danger', status.danger);
+    root.style.setProperty('--status-info', status.info);
+    root.style.setProperty('--focus-ring-color', linkColor);
 
     const typography = palette.typography;
 

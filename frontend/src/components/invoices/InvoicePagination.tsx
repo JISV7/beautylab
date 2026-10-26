@@ -25,7 +25,7 @@ export function InvoicePagination({ currentPage, totalPages, onPageChange, total
 
     return (
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6 pt-4 border-t palette-border print:hidden">
-            <p className="text-paragraph opacity-60">
+            <p className="text-muted">
                 Mostrando <strong>{totalItems}</strong> resultado{totalItems !== 1 ? 's' : ''}
             </p>
 
@@ -41,14 +41,14 @@ export function InvoicePagination({ currentPage, totalPages, onPageChange, total
 
                 {pages.map((page, idx) =>
                     page === '…' ? (
-                        <span key={`ellipsis-${idx}`} className="px-2 text-paragraph opacity-40">…</span>
+                        <span key={`ellipsis-${idx}`} className="px-2 text-muted">…</span>
                     ) : (
                         <button
                             key={page}
                             onClick={() => onPageChange(page)}
                             className={`w-9 h-9 rounded-lg text-[var(--text-p-size)] font-medium transition-colors ${
                                 currentPage === page
-                                    ? 'bg-palette-primary text-white'
+                                    ? 'bg-palette-primary text-on-primary'
                                     : 'btn-hover-surface text-paragraph'
                             }`}
                         >

@@ -95,7 +95,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
           <button
             type="button"
             onClick={onSwitchToRecovery}
-            className="text-paragraph text-palette-primary text-sm mt-2 hover:opacity-80 transition-opacity"
+            className="text-paragraph text-link text-sm mt-2 hover:opacity-80 transition-opacity"
             disabled={isLoading}
           >
 ¿Olvidaste tu contraseña?
@@ -103,14 +103,14 @@ export const LoginForm: React.FC<LoginFormProps> = ({
         </div>
 
         {error && (
-          <div className="text-sm rounded-lg p-3 text-red-600 bg-red-50 dark:text-red-400 dark:bg-red-900/30 border border-red-200 dark:border-red-800">
+          <div className="text-sm rounded-lg p-3 text-danger bg-red-50 dark:text-danger dark:bg-red-900/30 border border-red-200 dark:border-red-800">
             {error}
           </div>
         )}
 
         <button
           type="submit"
-          className="w-full py-2.5 px-4 rounded-lg bg-[var(--palette-primary)] text-[var(--decorator-color)] font-semibold hover:bg-[var(--palette-secondary)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-paragraph"
+          className="w-full py-2.5 px-4 rounded-lg bg-[var(--palette-primary)] text-on-primary font-semibold hover:bg-[var(--palette-secondary)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-paragraph"
           disabled={isLoading}
         >
           {isLoading ? 'Iniciando sesión...' : 'Iniciar sesión'}
@@ -123,7 +123,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
           ¿Aún no tienes cuenta?{' '}
           <button
             onClick={onSwitchToRegister}
-            className="text-paragraph text-palette-primary hover:opacity-80 transition-opacity"
+            className="text-paragraph text-link hover:opacity-80 transition-opacity"
           >
             Crear una cuenta
           </button>

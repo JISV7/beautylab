@@ -149,7 +149,7 @@ export const CourseFormStep1: React.FC<CourseFormStep1Props> = ({
                         Slug
                     </label>
                     <div className="flex">
-                        <span className="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-[var(--palette-border)] bg-[var(--palette-surface)] text-paragraph opacity-60 text-xs">
+                        <span className="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-[var(--palette-border)] bg-[var(--palette-surface)] text-muted text-xs">
                             cursorg.ve/c/
                         </span>
                         <input
@@ -211,7 +211,7 @@ export const CourseFormStep1: React.FC<CourseFormStep1Props> = ({
                             placeholder="40"
                             min="0"
                         />
-                        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-paragraph opacity-40 text-xs font-bold">
+                        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-muted text-xs font-bold">
                             hrs
                         </span>
                     </div>
@@ -250,7 +250,7 @@ export const CourseFormStep1: React.FC<CourseFormStep1Props> = ({
                                 disabled={uploading}
                                 className="px-4 border border-[var(--palette-border)] rounded-lg hover:bg-[var(--palette-surface)] transition-colors flex items-center gap-2 disabled:opacity-50"
                             >
-                                <Upload size={18} className="text-paragraph opacity-60" />
+                                <Upload size={18} className="text-muted" />
                                 <span className="text-sm font-bold text-paragraph">
                                     {uploading ? 'Uploading...' : 'Browse'}
                                 </span>
@@ -267,13 +267,13 @@ export const CourseFormStep1: React.FC<CourseFormStep1Props> = ({
 
                         {/* Upload status messages */}
                         {uploadError && (
-                            <p className="text-sm text-red-600 dark:text-red-400 flex items-center gap-2">
+                            <p className="text-sm text-danger dark:text-danger flex items-center gap-2">
                                 <X size={16} />
                                 {uploadError}
                             </p>
                         )}
                         {uploadSuccess && (
-                            <p className="text-sm text-green-600 dark:text-green-400 flex items-center gap-2">
+                            <p className="text-sm text-success dark:text-success flex items-center gap-2">
                                 <CheckCircle size={16} />
                                 Image uploaded successfully!
                             </p>
@@ -315,7 +315,7 @@ export const CourseFormStep1: React.FC<CourseFormStep1Props> = ({
                         value={formData.video_url}
                         onChange={onChange}
                     />
-                    <p className="mt-2 text-xs text-paragraph opacity-60">
+                    <p className="mt-2 text-xs text-muted">
                         Este enlace solo se entrega a clientes con una licencia canjeada.
                         Para videos MP4 locales, usa una ruta que comience con
                         <span className="font-mono"> /static/</span>.

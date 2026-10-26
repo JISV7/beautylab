@@ -144,7 +144,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
             className="p-1.5 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full hover:bg-white dark:hover:bg-gray-700 transition-colors shadow-sm border border-[var(--palette-primary)]/40"
             title="Share course"
         >
-            <Share2 className="w-4 h-4 text-[var(--palette-primary)]" />
+            <Share2 className="w-4 h-4 text-link" />
         </button>
     );
 
@@ -200,7 +200,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                         <div className="p-5 space-y-4">
                             {loading ? (
                                 <div className="flex items-center justify-center py-8">
-                                    <Loader2 className="w-6 h-6 text-[var(--palette-primary)] animate-spin" />
+                                    <Loader2 className="w-6 h-6 text-link animate-spin" />
                                 </div>
                             ) : (
                                 <>
@@ -208,7 +208,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                                     <div className="space-y-3">
                                         {/* Short description (2 lines) */}
                                         {modalDescription && (
-                                            <p className="text-paragraph opacity-75 text-sm leading-relaxed line-clamp-2">
+                                            <p className="text-muted text-sm leading-relaxed line-clamp-2">
                                                 {modalDescription}
                                             </p>
                                         )}
@@ -216,25 +216,25 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                                         {/* Meta info */}
                                         <div className="grid grid-cols-2 gap-2 text-sm">
                                             {course.product_name && (
-                                                <div className="flex items-center gap-2 text-paragraph opacity-75">
+                                                <div className="flex items-center gap-2 text-muted">
                                                     <BookOpen className="w-4 h-4 flex-shrink-0" />
                                                     <span className="truncate">{course.product_name}</span>
                                                 </div>
                                             )}
                                             {course.product_sku && (
-                                                <div className="flex items-center gap-2 text-paragraph opacity-75">
+                                                <div className="flex items-center gap-2 text-muted">
                                                     <Package className="w-4 h-4 flex-shrink-0" />
                                                     <span>{course.product_sku}</span>
                                                 </div>
                                             )}
                                             {course.duration_hours && (
-                                                <div className="flex items-center gap-2 text-paragraph opacity-75">
+                                                <div className="flex items-center gap-2 text-muted">
                                                     <Clock className="w-4 h-4 flex-shrink-0" />
                                                     <span>{course.duration_hours}h</span>
                                                 </div>
                                             )}
                                             {course.level_name && (
-                                                <div className="flex items-center gap-2 text-paragraph opacity-75">
+                                                <div className="flex items-center gap-2 text-muted">
                                                     <Tag className="w-4 h-4 flex-shrink-0" />
                                                     <span>{course.level_name}</span>
                                                 </div>
@@ -245,10 +245,10 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                                         {formattedPrice && (
                                             <div className="pt-2 border-t border-[var(--palette-border)]">
                                                 <div className="flex items-baseline justify-between">
-                                                    <span className="text-xs text-paragraph opacity-50 uppercase tracking-wider font-bold">
+                                                    <span className="text-xs text-muted uppercase tracking-wider font-bold">
                                                         Price
                                                     </span>
-                                                    <span className="text-lg font-black text-[var(--palette-primary)]">
+                                                    <span className="text-lg font-black text-link">
                                                         {formattedPrice}
                                                     </span>
                                                 </div>
@@ -286,9 +286,9 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                                             className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-[var(--palette-background)] hover:bg-[var(--palette-border)] transition-colors"
                                         >
                                             {copied ? (
-                                                <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                                                <Check className="w-5 h-5 text-success flex-shrink-0" />
                                             ) : (
-                                                <Copy className="w-5 h-5 text-paragraph opacity-60 flex-shrink-0" />
+                                                <Copy className="w-5 h-5 text-muted flex-shrink-0" />
                                             )}
                                             <span className="text-paragraph font-medium text-paragraph">
                                                 {copied ? 'Copied to clipboard!' : 'Copy to clipboard'}

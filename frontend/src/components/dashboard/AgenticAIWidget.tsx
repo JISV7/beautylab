@@ -66,7 +66,7 @@ export const AgenticAIWidget: React.FC<AgenticAIWidgetProps> = ({ onPromptSubmit
                     <h2 className="dashboard-ai-widget-title text-xl font-bold">
                         Asistente de aprendizaje
                     </h2>
-                    <p className="dashboard-ai-widget-text text-sm theme-text-secondary">
+                    <p className="dashboard-ai-widget-text text-sm theme-text-link">
                         Tu apoyo para estudiar y avanzar
                     </p>
                 </div>
@@ -96,9 +96,9 @@ export const AgenticAIWidget: React.FC<AgenticAIWidgetProps> = ({ onPromptSubmit
                     <div className="text-left">
                         <div className="inline-block rounded-2xl px-4 py-2 theme-border">
                             <div className="flex gap-1">
-                                <span className="w-2 h-2 theme-text-secondary rounded-full animate-bounce" />
-                                <span className="w-2 h-2 theme-text-secondary rounded-full animate-bounce delay-100" />
-                                <span className="w-2 h-2 theme-text-secondary rounded-full animate-bounce delay-200" />
+                                <span className="w-2 h-2 theme-text-link rounded-full animate-bounce" />
+                                <span className="w-2 h-2 theme-text-link rounded-full animate-bounce delay-100" />
+                                <span className="w-2 h-2 theme-text-link rounded-full animate-bounce delay-200" />
                             </div>
                         </div>
                     </div>
@@ -113,7 +113,7 @@ export const AgenticAIWidget: React.FC<AgenticAIWidgetProps> = ({ onPromptSubmit
                         <button
                             key={item.id}
                             onClick={() => setPrompt(item.prompt)}
-                            className="flex items-center gap-2 px-3 py-2 theme-surface theme-border border rounded-lg text-sm theme-text-secondary hover:theme-primary hover:text-white transition-colors"
+                            className="flex items-center gap-2 px-3 py-2 theme-surface theme-border border rounded-lg text-sm theme-text-link hover:theme-primary hover:text-white transition-colors"
                         >
                             <Icon className="w-4 h-4" style={{ color: 'var(--decorator-color)' }} />
                             {item.text}
@@ -129,7 +129,7 @@ export const AgenticAIWidget: React.FC<AgenticAIWidgetProps> = ({ onPromptSubmit
                     value={prompt}
                     onChange={(e) => setPrompt(e.target.value)}
                     placeholder="Pregunta lo que necesites sobre tus cursos..."
-                    className="flex-1 px-4 py-3 rounded-xl theme-surface theme-border border theme-text-base placeholder-[var(--theme-text-secondary-value)] focus:outline-none focus:ring-2 focus:ring-[var(--theme-primary-value)]"
+                    className="flex-1 px-4 py-3 rounded-xl theme-surface theme-border border theme-text-base placeholder-[var(--theme-text-link-value)] focus:outline-none focus:ring-2 focus:ring-[var(--theme-primary-value)]"
                 />
                 <button
                     type="submit"

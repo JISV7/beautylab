@@ -48,7 +48,7 @@ export const ColorEditor: React.FC<ColorEditorProps> = ({
     return (
         <div className="theme-card">
             <div className="p-6 border-b palette-border flex items-center gap-3">
-                <Palette className="w-6 h-6 text-palette-primary" />
+                <Palette className="w-6 h-6 text-link" />
                 <h3 className="text-paragraph font-bold">
                     Color Palette - {activeMode.charAt(0).toUpperCase() + activeMode.slice(1)}
                 </h3>

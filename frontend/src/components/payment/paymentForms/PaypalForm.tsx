@@ -26,7 +26,7 @@ export const PaypalForm: React.FC<PaymentFormProps> = ({
                     placeholder="María Pérez"
                 />
                 {errors.payer_name && (
-                    <p className="text-red-500 text-sm mt-1">{errors.payer_name}</p>
+                    <p className="text-danger text-sm mt-1">{errors.payer_name}</p>
                 )}
             </div>
 
@@ -43,7 +43,7 @@ export const PaypalForm: React.FC<PaymentFormProps> = ({
                     placeholder="maria@empresa.com"
                 />
                 {errors.paypal_email && (
-                    <p className="text-red-500 text-sm mt-1">{errors.paypal_email}</p>
+                    <p className="text-danger text-sm mt-1">{errors.paypal_email}</p>
                 )}
             </div>
 
@@ -60,7 +60,7 @@ export const PaypalForm: React.FC<PaymentFormProps> = ({
                     placeholder="ID de transacción de PayPal"
                 />
                 {errors.transaction_id && (
-                    <p className="text-red-500 text-sm mt-1">{errors.transaction_id}</p>
+                    <p className="text-danger text-sm mt-1">{errors.transaction_id}</p>
                 )}
             </div>
         </div>

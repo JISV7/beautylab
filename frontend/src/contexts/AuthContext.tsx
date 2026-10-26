@@ -136,8 +136,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const fetchUser = async (token: string) => {
         if (token === DEMO_TOKEN) {
-            setUser(demoUser);
-            setIsAuthenticated(true);
+            // A demo session only lives while the API is down; once it answers,
+            // drop it so the user signs in for real and sees their own courses.
+            const apiReachable = await axios
+                .get(`${API_URL}/health`, { timeout: 3000 })
+                .then(() => true)
+                .catch((error) => !isNetworkError(error));
+            if (apiReachable || !demoModeAllowed) {
+                logout();
+            } else {
+                setUser(demoUser);
+                setIsAuthenticated(true);
+            }
             setIsLoading(false);
             return;
         }
@@ -237,7 +247,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 localStorage.setItem('access_token', DEMO_TOKEN);
                 localStorage.setItem('currentPage', 'dashboard');
                 await fetchUser(DEMO_TOKEN);
-                return;
+                if (localStorage.getItem('access_token') === DEMO_TOKEN) return;
+                throw new Error('Login failed');
             }
             if (axios.isAxiosError(error) && error.response) {
                 throw new Error(error.response.data.detail || 'Login failed');

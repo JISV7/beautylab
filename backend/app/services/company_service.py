@@ -490,6 +490,8 @@ class CompanyService:
             thumbnail_url=payload.thumbnail_url,
             duration_minutes=payload.duration_minutes,
             has_evaluation=payload.has_evaluation,
+            content_type=payload.content_type,
+            is_required=payload.is_required,
             position=payload.position,
         )
         self.db.add(course_class)
@@ -513,6 +515,10 @@ class CompanyService:
             course_class.duration_minutes = payload.duration_minutes
         if payload.has_evaluation is not None:
             course_class.has_evaluation = payload.has_evaluation
+        if payload.content_type is not None:
+            course_class.content_type = payload.content_type
+        if payload.is_required is not None:
+            course_class.is_required = payload.is_required
         if payload.position is not None:
             course_class.position = payload.position
         await self.db.commit()

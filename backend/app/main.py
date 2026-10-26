@@ -23,6 +23,7 @@ from app.routers import (
     fonts,
     home_config,
     invoices,
+    learning,
     licenses,
     payments,
     printers,
@@ -77,6 +78,7 @@ app.include_router(invoices.router)
 app.include_router(payments.router)
 app.include_router(licenses.router)
 app.include_router(enrollments.router)
+app.include_router(learning.router)
 app.include_router(themes.router)
 app.include_router(home_config.router)
 app.include_router(admin.router)

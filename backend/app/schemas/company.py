@@ -161,6 +161,8 @@ class CourseClassResponse(BaseModel):
     thumbnail_url: str | None = None
     duration_minutes: int | None = None
     has_evaluation: bool
+    content_type: str = "video"
+    is_required: bool = True
     position: int
 
 
@@ -214,6 +216,8 @@ class CourseClassCreate(BaseModel):
     thumbnail_url: str | None = Field(None, max_length=1000)
     duration_minutes: int | None = Field(None, ge=1, le=10000)
     has_evaluation: bool = False
+    content_type: Literal["video", "quiz", "mixed"] = "video"
+    is_required: bool = True
     position: int = 1
 
 
@@ -226,4 +230,6 @@ class CourseClassUpdate(BaseModel):
     thumbnail_url: str | None = Field(None, max_length=1000)
     duration_minutes: int | None = Field(None, ge=1, le=10000)
     has_evaluation: bool | None = None
+    content_type: Literal["video", "quiz", "mixed"] | None = None
+    is_required: bool | None = None
     position: int | None = None

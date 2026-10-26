@@ -4,6 +4,7 @@ import {
   ChevronRight,
   Clock3,
   Film,
+  HelpCircle,
   Layers,
   Loader2,
   Pencil,
@@ -11,9 +12,11 @@ import {
   Trash2,
 } from 'lucide-react';
 import { CompanyModal } from './CompanyModal';
+import { QuizEditorModal } from './QuizEditorModal';
 import {
   companyApi,
   getApiErrorMessage,
+  type ContentType,
   type CourseClass,
   type CourseModule,
   type CourseWithClasses,
@@ -27,6 +30,8 @@ interface ClassFormState {
   thumbnail_url: string;
   duration_minutes: string;
   has_evaluation: boolean;
+  content_type: ContentType;
+  is_required: boolean;
 }
 
 const emptyClassForm: ClassFormState = {
@@ -36,6 +41,8 @@ const emptyClassForm: ClassFormState = {
   thumbnail_url: '',
   duration_minutes: '',
   has_evaluation: false,
+  content_type: 'video',
+  is_required: true,
 };
 
 const emptyModuleForm = {
@@ -62,6 +69,7 @@ export function ClassesPanel() {
 
   const [saving, setSaving] = useState(false);
   const [formError, setFormError] = useState('');
+  const [quizEditorClass, setQuizEditorClass] = useState<CourseClass | null>(null);
 
   const load = async () => {
     setLoading(true);
@@ -114,6 +122,8 @@ export function ClassesPanel() {
       thumbnail_url: classItem.thumbnail_url || '',
       duration_minutes: classItem.duration_minutes ? String(classItem.duration_minutes) : '',
       has_evaluation: classItem.has_evaluation,
+      content_type: classItem.content_type || 'video',
+      is_required: classItem.is_required ?? true,
     });
     setFormError('');
     setClassModalOpen(true);
@@ -136,12 +146,18 @@ export function ClassesPanel() {
       module_id: targetModuleId,
       title: classForm.title.trim(),
       description: classForm.description.trim() || null,
-      video_url: classForm.video_url.trim() || null,
+      video_url:
+        classForm.content_type === 'quiz'
+          ? null
+          : classForm.video_url.trim() || null,
       thumbnail_url: classForm.thumbnail_url.trim() || null,
       duration_minutes: classForm.duration_minutes
         ? Number(classForm.duration_minutes)
         : null,
-      has_evaluation: classForm.has_evaluation,
+      has_evaluation:
+        classForm.content_type !== 'video' || classForm.has_evaluation,
+      content_type: classForm.content_type,
+      is_required: classForm.is_required,
     };
     try {
       if (editingClass) {
@@ -359,20 +375,44 @@ export function ClassesPanel() {
                                     <h3 className="text-sm font-semibold text-[#0D2B4D]">
                                       {classItem.title}
                                     </h3>
-                                    {classItem.has_evaluation && (
+                                    {classItem.content_type === 'quiz' && (
                                       <span className="company-badge bg-amber-100 text-amber-800">
-                                        Evaluación
+                                        Solo quiz
+                                      </span>
+                                    )}
+                                    {classItem.content_type === 'mixed' && (
+                                      <span className="company-badge bg-[#1E5AA8]/10 text-[#1E5AA8]">
+                                        Video + quiz
+                                      </span>
+                                    )}
+                                    {classItem.content_type === 'video' &&
+                                      classItem.has_evaluation && (
+                                        <span className="company-badge bg-amber-100 text-amber-800">
+                                          Evaluación
+                                        </span>
+                                      )}
+                                    {!classItem.is_required && (
+                                      <span className="company-badge bg-slate-100 text-slate-600">
+                                        Opcional
                                       </span>
                                     )}
                                   </div>
                                   <p className="mt-1 text-xs text-[#6E7882] line-clamp-2">
                                     {classItem.description || 'Sin descripción'}
                                   </p>
-                                  <div className="mt-1.5 flex items-center gap-3 text-[11px] text-[#94A3B8]">
-                                    <span className="inline-flex items-center gap-1">
-                                      <Film className="w-3.5 h-3.5" />
-                                      {classItem.video_url ? 'Video configurado' : 'Sin video'}
-                                    </span>
+                                  <div className="mt-1.5 flex flex-wrap items-center gap-3 text-[11px] text-[#94A3B8]">
+                                    {classItem.content_type !== 'quiz' && (
+                                      <span className="inline-flex items-center gap-1">
+                                        <Film className="w-3.5 h-3.5" />
+                                        {classItem.video_url ? 'Video configurado' : 'Sin video'}
+                                      </span>
+                                    )}
+                                    {classItem.content_type !== 'video' && (
+                                      <span className="inline-flex items-center gap-1 text-amber-700">
+                                        <HelpCircle className="w-3.5 h-3.5" />
+                                        Quiz
+                                      </span>
+                                    )}
                                     <span className="inline-flex items-center gap-1">
                                       <Clock3 className="w-3.5 h-3.5" />
                                       {classItem.duration_minutes
@@ -383,6 +423,15 @@ export function ClassesPanel() {
                                 </div>
 
                                 <div className="flex items-center gap-1 sm:self-center">
+                                  <button
+                                    type="button"
+                                    onClick={() => setQuizEditorClass(classItem)}
+                                    className="p-2 rounded-lg text-amber-700 hover:bg-amber-50"
+                                    aria-label={`Configurar quiz de ${classItem.title}`}
+                                    title="Configurar quiz"
+                                  >
+                                    <HelpCircle className="w-4 h-4" />
+                                  </button>
                                   <button
                                     type="button"
                                     onClick={() => openEditClass(module.id, classItem)}
@@ -475,6 +524,30 @@ export function ClassesPanel() {
               placeholder="Contenido de la clase"
             />
           </div>
+          <div>
+            <label className="block text-sm font-semibold text-[#0D2B4D] mb-1.5">
+              Tipo de contenido
+            </label>
+            <select
+              value={classForm.content_type}
+              onChange={(event) =>
+                setClassForm({
+                  ...classForm,
+                  content_type: event.target.value as ContentType,
+                })
+              }
+              className="company-input"
+            >
+              <option value="video">Video</option>
+              <option value="quiz">Solo quiz</option>
+              <option value="mixed">Video + quiz</option>
+            </select>
+            <p className="mt-1 text-xs text-[#6E7882]">
+              Las clases solo quiz no necesitan video; se completan aprobando la
+              evaluación.
+            </p>
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-semibold text-[#0D2B4D] mb-1.5">
@@ -487,6 +560,7 @@ export function ClassesPanel() {
                 }
                 className="company-input"
                 placeholder="/static/course-videos/..."
+                disabled={classForm.content_type === 'quiz'}
               />
             </div>
             <div>
@@ -517,17 +591,32 @@ export function ClassesPanel() {
                 placeholder="15"
               />
             </div>
-            <label className="flex items-center gap-2 sm:pt-7 text-sm text-[#475569]">
-              <input
-                type="checkbox"
-                checked={classForm.has_evaluation}
-                onChange={(event) =>
-                  setClassForm({ ...classForm, has_evaluation: event.target.checked })
-                }
-                className="w-4 h-4 rounded border-[#CBD5E1] text-[#1E5AA8] focus:ring-[#1E5AA8]"
-              />
-              Incluye evaluación
-            </label>
+            <div className="flex flex-col gap-2 sm:pt-6 text-sm text-[#475569]">
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={classForm.is_required}
+                  onChange={(event) =>
+                    setClassForm({ ...classForm, is_required: event.target.checked })
+                  }
+                  className="w-4 h-4 rounded border-[#CBD5E1] text-[#1E5AA8] focus:ring-[#1E5AA8]"
+                />
+                Clase requerida
+              </label>
+              {classForm.content_type === 'video' && (
+                <label className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={classForm.has_evaluation}
+                    onChange={(event) =>
+                      setClassForm({ ...classForm, has_evaluation: event.target.checked })
+                    }
+                    className="w-4 h-4 rounded border-[#CBD5E1] text-[#1E5AA8] focus:ring-[#1E5AA8]"
+                  />
+                  Incluye evaluación
+                </label>
+              )}
+            </div>
           </div>
           {formError && (
             <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
@@ -598,6 +687,16 @@ export function ClassesPanel() {
           )}
         </div>
       </CompanyModal>
+
+      <QuizEditorModal
+        open={quizEditorClass !== null}
+        onClose={() => setQuizEditorClass(null)}
+        classId={quizEditorClass?.id || ''}
+        classTitle={quizEditorClass?.title || ''}
+        onSaved={() => {
+          void load();
+        }}
+      />
     </div>
   );
 }

@@ -37,8 +37,10 @@ from app.models.font import Font
 from app.models.learning_path import LearningPath
 from app.models.learning_path_course import LearningPathCourse
 from app.models.level import Level
+from app.models.license import License
 from app.models.permission import Permission
 from app.models.product import Product
+from app.models.quiz import Quiz, QuizOption, QuizQuestion
 from app.models.role import Role
 from app.models.role_permission import RolePermission
 from app.models.theme import Theme
@@ -204,6 +206,8 @@ DEMO_EMPLOYEES = [
 ]
 
 DEMO_COMPANY_PASSWORD = "password123*"
+COMPANY_ADMIN_EMAIL = "gerente@cursorg.ve"
+COMPANY_ADMIN_NAME = "Gerente de Empresa"
 
 COURSE_MODULES = {
     "CURSORG-001": [
@@ -1150,6 +1154,47 @@ async def seed_company(
     return company, departments
 
 
+async def seed_company_admin_user(
+    db: AsyncSession,
+    company: Company,
+    departments: dict[str, Department],
+    roles: dict[str, Role],
+) -> User:
+    """Seed a dedicated company administrator for dashboard testing."""
+    print("Seeding company admin user...")
+
+    result = await db.execute(select(User).where(User.email == COMPANY_ADMIN_EMAIL))
+    user = result.scalar_one_or_none()
+    direction = departments.get("Dirección")
+
+    if not user:
+        user = User(
+            email=COMPANY_ADMIN_EMAIL,
+            password_hash=hash_password(DEMO_COMPANY_PASSWORD),
+            full_name=COMPANY_ADMIN_NAME,
+            is_active=True,
+            is_verified=True,
+            company_id=company.id,
+            department_id=direction.id if direction else None,
+        )
+        db.add(user)
+        await db.flush()
+        print(f"  Created company admin: {COMPANY_ADMIN_EMAIL}")
+        print(f"  Default password: {DEMO_COMPANY_PASSWORD}")
+    else:
+        if user.company_id is None:
+            user.company_id = company.id
+        if user.department_id is None and direction:
+            user.department_id = direction.id
+        print(f"  Company admin exists: {COMPANY_ADMIN_EMAIL}")
+
+    await _ensure_user_role(db, user, roles["company_admin"])
+    await _ensure_user_role(db, user, roles["user"])
+    await db.commit()
+    await db.refresh(user)
+    return user
+
+
 async def seed_course_modules(db: AsyncSession, courses: list[Course]) -> None:
     """Seed modules and classes for the demo courses."""
     if not courses:
@@ -1188,27 +1233,198 @@ async def seed_course_modules(db: AsyncSession, courses: list[Course]) -> None:
             for class_position, class_title in enumerate(
                 module_data["classes"], start=1
             ):
+                is_evaluation = class_title.startswith("Evaluación")
+                content_type = "quiz" if is_evaluation else "video"
                 existing = await db.execute(
                     select(CourseClass).where(
                         CourseClass.module_id == module.id,
                         CourseClass.title == class_title,
                     )
                 )
-                if existing.scalar_one_or_none():
+                course_class = existing.scalar_one_or_none()
+
+                if course_class:
+                    course_class.content_type = content_type
+                    course_class.is_required = True
+                    course_class.has_evaluation = is_evaluation
+                    course_class.video_url = None if is_evaluation else course.video_url
+                    if course_class.duration_minutes is None:
+                        course_class.duration_minutes = (
+                            None if is_evaluation else 12 + class_position * 6
+                        )
                     continue
 
                 db.add(
                     CourseClass(
                         module_id=module.id,
                         title=class_title,
-                        video_url=course.video_url,
+                        video_url=None if is_evaluation else course.video_url,
                         thumbnail_url=thumbnail,
-                        duration_minutes=12 + class_position * 6,
-                        has_evaluation=class_title.startswith("Evaluación"),
+                        duration_minutes=None if is_evaluation else 12 + class_position * 6,
+                        has_evaluation=is_evaluation,
+                        content_type=content_type,
+                        is_required=True,
                         position=class_position,
                     )
                 )
                 print(f"    Created class: {class_title}")
+
+    await db.commit()
+
+
+async def seed_quizzes(db: AsyncSession, courses: list[Course]) -> None:
+    """Seed one evaluative quiz for the final class of each course."""
+    if not courses:
+        return
+
+    print("Seeding course quizzes...")
+
+    for course in courses:
+        result = await db.execute(
+            select(CourseClass)
+            .join(CourseModule, CourseModule.id == CourseClass.module_id)
+            .where(
+                CourseModule.course_id == course.id,
+                CourseClass.content_type == "quiz",
+            )
+            .order_by(CourseModule.position.desc(), CourseClass.position.desc())
+            .limit(1)
+        )
+        course_class = result.scalar_one_or_none()
+        if not course_class:
+            continue
+
+        existing = await db.execute(
+            select(Quiz).where(Quiz.class_id == course_class.id)
+        )
+        if existing.scalar_one_or_none():
+            print(f"  Quiz exists for: {course_class.title}")
+            continue
+
+        quiz = Quiz(
+            class_id=course_class.id,
+            title=f"Evaluación: {course.title}",
+            description=(
+                "Comprueba los conceptos clave del programa antes de completar "
+                "la clase final."
+            ),
+            passing_score=70,
+            max_attempts=3,
+            time_limit_minutes=15,
+            show_answers_after_submit=True,
+            is_published=True,
+        )
+        db.add(quiz)
+        await db.flush()
+
+        questions = [
+            {
+                "prompt": (
+                    f"¿Cuál es el objetivo principal del curso '{course.title}'?"
+                ),
+                "question_type": "single_choice",
+                "points": 1,
+                "options": [
+                    ("Aplicar buenas prácticas en el puesto de trabajo", True),
+                    ("Memorizar definiciones sin contexto", False),
+                    ("Sustituir la experiencia del equipo", False),
+                ],
+            },
+            {
+                "prompt": (
+                    "Selecciona las prácticas que refuerzan el aprendizaje del equipo."
+                ),
+                "question_type": "multiple_choice",
+                "points": 1,
+                "options": [
+                    ("Aplicar lo aprendido en tareas reales", True),
+                    ("Revisar el progreso con el supervisor", True),
+                    ("Omitir la evaluación final", False),
+                    ("Evitar la retroalimentación", False),
+                ],
+            },
+            {
+                "prompt": (
+                    "Completar la evaluación es necesario para registrar el avance "
+                    "de esta clase."
+                ),
+                "question_type": "true_false",
+                "points": 1,
+                "options": [("Verdadero", True), ("Falso", False)],
+            },
+        ]
+
+        for question_position, question_data in enumerate(questions, start=1):
+            question = QuizQuestion(
+                quiz_id=quiz.id,
+                prompt=question_data["prompt"],
+                question_type=question_data["question_type"],
+                points=question_data["points"],
+                position=question_position,
+                explanation="Revisa el contenido de la clase y vuelve a intentarlo.",
+            )
+            db.add(question)
+            await db.flush()
+
+            for option_position, (text, is_correct) in enumerate(
+                question_data["options"], start=1
+            ):
+                db.add(
+                    QuizOption(
+                        question_id=question.id,
+                        text=text,
+                        is_correct=is_correct,
+                        position=option_position,
+                    )
+                )
+
+        print(f"  Created quiz for: {course_class.title}")
+
+    await db.commit()
+
+
+async def seed_demo_license(
+    db: AsyncSession,
+    courses: list[Course],
+) -> None:
+    """Give one demo employee access to a course so the player can be tested."""
+    sku_by_slug = {entry["slug"]: entry["sku"] for entry in COURSE_CATALOG}
+    course_by_sku = {
+        sku_by_slug[course.slug]: course
+        for course in courses
+        if course.slug in sku_by_slug
+    }
+    course = course_by_sku.get("CURSORG-003")
+    if not course:
+        return
+
+    for email in ("ana.martinez@cursorg.ve", "luis.gonzalez@cursorg.ve"):
+        result = await db.execute(select(User).where(User.email == email))
+        user = result.scalar_one_or_none()
+        if not user:
+            continue
+
+        existing = await db.execute(
+            select(License).where(
+                License.course_id == course.id,
+                License.redeemed_by_user_id == user.id,
+            )
+        )
+        if existing.scalar_one_or_none():
+            continue
+
+        db.add(
+            License(
+                product_id=course.product_id,
+                course_id=course.id,
+                redeemed_by_user_id=user.id,
+                license_type="gift",
+                status="redeemed",
+                quantity=1,
+                redeemed_at=datetime.now(),
+            )
+        )
+        print(f"  Granted demo license to {user.email} for {course.title}")
 
     await db.commit()
 
@@ -1328,8 +1544,11 @@ async def seed_database() -> None:
 
             # Seed B2B company workspace, modules and demo employees
             company, departments = await seed_company(db, root_user, admin_user, roles)
+            await seed_company_admin_user(db, company, departments, roles)
             await seed_course_modules(db, courses)
+            await seed_quizzes(db, courses)
             await seed_demo_employees(db, company, departments, courses, roles)
+            await seed_demo_license(db, courses)
 
             print("=" * 50)
             print("Database seeding completed successfully!")

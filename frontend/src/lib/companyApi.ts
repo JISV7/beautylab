@@ -62,6 +62,9 @@ export interface Department {
   average_progress: number;
 }
 
+export type ContentType = 'video' | 'quiz' | 'mixed';
+export type QuestionType = 'single_choice' | 'multiple_choice' | 'true_false';
+
 export interface CourseClass {
   id: string;
   title: string;
@@ -70,7 +73,69 @@ export interface CourseClass {
   thumbnail_url: string | null;
   duration_minutes: number | null;
   has_evaluation: boolean;
+  content_type: ContentType;
+  is_required: boolean;
   position: number;
+}
+
+export interface QuizOptionAdmin {
+  id?: string;
+  text: string;
+  is_correct: boolean;
+  position?: number;
+}
+
+export interface QuizQuestionAdmin {
+  id?: string;
+  prompt: string;
+  question_type: QuestionType;
+  points: number;
+  explanation: string | null;
+  position: number;
+  options: QuizOptionAdmin[];
+}
+
+export interface QuizAdmin {
+  id: string;
+  class_id: string;
+  title: string;
+  description: string | null;
+  passing_score: number;
+  max_attempts: number | null;
+  time_limit_minutes: number | null;
+  show_answers_after_submit: boolean;
+  is_published: boolean;
+  questions: QuizQuestionAdmin[];
+}
+
+export interface QuizUpsertPayload {
+  title: string;
+  description: string | null;
+  passing_score: number;
+  max_attempts: number | null;
+  time_limit_minutes: number | null;
+  show_answers_after_submit: boolean;
+  is_published: boolean;
+  questions: {
+    prompt: string;
+    question_type: QuestionType;
+    points: number;
+    explanation: string | null;
+    position: number;
+    options: { text: string; is_correct: boolean }[];
+  }[];
+}
+
+export interface AdminQuizAttempt {
+  id: string;
+  user_id: string;
+  user_name: string | null;
+  user_email: string;
+  status: string;
+  score: number | null;
+  passed: boolean | null;
+  started_at: string;
+  completed_at: string | null;
 }
 
 export interface CourseModule {
@@ -121,6 +186,8 @@ export interface ClassPayload {
   thumbnail_url?: string | null;
   duration_minutes?: number | null;
   has_evaluation?: boolean;
+  content_type?: ContentType;
+  is_required?: boolean;
   position?: number;
 }
 
@@ -148,6 +215,16 @@ export const companyApi = {
   updateClass: (id: string, payload: ClassPayload) =>
     client.patch<CourseClass>(`/classes/${id}`, payload).then((r) => r.data),
   deleteClass: (id: string) => client.delete(`/classes/${id}`),
+
+  getClassQuiz: (classId: string) =>
+    client.get<QuizAdmin>(`/classes/${classId}/quiz`).then((r) => r.data),
+  upsertClassQuiz: (classId: string, payload: QuizUpsertPayload) =>
+    client.put<QuizAdmin>(`/classes/${classId}/quiz`, payload).then((r) => r.data),
+  deleteClassQuiz: (classId: string) => client.delete(`/classes/${classId}/quiz`),
+  listClassQuizAttempts: (classId: string) =>
+    client
+      .get<AdminQuizAttempt[]>(`/classes/${classId}/quiz/attempts`)
+      .then((r) => r.data),
 
   listUsers: () => client.get<CompanyUser[]>('/users').then((r) => r.data),
   createUser: (payload: CompanyUserPayload) =>

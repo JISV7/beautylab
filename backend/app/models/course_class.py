@@ -1,6 +1,6 @@
 """Course class (lesson) model."""
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 from uuid import UUID
 
 from sqlalchemy import Boolean, ForeignKey, Integer, String, Uuid
@@ -10,6 +10,7 @@ from app.models.base import Base, TimestampMixin
 
 if TYPE_CHECKING:
     from app.models.course_module import CourseModule
+    from app.models.quiz import Quiz
 
 
 class CourseClass(Base, TimestampMixin):
@@ -34,10 +35,20 @@ class CourseClass(Base, TimestampMixin):
     thumbnail_url: Mapped[str | None] = mapped_column(String(1000), nullable=True)
     duration_minutes: Mapped[int | None] = mapped_column(Integer, nullable=True)
     has_evaluation: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    content_type: Mapped[str] = mapped_column(
+        String(20), default="video", nullable=False
+    )  # video, quiz, mixed
+    is_required: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     position: Mapped[int] = mapped_column(Integer, default=1, nullable=False)
 
     # Relationships
     module: Mapped["CourseModule"] = relationship("CourseModule", back_populates="classes")
+    quiz: Mapped[Optional["Quiz"]] = relationship(
+        "Quiz",
+        back_populates="course_class",
+        cascade="all, delete-orphan",
+        uselist=False,
+    )
 
     def __repr__(self) -> str:
         return f"<CourseClass(id={self.id}, title={self.title})>"

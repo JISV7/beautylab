@@ -4,6 +4,7 @@ from app.models.audit_log import AuditLog
 from app.models.base import Base
 from app.models.cart_item import CartItem
 from app.models.category import Category
+from app.models.class_completion import ClassCompletion
 from app.models.company import Company
 from app.models.company_info import CompanyInfo
 from app.models.control_number_range import ControlNumberRange
@@ -25,6 +26,13 @@ from app.models.permission import Permission
 from app.models.point_of_sale import PointOfSale
 from app.models.printer import Printer
 from app.models.product import Product
+from app.models.quiz import (
+    Quiz,
+    QuizAttempt,
+    QuizAttemptAnswer,
+    QuizOption,
+    QuizQuestion,
+)
 from app.models.role import Role
 from app.models.role_permission import RolePermission
 from app.models.theme import Theme
@@ -48,6 +56,12 @@ __all__ = [
     "Course",
     "CourseModule",
     "CourseClass",
+    "Quiz",
+    "QuizQuestion",
+    "QuizOption",
+    "QuizAttempt",
+    "QuizAttemptAnswer",
+    "ClassCompletion",
     "Company",
     "Department",
     "LearningPath",

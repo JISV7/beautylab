@@ -7,6 +7,8 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.course import Course
+from app.models.course_class import CourseClass
+from app.models.course_module import CourseModule
 from app.models.enrollment import Enrollment
 
 
@@ -161,6 +163,16 @@ class EnrollmentService:
         enrollment = await self.get_enrollment_by_id(enrollment_id)
         if not enrollment:
             raise EnrollmentNotFoundError(f"Enrollment {enrollment_id} not found")
+
+        # Courses with classes use server-side completion (video/quizzes).
+        # The client cannot set progress manually for those courses.
+        class_result = await self.db.execute(
+            select(func.count(CourseClass.id))
+            .join(CourseModule, CourseModule.id == CourseClass.module_id)
+            .where(CourseModule.course_id == enrollment.course_id)
+        )
+        if (class_result.scalar_one() or 0) > 0:
+            return enrollment
 
         # Progress is cumulative: a delayed request must never move a learner
         # backwards. This also makes the player's throttled saves race-safe.

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useSearchParams } from 'react-router';
 import { AdminHeader } from '../components/layout/AdminHeader';
 import { AdminLayout } from '../components/layout/AdminLayout';
 import { UnifiedThemeConfig } from '../components/admin/UnifiedThemeConfig';
@@ -13,6 +14,19 @@ import { HomeManagement } from '../components/admin/HomeManagement';
 
 type AdminTab = 'dashboard' | 'themes' | 'home' | 'categories' | 'users' | 'content' | 'invoices' | 'coupons' | 'company-info' | 'printer-info';
 
+const VALID_ADMIN_TABS: AdminTab[] = [
+    'dashboard',
+    'themes',
+    'home',
+    'categories',
+    'users',
+    'content',
+    'invoices',
+    'coupons',
+    'company-info',
+    'printer-info',
+];
+
 type ContentView = 'list' | 'create' | 'edit';
 
 interface AdminDashboardProps {
@@ -21,13 +35,21 @@ interface AdminDashboardProps {
 }
 
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToDashboard, onLogout }) => {
-    const [activeTab, setActiveTab] = useState<AdminTab>('dashboard');
+    const [searchParams, setSearchParams] = useSearchParams();
+    const requestedTab = searchParams.get('tab') as AdminTab | null;
+    const activeTab: AdminTab =
+        requestedTab && VALID_ADMIN_TABS.includes(requestedTab)
+            ? requestedTab
+            : 'dashboard';
+
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [contentView, setContentView] = useState<ContentView>('list');
     const [editingCourseId, setEditingCourseId] = useState<string | undefined>(undefined);
 
     const handleNavigate = (item: string) => {
-        setActiveTab(item as AdminTab);
+        setContentView('list');
+        setEditingCourseId(undefined);
+        setSearchParams({ tab: item });
     };
 
     const handleBack = () => {
@@ -52,7 +74,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToDash
     };
 
     const handleNavigateToCategories = () => {
-        setActiveTab('categories');
+        setSearchParams({ tab: 'categories' });
     };
 
     return (

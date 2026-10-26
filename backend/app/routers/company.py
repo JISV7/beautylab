@@ -28,7 +28,9 @@ from app.schemas.company import (
     DepartmentResponse,
     DepartmentUpdate,
 )
+from app.schemas.quiz import AdminQuizAttemptItem, QuizResponse, QuizUpsertRequest
 from app.services.company_service import CompanyService
+from app.services.quiz_service import QuizService
 
 router = APIRouter(prefix="/company", tags=["Company"])
 
@@ -350,5 +352,69 @@ async def deactivate_company_user(
     service = CompanyService(db)
     try:
         await service.deactivate_company_user(company_id, user_id)
+    except ValueError as exc:
+        raise _handle_value_error(exc) from exc
+
+# ----------------------------------------------------------------------
+# Quizzes
+# ----------------------------------------------------------------------
+@router.get("/classes/{class_id}/quiz", response_model=QuizResponse)
+async def get_class_quiz(
+    class_id: UUID,
+    current_user: CurrentUser,
+    _: User = CompanyAdmin,
+    db: AsyncSession = Depends(get_db),
+) -> QuizResponse:
+    await _resolve_company_id(current_user, db)
+    service = QuizService(db)
+    quiz = await service.get_admin_quiz(class_id)
+    if not quiz:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Quiz no encontrado")
+    return QuizResponse.model_validate(quiz)
+
+
+@router.put("/classes/{class_id}/quiz", response_model=QuizResponse)
+async def upsert_class_quiz(
+    class_id: UUID,
+    payload: QuizUpsertRequest,
+    current_user: CurrentUser,
+    _: User = CompanyAdmin,
+    db: AsyncSession = Depends(get_db),
+) -> QuizResponse:
+    await _resolve_company_id(current_user, db)
+    service = QuizService(db)
+    try:
+        quiz = await service.upsert_quiz(class_id, payload)
+    except ValueError as exc:
+        raise _handle_value_error(exc) from exc
+    return QuizResponse.model_validate(quiz)
+
+
+@router.delete("/classes/{class_id}/quiz", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_class_quiz(
+    class_id: UUID,
+    current_user: CurrentUser,
+    _: User = CompanyAdmin,
+    db: AsyncSession = Depends(get_db),
+) -> None:
+    await _resolve_company_id(current_user, db)
+    service = QuizService(db)
+    try:
+        await service.delete_quiz(class_id)
+    except ValueError as exc:
+        raise _handle_value_error(exc) from exc
+
+
+@router.get("/classes/{class_id}/quiz/attempts", response_model=list[AdminQuizAttemptItem])
+async def list_class_quiz_attempts(
+    class_id: UUID,
+    current_user: CurrentUser,
+    _: User = CompanyAdmin,
+    db: AsyncSession = Depends(get_db),
+) -> list[AdminQuizAttemptItem]:
+    await _resolve_company_id(current_user, db)
+    service = QuizService(db)
+    try:
+        return await service.list_admin_attempts(class_id)
     except ValueError as exc:
         raise _handle_value_error(exc) from exc
